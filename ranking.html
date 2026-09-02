@@ -1,0 +1,3391 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>🏆 Math Attack — Registro de Alumnos</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',sans-serif;background:#07060f;color:#e2e8f0;min-height:100vh;position:relative;
+  background-image:radial-gradient(ellipse 80% 60% at 20% 10%,rgba(80,0,160,.18) 0%,transparent 60%),
+                   radial-gradient(ellipse 60% 50% at 80% 90%,rgba(0,180,255,.08) 0%,transparent 60%)}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(ellipse 130% 110% at 50% 50%,transparent 50%,rgba(0,0,0,.55) 100%)}
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:1;
+  background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,.09) 3px,rgba(0,0,0,.09) 4px)}
+header,.container,.modal-bg,.pwd-modal{position:relative;z-index:2}
+header{background:#07060f;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid #00e5ff;box-shadow:0 0 24px rgba(0,229,255,.2),0 2px 0 #00e5ff;flex-wrap:wrap;gap:10px}
+header h1{font-family:'Press Start 2P',monospace;font-size:12px;color:#00e5ff;white-space:nowrap;letter-spacing:1px;text-shadow:0 0 8px #00e5ff,0 0 20px rgba(0,229,255,.5)}
+.header-right{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.container{padding:20px;max-width:1280px;margin:0 auto}
+
+/* Tabs */
+.tabs{display:flex;gap:6px;margin-bottom:18px;background:linear-gradient(180deg,rgba(12,10,26,.92),rgba(7,6,15,.84));border-radius:10px;padding:8px;overflow-x:auto;scrollbar-width:thin;border:1px solid rgba(0,229,255,.18);box-shadow:inset 0 1px 0 rgba(255,255,255,.03),0 0 0 1px rgba(0,229,255,.05),0 12px 28px rgba(2,8,23,.24)}
+.tab{flex:0 0 auto;min-width:max-content;padding:10px 14px;text-align:center;border-radius:6px;cursor:pointer;font-size:10px;font-family:'Press Start 2P',monospace;line-height:1.6;color:#7dd3fc;transition:.18s;user-select:none;touch-action:pan-x;border:1px solid transparent;background:rgba(15,23,42,.38);text-shadow:0 0 8px rgba(125,211,252,.16)}
+.tab:hover{color:#e0f2fe;border-color:rgba(0,229,255,.22);background:rgba(8,47,73,.34)}
+.tab.active{background:linear-gradient(180deg,rgba(8,47,73,.86),rgba(34,197,94,.14));color:#00e5ff;border-color:rgba(0,229,255,.38);box-shadow:0 0 12px rgba(0,229,255,.14), inset 0 -2px 0 rgba(0,229,255,.45)}
+.tab.dragging{opacity:.7;background:rgba(0,229,255,.12);box-shadow:0 0 0 1px rgba(0,229,255,.25) inset}
+
+/* Controls */
+.controls{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px;align-items:center;padding:12px;border-radius:12px;background:rgba(7,6,15,.76);border:1px solid rgba(0,229,255,.14);box-shadow:0 10px 24px rgba(2,8,23,.22)}
+.bulk-actions{display:none;gap:10px;flex-wrap:wrap;align-items:center;margin:-6px 0 16px;padding:10px 12px;border-radius:12px;background:rgba(15,23,42,.5);border:1px solid rgba(248,113,113,.18)}
+.bulk-actions.active{display:flex}
+.bulk-actions-info{font-size:12px;color:#cbd5e1}
+.bulk-cell,.bulk-head{width:38px;text-align:center}
+.bulk-check{width:16px;height:16px;accent-color:#f87171;cursor:pointer}
+select,input{background:rgba(5,10,30,.76);border:1px solid rgba(96,165,250,.22);border-radius:7px;padding:9px 11px;color:#e2e8f0;font-size:12px;outline:none;min-width:130px;box-shadow:inset 0 1px 0 rgba(255,255,255,.03)}
+select:focus,input:focus{border-color:#00e5ff;box-shadow:0 0 0 3px rgba(0,229,255,.1)}
+select option{background:#120f24;color:#e2e8f0}
+.btn{border-radius:7px;padding:9px 14px;cursor:pointer;font-size:10px;font-weight:700;border:none;display:inline-flex;align-items:center;gap:6px;font-family:'Press Start 2P',monospace;line-height:1.5;transition:transform .15s,box-shadow .15s,background .2s,border-color .2s,color .2s}
+.btn:hover{transform:translateY(-1px)}
+.btn-purple{background:rgba(124,58,237,.16);color:#c4b5fd;border:1px solid rgba(167,139,250,.34);box-shadow:0 0 12px rgba(167,139,250,.08)}
+.btn-purple:hover{background:rgba(124,58,237,.28)}
+.btn-green{background:rgba(16,185,129,.14);color:#6ee7b7;border:1px solid rgba(52,211,153,.32);box-shadow:0 0 12px rgba(52,211,153,.08)}
+.btn-green:hover{background:rgba(16,185,129,.24)}
+.btn-red{background:rgba(239,68,68,.12);color:#fca5a5;border:1px solid rgba(248,113,113,.32);box-shadow:0 0 12px rgba(248,113,113,.06)}
+.btn-red:hover{background:rgba(239,68,68,.24)}
+.conn-pill{display:inline-flex;align-items:center;gap:7px;padding:7px 11px;border-radius:999px;border:1px solid rgba(255,255,255,.12);background:rgba(4,10,24,.82);font-size:10px;font-weight:700;white-space:nowrap;font-family:'Press Start 2P',monospace;line-height:1.4}
+.conn-dot{width:9px;height:9px;border-radius:50%;background:#64748b;box-shadow:0 0 0 3px rgba(100,116,139,.18)}
+.conn-pill.online{color:#34d399;border-color:rgba(52,211,153,.32);background:rgba(52,211,153,.12)}
+.conn-pill.online .conn-dot{background:#34d399;box-shadow:0 0 0 3px rgba(52,211,153,.18)}
+.conn-pill.offline{color:#f87171;border-color:rgba(248,113,113,.3);background:rgba(248,113,113,.12)}
+.conn-pill.offline .conn-dot{background:#f87171;box-shadow:0 0 0 3px rgba(248,113,113,.18)}
+.conn-pill.loading{color:#fbbf24;border-color:rgba(251,191,36,.3);background:rgba(251,191,36,.12)}
+.conn-pill.loading .conn-dot{background:#fbbf24;box-shadow:0 0 0 3px rgba(251,191,36,.18)}
+
+/* Top cards */
+.top-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+.top-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px;text-align:center}
+.top-card .medal{font-size:28px}
+.top-card .t-avatar{width:48px;height:48px;border-radius:50%;background:#0d0820;display:flex;align-items:center;justify-content:center;margin:2px auto 4px;overflow:hidden;border:1px solid rgba(255,255,255,.1)}
+.top-card .t-avatar svg{width:100%;height:100%}
+.top-card .t-name{font-weight:700;font-size:14px;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.top-card .t-grade{font-size:11px;color:#94a3b8}
+.top-card .t-score{color:#a78bfa;font-size:20px;font-weight:800}
+.top-card .t-pct{font-size:11px;color:#94a3b8}
+
+/* Table */
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{background:rgba(255,255,255,.05);padding:9px 12px;text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:#94a3b8;cursor:pointer;user-select:none;white-space:nowrap}
+th:hover{color:#e2e8f0}
+th.sorted{color:#a78bfa}
+td{padding:9px 12px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:middle}
+tr:hover td{background:rgba(255,255,255,.03)}
+.rn{font-weight:800;color:#94a3b8;font-size:12px;width:36px}
+.name{font-weight:700}
+.grade-badge{font-size:11px;color:#94a3b8;background:rgba(255,255,255,.07);padding:2px 8px;border-radius:99px;white-space:nowrap}
+.score{font-weight:800;color:#a78bfa;font-size:15px}
+.pct-hi{color:#34d399;font-weight:700} .pct-mid{color:#fbbf24;font-weight:700} .pct-lo{color:#f87171;font-weight:700}
+.mode-badge{font-size:10px;padding:2px 7px;border-radius:99px;font-weight:700;white-space:nowrap}
+.m-solo{background:rgba(167,139,250,.2);color:#a78bfa}
+.m-duel{background:rgba(251,191,36,.2);color:#fbbf24}
+.m-online{background:rgba(96,165,250,.2);color:#60a5fa}
+.m-exam{background:rgba(52,211,153,.2);color:#34d399}
+.dt{font-size:11px;color:#64748b;white-space:nowrap}
+.streak{color:#fb923c;font-weight:700;font-size:13px}
+.empty{text-align:center;padding:60px;color:#4b5563}
+.empty span{font-size:48px;display:block;margin-bottom:12px}
+
+/* Per-student cards */
+.student-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
+.student-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:16px;cursor:pointer;transition:.2s}
+.student-card:hover{border-color:rgba(167,139,250,.4);background:rgba(167,139,250,.06)}
+.sc-header{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.sc-avatar{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;background:linear-gradient(135deg,#a78bfa,#60a5fa);flex-shrink:0;overflow:hidden}
+.sc-avatar.has-avatar{background:#0d0820;border:1px solid rgba(255,255,255,.1)}
+.sc-avatar svg{width:100%;height:100%}
+.sc-name{font-weight:700;font-size:15px}
+.sc-grade{font-size:11px;color:#94a3b8}
+.sc-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:10px}
+.sc-stat{background:rgba(255,255,255,.04);border-radius:8px;padding:6px;text-align:center}
+.sc-stat .val{font-weight:800;font-size:15px;color:#a78bfa}
+.sc-stat .lbl{font-size:9px;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px}
+
+/* Barras de operación en tarjetas de alumno */
+.op-row-label{font-size:10px;color:#94a3b8;margin-bottom:5px;margin-top:6px}
+.op-bars{display:grid;grid-template-columns:1fr 1fr;gap:5px 10px}
+.op-bar-row{display:flex;align-items:center;gap:6px}
+.op-bar-icon{font-size:12px;width:18px;text-align:center;flex-shrink:0}
+.op-bar-track{flex:1;height:6px;background:rgba(255,255,255,.08);border-radius:3px;overflow:hidden}
+.op-bar-fill{height:100%;border-radius:3px;transition:width .4s}
+.op-bar-pct{font-size:10px;color:#94a3b8;width:30px;text-align:right;flex-shrink:0}
+
+/* Tarjetas resumen de operaciones (pestaña Por Operación) */
+.op-summary-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+.op-summary-card{border-radius:16px;padding:16px;text-align:center;cursor:pointer;transition:.2s;border:2px solid transparent}
+.op-summary-card:hover{transform:translateY(-2px)}
+.op-summary-card.selected{transform:translateY(-2px)}
+.op-summary-card .op-icon{font-size:30px;margin-bottom:6px}
+.op-summary-card .op-name{font-size:13px;font-weight:700;margin-bottom:6px}
+.op-summary-card .op-pct{font-size:26px;font-weight:800;margin-bottom:2px}
+.op-summary-card .op-meta{font-size:11px;color:#94a3b8}
+.op-summary-card .op-prog{height:6px;border-radius:3px;margin-top:10px;overflow:hidden;background:rgba(255,255,255,.1)}
+.op-summary-card .op-prog-fill{height:100%;border-radius:3px;transition:width .5s}
+
+/* Modal alumno */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(2,6,23,.82);backdrop-filter:blur(10px);z-index:100;align-items:center;justify-content:center;padding:16px}
+.modal-bg.open{display:flex}
+.modal{position:relative;background:linear-gradient(180deg,rgba(30,41,59,.96),rgba(15,23,42,.96));border:1px solid rgba(167,139,250,.28);border-radius:24px;padding:22px;width:100%;max-width:820px;max-height:92vh;overflow-y:auto;box-shadow:0 24px 60px rgba(2,6,23,.45)}
+.modal h2{margin-bottom:0;color:#a78bfa;font-size:16px}
+.modal-close{position:absolute;top:18px;right:18px;cursor:pointer;color:#94a3b8;font-size:22px;line-height:1;z-index:3}
+.hist-row{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border:1px solid rgba(148,163,184,.1);border-radius:16px;background:rgba(15,23,42,.46);font-size:12px;flex-wrap:wrap;gap:8px}
+.modal-hero{position:relative;margin-bottom:18px;padding:18px;border-radius:22px;background:linear-gradient(135deg,rgba(91,33,182,.18),rgba(15,23,42,.15) 55%,rgba(30,64,175,.15));border:1px solid rgba(167,139,250,.18);overflow:hidden}
+.modal-hero::before{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at top right,rgba(255,255,255,.14),transparent 36%)}
+.modal-header{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap;padding-right:46px}
+.modal-student{display:flex;align-items:center;gap:14px;min-width:0}
+.modal-avatar{width:74px;height:74px;border-radius:50%;display:flex;align-items:center;justify-content:center;overflow:hidden;background:linear-gradient(135deg,#a78bfa,#60a5fa);box-shadow:0 16px 30px rgba(76,29,149,.24);flex-shrink:0}
+.modal-avatar.has-avatar{background:#0d0820;border:1px solid rgba(255,255,255,.1)}
+.modal-avatar svg{width:100%;height:100%}
+.modal-name{font-size:26px;font-weight:900;color:#f8fafc;line-height:1.05;word-break:break-word}
+.modal-subline{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:8px}
+.modal-chip{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:999px;background:rgba(15,23,42,.48);border:1px solid rgba(148,163,184,.12);font-size:10px;font-weight:800;letter-spacing:.45px;text-transform:uppercase;color:#cbd5e1}
+.modal-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.modal-highlight-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:16px}
+.modal-highlight{padding:12px 14px;border-radius:16px;background:rgba(15,23,42,.42);border:1px solid rgba(148,163,184,.1)}
+.modal-highlight strong{display:block;font-size:22px;font-weight:900}
+.modal-highlight span{display:block;font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:.55px;margin-top:6px}
+.modal-insights{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0}
+.modal-insight{padding:14px;border-radius:16px;background:rgba(15,23,42,.46);border:1px solid rgba(148,163,184,.1)}
+.modal-insight-label{font-size:10px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.55px;margin-bottom:8px}
+.modal-insight-main{font-size:15px;font-weight:800;color:#f8fafc}
+.modal-insight-sub{font-size:11px;color:#94a3b8;line-height:1.45;margin-top:6px}
+.modal-section-title{font-size:11px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.65px;margin:18px 0 10px}
+.modal-chart-card{margin-bottom:16px;padding:14px;border-radius:18px;background:rgba(15,23,42,.46);border:1px solid rgba(148,163,184,.1);height:260px}
+.modal-chart-card canvas{display:block!important;width:100%!important;height:100%!important}
+.op-detail-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:16px}
+.op-detail-row{display:flex;flex-direction:column;gap:10px;background:rgba(15,23,42,.52);border-radius:16px;padding:14px;border:1px solid rgba(148,163,184,.08);border-left:4px solid transparent}
+.op-detail-top{display:flex;align-items:flex-start;gap:10px}
+.op-detail-icon{font-size:28px;flex-shrink:0}
+.op-detail-name{font-size:10px;color:#94a3b8;margin-bottom:4px;text-transform:uppercase;letter-spacing:.55px}
+.op-detail-pct{font-size:24px;font-weight:900}
+.op-detail-sub{font-size:11px;color:#94a3b8;margin-top:2px;line-height:1.45}
+.op-detail-kpi{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.op-detail-mini{padding:8px;border-radius:12px;background:rgba(255,255,255,.04);text-align:center}
+.op-detail-mini strong{display:block;font-size:14px;font-weight:900}
+.op-detail-mini span{display:block;font-size:9px;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;margin-top:4px}
+.history-list{display:flex;flex-direction:column;gap:10px}
+.history-timeline{position:relative}
+.history-timeline::before{content:'';position:absolute;left:20px;top:12px;bottom:12px;width:2px;background:linear-gradient(180deg,rgba(167,139,250,.4),rgba(96,165,250,.18))}
+.history-dot{width:12px;height:12px;border-radius:50%;background:#a78bfa;box-shadow:0 0 0 4px rgba(167,139,250,.15);flex-shrink:0;margin-top:4px}
+.history-main{display:flex;gap:12px;align-items:flex-start}
+.history-content{flex:1;display:flex;flex-direction:column;gap:8px}
+.history-top{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center}
+.history-date{font-size:12px;font-weight:800;color:#f8fafc}
+.history-meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.history-stats{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.history-pill{display:inline-flex;align-items:center;gap:5px;padding:4px 8px;border-radius:999px;background:rgba(255,255,255,.05);border:1px solid rgba(148,163,184,.1);font-size:10px;font-weight:700;color:#cbd5e1}
+.history-note{font-size:11px;color:#94a3b8}
+.table-detail-shell{padding:14px;border-radius:18px;background:rgba(15,23,42,.4);border:1px solid rgba(148,163,184,.1)}
+.modal-mobile-note{display:none}
+
+/* Detalle de operaciones en modal */
+.op-detail-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:16px}
+.op-detail-row{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.04);border-radius:10px;padding:10px;border-left:3px solid transparent}
+.op-detail-icon{font-size:22px;flex-shrink:0}
+.op-detail-info{flex:1;min-width:0}
+.op-detail-name{font-size:11px;color:#94a3b8;margin-bottom:2px}
+.op-detail-pct{font-size:18px;font-weight:800}
+.op-detail-sub{font-size:10px;color:#64748b;margin-top:1px}
+.op-detail-bar{height:5px;background:rgba(255,255,255,.08);border-radius:3px;margin-top:5px;overflow:hidden}
+.op-detail-bar-fill{height:100%;border-radius:3px}
+
+/* Refresh indicator */
+.refresh-info{font-size:11px;color:#64748b;margin-left:auto;white-space:nowrap}
+/* Detalle por tabla */
+.tbl-detail-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px;margin:8px 0 14px}
+.tbl-cell{border-radius:10px;padding:8px 4px 6px;text-align:center;border:1px solid rgba(255,255,255,.07)}
+.tbl-cell-num{font-size:10px;font-weight:700;color:#94a3b8;margin-bottom:3px}
+.tbl-cell-pct{font-size:16px;font-weight:800;line-height:1}
+.tbl-cell-sub{font-size:9px;color:#94a3b8;margin-top:3px}
+/* Partida incompleta */
+.incomplete-badge{font-size:10px;padding:2px 6px;border-radius:99px;font-weight:700;background:rgba(251,191,36,.15);color:#fbbf24;border:1px solid rgba(251,191,36,.3);vertical-align:middle}
+/* Botón eliminar partida */
+.del-game-btn{background:none;border:none;color:#f8717180;cursor:pointer;font-size:13px;padding:2px 5px;border-radius:5px;line-height:1;transition:.15s}
+.del-game-btn:hover{color:#f87171;background:rgba(248,113,113,.12)}
+
+/* Password modal */
+.pwd-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:200;align-items:center;justify-content:center}
+.pwd-modal.open{display:flex}
+.pwd-box{background:#1a1830;border:1px solid rgba(248,113,113,.3);border-radius:16px;padding:24px;width:300px;text-align:center}
+.pwd-box h3{color:#f87171;margin-bottom:12px}
+.pwd-box .btns{display:flex;gap:8px}
+.pwd-box .btns button{flex:1;padding:8px;border-radius:8px;cursor:pointer;font-weight:700;border:none;font-size:13px}
+
+/* Gráficas */
+.charts-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:4px}
+.chart-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:16px}
+.chart-title{font-size:12px;font-weight:700;color:#94a3b8;margin-bottom:14px;text-transform:uppercase;letter-spacing:.5px}
+.chart-card{cursor:grab;touch-action:none}
+.chart-card.dragging{opacity:.72;border-color:rgba(167,139,250,.4);box-shadow:0 0 0 1px rgba(167,139,250,.25) inset}
+.chart-card.dragging canvas{pointer-events:none}
+
+@media(max-width:900px){.op-summary-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:700px){.charts-grid{grid-template-columns:1fr}}
+@media(max-width:640px){
+  .top-grid{grid-template-columns:repeat(3,1fr)}
+  .student-grid{grid-template-columns:1fr}
+  .op-summary-grid{grid-template-columns:repeat(2,1fr)}
+  .op-detail-grid{grid-template-columns:1fr}
+  th,td{padding:7px 8px}
+  .modal-bg{padding:0}
+  .modal{max-width:none;max-height:100vh;height:100vh;border-radius:0;padding:18px 14px 24px}
+  .modal-header{padding-right:38px}
+  .modal-name{font-size:22px}
+  .modal-student{align-items:flex-start}
+  .modal-chart-card{height:220px}
+  .modal-avatar{width:62px;height:62px}
+  .modal-highlight-grid{grid-template-columns:repeat(2,1fr)}
+  .modal-insights{grid-template-columns:1fr}
+  .history-timeline::before{left:17px}
+  .modal-mobile-note{display:block}
+  .tbl-detail-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+
+/* Mi Salón */
+.salon-group{margin-bottom:22px}
+.salon-group-title{font-size:14px;font-weight:700;color:#a78bfa;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;gap:8px}
+.salon-group-count{font-size:11px;font-weight:600;color:#64748b;background:rgba(255,255,255,.06);border-radius:10px;padding:1px 8px}
+.salon-list{display:flex;flex-direction:column;gap:8px}
+.salon-row{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:10px 14px;cursor:pointer;transition:.2s}
+.salon-row:hover{border-color:rgba(167,139,250,.4);background:rgba(167,139,250,.06)}
+.salon-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;box-shadow:0 0 6px currentColor}
+.dot-hi{background:#34d399;color:#34d399}
+.dot-mid{background:#fbbf24;color:#fbbf24}
+.dot-lo{background:#f87171;color:#f87171}
+.dot-none{background:#64748b;color:#64748b;box-shadow:none}
+.salon-avatar{width:36px;height:36px;font-size:14px}
+.salon-info{flex:1;min-width:0}
+.salon-name{font-weight:700;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.salon-meta{font-size:11px;color:#94a3b8;margin-top:2px}
+.salon-last{font-size:11px;color:#64748b;text-align:right;line-height:1.4;flex-shrink:0}
+@media(max-width:600px){
+  .salon-row{flex-wrap:wrap}
+  .salon-last{width:100%;text-align:left;margin-left:48px}
+}
+
+/* Mapa de calor */
+.heat-wrap{overflow-x:auto}
+.heat-table{width:100%;border-collapse:collapse;font-size:13px}
+.heat-table th{background:rgba(255,255,255,.05);padding:9px 10px;text-align:center;font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:#94a3b8;white-space:nowrap}
+.heat-table th.heat-th-name{text-align:left}
+.heat-table td{padding:6px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:middle;text-align:center}
+.heat-table tr:hover td{background:rgba(255,255,255,.03)}
+.heat-name-cell{display:flex;align-items:center;gap:8px;cursor:pointer;text-align:left!important;white-space:nowrap}
+.heat-avatar{width:26px;height:26px;border-radius:50%;background:#0d0820;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:10px;flex-shrink:0;overflow:hidden;border:1px solid rgba(255,255,255,.1)}
+.heat-avatar svg{width:100%;height:100%}
+.heat-cell{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;width:64px;height:44px;border-radius:10px;border:1px solid rgba(255,255,255,.07);font-weight:800;font-size:13px;line-height:1.1}
+.heat-cell .sub{font-size:9px;font-weight:600;opacity:.85;margin-top:2px}
+.heat-cell.heat-empty{color:#475569;font-weight:600;background:rgba(255,255,255,.02)!important;border-color:rgba(255,255,255,.05)!important}
+.heat-row-avg{background:rgba(255,255,255,.03)}
+.heat-row-avg td{font-weight:700}
+.heat-legend{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin:0 0 14px;font-size:12px;color:#94a3b8}
+.heat-legend span.dot{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:middle}
+@media(max-width:640px){
+  .heat-cell{width:52px;height:40px;font-size:12px}
+}
+
+/* Rediseño visual */
+.tabs{position:relative;gap:8px;padding:8px 10px;background:linear-gradient(180deg,rgba(12,10,26,.94),rgba(7,6,15,.84));border:1px solid rgba(0,229,255,.18);box-shadow:inset 16px 0 18px -18px rgba(15,23,42,.95),inset -16px 0 18px -18px rgba(15,23,42,.95),0 14px 28px rgba(2,8,23,.24)}
+.tab{display:flex;align-items:center;gap:8px;padding:10px 14px;border:1px solid transparent;background:rgba(15,23,42,.42);position:relative}
+.tab-label{display:inline-flex;align-items:center;gap:6px}
+.tab-count{display:inline-flex;align-items:center;justify-content:center;min-width:24px;height:24px;padding:0 8px;border-radius:999px;background:rgba(0,229,255,.1);color:#cbd5e1;font-size:9px;font-weight:800;font-family:'Press Start 2P',monospace}
+.tab:hover{color:#e2e8f0;border-color:rgba(0,229,255,.16);background:rgba(8,47,73,.32)}
+.tab.active{background:linear-gradient(180deg,rgba(8,47,73,.92),rgba(34,197,94,.12));color:#ecfeff;border-color:rgba(0,229,255,.4);box-shadow:0 10px 24px rgba(14,116,144,.2), inset 0 -2px 0 rgba(34,211,238,.5)}
+.tab.active .tab-count{background:rgba(0,229,255,.16);color:#ecfeff}
+.controls{padding:12px;border-radius:14px;background:rgba(7,6,15,.76);border:1px solid rgba(0,229,255,.14);backdrop-filter:blur(8px)}
+.btn{transition:transform .15s,background .2s,border-color .2s,color .2s}
+.btn:hover{transform:translateY(-1px)}
+.top-grid{gap:14px}
+.top-card{position:relative;padding:18px 16px;background:radial-gradient(circle at top,rgba(14,116,144,.16),transparent 36%),linear-gradient(180deg,rgba(12,10,26,.94),rgba(7,6,15,.88));border-color:rgba(0,229,255,.14);overflow:hidden;box-shadow:0 14px 30px rgba(2,6,23,.28), inset 0 1px 0 rgba(255,255,255,.03)}
+.top-card::before{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at top,rgba(255,255,255,.12),transparent 58%)}
+.top-card.rank-1{border-color:rgba(251,191,36,.5);background:radial-gradient(circle at top,rgba(251,191,36,.14),transparent 36%),linear-gradient(180deg,rgba(120,53,15,.36),rgba(7,6,15,.92))}
+.top-card.rank-2{border-color:rgba(226,232,240,.32)}
+.top-card.rank-3{border-color:rgba(251,146,60,.38)}
+.top-card .medal{font-size:30px;margin-bottom:6px}
+.top-card .t-avatar{width:58px;height:58px;margin:4px auto 8px;box-shadow:0 0 0 4px rgba(15,23,42,.4)}
+.top-card .t-name{font-size:14px;color:#f8fafc}
+.top-card .t-score{font-size:24px;letter-spacing:.2px;color:#fbbf24;text-shadow:0 0 10px rgba(251,191,36,.35)}
+.top-card .t-pct{margin-top:4px;color:#7dd3fc}
+.section-hero{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:14px;padding:18px;border-radius:16px;background:radial-gradient(circle at top right,rgba(0,229,255,.12),transparent 26%),linear-gradient(135deg,rgba(12,10,26,.95),rgba(7,6,15,.9));border:1px solid rgba(0,229,255,.16);box-shadow:0 18px 34px rgba(2,6,23,.24), inset 0 1px 0 rgba(255,255,255,.03)}
+.section-kicker{font-size:9px;color:#7dd3fc;text-transform:uppercase;letter-spacing:1px;font-weight:800;margin-bottom:8px;font-family:'Press Start 2P',monospace}
+.section-title{font-size:22px;font-weight:900;color:#00e5ff;line-height:1.15;font-family:'Press Start 2P',monospace;text-shadow:0 0 8px rgba(0,229,255,.24)}
+.section-subtitle{font-size:13px;color:#94a3b8;max-width:720px;line-height:1.5;margin-top:10px}
+.summary-chips{display:flex;gap:10px;flex-wrap:wrap;align-items:stretch}
+.summary-chip{min-width:118px;padding:11px 12px;border-radius:10px;background:rgba(4,10,24,.82);border:1px solid rgba(96,165,250,.16);box-shadow:inset 0 1px 0 rgba(255,255,255,.02)}
+.summary-chip strong{display:block;font-size:18px;line-height:1.2;font-weight:900;color:#f8fafc;font-family:'Press Start 2P',monospace}
+.summary-chip span{display:block;font-size:8px;color:#94a3b8;text-transform:uppercase;letter-spacing:.8px;margin-top:8px;font-family:'Press Start 2P',monospace;line-height:1.5}
+.summary-chip.purple strong{color:#c4b5fd}
+.summary-chip.green strong{color:#6ee7b7}
+.summary-chip.blue strong{color:#93c5fd}
+.summary-chip.gold strong{color:#fcd34d}
+.summary-chip.red strong{color:#fca5a5}
+.table-shell{overflow:auto;border-radius:16px;border:1px solid rgba(0,229,255,.14);background:rgba(7,6,15,.8);box-shadow:0 16px 28px rgba(2,6,23,.2)}
+.data-table{min-width:100%;font-size:13px}
+.data-table th{position:sticky;top:0;z-index:1;background:rgba(4,10,24,.96);backdrop-filter:blur(8px);padding:11px 12px;color:#7dd3fc;font-family:'Press Start 2P',monospace;font-size:8px;letter-spacing:1px}
+.data-table td{padding:11px 12px}
+.data-table tbody tr{transition:background .15s,transform .15s}
+.data-table tbody tr:hover td{background:rgba(8,47,73,.26)}
+.rank-cell{width:52px;font-weight:900}
+.table-row-top1 td{background:linear-gradient(90deg,rgba(251,191,36,.12),transparent)}
+.table-row-top2 td{background:linear-gradient(90deg,rgba(226,232,240,.08),transparent)}
+.table-row-top3 td{background:linear-gradient(90deg,rgba(251,146,60,.09),transparent)}
+.score-stack{display:flex;flex-direction:column;gap:2px}
+.score-main{font-weight:900;font-size:16px;color:#c4b5fd}
+.score-sub{font-size:10px;color:#64748b;text-transform:uppercase;letter-spacing:.6px}
+.pct-stack{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.pct-bar{width:84px;height:6px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden}
+.pct-bar-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,#f87171,#fbbf24,#34d399)}
+.op-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 8px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid rgba(148,163,184,.12);font-size:11px;font-weight:700;color:#cbd5e1;margin:2px 4px 2px 0}
+.op-badge.op-x{background:rgba(167,139,250,.14);color:#c4b5fd}
+.op-badge.op-plus{background:rgba(52,211,153,.14);color:#6ee7b7}
+.op-badge.op-minus{background:rgba(251,191,36,.14);color:#fcd34d}
+.op-badge.op-div{background:rgba(96,165,250,.14);color:#93c5fd}
+.vs-pill{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:rgba(96,165,250,.14);border:1px solid rgba(96,165,250,.24);color:#bfdbfe;font-size:11px;font-weight:700}
+.mode-badge{font-size:10px;padding:4px 8px}
+.student-card{position:relative;padding:18px;background:radial-gradient(circle at top,rgba(0,229,255,.08),transparent 35%),linear-gradient(180deg,rgba(12,10,26,.92),rgba(7,6,15,.88));border-color:rgba(96,165,250,.16);box-shadow:0 16px 28px rgba(2,6,23,.2)}
+.student-card:hover{transform:translateY(-2px)}
+.student-card.featured{border-color:rgba(251,191,36,.36);box-shadow:0 18px 32px rgba(120,53,15,.16)}
+.student-ribbon{position:absolute;top:12px;right:12px;padding:5px 9px;border-radius:999px;background:rgba(251,191,36,.16);border:1px solid rgba(251,191,36,.3);color:#fcd34d;font-size:8px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;font-family:'Press Start 2P',monospace}
+.sc-avatar{width:52px;height:52px;font-size:18px;box-shadow:0 8px 16px rgba(15,23,42,.22)}
+.sc-name{font-size:17px}
+.sc-grade{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.grade-chip{display:inline-flex;align-items:center;padding:3px 8px;border-radius:999px;background:rgba(255,255,255,.07);border:1px solid rgba(148,163,184,.12);font-size:10px;color:#cbd5e1;font-weight:700;text-transform:uppercase;letter-spacing:.45px}
+.sc-stats{gap:8px;margin-bottom:12px}
+.sc-stat{padding:10px 8px;background:rgba(15,23,42,.46);border:1px solid rgba(148,163,184,.08)}
+.sc-stat .val{font-size:17px}
+.op-row-label{font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase}
+.op-bars{gap:8px 12px}
+.op-bar-track{height:10px;border-radius:999px;background:rgba(255,255,255,.07)}
+.op-bar-fill{border-radius:999px}
+.op-bar-pct{font-size:11px;font-weight:800}
+.salon-overview{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-bottom:18px}
+.salon-overview-card{padding:16px;border-radius:14px;background:linear-gradient(180deg,rgba(12,10,26,.92),rgba(7,6,15,.88));border:1px solid rgba(96,165,250,.14)}
+.salon-overview-card h3{font-size:14px;color:#f8fafc;margin-bottom:10px}
+.salon-overview-stats{display:flex;gap:8px;flex-wrap:wrap}
+.salon-overview-stat{flex:1;min-width:60px;padding:8px;border-radius:12px;text-align:center;background:rgba(15,23,42,.45)}
+.salon-overview-stat strong{display:block;font-size:22px;font-weight:900}
+.salon-overview-stat span{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:#94a3b8}
+.salon-row{padding:13px 14px;border-left:4px solid transparent;background:linear-gradient(180deg,rgba(30,41,59,.68),rgba(15,23,42,.72))}
+.salon-row.status-hi{border-left-color:#34d399}
+.salon-row.status-mid{border-left-color:#fbbf24}
+.salon-row.status-lo{border-left-color:#f87171}
+.salon-row.status-none{border-left-color:#64748b}
+.salon-status-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 9px;border-radius:999px;font-size:10px;font-weight:800;letter-spacing:.5px;text-transform:uppercase}
+.salon-status-badge.hi{background:rgba(52,211,153,.14);color:#6ee7b7}
+.salon-status-badge.mid{background:rgba(251,191,36,.14);color:#fcd34d}
+.salon-status-badge.lo{background:rgba(248,113,113,.14);color:#fca5a5}
+.salon-status-badge.none{background:rgba(100,116,139,.16);color:#cbd5e1}
+.salon-dot{display:none}
+.op-summary-grid{gap:14px}
+.op-summary-card{padding:18px;text-align:left;box-shadow:0 16px 28px rgba(2,6,23,.18);background-image:radial-gradient(circle at top right,rgba(255,255,255,.12),transparent 34%)}
+.op-summary-card .op-icon{font-size:34px}
+.op-summary-card .op-pct{font-size:30px}
+.op-detail-header{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.operation-rank-pill{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.05);border:1px solid rgba(148,163,184,.12);font-size:12px;color:#cbd5e1}
+.op-diagnostic-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}
+.op-diagnostic-card{position:relative;display:grid;grid-template-columns:68px minmax(0,1fr);gap:10px;background:linear-gradient(160deg,rgba(15,23,42,.96),rgba(30,41,59,.86));border:1px solid rgba(148,163,184,.14);border-radius:20px;padding:10px;box-shadow:0 18px 34px rgba(2,6,23,.2);overflow:hidden}
+.op-diagnostic-card::before{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at top right,rgba(255,255,255,.12),transparent 42%)}
+.op-diagnostic-card.top1{border-color:rgba(251,191,36,.38)}
+.op-diagnostic-card.top2{border-color:rgba(148,163,184,.28)}
+.op-diagnostic-card.top3{border-color:rgba(191,128,64,.32)}
+.op-diagnostic-rail{position:relative;z-index:1;display:flex;flex-direction:column;justify-content:space-between;gap:7px;padding:8px 7px;border-radius:14px;background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));border:1px solid rgba(148,163,184,.12)}
+.op-diagnostic-rank{display:flex;align-items:center;justify-content:center;min-height:34px;border-radius:10px;background:rgba(15,23,42,.58);font-size:16px;font-weight:900;color:#f8fafc;text-align:center}
+.op-diagnostic-side-label{font-size:10px;font-weight:800;letter-spacing:.7px;text-transform:uppercase;color:#94a3b8;text-align:center}
+.op-diagnostic-side-value{font-size:19px;font-weight:900;line-height:1;text-align:center}
+.op-diagnostic-side-sub{font-size:9px;color:#94a3b8;text-align:center;line-height:1.15}
+.op-diagnostic-body{position:relative;z-index:1;min-width:0}
+.op-diagnostic-head{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid rgba(148,163,184,.1)}
+.op-diagnostic-student{display:flex;align-items:center;gap:10px;min-width:0;cursor:pointer}
+.op-diagnostic-student:hover .op-diagnostic-name{text-decoration:underline}
+.op-diagnostic-avatar{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;background:linear-gradient(135deg,#a78bfa,#60a5fa);box-shadow:0 6px 14px rgba(15,23,42,.22)}
+.op-diagnostic-avatar.has-avatar{background:#0d0820;border:1px solid rgba(255,255,255,.1)}
+.op-diagnostic-avatar svg{width:100%;height:100%}
+.op-diagnostic-student-copy{min-width:0}
+.op-diagnostic-name{font-size:15px;font-weight:900;color:#f8fafc;line-height:1.05}
+.op-diagnostic-grade{margin-top:3px;font-size:10px;color:#94a3b8}
+.op-diagnostic-pct{font-size:20px;font-weight:900;text-align:right}
+.op-diagnostic-sub{font-size:10px;color:#94a3b8;margin-top:2px;text-align:right}
+.op-diagnostic-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-bottom:8px}
+.op-diagnostic-stat{padding:7px 5px 6px;border-radius:10px;background:rgba(255,255,255,.045);border:1px solid rgba(148,163,184,.08);text-align:center}
+.op-diagnostic-stat strong{display:block;font-size:13px;font-weight:900}
+.op-diagnostic-stat span{display:block;font-size:8px;color:#94a3b8;text-transform:uppercase;letter-spacing:.45px;margin-top:3px}
+.op-diagnostic-alert{display:flex;align-items:flex-start;gap:7px;padding:8px 9px;border-radius:12px;background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.16);margin-bottom:8px}
+.op-diagnostic-alert strong{display:block;font-size:11px;color:#fca5a5;text-transform:uppercase;letter-spacing:.5px}
+.op-diagnostic-alert span{display:block;font-size:10px;color:#fecaca;line-height:1.25;margin-top:2px}
+.op-step-list{display:grid;gap:7px}
+.op-step-row{padding:7px 8px;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid rgba(148,163,184,.08)}
+.op-step-top{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:4px}
+.op-step-title{font-size:11px;font-weight:800;color:#e2e8f0}
+.op-step-meta{font-size:9px;color:#94a3b8}
+.op-step-bar{height:6px;border-radius:999px;background:rgba(255,255,255,.07);overflow:hidden}
+.op-step-bar-fill{height:100%;border-radius:999px;transition:width .4s}
+.op-step-foot{display:flex;justify-content:space-between;gap:6px;flex-wrap:wrap;margin-top:4px;font-size:8px;color:#94a3b8}
+.op-step-foot strong{color:#f8fafc}
+.op-step-empty{padding:7px 8px;border-radius:10px;background:rgba(148,163,184,.08);font-size:9px;color:#94a3b8}
+@media(max-width:760px){
+  .op-diagnostic-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:620px){
+  .op-diagnostic-grid{grid-template-columns:1fr}
+  .op-diagnostic-card{grid-template-columns:1fr}
+  .op-diagnostic-rail{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));align-items:center}
+}
+.heat-wrap{border-radius:18px;border:1px solid rgba(148,163,184,.12);background:rgba(15,23,42,.48);box-shadow:0 16px 28px rgba(2,6,23,.16)}
+.heat-table th:first-child,.heat-table td:first-child{position:sticky;left:0;z-index:2;background:#141625}
+.heat-table th:first-child{z-index:3}
+.heat-cell{width:72px;height:52px;border-radius:12px;font-size:14px}
+.heat-cell .sub{font-size:10px}
+.heat-insight{display:block;font-size:9px;font-weight:700;opacity:.9;margin-top:3px;text-transform:uppercase;letter-spacing:.4px}
+.chart-summary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:16px}
+.chart-summary-card{padding:15px 16px;border-radius:16px;background:linear-gradient(180deg,rgba(30,41,59,.7),rgba(15,23,42,.72));border:1px solid rgba(148,163,184,.12)}
+.chart-summary-card strong{display:block;font-size:24px;font-weight:900;color:#f8fafc}
+.chart-summary-card span{display:block;font-size:11px;color:#94a3b8;margin-top:6px;text-transform:uppercase;letter-spacing:.6px}
+.chart-card{min-height:0;background:linear-gradient(180deg,rgba(30,41,59,.74),rgba(15,23,42,.72));border-color:rgba(148,163,184,.12);box-shadow:0 16px 28px rgba(2,6,23,.16)}
+.chart-card.emphasis-purple{background:linear-gradient(180deg,rgba(91,33,182,.22),rgba(15,23,42,.74))}
+.chart-card.emphasis-green{background:linear-gradient(180deg,rgba(5,150,105,.18),rgba(15,23,42,.74))}
+.chart-card.emphasis-gold{background:linear-gradient(180deg,rgba(180,83,9,.18),rgba(15,23,42,.74))}
+.chart-card.emphasis-blue{background:linear-gradient(180deg,rgba(30,64,175,.18),rgba(15,23,42,.74))}
+.exam-session{margin-bottom:24px;padding:16px;border-radius:18px;background:linear-gradient(180deg,rgba(30,41,59,.7),rgba(15,23,42,.72));border:1px solid rgba(148,163,184,.12);box-shadow:0 16px 28px rgba(2,6,23,.16)}
+.exam-session-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.exam-session-title{font-size:16px;font-weight:800;color:#c4b5fd}
+.exam-session-meta{font-size:12px;color:#94a3b8}
+.exam-highlight-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:14px}
+.exam-highlight{padding:10px 12px;border-radius:14px;background:rgba(15,23,42,.46);border:1px solid rgba(148,163,184,.08)}
+.exam-highlight strong{display:block;font-size:22px;font-weight:900}
+.exam-highlight span{display:block;font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:.6px;margin-top:5px}
+@media(max-width:900px){
+  .top-grid{grid-template-columns:1fr}
+}
+@media(max-width:640px){
+  .section-title{font-size:20px}
+  .summary-chip{min-width:92px}
+  .heat-cell{width:60px;height:46px}
+  .tab{padding:9px 12px}
+}
+
+@media print{
+  body *{ visibility:hidden; }
+  .modal-bg{
+    display:flex !important;
+    position:absolute; inset:auto; top:0; left:0;
+    background:#fff !important;
+    padding:0; width:100%; height:auto;
+  }
+  .modal, .modal *{ visibility:visible; }
+  .modal{
+    position:absolute; top:0; left:0;
+    max-width:100%; width:100%;
+    max-height:none; overflow:visible;
+    background:#fff !important;
+    border:none; border-radius:0;
+    color:#111 !important;
+    box-shadow:none;
+    padding:12px;
+  }
+  .modal h2, .modal p, .modal span, .modal div{ color:#111 !important; }
+  .modal .pct-hi{ color:#15803d !important; }
+  .modal .pct-mid{ color:#a16207 !important; }
+  .modal .pct-lo{ color:#b91c1c !important; }
+  .modal-close, .no-print{ display:none !important; }
+  canvas{ max-width:100% !important; }
+}
+</style>
+<script src="/chart.umd.min.js"></script>
+</head>
+<body>
+<header>
+  <h1>🏆 Math Attack — Registro de Alumnos</h1>
+  <div class="header-right">
+    <a href="/maestro" style="color:#a78bfa;font-size:13px;font-weight:700;text-decoration:none;opacity:.85;transition:opacity .15s;margin-right:8px" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=.85">📋 Panel Maestro</a>
+    <span class="conn-pill loading" id="connStatus"><span class="conn-dot"></span><span id="connStatusText">Conectando…</span></span>
+    <span class="refresh-info" id="refreshInfo">—</span>
+    <button class="btn btn-green" onclick="exportCSV()">📥 Exportar Excel</button>
+    <button class="btn btn-purple" onclick="load()">🔄 Actualizar</button>
+    <button class="btn btn-red" onclick="askClear()">🗑 Limpiar</button>
+  </div>
+</header>
+
+<div class="container">
+  <input type="file" id="importCsvInput" accept=".csv,text/csv" style="display:none" onchange="importCSVFile(this.files&&this.files[0]); this.value=''">
+  <div class="tabs">
+    <div class="tab active" data-tab="partidas" onclick="setTab('partidas')"><span class="tab-label">🧑 Individual</span><span class="tab-count">0</span></div>
+    <div class="tab" data-tab="multijugador" onclick="setTab('multijugador')"><span class="tab-label">🌐 Multijugador</span><span class="tab-count">0</span></div>
+    <div class="tab" data-tab="alumnos" onclick="setTab('alumnos')"><span class="tab-label">👤 Por Alumno</span><span class="tab-count">0</span></div>
+    <div class="tab" data-tab="salon" onclick="setTab('salon')"><span class="tab-label">🏫 Mi Salón</span><span class="tab-count">0</span></div>
+    <div class="tab" data-tab="modo-operaciones" onclick="setTab('modo-operaciones')"><span class="tab-label">⚙️ Operaciones</span><span class="tab-count">0</span></div>
+    <div class="tab" data-tab="operaciones" onclick="setTab('operaciones')"><span class="tab-label">📊 Por Operación</span><span class="tab-count">0</span></div>
+    <div class="tab" data-tab="calor" onclick="setTab('calor')"><span class="tab-label">🗺️ Mapa de Calor</span><span class="tab-count">0</span></div>
+    <div class="tab" data-tab="graficas" onclick="setTab('graficas')"><span class="tab-label">📈 Gráficas</span><span class="tab-count">0</span></div>
+    <div class="tab" data-tab="pruebas" onclick="setTab('pruebas')"><span class="tab-label">📝 Pruebas</span><span class="tab-count">0</span></div>
+  </div>
+
+  <div id="tabSummary"></div>
+  <div id="topCards"></div>
+
+  <div class="controls" id="controls">
+    <input type="text" id="search" placeholder="🔍 Buscar alumno..." oninput="renderAll()">
+    <select id="gradeFilter" onchange="renderAll()"><option value="">Todos los grados</option></select>
+    <select id="modeFilter" onchange="renderAll()" style="display:none">
+      <option value="">Todos los modos</option>
+      <option value="solo">🧑 Individual</option>
+      <option value="exam">📝 Prueba</option>
+      <option value="duel">⚔️ Duelo local</option>
+      <option value="online">🌐 Multijugador LAN</option>
+    </select>
+    <select id="gameTypeFilter" onchange="renderAll()">
+      <option value="">Todos los tipos</option>
+      <option value="free">🕊️ Libre</option>
+      <option value="timed">⏱️ Tiempo</option>
+      <option value="lives">❤️ Vidas</option>
+      <option value="countdown">⏳ Contrarreloj</option>
+      <option value="streak">🔥 Racha</option>
+      <option value="survival">💀 Supervivencia</option>
+      <option value="bot">🤖 Bot</option>
+    </select>
+    <select id="mpModeFilter" onchange="renderAll()" style="display:none">
+      <option value="">Todos los modos</option>
+      <option value="race">⚡ Carrera</option>
+      <option value="rounds">🎯 Duelo de Rondas</option>
+      <option value="bomb">💣 Bomba</option>
+      <option value="steal">🃏 Robo de Puntos</option>
+      <option value="survival">🌊 Supervivencia</option>
+      <option value="apuestas">🎰 Apuestas</option>
+    </select>
+    <select id="opFilter" onchange="renderAll()">
+      <option value="">Todas las operaciones</option>
+      <option value="×">✖️ Multiplicación</option>
+      <option value="+">➕ Suma</option>
+      <option value="−">➖ Resta</option>
+      <option value="÷">➗ División</option>
+    </select>
+    <select id="sortBy" onchange="renderAll()" style="display:none">
+      <option value="date">Más recientes</option>
+      <option value="score">Mayor puntaje</option>
+      <option value="pct">Mayor % aciertos</option>
+      <option value="streak">Mayor racha</option>
+    </select>
+    <input type="number" id="recentLimit" min="1" step="1" inputmode="numeric" placeholder="Ultimas partidas" oninput="renderAll()" title="Cantidad de partidas recientes a usar">
+    <button class="btn btn-purple" onclick="askImportCSV()">Importar</button>
+    <span id="countInfo" style="font-size:12px;color:#64748b;margin-left:4px"></span>
+    <div id="viewToggle" style="display:flex;gap:4px;margin-left:auto">
+      <button class="btn" id="viewCardsBtn" onclick="setIndividualView('tarjetas')" style="background:rgba(167,139,250,.2);color:#a78bfa">🗂️ Tarjetas</button>
+      <button class="btn" id="viewTableBtn" onclick="setIndividualView('tabla')" style="background:rgba(255,255,255,.08);color:#94a3b8">📋 Tabla</button>
+    </div>
+  </div>
+  <div class="bulk-actions" id="bulkActions"></div>
+
+  <div id="mainContent"></div>
+</div>
+
+<!-- Modal detalle alumno -->
+<div class="modal-bg" id="studentModal">
+  <div class="modal">
+    <div class="modal-close" onclick="closeModal()">✕</div>
+    <h2 id="modalTitle">Alumno</h2>
+    <div id="modalBody"></div>
+  </div>
+</div>
+
+<!-- Modal confirmar borrar todo -->
+<div class="pwd-modal" id="pwdModal">
+  <div class="pwd-box">
+    <h3>🗑 Confirmar borrado</h3>
+    <p style="font-size:12px;color:#94a3b8;margin-bottom:12px">¿Estás seguro de que quieres borrar todo el ranking? Esta acción no se puede deshacer.</p>
+    <input id="pwdInput" type="password" placeholder="Contraseña de administrador" autocomplete="off"
+      style="width:100%;padding:8px 10px;margin-bottom:10px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);color:#e2e8f0;border-radius:6px;font-size:13px"/>
+    <div id="pwdErr" style="color:#f87171;font-size:11px;min-height:16px;margin-bottom:6px"></div>
+    <div class="btns">
+      <button onclick="closePwd()" style="background:rgba(255,255,255,.1);color:#e2e8f0">Cancelar</button>
+      <button onclick="confirmClear()" style="background:rgba(248,113,113,.3);color:#f87171">Borrar todo</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal confirmar borrar alumno -->
+<div class="pwd-modal" id="pwdStudentModal">
+  <div class="pwd-box">
+    <h3>🗑 Eliminar historial</h3>
+    <p style="font-size:12px;color:#94a3b8;margin-bottom:4px">Alumno:</p>
+    <p id="delStudentName" style="font-size:14px;font-weight:700;color:#f87171;margin-bottom:12px"></p>
+    <p style="font-size:12px;color:#94a3b8;margin-bottom:12px">Se borrarán todas sus partidas. Esta acción no se puede deshacer.</p>
+    <input id="pwdStudentInput" type="password" placeholder="Contraseña de administrador" autocomplete="off"
+      style="width:100%;padding:8px 10px;margin-bottom:10px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);color:#e2e8f0;border-radius:6px;font-size:13px"/>
+    <div id="pwdStudentErr" style="color:#f87171;font-size:11px;min-height:16px;margin-bottom:6px"></div>
+    <div class="btns">
+      <button onclick="closeStudentPwd()" style="background:rgba(255,255,255,.1);color:#e2e8f0">Cancelar</button>
+      <button onclick="confirmClearStudent()" style="background:rgba(248,113,113,.3);color:#f87171">Eliminar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let data=[], currentTab='partidas';
+let currentDetailRows=[];
+let selectedGameIds=new Set();
+let activeOp='×';
+const TAB_IDS=['partidas','multijugador','alumnos','salon','modo-operaciones','operaciones','calor','graficas','pruebas'];
+const TAB_ORDER_KEY='rankingTabOrderV1';
+const CHART_CARD_ORDER_KEY='rankingChartsOrderV1';
+const LOAD_TIMEOUT_MS=5000;
+let suppressTabClick=false;
+let loadSeq=0;
+
+const CHART_CARD_DEFS=[
+  {key:'act',title:'📅 Actividad por día',canvasId:'cAct',className:'chart-card emphasis-purple'},
+  {key:'avgDay',title:'📈 Evolución del promedio por día',canvasId:'cAvgDay',className:'chart-card emphasis-purple'},
+  {key:'ops',title:'🔢 Rendimiento por operación',canvasId:'cOps',className:'chart-card emphasis-green'},
+  {key:'opsStack',title:'✅ Aciertos vs errores por operación',canvasId:'cOpsStack',className:'chart-card emphasis-green'},
+  {key:'mod',title:'🎮 Modos de juego',canvasId:'cMod',className:'chart-card emphasis-gold',style:'display:flex;flex-direction:column;align-items:center',titleStyle:'width:100%',canvasStyle:'max-height:260px'},
+  {key:'modeBalance',title:'⚖️ Balance por modo de juego',canvasId:'cModeBalance',className:'chart-card emphasis-gold'},
+  {key:'top',title:'🏆 Top 10 alumnos',canvasId:'cTop',className:'chart-card emphasis-blue'},
+  {key:'grades',title:'🏫 Distribución por grados',canvasId:'cGrades',className:'chart-card emphasis-blue'},
+  {key:'streak',title:'🔥 Racha máxima por alumno',canvasId:'cStreak',className:'chart-card emphasis-gold'},
+  {key:'gameTypes',title:'🕹️ Tipos de partida más usados',canvasId:'cGameTypes',className:'chart-card emphasis-purple',style:'display:flex;flex-direction:column;align-items:center',titleStyle:'width:100%',canvasStyle:'max-height:260px'},
+  {key:'hours',title:'🕒 Actividad por hora',canvasId:'cHours',className:'chart-card emphasis-blue'},
+  {key:'improve',title:'🚀 Top de mejora',canvasId:'cImprove',className:'chart-card emphasis-green'},
+  {key:'tables',title:'🔢 Promedio por tabla',canvasId:'cTables',className:'chart-card emphasis-gold'},
+  {key:'consistency',title:'🎯 Promedio vs estabilidad',canvasId:'cConsistency',className:'chart-card emphasis-blue'},
+  {key:'incomplete',title:'⛔ Partidas incompletas por modo',canvasId:'cIncomplete',className:'chart-card emphasis-purple'},
+  {key:'rivals',title:'🤝 Rendimiento por rival',canvasId:'cRivals',className:'chart-card emphasis-green'}
+];
+
+const ALL_OPS=['×','+','−','÷'];
+const OP_NAMES={'×':'Multiplicación','+':'Suma','−':'Resta','÷':'División'};
+const OP_ICONS={'×':'✖️','+':'➕','−':'➖','÷':'➗'};
+const OP_COLORS={
+  '×':{bg:'rgba(167,139,250,.10)',selBg:'rgba(167,139,250,.22)',border:'rgba(167,139,250,.45)',bar:'#a78bfa'},
+  '+':{bg:'rgba(52,211,153,.10)',selBg:'rgba(52,211,153,.22)',border:'rgba(52,211,153,.45)',bar:'#34d399'},
+  '−':{bg:'rgba(251,191,36,.10)',selBg:'rgba(251,191,36,.22)',border:'rgba(251,191,36,.45)',bar:'#fbbf24'},
+  '÷':{bg:'rgba(96,165,250,.10)',selBg:'rgba(96,165,250,.22)',border:'rgba(96,165,250,.45)',bar:'#60a5fa'}
+};
+const OP_STEP_META={
+  '+':{
+    carry:{label:'Llevadas', short:'llevadas', help:'Errores al escribir o usar la llevada.'},
+    result:{label:'Resultado abajo', short:'resultado', help:'Errores al sumar y colocar el resultado final.'}
+  },
+  '−':{
+    borrow:{label:'Pedir prestado', short:'prestado', help:'Errores al pedir prestado o reescribir cifras.'},
+    result:{label:'Resultado abajo', short:'resultado', help:'Errores al restar y colocar la cifra final.'}
+  },
+  '×':{
+    partial:{label:'Productos parciales', short:'parciales', help:'Errores al multiplicar cada fila parcial.'},
+    carry:{label:'Llevadas', short:'llevadas', help:'Errores al manejar las llevadas en multiplicación.'},
+    final_sum:{label:'Suma final', short:'suma final', help:'Errores al sumar los parciales para el resultado final.'}
+  },
+  '÷':{
+    quotient:{label:'Cociente arriba', short:'cociente', help:'Errores al decidir qué número va arriba.'},
+    product:{label:'Producto debajo', short:'producto', help:'Errores al escribir el producto debajo.'},
+    remainder:{label:'Resta intermedia', short:'resta', help:'Errores al restar dentro de la casita.'},
+    bring_down:{label:'Bajar cifra', short:'bajar cifra', help:'Errores al bajar la siguiente cifra.'}
+  }
+};
+const _AV_SKIN={light:'#FDDBB4',canela:'#F1C27D',miel:'#E0AC69',caramel:'#C68642',dark:'#8D5524',ebony:'#4A2912'};
+const _AV_HAIR={black:'#1a1a2e',dbrown:'#3B1F0A',brown:'#6B3A2A',blonde:'#D4A847',red:'#C0392B',gray:'#888888',white:'#E0E0E0',blue:'#3B82F6',pink:'#EC4899',purple:'#8B5CF6',green:'#22C55E',orange:'#F97316',cyan:'#06B6D4',silver:'#C0C5CE'};
+const _AV_EYE={brown:'#6B3A2A',blue:'#3B82F6',green:'#10B981',gray:'#6B7280',amber:'#F59E0B',violet:'#8B5CF6',hazel:'#9C7A3C',black:'#1a1a1a',turquoise:'#06B6D4',pink:'#EC4899',red:'#DC2626',golden:'#D4AF37'};
+const _AV_DEF={skin:'canela',hairStyle:'short',hairColor:'black',eyeType:'normal',eyeColor:'brown',mouth:'smile',accessory:'none',ears:'normal',nose:'shadow'};
+
+function esc(s){ const d=document.createElement('div'); d.textContent=s||''; return d.innerHTML; }
+function pctClass(p){ return p>=80?'pct-hi':p>=50?'pct-mid':'pct-lo'; }
+function setConnectionStatus(state,label){
+  const pill=document.getElementById('connStatus');
+  const text=document.getElementById('connStatusText');
+  if(!pill||!text) return;
+  pill.classList.remove('online','offline','loading');
+  pill.classList.add(state);
+  text.textContent=label;
+}
+async function fetchJsonWithTimeout(url,timeoutMs=LOAD_TIMEOUT_MS){
+  const controller=new AbortController();
+  const timer=setTimeout(()=>controller.abort(),timeoutMs);
+  try{
+    const res=await fetch(url,{signal:controller.signal,cache:'no-store'});
+    if(!res.ok) throw new Error(`HTTP ${res.status}`);
+    return await res.json();
+  }finally{
+    clearTimeout(timer);
+  }
+}
+function getTabsBar(){ return document.querySelector('.tabs'); }
+function getTabElements(){ return [...document.querySelectorAll('.tabs .tab')]; }
+function getTabOrder(){ return getTabElements().map(el=>el.dataset.tab).filter(Boolean); }
+function saveTabOrder(){
+  try{ localStorage.setItem(TAB_ORDER_KEY, JSON.stringify(getTabOrder())); }catch(_){ }
+}
+function restoreTabOrder(){
+  const tabsBar=getTabsBar();
+  if(!tabsBar) return;
+  let savedOrder=null;
+  try{ savedOrder=JSON.parse(localStorage.getItem(TAB_ORDER_KEY)||'null'); }catch(_){ }
+  if(!Array.isArray(savedOrder)||!savedOrder.length) return;
+  const tabMap=new Map(getTabElements().map(el=>[el.dataset.tab, el]));
+  const currentOrder=getTabOrder();
+  const merged=[...savedOrder.filter(id=>tabMap.has(id)), ...currentOrder.filter(id=>!savedOrder.includes(id))];
+  merged.forEach(id=>tabsBar.appendChild(tabMap.get(id)));
+}
+function initTabReorder(){
+  const tabsBar=getTabsBar();
+  if(!tabsBar) return;
+  getTabElements().forEach((tab,index)=>{ if(!tab.dataset.tab) tab.dataset.tab=TAB_IDS[index]||('tab-'+index); });
+  restoreTabOrder();
+  let dragState=null;
+
+  tabsBar.addEventListener('click',e=>{
+    if(!suppressTabClick) return;
+    const tab=e.target.closest('.tab');
+    if(!tab) return;
+    e.preventDefault();
+    e.stopPropagation();
+    suppressTabClick=false;
+  },true);
+
+  tabsBar.addEventListener('pointerdown',e=>{
+    const tab=e.target.closest('.tab');
+    if(!tab||e.button!==0) return;
+    dragState={pointerId:e.pointerId,startX:e.clientX,tab,moved:false};
+  });
+
+  tabsBar.addEventListener('pointermove',e=>{
+    if(!dragState||e.pointerId!==dragState.pointerId) return;
+    const delta=Math.abs(e.clientX-dragState.startX);
+    if(!dragState.moved&&delta<8) return;
+    if(!dragState.moved){
+      dragState.moved=true;
+      dragState.tab.classList.add('dragging');
+      tabsBar.setPointerCapture?.(e.pointerId);
+    }
+    e.preventDefault();
+    const siblings=getTabElements().filter(el=>el!==dragState.tab);
+    const before=siblings.find(el=>e.clientX<el.getBoundingClientRect().left+el.offsetWidth/2);
+    if(before) tabsBar.insertBefore(dragState.tab,before);
+    else tabsBar.appendChild(dragState.tab);
+  });
+
+  const finishDrag=e=>{
+    if(!dragState||e.pointerId!==dragState.pointerId) return;
+    const moved=dragState.moved;
+    dragState.tab.classList.remove('dragging');
+    tabsBar.releasePointerCapture?.(e.pointerId);
+    dragState=null;
+    if(moved){
+      saveTabOrder();
+      suppressTabClick=true;
+      setTimeout(()=>{ suppressTabClick=false; },0);
+    }
+  };
+
+  tabsBar.addEventListener('pointerup',finishDrag);
+  tabsBar.addEventListener('pointercancel',finishDrag);
+}
+function getChartCardsGrid(){ return document.getElementById('chartsGrid'); }
+function getChartCardElements(){ return [...document.querySelectorAll('#chartsGrid .chart-card')]; }
+function getChartCardOrder(){ return getChartCardElements().map(el=>el.dataset.chartKey).filter(Boolean); }
+function saveChartCardOrder(){
+  try{ localStorage.setItem(CHART_CARD_ORDER_KEY, JSON.stringify(getChartCardOrder())); }catch(_){ }
+}
+function restoreChartCardDefsOrder(){
+  let savedOrder=null;
+  try{ savedOrder=JSON.parse(localStorage.getItem(CHART_CARD_ORDER_KEY)||'null'); }catch(_){ }
+  if(!Array.isArray(savedOrder)||!savedOrder.length) return CHART_CARD_DEFS;
+  const defsMap=new Map(CHART_CARD_DEFS.map(def=>[def.key,def]));
+  const merged=[
+    ...savedOrder.filter(key=>defsMap.has(key)),
+    ...CHART_CARD_DEFS.map(def=>def.key).filter(key=>!savedOrder.includes(key))
+  ];
+  return merged.map(key=>defsMap.get(key)).filter(Boolean);
+}
+function initChartCardReorder(){
+  const grid=getChartCardsGrid();
+  if(!grid) return;
+  let dragState=null;
+
+  grid.addEventListener('pointerdown',e=>{
+    const card=e.target.closest('.chart-card');
+    if(!card||e.button!==0) return;
+    dragState={pointerId:e.pointerId,startX:e.clientX,startY:e.clientY,card,moved:false};
+  });
+
+  grid.addEventListener('pointermove',e=>{
+    if(!dragState||e.pointerId!==dragState.pointerId) return;
+    const deltaX=Math.abs(e.clientX-dragState.startX);
+    const deltaY=Math.abs(e.clientY-dragState.startY);
+    if(!dragState.moved&&Math.max(deltaX,deltaY)<8) return;
+    if(!dragState.moved){
+      dragState.moved=true;
+      dragState.card.classList.add('dragging');
+      dragState.card.style.cursor='grabbing';
+      grid.setPointerCapture?.(e.pointerId);
+    }
+    e.preventDefault();
+    const target=document.elementFromPoint(e.clientX,e.clientY)?.closest('.chart-card');
+    if(!target||target===dragState.card||target.parentElement!==grid) return;
+    const rect=target.getBoundingClientRect();
+    const placeAfter=e.clientY>rect.top+rect.height/2;
+    if(placeAfter) grid.insertBefore(dragState.card,target.nextElementSibling);
+    else grid.insertBefore(dragState.card,target);
+  });
+
+  const finishDrag=e=>{
+    if(!dragState||e.pointerId!==dragState.pointerId) return;
+    const moved=dragState.moved;
+    dragState.card.classList.remove('dragging');
+    dragState.card.style.cursor='';
+    grid.releasePointerCapture?.(e.pointerId);
+    dragState=null;
+    if(moved) saveChartCardOrder();
+  };
+
+  grid.addEventListener('pointerup',finishDrag);
+  grid.addEventListener('pointercancel',finishDrag);
+}
+
+function setTab(tab){
+  currentTab=tab;
+  selectedGameIds.clear();
+  getTabElements().forEach(el=>{
+    el.classList.toggle('active',el.dataset.tab===tab);
+  });
+  const showFilters=tab==='partidas'||tab==='multijugador'||tab==='alumnos'||tab==='modo-operaciones';
+  document.getElementById('controls').style.display=showFilters?'flex':'none';
+  document.getElementById('modeFilter').style.display=tab==='alumnos'?'':'none';
+  document.getElementById('gameTypeFilter').style.display=(tab==='partidas'||tab==='modo-operaciones')?'':'none';
+  document.getElementById('mpModeFilter').style.display=tab==='multijugador'?'':'none';
+  document.getElementById('viewToggle').style.display=(tab==='partidas'||tab==='multijugador')?'flex':'none';
+  renderAll();
+}
+
+let individualView='tarjetas';
+function setIndividualView(v){
+  individualView=v;
+  if(v!=='tabla') selectedGameIds.clear();
+  document.getElementById('viewCardsBtn').style.background=v==='tarjetas'?'rgba(167,139,250,.2)':'rgba(255,255,255,.08)';
+  document.getElementById('viewCardsBtn').style.color=v==='tarjetas'?'#a78bfa':'#94a3b8';
+  document.getElementById('viewTableBtn').style.background=v==='tabla'?'rgba(167,139,250,.2)':'rgba(255,255,255,.08)';
+  document.getElementById('viewTableBtn').style.color=v==='tabla'?'#a78bfa':'#94a3b8';
+  renderAll();
+}
+
+function canBulkDeleteCurrentTab(){
+  if(currentTab==='partidas'||currentTab==='multijugador') return individualView==='tabla';
+  return currentTab==='pruebas';
+}
+function getBulkRows(){
+  return canBulkDeleteCurrentTab()?[...currentDetailRows]:[];
+}
+function getVisibleSelectedIds(){
+  const visibleIds=new Set(getBulkRows().map(d=>d.id));
+  return [...selectedGameIds].filter(id=>visibleIds.has(id));
+}
+function buildBulkHeaderCheckbox(ids){
+  const safeIds=(ids||[]).filter(id=>id!==undefined&&id!==null);
+  if(!safeIds.length) return '<th class="bulk-head"></th>';
+  const selectedCount=safeIds.filter(id=>selectedGameIds.has(id)).length;
+  const checked=selectedCount===safeIds.length&&safeIds.length>0?'checked':'';
+  const indeterminate=selectedCount>0&&selectedCount<safeIds.length?'true':'false';
+  const payload=esc(JSON.stringify(safeIds));
+  return `<th class="bulk-head"><input class="bulk-check" type="checkbox" ${checked} data-bulk-checkbox="true" data-bulk-ids='${payload}' data-indeterminate="${indeterminate}" onclick="toggleSelectRowsByIds(JSON.parse(this.dataset.bulkIds),this.checked)" title="Seleccionar visibles"></th>`;
+}
+function buildBulkRowCheckbox(id){
+  const checked=selectedGameIds.has(id)?'checked':'';
+  return `<td class="bulk-cell"><input class="bulk-check" type="checkbox" ${checked} onclick="toggleSelectedGame(${id},this.checked)" title="Seleccionar registro"></td>`;
+}
+function syncBulkCheckboxes(){
+  document.querySelectorAll('[data-bulk-checkbox="true"]').forEach(input=>{
+    const ids=JSON.parse(input.dataset.bulkIds||'[]');
+    const selectedCount=ids.filter(id=>selectedGameIds.has(id)).length;
+    input.checked=ids.length>0&&selectedCount===ids.length;
+    input.indeterminate=selectedCount>0&&selectedCount<ids.length;
+  });
+}
+function renderBulkActions(){
+  const wrap=document.getElementById('bulkActions');
+  if(!wrap) return;
+  if(!canBulkDeleteCurrentTab()){
+    wrap.classList.remove('active');
+    wrap.innerHTML='';
+    return;
+  }
+  const rows=getBulkRows();
+  const visibleSelected=getVisibleSelectedIds();
+  wrap.classList.add('active');
+  wrap.innerHTML=`
+    <span class="bulk-actions-info">${visibleSelected.length} de ${rows.length} visibles seleccionados</span>
+    <button class="btn btn-purple" onclick="toggleSelectRowsByIds(getBulkRows().map(d=>d.id),true)">Seleccionar visibles</button>
+    <button class="btn" style="background:rgba(255,255,255,.08);color:#cbd5e1" onclick="clearBulkSelection()">Limpiar seleccion</button>
+    <button class="btn btn-red" onclick="deleteSelectedGames()" ${visibleSelected.length?'':'disabled'} style="${visibleSelected.length?'':'opacity:.55;cursor:not-allowed'}">Eliminar seleccionados</button>`;
+}
+function toggleSelectedGame(id,checked){
+  if(checked) selectedGameIds.add(id);
+  else selectedGameIds.delete(id);
+  renderBulkActions();
+  syncBulkCheckboxes();
+}
+function toggleSelectRowsByIds(ids,checked){
+  (ids||[]).forEach(id=>{
+    if(checked) selectedGameIds.add(id);
+    else selectedGameIds.delete(id);
+  });
+  renderBulkActions();
+  syncBulkCheckboxes();
+}
+function clearBulkSelection(){
+  selectedGameIds.clear();
+  renderBulkActions();
+  syncBulkCheckboxes();
+}
+
+function repairText(value){
+  if(typeof value!=='string') return value;
+  return value
+    .replaceAll('Â°','°')
+    .replaceAll('Ã—','×')
+    .replaceAll('−','−')
+    .replaceAll('Ã·','÷')
+    .replaceAll('✖️','✖️')
+    .replaceAll('➕','➕')
+    .replaceAll('➖','➖')
+    .replaceAll('➗','➗');
+}
+function normalizeOpKey(op){
+  if(op==='×') return '×';
+  if(op==='−') return '−';
+  if(op==='÷') return '÷';
+  return op;
+}
+function normalizeTblResults(tbl){
+  const out={};
+  Object.entries(tbl||{}).forEach(([op,val])=>{
+    out[normalizeOpKey(op)]={...val};
+  });
+  return out;
+}
+function normalizeTableDetail(detail){
+  const out={};
+  Object.entries(detail||{}).forEach(([op,val])=>{
+    out[normalizeOpKey(op)]={...val};
+  });
+  return out;
+}
+function normalizeStepDetail(detail){
+  const out={};
+  Object.entries(detail||{}).forEach(([op,cats])=>{
+    const key=normalizeOpKey(op);
+    out[key]={};
+    Object.entries(cats||{}).forEach(([cat,stats])=>{
+      out[key][cat]={correct:stats?.correct||0,wrong:stats?.wrong||0};
+    });
+  });
+  return out;
+}
+function normalizeRankingRow(row){
+  return {
+    ...row,
+    name:repairText(row.name||''),
+    grade:repairText(row.grade||''),
+    date:repairText(row.date||''),
+    time:repairText(row.time||''),
+    gameMode:repairText(row.gameMode||''),
+    setupMode:repairText(row.setupMode||''),
+    mpGameMode:repairText(row.mpGameMode||''),
+    gameType:repairText(row.gameType||''),
+    difficulty:repairText(row.difficulty||''),
+    vs:repairText(row.vs||''),
+    tblResults:normalizeTblResults(row.tblResults),
+    tableDetail:normalizeTableDetail(row.tableDetail),
+    stepDetail:normalizeStepDetail(row.stepDetail)
+  };
+}
+function normalizePlayer(player){
+  return {
+    ...player,
+    name:repairText(player.name||''),
+    grade:repairText(player.grade||'')
+  };
+}
+function isOperationsModeRow(row){
+  return row?.setupMode==='operations'||row?.gameMode==='operations'||row?.mode==='operations';
+}
+function isClassicSoloRow(row){
+  return row?.gameMode==='solo'&&!isOperationsModeRow(row);
+}
+function getModePresentation(row){
+  if(row?.isExam) return {label:'📝 Prueba', cls:'m-exam'};
+  if(isOperationsModeRow(row)) return {label:'⚙️ Operaciones', cls:'m-solo'};
+  if(row?.gameMode==='duel') return {label:'⚔️ Duelo', cls:'m-duel'};
+  if(row?.gameMode==='online') return {label:'🌐 LAN', cls:'m-online'};
+  return {label:'🧑 Individual', cls:'m-solo'};
+}
+function _avShade(hex,amt){const n=parseInt(hex.replace('#',''),16);const r=Math.min(255,Math.max(0,(n>>16)+amt));const g=Math.min(255,Math.max(0,((n>>8)&0xFF)+amt));const b=Math.min(255,Math.max(0,(n&0xFF)+amt));return '#'+[r,g,b].map(v=>v.toString(16).padStart(2,'0')).join('');}
+function _avHB(s,hc){
+  if(s==='long')return`<path d="M11,20 Q1,40 7,58 Q3,72 10,79 Q18,72 13,58 Q19,40 16,20 Z" fill="${hc}"/><path d="M69,20 Q79,40 73,58 Q77,72 70,79 Q62,72 67,58 Q61,40 64,20 Z" fill="${hc}"/>`;
+  if(s==='wavy')return`<path d="M12,20 Q2,32 10,42 Q1,52 10,62 Q3,72 11,79 Q19,72 13,62 Q20,52 12,42 Q19,32 16,20 Z" fill="${hc}"/><path d="M68,20 Q78,32 70,42 Q79,52 70,62 Q77,72 69,79 Q61,72 67,62 Q60,52 68,42 Q61,32 64,20 Z" fill="${hc}"/>`;
+  if(s==='curly')return`<circle cx="13" cy="35" r="11" fill="${hc}"/><circle cx="67" cy="35" r="11" fill="${hc}"/><circle cx="40" cy="13" r="15" fill="${hc}"/>`;
+  if(s==='twin')return`<path d="M6,30 Q1,46 3,64 Q5,71 9,65 Q7,48 8,32 Z" fill="${hc}"/><path d="M74,30 Q79,46 77,64 Q75,71 71,65 Q73,48 72,32 Z" fill="${hc}"/>`;
+  if(s==='ponytail')return`<path d="M50,14 Q71,16 74,34 Q77,50 68,61 Q63,65 62,57 Q69,45 66,32 Q63,19 50,14 Z" fill="${hc}"/>`;
+  if(s==='afro')return`<circle cx="40" cy="27" r="29" fill="${hc}"/>`;
+  if(s==='braids')return`<path d="M10,28 L18,38 L11,48 L18,58 L12,68 L18,77 L11,79" stroke="${hc}" fill="none" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/><path d="M70,28 L62,38 L69,48 L62,58 L68,68 L62,77 L69,79" stroke="${hc}" fill="none" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>`;
+  return'';
+}
+function _avHF(s,hc){
+  const b=`<path d="M13,48 Q13,14 40,12 Q67,14 67,48 Q55,27 40,21 Q25,27 13,48 Z" fill="${hc}"/>`;
+  if(s==='short')return b+`<polygon points="26,18 21,7 31,17" fill="${hc}"/><polygon points="40,16 36,5 44,5 40,16" fill="${hc}"/><polygon points="54,18 49,17 59,7" fill="${hc}"/>`;
+  if(s==='long')return b;
+  if(s==='curly')return b+`<circle cx="18" cy="30" r="9" fill="${hc}"/><circle cx="62" cy="30" r="9" fill="${hc}"/><circle cx="28" cy="17" r="9" fill="${hc}"/><circle cx="52" cy="17" r="9" fill="${hc}"/><circle cx="40" cy="13" r="8" fill="${hc}"/>`;
+  if(s==='ponytail')return b+`<ellipse cx="51" cy="16" rx="6" ry="5" fill="${hc}"/>`;
+  if(s==='buzz')return`<path d="M15,48 Q15,20 40,17 Q65,20 65,48 Q56,32 40,26 Q24,32 15,48 Z" fill="${hc}" opacity="0.55"/>`;
+  if(s==='mohawk'){const sides=`<path d="M15,50 Q15,22 40,20 Q65,22 65,50 Q56,36 40,30 Q24,36 15,50 Z" fill="${hc}" opacity="0.5"/>`;const spike=`<path d="M33,24 Q31,13 35,5 Q40,0 45,5 Q49,13 47,24 Q43,21 40,21 Q37,21 33,24Z" fill="${hc}"/>`;const sb=`<ellipse cx="40" cy="24" rx="8" ry="4" fill="${hc}"/>`;return sides+spike+sb;}
+  if(s==='bang')return b+`<path d="M20,30 Q22,22 40,22 Q58,22 60,28 Q50,25 40,27 Q28,25 20,30" fill="${hc}"/>`;
+  if(s==='twin')return b+`<ellipse cx="9" cy="28" rx="7" ry="6" fill="${hc}"/><ellipse cx="71" cy="28" rx="7" ry="6" fill="${hc}"/>`;
+  if(s==='spiky')return b+`<polygon points="22,18 15,2 30,13" fill="${hc}"/><polygon points="35,14 30,0 44,2 40,14" fill="${hc}"/><polygon points="56,16 48,1 62,5 60,16" fill="${hc}"/><polygon points="18,24 11,12 22,20" fill="${hc}"/><polygon points="62,24 58,20 69,12" fill="${hc}"/>`;
+  if(s==='wavy')return b;
+  if(s==='afro')return`<circle cx="17" cy="33" r="11" fill="${hc}"/><circle cx="63" cy="33" r="11" fill="${hc}"/><circle cx="26" cy="16" r="11" fill="${hc}"/><circle cx="54" cy="16" r="11" fill="${hc}"/><circle cx="40" cy="9" r="12" fill="${hc}"/>`;
+  if(s==='bun')return b+`<circle cx="40" cy="8" r="10" fill="${hc}"/><rect x="35" y="13" width="10" height="8" fill="${hc}"/>`;
+  if(s==='braids')return b;
+  if(s==='undercut'){const side=`<path d="M15,48 Q15,20 40,17 Q65,20 65,48 Q56,32 40,26 Q24,32 15,48 Z" fill="${hc}" opacity="0.45"/>`;const top=`<path d="M22,22 Q30,8 50,9 Q64,11 60,22 Q48,16 36,18 Q28,19 22,22Z" fill="${hc}"/>`;return side+top;}
+  return b;
+}
+function _avEyes(t,ec,sk){
+  const eye=(cx,cy)=>`<ellipse cx="${cx}" cy="${cy}" rx="8" ry="8" fill="white"/><circle cx="${cx}" cy="${cy}" r="5.5" fill="${ec}"/><circle cx="${cx}" cy="${cy}" r="3" fill="#111"/><circle cx="${cx+2}" cy="${cy-2}" r="1.2" fill="white"/>`;
+  if(t==='normal')return eye(29,38)+eye(51,38);
+  if(t==='almond'){const al=(cx,cy)=>`<path d="M${cx-8},${cy} Q${cx},${cy-7} ${cx+8},${cy} Q${cx},${cy+7} ${cx-8},${cy}" fill="white"/><path d="M${cx-6},${cy} Q${cx},${cy-5} ${cx+6},${cy} Q${cx},${cy+5} ${cx-6},${cy}" fill="${ec}"/><ellipse cx="${cx}" cy="${cy}" rx="3" ry="4" fill="#111"/><circle cx="${cx+1}" cy="${cy-2}" r="1.2" fill="white"/>`;return al(29,38)+al(51,38);}
+  if(t==='happy')return`<path d="M21,40 Q29,31 37,40" stroke="#333" fill="${sk}" stroke-width="2.5" stroke-linecap="round"/><path d="M43,40 Q51,31 59,40" stroke="#333" fill="${sk}" stroke-width="2.5" stroke-linecap="round"/>`;
+  if(t==='stars')return`<text x="29" y="44" text-anchor="middle" font-size="14" fill="${ec}" font-family="serif">&#9733;</text><text x="51" y="44" text-anchor="middle" font-size="14" fill="${ec}" font-family="serif">&#9733;</text>`;
+  if(t==='sleepy'){const sl=(cx,cy)=>`<ellipse cx="${cx}" cy="${cy+1}" rx="8" ry="7" fill="white"/><circle cx="${cx}" cy="${cy+1}" r="5" fill="${ec}"/><circle cx="${cx}" cy="${cy+1}" r="3" fill="#111"/><path d="M${cx-8},${cy} Q${cx},${cy-9} ${cx+8},${cy}" fill="${sk}"/><path d="M${cx-8},${cy} Q${cx},${cy-3} ${cx+8},${cy}" stroke="#666" fill="none" stroke-width="1.2"/>`;return sl(29,38)+sl(51,38);}
+  if(t==='wink'){const wl=(cx,cy)=>`<path d="M${cx-7},${cy} Q${cx},${cy+7} ${cx+7},${cy}" stroke="#333" stroke-width="2.5" fill="none" stroke-linecap="round"/>`;return eye(29,38)+wl(51,38);}
+  if(t==='unamused'){const un=(cx,cy)=>`<ellipse cx="${cx}" cy="${cy}" rx="8" ry="7" fill="white"/><circle cx="${cx+2}" cy="${cy}" r="5" fill="${ec}"/><circle cx="${cx+2}" cy="${cy}" r="3" fill="#111"/><circle cx="${cx+3}" cy="${cy-1}" r="1" fill="white"/>`;return un(29,38)+un(51,38);}
+  if(t==='angry'){const ae=(cx,cy)=>`<ellipse cx="${cx}" cy="${cy}" rx="8" ry="7.5" fill="white"/><circle cx="${cx}" cy="${cy}" r="5" fill="${ec}"/><circle cx="${cx}" cy="${cy}" r="3" fill="#111"/><circle cx="${cx+2}" cy="${cy-2}" r="1.2" fill="white"/>`;return `<path d="M20,30 L34,35" stroke="#333" stroke-width="2.5" stroke-linecap="round"/><path d="M46,35 L60,30" stroke="#333" stroke-width="2.5" stroke-linecap="round"/>`+ae(29,38)+ae(51,38);}
+  if(t==='hearts'){const heart=(cx,cy)=>`<path d="M${cx},${cy+5} C${cx-8},${cy-1} ${cx-10},${cy-7} ${cx},${cy-3} C${cx+10},${cy-7} ${cx+8},${cy-1} ${cx},${cy+5}Z" fill="#f43f5e"/>`;return heart(29,38)+heart(51,38);}
+  if(t==='spiral'){const sp=(cx,cy)=>`<ellipse cx="${cx}" cy="${cy}" rx="8" ry="8" fill="white"/><path d="M${cx},${cy} m4,0 a4,4 0 1,1 -4,-4 a5.5,5.5 0 1,0 5.5,5.5 a7,7 0 1,1 -7,-7" stroke="#111" stroke-width="1.5" fill="none"/><circle cx="${cx}" cy="${cy}" r="1.5" fill="#111"/>`;return sp(29,38)+sp(51,38);}
+  if(t==='crying'){const cr=(cx,cy)=>eye(cx,cy)+`<path d="M${cx-2},${cy+8} Q${cx-4},${cy+13} ${cx-2},${cy+16} Q${cx},${cy+13} ${cx-2},${cy+8}Z" fill="#60A5FA"/>`;return cr(29,38)+cr(51,38);}
+  if(t==='sparkle'){const star=(x,y,s)=>`<path d="M${x},${y-s} L${x+s*0.3},${y-s*0.3} L${x+s},${y} L${x+s*0.3},${y+s*0.3} L${x},${y+s} L${x-s*0.3},${y+s*0.3} L${x-s},${y} L${x-s*0.3},${y-s*0.3} Z" fill="#FDE68A"/>`;const sp=(cx,cy)=>eye(cx,cy)+star(cx+6,cy-6,4)+star(cx-7,cy+3,2.2);return sp(29,38)+sp(51,38);}
+  if(t==='robot'){const rb=(cx,cy)=>`<rect x="${cx-8}" y="${cy-6}" width="16" height="12" rx="2" fill="#0F172A" stroke="#475569" stroke-width="1.5"/><rect x="${cx-6}" y="${cy-1}" width="12" height="2.5" fill="#22D3EE"/>`;return rb(29,38)+rb(51,38);}
+  if(t==='heterochromia'){const e2=(cx,cy,col)=>`<ellipse cx="${cx}" cy="${cy}" rx="8" ry="8" fill="white"/><circle cx="${cx}" cy="${cy}" r="5.5" fill="${col}"/><circle cx="${cx}" cy="${cy}" r="3" fill="#111"/><circle cx="${cx+2}" cy="${cy-2}" r="1.2" fill="white"/>`;return e2(29,38,ec)+e2(51,38,'#FBBF24');}
+  return eye(29,38)+eye(51,38);
+}
+function _avMouth(t,sk){
+  const mc=_avShade(sk,-40);
+  if(t==='smile')return`<path d="M30,57 Q40,64 50,57" stroke="${mc}" fill="none" stroke-width="2.5" stroke-linecap="round"/>`;
+  if(t==='bigsmile')return`<path d="M28,55 Q40,69 52,55" fill="#CC6644"/><rect x="29" y="55" width="22" height="5" fill="white" rx="1"/><path d="M28,55 Q40,69 52,55" stroke="#AA4422" fill="none" stroke-width="1.5"/>`;
+  if(t==='serious')return`<line x1="30" y1="59" x2="50" y2="59" stroke="${mc}" stroke-width="2.5" stroke-linecap="round"/>`;
+  if(t==='smirk')return`<path d="M30,59 Q40,63 48,57" stroke="${mc}" fill="none" stroke-width="2.5" stroke-linecap="round"/>`;
+  if(t==='tongue')return`<path d="M30,57 Q40,64 50,57" stroke="${mc}" fill="none" stroke-width="2" stroke-linecap="round"/><ellipse cx="40" cy="64" rx="5" ry="4" fill="#E87070"/>`;
+  if(t==='sad')return`<path d="M30,62 Q40,55 50,62" stroke="${mc}" fill="none" stroke-width="2.5" stroke-linecap="round"/>`;
+  if(t==='surprised')return`<ellipse cx="40" cy="59" rx="5" ry="7" fill="#CC6644"/><ellipse cx="40" cy="60" rx="3" ry="5" fill="#111"/>`;
+  if(t==='cat')return`<path d="M30,58 Q34,63 38,58 Q40,61 42,58 Q46,63 50,58" stroke="${mc}" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>`;
+  if(t==='grin')return`<path d="M27,56 Q40,70 53,56" fill="#CC6644"/><rect x="28" y="56" width="24" height="5" fill="white" rx="1"/><path d="M27,56 Q40,70 53,56" stroke="#AA4422" fill="none" stroke-width="1.5"/>`;
+  if(t==='whistle')return`<ellipse cx="40" cy="60" rx="4" ry="5" fill="#CC6644"/><ellipse cx="40" cy="60" rx="2.5" ry="3.5" fill="#111"/>`;
+  if(t==='grumpy')return`<path d="M28,60 Q33,67 40,62 Q47,67 52,60" stroke="${mc}" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>`;
+  if(t==='laugh')return`<path d="M25,55 Q40,71 55,55" fill="#CC6644"/><rect x="27" y="55" width="26" height="6" fill="white" rx="2"/><line x1="36" y1="55" x2="36" y2="61" stroke="#e8c09a" stroke-width="1"/><line x1="44" y1="55" x2="44" y2="61" stroke="#e8c09a" stroke-width="1"/><path d="M25,55 Q40,71 55,55" stroke="#AA4422" fill="none" stroke-width="1.5"/>`;
+  if(t==='drool')return`<path d="M30,57 Q40,64 50,57" stroke="${mc}" fill="none" stroke-width="2.5" stroke-linecap="round"/><path d="M38,62 Q37,66 38,68" stroke="#93c5fd" stroke-width="2.5" stroke-linecap="round" fill="none"/><ellipse cx="38" cy="69" rx="2.5" ry="1.8" fill="#93c5fd" opacity="0.9"/>`;
+  if(t==='cool')return`<line x1="30" y1="60" x2="42" y2="60" stroke="${mc}" stroke-width="2.5" stroke-linecap="round"/><path d="M42,60 Q47,63 51,56" stroke="${mc}" fill="none" stroke-width="2.5" stroke-linecap="round"/>`;
+  return'';
+}
+function _avEars(t,sk,skd){
+  if(t==='small')return`<ellipse cx="13" cy="46" rx="5" ry="7" fill="${sk}"/><ellipse cx="13" cy="46" rx="3" ry="4" fill="${skd}"/><ellipse cx="67" cy="46" rx="5" ry="7" fill="${sk}"/><ellipse cx="67" cy="46" rx="3" ry="4" fill="${skd}"/>`;
+  if(t==='round')return`<ellipse cx="12" cy="46" rx="9" ry="10" fill="${sk}"/><ellipse cx="12" cy="46" rx="5" ry="6" fill="${skd}"/><ellipse cx="68" cy="46" rx="9" ry="10" fill="${sk}"/><ellipse cx="68" cy="46" rx="5" ry="6" fill="${skd}"/>`;
+  if(t==='pointed')return`<path d="M16,39 Q17,47 15,55 Q7,54 3,47 Q0,38 4,30 Q11,31 16,39Z" fill="${sk}"/><path d="M14,42 Q15,47 14,51 Q9,50 7,46 Q6,41 9,37 Q12,38 14,42Z" fill="${skd}"/><path d="M64,39 Q63,47 65,55 Q73,54 77,47 Q80,38 76,30 Q69,31 64,39Z" fill="${sk}"/><path d="M66,42 Q65,47 66,51 Q71,50 73,46 Q74,41 71,37 Q68,38 66,42Z" fill="${skd}"/>`;
+  if(t==='earrings')return`<ellipse cx="13" cy="46" rx="7" ry="9" fill="${sk}"/><ellipse cx="13" cy="46" rx="4" ry="5.5" fill="${skd}"/><circle cx="13" cy="55" r="2.2" fill="#FBBF24" stroke="#B45309" stroke-width="0.6"/><ellipse cx="67" cy="46" rx="7" ry="9" fill="${sk}"/><ellipse cx="67" cy="46" rx="4" ry="5.5" fill="${skd}"/><circle cx="67" cy="55" r="2.2" fill="#FBBF24" stroke="#B45309" stroke-width="0.6"/>`;
+  if(t==='fox')return`<path d="M16,30 L24,8 L29,32 Q22,38 16,36Z" fill="#F97316"/><path d="M18,28 L23,14 L26,29 Q22,32 18,30Z" fill="#FFF7ED"/><path d="M64,30 L56,8 L51,32 Q58,38 64,36Z" fill="#F97316"/><path d="M62,28 L57,14 L54,29 Q58,32 62,30Z" fill="#FFF7ED"/>`;
+  if(t==='bear')return`<circle cx="11" cy="32" r="11" fill="#92654A"/><circle cx="11" cy="32" r="6" fill="#C99172"/><circle cx="69" cy="32" r="11" fill="#92654A"/><circle cx="69" cy="32" r="6" fill="#C99172"/>`;
+  if(t==='dragon')return`<path d="M16,39 Q17,47 15,55 Q7,54 3,47 Q0,38 4,30 Q11,31 16,39Z" fill="#22C55E"/><path d="M14,42 Q15,47 14,51 Q9,50 7,46 Q6,41 9,37 Q12,38 14,42Z" fill="#15803D"/><polygon points="6,33 2,26 9,30" fill="#15803D"/><polygon points="3,40 0,35 5,38" fill="#15803D"/><path d="M64,39 Q63,47 65,55 Q73,54 77,47 Q80,38 76,30 Q69,31 64,39Z" fill="#22C55E"/><path d="M66,42 Q65,47 66,51 Q71,50 73,46 Q74,41 71,37 Q68,38 66,42Z" fill="#15803D"/><polygon points="74,33 78,26 71,30" fill="#15803D"/><polygon points="77,40 80,35 75,38" fill="#15803D"/>`;
+  if(t==='hoop')return`<ellipse cx="13" cy="46" rx="7" ry="9" fill="${sk}"/><ellipse cx="13" cy="46" rx="4" ry="5.5" fill="${skd}"/><circle cx="13" cy="58" r="5" fill="none" stroke="#FBBF24" stroke-width="1.8"/><ellipse cx="67" cy="46" rx="7" ry="9" fill="${sk}"/><ellipse cx="67" cy="46" rx="4" ry="5.5" fill="${skd}"/><circle cx="67" cy="58" r="5" fill="none" stroke="#FBBF24" stroke-width="1.8"/>`;
+  return`<ellipse cx="13" cy="46" rx="7" ry="9" fill="${sk}"/><ellipse cx="13" cy="46" rx="4" ry="5.5" fill="${skd}"/><ellipse cx="67" cy="46" rx="7" ry="9" fill="${sk}"/><ellipse cx="67" cy="46" rx="4" ry="5.5" fill="${skd}"/>`;
+}
+function _avNose(t,skd){
+  if(t==='button')return`<ellipse cx="40" cy="51" rx="3" ry="2.5" fill="${skd}" opacity="0.55"/>`;
+  if(t==='wide')return`<path d="M35,48 Q40,56 45,48" stroke="${skd}" fill="none" stroke-width="2" stroke-linecap="round"/>`;
+  if(t==='pinky')return`<ellipse cx="40" cy="50" rx="3.5" ry="3" fill="#F472B6"/><ellipse cx="38.7" cy="48.8" rx="1" ry="0.8" fill="#FBCFE8"/>`;
+  if(t==='piggy')return`<ellipse cx="40" cy="50" rx="5" ry="3.5" fill="#F4A7A7"/><ellipse cx="38" cy="50" rx="1.1" ry="1.5" fill="#B45757"/><ellipse cx="42" cy="50" rx="1.1" ry="1.5" fill="#B45757"/>`;
+  if(t==='witch')return`<path d="M39,40 Q35,48 33,54 Q36,58 40,55 Q38,48 41,42Z" fill="${skd}" opacity="0.85"/><circle cx="34" cy="53" r="1.4" fill="${skd}"/>`;
+  if(t==='clown')return`<circle cx="40" cy="52" r="5.5" fill="#EF4444"/><circle cx="38" cy="50" r="1.5" fill="#FCA5A5"/>`;
+  if(t==='freckles')return`<path d="M37,50 Q40,54 43,50" stroke="${skd}" fill="none" stroke-width="1.5" stroke-linecap="round"/><circle cx="32" cy="48" r="0.8" fill="${skd}" opacity="0.6"/><circle cx="35" cy="51" r="0.8" fill="${skd}" opacity="0.6"/><circle cx="29" cy="51" r="0.8" fill="${skd}" opacity="0.6"/><circle cx="48" cy="48" r="0.8" fill="${skd}" opacity="0.6"/><circle cx="45" cy="51" r="0.8" fill="${skd}" opacity="0.6"/><circle cx="51" cy="51" r="0.8" fill="${skd}" opacity="0.6"/>`;
+  return`<path d="M37,50 Q40,54 43,50" stroke="${skd}" fill="none" stroke-width="1.5" stroke-linecap="round"/>`;
+}
+function _avAcc(a){if(a==='glasses')return`<circle cx="29" cy="38" r="9" fill="rgba(180,210,255,0.12)" stroke="#555" stroke-width="2"/><circle cx="51" cy="38" r="9" fill="rgba(180,210,255,0.12)" stroke="#555" stroke-width="2"/><line x1="38" y1="38" x2="42" y2="38" stroke="#555" stroke-width="2"/><line x1="11" y1="37" x2="20" y2="37" stroke="#555" stroke-width="1.5"/><line x1="60" y1="37" x2="69" y2="37" stroke="#555" stroke-width="1.5"/>`;if(a==='sunglasses')return`<rect x="20" y="33" width="18" height="10" rx="4" fill="#111" opacity="0.9"/><rect x="42" y="33" width="18" height="10" rx="4" fill="#111" opacity="0.9"/><line x1="38" y1="38" x2="42" y2="38" stroke="#333" stroke-width="2"/><line x1="11" y1="37" x2="20" y2="37" stroke="#333" stroke-width="1.5"/><line x1="60" y1="37" x2="69" y2="37" stroke="#333" stroke-width="1.5"/>`;if(a==='cap')return`<ellipse cx="40" cy="21" rx="28" ry="12" fill="#4B5563"/><rect x="9" y="24" width="62" height="7" rx="3" fill="#374151"/><rect x="8" y="24" width="22" height="5" rx="2" fill="#4B5563"/><circle cx="40" cy="10" r="3" fill="#374151"/>`;if(a==='crown')return`<rect x="18" y="14" width="44" height="12" rx="1" fill="#F59E0B"/><polygon points="18,14 22,4 26,14" fill="#F59E0B"/><polygon points="36,14 40,2 44,14" fill="#F59E0B"/><polygon points="54,14 58,4 62,14" fill="#F59E0B"/><circle cx="22" cy="18" r="2.5" fill="#EF4444"/><circle cx="40" cy="18" r="2.5" fill="#10B981"/><circle cx="58" cy="18" r="2.5" fill="#3B82F6"/>`;if(a==='headband')return`<path d="M13,36 Q40,26 67,36" stroke="#EC4899" fill="none" stroke-width="5.5" stroke-linecap="round"/>`;if(a==='mask')return`<rect x="23" y="52" width="34" height="16" rx="7" fill="#E5E7EB"/><path d="M23,60 Q40,64 57,60" stroke="#9CA3AF" fill="none" stroke-width="1"/><line x1="23" y1="58" x2="12" y2="54" stroke="#9CA3AF" stroke-width="1.5"/><line x1="57" y1="58" x2="68" y2="54" stroke="#9CA3AF" stroke-width="1.5"/>`;if(a==='catears')return`<path d="M14,28 L7,8 L24,18 Z" fill="#6B3A2A"/><path d="M14,27 L10,14 L21,21 Z" fill="#EC4899" opacity="0.75"/><path d="M66,28 L73,8 L56,18 Z" fill="#6B3A2A"/><path d="M66,27 L70,14 L59,21 Z" fill="#EC4899" opacity="0.75"/>`;if(a==='monocle')return`<circle cx="51" cy="38" r="9" fill="rgba(180,210,255,0.12)" stroke="#888" stroke-width="2"/><line x1="60" y1="37" x2="69" y2="35" stroke="#888" stroke-width="1.5"/>`;if(a==='horns')return`<path d="M16,26 Q12,12 20,8 Q18,18 20,24" fill="#DC2626"/><path d="M64,26 Q68,12 60,8 Q62,18 60,24" fill="#DC2626"/>`;if(a==='wizard')return`<path d="M40,0 L22,26 L58,26 Z" fill="#7C3AED"/><ellipse cx="40" cy="26" rx="22" ry="6" fill="#6D28D9"/><circle cx="35" cy="17" r="2.5" fill="#FCD34D"/>`;if(a==='halo')return`<ellipse cx="40" cy="8" rx="18" ry="5" fill="none" stroke="#FCD34D" stroke-width="3.5"/><ellipse cx="40" cy="8" rx="18" ry="5" fill="rgba(252,211,77,0.1)"/>`;return'';}
+function buildAvatarSVG(cfg,size=80){
+  const av=Object.assign({},_AV_DEF,cfg||{});
+  const sk=_AV_SKIN[av.skin]||'#F1C27D', hc=_AV_HAIR[av.hairColor]||'#1a1a2e', ec=_AV_EYE[av.eyeColor]||'#6B3A2A', skd=_avShade(sk,-25);
+  const p=[];
+  p.push(_avHB(av.hairStyle,hc));
+  p.push(`<ellipse cx="40" cy="46" rx="27" ry="30" fill="${sk}"/>`);
+  p.push(_avEars(av.ears,sk,skd));
+  p.push(`<path d="M21,29 Q29,25 37,29" stroke="${hc}" fill="none" stroke-width="2.5" stroke-linecap="round"/><path d="M43,29 Q51,25 59,29" stroke="${hc}" fill="none" stroke-width="2.5" stroke-linecap="round"/>`);
+  p.push(_avEyes(av.eyeType,ec,sk));
+  p.push(_avNose(av.nose,skd));
+  p.push(_avMouth(av.mouth,sk));
+  p.push(_avHF(av.hairStyle,hc));
+  p.push(_avAcc(av.accessory));
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" width="${size}" height="${size}">${p.join('')}</svg>`;
+}
+function avatarHtml(name){
+  const entry=playerAvatarMap.get((name||'').toLowerCase());
+  return entry&&entry.svg ? entry.svg : '';
+}
+function rebuildPlayerAvatarMap(){
+  playerAvatarMap=new Map();
+  players.forEach(player=>{
+    const svg=buildAvatarSVG(player?.avatar||{},80);
+    playerAvatarMap.set((player.name||'').toLowerCase(),{svg});
+  });
+}
+function populateGradeFilter(){
+  const select=document.getElementById('gradeFilter');
+  if(!select) return;
+  const current=select.value;
+  const grades=[...new Set([
+    ...data.map(d=>repairText(d.grade||'')),
+    ...players.map(p=>repairText(p.grade||''))
+  ].filter(Boolean))].sort((a,b)=>a.localeCompare(b,'es',{numeric:true,sensitivity:'base'}));
+  select.innerHTML='<option value="">Todos los grados</option>'+grades.map(g=>`<option value="${esc(g)}">${esc(g)}</option>`).join('');
+  if(grades.includes(current)) select.value=current;
+}
+function calcOpStatsFromRows(rows,op){
+  const opRows=(rows||[]).filter(d=>((d.tblResults||{})[op]||{}).total>0);
+  if(!opRows.length) return {correct:0,wrong:0,timeout:0,total:0,pct:null,students:0};
+  const agg=opRows.reduce((acc,d)=>{
+    const r=(d.tblResults||{})[op]||{};
+    acc.correct+=(r.correct||0);
+    acc.wrong+=(r.wrong||0);
+    acc.timeout+=(r.timeout||0);
+    acc.total+=(r.total||0);
+    return acc;
+  },{correct:0,wrong:0,timeout:0,total:0});
+  return {...agg,students:new Set(opRows.map(d=>(d.name||'').toLowerCase())).size,pct:agg.total?Math.round((agg.correct/agg.total)*100):null};
+}
+function calcOpStats(op){
+  const rows=data.filter(d=>!isOperationsModeRow(d));
+  return calcOpStatsFromRows(rows,op);
+}
+function calcOperationsModeOpStats(op){
+  const rows=data.filter(d=>isOperationsModeRow(d)&&!d.isExam);
+  return calcOpStatsFromRows(rows,op);
+}
+function getOpStepMeta(op){
+  return OP_STEP_META[op]||{};
+}
+function buildEmptyStepStats(op){
+  const meta=getOpStepMeta(op);
+  const out={};
+  Object.keys(meta).forEach(key=>{
+    out[key]={correct:0,wrong:0};
+  });
+  return out;
+}
+function normalizeStudentStepStats(op,detail){
+  const base=buildEmptyStepStats(op);
+  Object.entries(detail||{}).forEach(([key,stats])=>{
+    if(!base[key]) base[key]={correct:0,wrong:0};
+    base[key].correct+=(stats?.correct||0);
+    base[key].wrong+=(stats?.wrong||0);
+  });
+  return base;
+}
+function getDominantStepIssue(op,stats){
+  const meta=getOpStepMeta(op);
+  return Object.entries(stats||{})
+    .map(([key,val])=>{
+      const total=(val?.correct||0)+(val?.wrong||0);
+      const wrong=val?.wrong||0;
+      return {key,wrong,total,rate:total?Math.round((wrong/total)*100):0,label:meta[key]?.label||key};
+    })
+    .filter(item=>item.wrong>0)
+    .sort((a,b)=>b.wrong-a.wrong||b.rate-a.rate||b.total-a.total)[0]||null;
+}
+function formatCount(n,label){
+  return `${n} ${label}${n===1?'':'s'}`;
+}
+function opBadge(op){
+  const cls=op==='×'?'op-x':op==='+'?'op-plus':op==='−'?'op-minus':'op-div';
+  return `<span class="op-badge ${cls}" title="${OP_NAMES[op]||op}">${OP_ICONS[op]||op} ${OP_NAMES[op]||op}</span>`;
+}
+function pctBar(pct){
+  return `<span class="pct-bar"><span class="pct-bar-fill" style="width:${Math.max(0,Math.min(100,pct||0))}%"></span></span>`;
+}
+function getTabMetrics(){
+  const opStudents=new Set();
+  data.forEach(d=>{
+    if(ALL_OPS.some(op=>((d.tblResults||{})[op]||{}).total>0)) opStudents.add((d.name||'').toLowerCase());
+  });
+  return {
+    partidas:data.filter(d=>isClassicSoloRow(d)&&!d.isExam).length,
+    multijugador:data.filter(d=>d.gameMode==='online'&&!d.isExam).length,
+    alumnos:new Set(data.map(d=>(d.name||'').toLowerCase()).filter(Boolean)).size,
+    salon:players.length,
+    'modo-operaciones':new Set(data.filter(isOperationsModeRow).map(d=>(d.name||'').toLowerCase()).filter(Boolean)).size,
+    operaciones:opStudents.size,
+    calor:opStudents.size,
+    graficas:data.length,
+    pruebas:data.filter(d=>d.isExam).length
+  };
+}
+function updateTabBadges(){
+  const metrics=getTabMetrics();
+  getTabElements().forEach(el=>{
+    const countEl=el.querySelector('.tab-count');
+    const key=el.dataset.tab;
+    if(countEl&&key) countEl.textContent=metrics[key]??0;
+  });
+}
+function renderTabSummary(title,subtitle,metrics){
+  const wrap=document.getElementById('tabSummary');
+  if(!wrap) return;
+  const chips=(metrics||[]).map(m=>`<div class="summary-chip ${m.tone||'purple'}"><strong>${m.value}</strong><span>${esc(m.label)}</span></div>`).join('');
+  wrap.innerHTML=`<div class="section-hero">
+    <div>
+      <div class="section-kicker">Panel de ranking</div>
+      <div class="section-title">${title}</div>
+      <div class="section-subtitle">${subtitle}</div>
+    </div>
+    <div class="summary-chips">${chips}</div>
+  </div>`;
+}
+function clearTabSummary(){
+  const wrap=document.getElementById('tabSummary');
+  if(wrap) wrap.innerHTML='';
+}
+async function load(){
+  const seq=++loadSeq;
+  setConnectionStatus('loading','Conectando…');
+  try{
+    const [rankingJson,playersJson]=await Promise.all([
+      fetchJsonWithTimeout('/api/ranking'),
+      fetchJsonWithTimeout('/api/players')
+    ]);
+    if(seq!==loadSeq) return;
+    data=(Array.isArray(rankingJson)?rankingJson:[]).map(normalizeRankingRow);
+    players=(Array.isArray(playersJson)?playersJson:[]).map(normalizePlayer);
+    rebuildPlayerAvatarMap();
+    populateGradeFilter();
+    updateTabBadges();
+    document.getElementById('refreshInfo').textContent=`${data.length} partida${data.length!==1?'s':''}`;
+    setConnectionStatus('online','Servidor conectado');
+    renderAll();
+  }catch(e){
+    if(seq!==loadSeq) return;
+    clearTabSummary();
+    document.getElementById('topCards').innerHTML='';
+    const msg=e&&e.name==='AbortError'
+      ? 'El servidor no respondio a tiempo'
+      : (e&&e.message?e.message:'No se pudieron cargar las estadísticas');
+    document.getElementById('mainContent').innerHTML=`<div class="empty"><span>⚠️</span>${esc(msg)}</div>`;
+    document.getElementById('refreshInfo').textContent='Sin datos';
+    setConnectionStatus('offline',navigator.onLine?'Servidor desconectado':'Sin internet');
+  }
+}
+
+// ── Filtros ───────────────────────────────────────────────
+function getRecentLimit(){
+  const input=document.getElementById('recentLimit');
+  return input?parseInt(input.value,10):0;
+}
+
+function applyRecentLimit(rows){
+  const limit=getRecentLimit();
+  const recent=[...rows].sort((a,b)=>(b.id||0)-(a.id||0));
+  return limit>0?recent.slice(0,limit):recent;
+}
+
+function applyRecentLimitByStudent(rows){
+  const limit=getRecentLimit();
+  if(!(limit>0)) return [...rows].sort((a,b)=>(b.id||0)-(a.id||0));
+  const grouped=new Map();
+  [...rows].sort((a,b)=>(b.id||0)-(a.id||0)).forEach(d=>{
+    const key=(d.name||'').toLowerCase();
+    if(!grouped.has(key)) grouped.set(key,[]);
+    const list=grouped.get(key);
+    if(list.length<limit) list.push(d);
+  });
+  return [...grouped.values()].flat().sort((a,b)=>(b.id||0)-(a.id||0));
+}
+
+function hasOpResult(d,op){
+  return !!(((d.tblResults||{})[op]||{}).total>0);
+}
+function matchesOperationFilter(d,op){
+  if(!op) return true;
+  return hasOpResult(d,op);
+}
+function getFilteredOperationsMode(){
+  const s=document.getElementById('search').value.toLowerCase();
+  const g=document.getElementById('gradeFilter').value;
+  const gt=document.getElementById('gameTypeFilter').value;
+  const op=document.getElementById('opFilter').value;
+  return data.filter(d=>
+    isOperationsModeRow(d)&&
+    !d.isExam&&
+    (!s||d.name.toLowerCase().includes(s))&&
+    (!g||d.grade===g)&&
+    (!gt||d.gameType===gt)&&
+    matchesOperationFilter(d,op)
+  );
+}
+
+function getFiltered(){
+  const s=document.getElementById('search').value.toLowerCase();
+  const g=document.getElementById('gradeFilter').value;
+  const gt=document.getElementById('gameTypeFilter').value;
+  const op=document.getElementById('opFilter').value;
+  let r=data.filter(d=>
+    isClassicSoloRow(d)&&!d.isExam&&
+    (!s||d.name.toLowerCase().includes(s))&&
+    (!g||d.grade===g)&&
+    (!gt||d.gameType===gt)&&
+    matchesOperationFilter(d,op)
+  );
+  return r;
+}
+
+// ── Dispatcher ────────────────────────────────────────────
+function renderAll(){
+  updateTabBadges();
+  if(currentTab==='partidas') renderPartidas();
+  else if(currentTab==='multijugador') renderMultijugador();
+  else if(currentTab==='alumnos') renderAlumnos();
+  else if(currentTab==='modo-operaciones') renderModoOperaciones();
+  else if(currentTab==='salon') renderSalon();
+  else if(currentTab==='operaciones') renderOperaciones();
+  else if(currentTab==='calor') renderCalor();
+  else if(currentTab==='pruebas') renderPruebas();
+  else renderGraficas();
+  renderBulkActions();
+  syncBulkCheckboxes();
+}
+
+// ── Top 3 ─────────────────────────────────────────────────
+function renderTop(rows){
+  const top=rows.slice().sort((a,b)=>b.score-a.score).slice(0,3);
+  if(!top.length){ document.getElementById('topCards').innerHTML=''; return; }
+  const medals=['🥇','🥈','🥉'];
+  document.getElementById('topCards').innerHTML='<div class="top-grid">'+top.map((d,i)=>{
+    const av=avatarHtml(d.name);
+    return `<div class="top-card rank-${i+1}">
+      <div class="medal">${medals[i]}</div>
+      <div class="t-avatar">${av||d.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase()}</div>
+      <div class="t-name">${esc(d.name)}</div>
+      ${d.grade?'<div class="t-grade">'+esc(d.grade)+'</div>':''}
+      <div class="t-score">${d.score.toLocaleString()}</div>
+      <div class="t-pct">${d.pct}% aciertos · ${d.correct}/${d.total}</div>
+    </div>`;
+  }).join('')+'</div>';
+}
+
+// ── Agrupar partidas por alumno (compartido entre Individual/tarjetas y Por Alumno) ──
+function aggregateByStudent(rows){
+  const map=new Map();
+  rows.forEach(d=>{
+    const key=d.name;
+    if(!map.has(key)) map.set(key,{name:d.name,grade:'',games:[],opAgg:{}});
+    const st=map.get(key);
+    st.games.push(d);
+    if(!st.grade&&d.grade) st.grade=d.grade;
+    Object.keys(d.tblResults||{}).forEach(op=>{
+      if(!st.opAgg[op]) st.opAgg[op]={correct:0,wrong:0,timeout:0,total:0};
+      const r=d.tblResults[op];
+      st.opAgg[op].correct+=(r.correct||0);
+      st.opAgg[op].wrong+=(r.wrong||0);
+      st.opAgg[op].timeout+=(r.timeout||0);
+      st.opAgg[op].total+=(r.total||0);
+    });
+  });
+  return [...map.values()].map(st=>{
+    const acc=playerAvatarMap.get(st.name.toLowerCase());
+    if(acc&&acc.grade) st.grade=acc.grade;
+    st.totalScore=st.games.reduce((s,g)=>s+(g.score||0),0);
+    return st;
+  }).sort((a,b)=>b.totalScore-a.totalScore);
+}
+
+function buildStudentCards(list){
+  return list.map((st,index)=>{
+    const best=Math.max(...st.games.map(g=>g.score||0));
+    const avgPct=Math.round(st.games.reduce((s,g)=>s+(g.pct||0),0)/st.games.length);
+    const maxStreak=Math.max(...st.games.map(g=>g.streak||0));
+    const initials=st.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+    const av=avatarHtml(st.name);
+    const opBarsHtml=ALL_OPS.map(op=>{
+      const r=st.opAgg[op];
+      const c=OP_COLORS[op];
+      if(!r||r.total===0){
+        return `<div class="op-bar-row">
+          <span class="op-bar-icon">${OP_ICONS[op]}</span>
+          <div class="op-bar-track"><div class="op-bar-fill" style="width:0%;background:rgba(255,255,255,.06)"></div></div>
+          <span class="op-bar-pct" style="color:#374151">—</span>
+        </div>`;
+      }
+      const pct=Math.round((r.correct/r.total)*100);
+      return `<div class="op-bar-row" title="${OP_NAMES[op]}: ${pct}% · ${r.correct}/${r.total} resp.">
+        <span class="op-bar-icon">${OP_ICONS[op]}</span>
+        <div class="op-bar-track"><div class="op-bar-fill" style="width:${pct}%;background:${c.bar}"></div></div>
+        <span class="op-bar-pct ${pctClass(pct)}">${pct}%</span>
+      </div>`;
+    }).join('');
+    return `<div class="student-card ${index===0?'featured':''}" onclick="showStudent('${esc(st.name)}')">
+      ${index===0?'<div class="student-ribbon">Lider visible</div>':''}
+      <div class="sc-header">
+        <div class="sc-avatar${av?' has-avatar':''}">${av||initials}</div>
+        <div>
+          <div class="sc-name">${esc(st.name)}</div>
+          <div class="sc-grade"><span class="grade-chip">${esc(st.grade||'Sin grado')}</span><span>${formatCount(st.games.length,'partida')}${maxStreak>0?' · 🔥'+maxStreak:''}</span></div>
+        </div>
+      </div>
+      <div class="sc-stats">
+        <div class="sc-stat"><div class="val" style="color:#fbbf24;font-size:13px">${st.totalScore.toLocaleString()}</div><div class="lbl">Score total</div></div>
+        <div class="sc-stat"><div class="val">${best.toLocaleString()}</div><div class="lbl">Mejor pts</div></div>
+        <div class="sc-stat"><div class="val ${pctClass(avgPct)}">${avgPct}%</div><div class="lbl">Promedio</div></div>
+      </div>
+      <div class="op-row-label">Dominio por operación</div>
+      <div class="op-bars">${opBarsHtml}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderStudentCardGrid(rows){
+  const students=aggregateByStudent(rows);
+  const realStudents=students.filter(st=>st.grade);
+  const testStudents=students.filter(st=>!st.grade);
+  let html='<div class="student-grid">'+buildStudentCards(realStudents)+'</div>';
+  if(testStudents.length){
+    html+=`<details style="margin-top:16px"><summary style="cursor:pointer;font-size:12px;color:#64748b;padding:8px 4px;user-select:none;list-style:none">▸ Cuentas sin grado asignado (${testStudents.length})</summary><div class="student-grid" style="margin-top:10px">${buildStudentCards(testStudents)}</div></details>`;
+  }
+  return html;
+}
+
+// ── TAB 1: Partidas ───────────────────────────────────────
+function renderPartidas(){
+  const rows=getFiltered();
+  const visibleRows=individualView==='tarjetas'?applyRecentLimitByStudent(rows):applyRecentLimit(rows);
+  currentDetailRows=visibleRows;
+  document.getElementById('countInfo').textContent=visibleRows.length+' resultados';
+  const uniqueStudents=new Set(visibleRows.map(d=>d.name)).size;
+  const avgPct=visibleRows.length?Math.round(visibleRows.reduce((s,d)=>s+(d.pct||0),0)/visibleRows.length):0;
+  const bestScore=visibleRows.length?Math.max(...visibleRows.map(d=>d.score||0)):0;
+  renderTabSummary('Individual','Resultados de partidas individuales para revisar puntaje, precision y ritmo de practica de cada intento.',[
+    {value:visibleRows.length,label:'Resultados',tone:'purple'},
+    {value:uniqueStudents,label:'Alumnos',tone:'blue'},
+    {value:avgPct+'%',label:'Promedio',tone:avgPct>=80?'green':avgPct>=50?'gold':'red'},
+    {value:bestScore.toLocaleString(),label:'Mejor score',tone:'gold'}
+  ]);
+  renderTop(visibleRows);
+  const wrap=document.getElementById('mainContent');
+  if(!rows.length){ wrap.innerHTML='<div class="empty"><span>🏆</span>No hay resultados</div>'; renderBulkActions(); return; }
+  if(individualView==='tarjetas'){ wrap.innerHTML=renderStudentCardGrid(visibleRows); renderBulkActions(); return; }
+  const gameTypeLbl={free:'🕊️ Libre',timed:'⏱️ Tiempo',lives:'❤️ Vidas',countdown:'⏳ Contrarreloj',streak:'🔥 Racha',survival:'💀 Supervivencia',bot:'🤖 Bot'};
+  const rowIds=visibleRows.map(d=>d.id);
+  wrap.innerHTML='<div class="table-shell"><table class="data-table"><thead><tr>'+
+    buildBulkHeaderCheckbox(rowIds)+'<th>Pos</th><th>Alumno</th><th>Grado</th><th>Puntaje</th><th>% Aciertos</th>'+
+    '<th>Racha</th><th>Modo</th><th>Tipo</th><th>Operaciones</th><th>Fecha</th><th></th>'+
+    '</tr></thead><tbody>'+
+  visibleRows.map((d,i)=>{
+    const rank=i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1);
+    const mpLbl=d.gameMode==='online'&&d.mpGameMode?' ('+d.mpGameMode+')':'';
+    const modeMeta=getModePresentation(d);
+    const ops=Object.keys(d.tblResults||{}).filter(k=>d.tblResults[k].total>0);
+    const opBadges=ops.map(op=>opBadge(op)).join('');
+    const incBadge=d.complete===false?'<span class="incomplete-badge" title="Partida interrumpida">Incompleta</span> ':'';
+    const rowCls=i===0?'table-row-top1':i===1?'table-row-top2':i===2?'table-row-top3':'';
+    return `<tr class="${rowCls}" style="${d.complete===false?'opacity:.7':''}">
+      ${buildBulkRowCheckbox(d.id)}
+      <td class="rn rank-cell">${rank}</td>
+      <td class="name" style="cursor:pointer" onclick="showStudent('${esc(d.name)}')">${esc(d.name)}</td>
+      <td>${d.grade?'<span class="grade-badge">'+esc(d.grade)+'</span>':'—'}</td>
+      <td><div class="score-stack"><span class="score-main">${(d.score||0).toLocaleString()}</span><span class="score-sub">puntaje</span></div></td>
+      <td><div class="pct-stack"><span class="${pctClass(d.pct)}">${d.pct}%</span>${pctBar(d.pct)}<span style="font-size:11px;color:#64748b">(${d.correct}/${d.total})</span></div></td>
+      <td class="streak">${d.streak>0?'🔥'+d.streak:'—'}</td>
+      <td><span class="mode-badge ${modeMeta.cls}">${modeMeta.label}${mpLbl}</span></td>
+      <td style="font-size:12px;color:#94a3b8">${incBadge}${gameTypeLbl[d.gameType]||d.gameType||'—'}</td>
+      <td>${opBadges||'—'}</td>
+      <td class="dt">${d.date} ${d.time}</td>
+      <td><button class="del-game-btn" onclick="deleteGame(${d.id})" title="Eliminar esta partida">✕</button></td>
+    </tr>`;
+  }).join('')+'</tbody></table></div>';
+  renderBulkActions();
+  syncBulkCheckboxes();
+}
+
+// ── TAB: Multijugador ─────────────────────────────────────
+const MP_MODE_LBL={race:'⚡ Carrera',rounds:'🎯 Duelo de Rondas',bomb:'💣 Bomba',steal:'🃏 Robo de Puntos',survival:'🌊 Supervivencia',apuestas:'🎰 Apuestas'};
+
+function getFilteredMultijugador(){
+  const s=document.getElementById('search').value.toLowerCase();
+  const g=document.getElementById('gradeFilter').value;
+  const mp=document.getElementById('mpModeFilter').value;
+  const op=document.getElementById('opFilter').value;
+  let r=data.filter(d=>
+    d.gameMode==='online'&&!d.isExam&&
+    (!s||d.name.toLowerCase().includes(s))&&
+    (!g||d.grade===g)&&
+    (!mp||d.mpGameMode===mp)&&
+    matchesOperationFilter(d,op)
+  );
+  return r;
+}
+
+function renderMultijugador(){
+  const rows=getFilteredMultijugador();
+  const visibleRows=individualView==='tarjetas'?applyRecentLimitByStudent(rows):applyRecentLimit(rows);
+  currentDetailRows=visibleRows;
+  document.getElementById('countInfo').textContent=visibleRows.length+' resultados';
+  const duelCount=visibleRows.filter(d=>d.vs).length;
+  const avgPct=visibleRows.length?Math.round(visibleRows.reduce((s,d)=>s+(d.pct||0),0)/visibleRows.length):0;
+  const activeModes=new Set(visibleRows.map(d=>d.mpGameMode).filter(Boolean)).size;
+  renderTabSummary('Multijugador','Encuentros entre jugadores para comparar rivales, rendimiento competitivo y consistencia en partidas LAN.',[
+    {value:visibleRows.length,label:'Partidas',tone:'blue'},
+    {value:duelCount,label:'Con rival',tone:'purple'},
+    {value:activeModes,label:'Modos activos',tone:'gold'},
+    {value:avgPct+'%',label:'Precision',tone:avgPct>=80?'green':avgPct>=50?'gold':'red'}
+  ]);
+  renderTop(visibleRows);
+  const wrap=document.getElementById('mainContent');
+  if(!rows.length){ wrap.innerHTML='<div class="empty"><span>🌐</span>No hay partidas multijugador</div>'; renderBulkActions(); return; }
+  if(individualView==='tarjetas'){ wrap.innerHTML=renderStudentCardGrid(visibleRows); renderBulkActions(); return; }
+  const rowIds=visibleRows.map(d=>d.id);
+  wrap.innerHTML='<div class="table-shell"><table class="data-table"><thead><tr>'+
+    buildBulkHeaderCheckbox(rowIds)+'<th>Pos</th><th>Alumno</th><th>Grado</th><th>Puntaje</th><th>% Aciertos</th>'+
+    '<th>Racha</th><th>Modo</th><th>Contra</th><th>Operaciones</th><th>Fecha</th><th></th>'+
+    '</tr></thead><tbody>'+
+  visibleRows.map((d,i)=>{
+    const rank=i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1);
+    const ops=Object.keys(d.tblResults||{}).filter(k=>d.tblResults[k].total>0);
+    const opBadges=ops.map(op=>opBadge(op)).join('');
+    const incBadge=d.complete===false?'<span class="incomplete-badge" title="Partida interrumpida">Incompleta</span> ':'';
+    const rowCls=i===0?'table-row-top1':i===1?'table-row-top2':i===2?'table-row-top3':'';
+    return `<tr class="${rowCls}" style="${d.complete===false?'opacity:.7':''}">
+      ${buildBulkRowCheckbox(d.id)}
+      <td class="rn rank-cell">${rank}</td>
+      <td class="name" style="cursor:pointer" onclick="showStudent('${esc(d.name)}')">${esc(d.name)}</td>
+      <td>${d.grade?'<span class="grade-badge">'+esc(d.grade)+'</span>':'—'}</td>
+      <td><div class="score-stack"><span class="score-main">${(d.score||0).toLocaleString()}</span><span class="score-sub">puntaje</span></div></td>
+      <td><div class="pct-stack"><span class="${pctClass(d.pct)}">${d.pct}%</span>${pctBar(d.pct)}<span style="font-size:11px;color:#64748b">(${d.correct}/${d.total})</span></div></td>
+      <td class="streak">${d.streak>0?'🔥'+d.streak:'—'}</td>
+      <td><span class="mode-badge m-online">${MP_MODE_LBL[d.mpGameMode]||d.mpGameMode||'—'}</span></td>
+      <td>${d.vs?`<span class="vs-pill">VS ${esc(d.vs)}</span>`:'—'}</td>
+      <td>${incBadge}${opBadges||'—'}</td>
+      <td class="dt">${d.date} ${d.time}</td>
+      <td><button class="del-game-btn" onclick="deleteGame(${d.id})" title="Eliminar esta partida">✕</button></td>
+    </tr>`;
+  }).join('')+'</tbody></table></div>';
+  renderBulkActions();
+  syncBulkCheckboxes();
+}
+
+// ── TAB 2: Por Alumno ─────────────────────────────────────
+function renderAlumnos(){
+  document.getElementById('topCards').innerHTML='';
+  const s=document.getElementById('search').value.toLowerCase();
+  const g=document.getElementById('gradeFilter').value;
+  const m=document.getElementById('modeFilter').value;
+  const opF=document.getElementById('opFilter').value;
+  const filtered=applyRecentLimitByStudent(data.filter(d=>
+    (!s||d.name.toLowerCase().includes(s))&&
+    (!g||d.grade===g)&&
+    (!m||(m==='solo'?isClassicSoloRow(d):d.gameMode===m))&&
+    matchesOperationFilter(d,opF)
+  ));
+  currentDetailRows=filtered;
+  const students=aggregateByStudent(filtered);
+  const realCount=students.filter(st=>st.grade).length;
+  document.getElementById('countInfo').textContent=realCount+' alumnos';
+  const avgPct=students.length?Math.round(students.reduce((s,st)=>s+Math.round(st.games.reduce((a,g)=>a+(g.pct||0),0)/st.games.length),0)/students.length):0;
+  const leader=students[0];
+  renderTabSummary('Por Alumno','Tarjetas globales por estudiante para ver su avance general, su promedio y en que operaciones destaca mas.',[
+    {value:realCount,label:'Alumnos',tone:'purple'},
+    {value:filtered.length,label:'Partidas usadas',tone:'blue'},
+    {value:avgPct+'%',label:'Promedio del grupo',tone:avgPct>=80?'green':avgPct>=50?'gold':'red'},
+    {value:leader?leader.totalScore.toLocaleString():'0',label:'Lider actual',tone:'gold'}
+  ]);
+  if(!students.length){ document.getElementById('mainContent').innerHTML='<div class="empty"><span>👤</span>No hay alumnos</div>'; return; }
+  document.getElementById('mainContent').innerHTML=renderStudentCardGrid(filtered);
+}
+
+function renderModoOperaciones(){
+  document.getElementById('topCards').innerHTML='';
+  const filtered=applyRecentLimitByStudent(getFilteredOperationsMode());
+  currentDetailRows=filtered;
+  const students=aggregateByStudent(filtered);
+  const realCount=students.filter(st=>st.grade).length;
+  const opTotals=new Map();
+  const studentAlerts=new Set();
+  let trackedSteps=0;
+  filtered.forEach(row=>{
+    ALL_OPS.forEach(op=>{
+      const normalized=normalizeStudentStepStats(op,row.stepDetail?.[op]);
+      const dominantIssue=getDominantStepIssue(op,normalized);
+      if(dominantIssue) studentAlerts.add((row.name||'').toLowerCase());
+      Object.entries(normalized).forEach(([bucket,stats])=>{
+        const attempts=(stats?.correct||0)+(stats?.wrong||0);
+        if(!attempts) return;
+        trackedSteps+=attempts;
+        const meta=getOpStepMeta(op)[bucket];
+        const key=`${op}:${bucket}`;
+        if(!opTotals.has(key)){
+          opTotals.set(key,{wrong:0,attempts:0,label:meta?.label||bucket,icon:OP_ICONS[op]||op});
+        }
+        const entry=opTotals.get(key);
+        entry.wrong+=(stats?.wrong||0);
+        entry.attempts+=attempts;
+      });
+    });
+  });
+  const topIssue=[...opTotals.values()]
+    .filter(item=>item.wrong>0)
+    .sort((a,b)=>b.wrong-a.wrong||((b.attempts?b.wrong/b.attempts:0)-(a.attempts?a.wrong/a.attempts:0)))[0]||null;
+  const topIssueText=topIssue
+    ? `${topIssue.icon} ${topIssue.label}`
+    : 'Sin errores de paso';
+  document.getElementById('countInfo').textContent=filtered.length+' resultados';
+  renderTabSummary('Operaciones','Diagnostico fino del modo Operaciones para identificar en que paso se equivoca cada alumno: llevar, pedir prestado, bajar cifras o colocar resultados parciales.',[
+    {value:realCount,label:'Alumnos',tone:'purple'},
+    {value:studentAlerts.size,label:'Con error detectado',tone:studentAlerts.size?'red':'green'},
+    {value:trackedSteps.toLocaleString(),label:'Pasos analizados',tone:'blue'},
+    {value:topIssueText,label:'Foco mas repetido',tone:topIssue?'gold':'green'}
+  ]);
+  if(!students.length){
+    document.getElementById('mainContent').innerHTML='<div class="empty"><span>⚙️</span>No hay resultados del modo Operaciones aún.<br><small style="font-size:13px;color:#4b5563;display:block;margin-top:8px">Esta pestaña mostrará partidas nuevas identificadas con el modo Operaciones.</small></div>';
+    return;
+  }
+  const cards=ALL_OPS.map(op=>{
+    const stats=calcOpStatsFromRows(filtered,op);
+    const color=OP_COLORS[op];
+    const sel=activeOp===op;
+    const pctTxt=stats.pct!==null?stats.pct+'%':'Sin datos';
+    return `<div class="op-summary-card ${sel?'selected':''}"
+      style="background:${sel?color.selBg:color.bg};border-color:${sel?color.border:'rgba(255,255,255,.07)'}"
+      onclick="setActiveOp('${op}')">
+      <div class="op-icon">${OP_ICONS[op]}</div>
+      <div class="op-name" style="color:${sel?color.bar:'#cbd5e1'}">${OP_NAMES[op]}</div>
+      <div class="op-pct" style="color:${color.bar}">${pctTxt}</div>
+      <div class="op-meta">${stats.students} alumno${stats.students!==1?'s':''} · ${stats.total.toLocaleString()} resp.</div>
+      <div class="op-prog"><div class="op-prog-fill" style="width:${stats.pct||0}%;background:${color.bar}"></div></div>
+    </div>`;
+  }).join('');
+  const activeStats=calcOpStatsFromRows(filtered,activeOp);
+  const leaderText=activeStats.total?`${activeStats.correct}/${activeStats.total} respuestas correctas`:'Aun sin respuestas';
+  const color=OP_COLORS[activeOp];
+  document.getElementById('mainContent').innerHTML=
+    `<div class="op-summary-grid">${cards}</div>`+
+    `<div class="op-detail-header">
+      <div style="display:flex;align-items:center;gap:8px">
+        <span style="font-size:20px">${OP_ICONS[activeOp]}</span>
+        <span style="font-size:16px;font-weight:800;color:${color.bar}">${OP_NAMES[activeOp]}</span>
+        <span style="font-size:12px;color:#64748b">diagnóstico del modo Operaciones</span>
+      </div>
+      <span class="operation-rank-pill">${leaderText}</span>
+    </div>`+
+    buildOpDetail(activeOp,filtered,true);
+}
+
+// ── TAB: Mi Salón ─────────────────────────────────────────
+function studentStatus(p,hasRecordedGame){
+  if((!p.gamesPlayed||p.gamesPlayed===0)&&!hasRecordedGame) return {key:'none',label:'Sin partidas',dotClass:'dot-none',order:3};
+  const pct=p.avgPct||0;
+  if(pct>=80) return {key:'hi',label:'Domina',dotClass:'dot-hi',order:2};
+  if(pct>=50) return {key:'mid',label:'En progreso',dotClass:'dot-mid',order:1};
+  return {key:'lo',label:'Necesita ayuda',dotClass:'dot-lo',order:0};
+}
+
+function renderSalon(){
+  currentDetailRows=data;
+  document.getElementById('topCards').innerHTML='';
+  document.getElementById('countInfo').textContent=players.length+' alumno'+(players.length!==1?'s':'');
+
+  if(!players.length){
+    document.getElementById('mainContent').innerHTML='<div class="empty"><span>🏫</span>No hay alumnos registrados</div>';
+    return;
+  }
+
+  const groups=new Map();
+  players.forEach(p=>{
+    const g=p.grade||'';
+    if(!groups.has(g)) groups.set(g,[]);
+    groups.get(g).push(p);
+  });
+
+  const gameNames=new Set(data.map(d=>(d.name||'').toLowerCase()));
+  const gradeKeys=[...groups.keys()].filter(g=>g).sort((a,b)=>a.localeCompare(b,'es',{numeric:true,sensitivity:'base'}));
+  const orderedKeys=groups.has('')?[...gradeKeys,'']:gradeKeys;
+  const overview=orderedKeys.map(g=>{
+    const list=[...groups.get(g)];
+    let hi=0,mid=0,lo=0,none=0;
+    list.forEach(p=>{
+      const st=studentStatus(p,gameNames.has((p.name||'').toLowerCase()));
+      if(st.key==='hi') hi++;
+      else if(st.key==='mid') mid++;
+      else if(st.key==='lo') lo++;
+      else none++;
+    });
+    return `<div class="salon-overview-card">
+      <h3>${esc(g||'Sin grado asignado')}</h3>
+      <div class="salon-overview-stats">
+        <div class="salon-overview-stat"><strong style="color:#6ee7b7">${hi}</strong><span>Domina</span></div>
+        <div class="salon-overview-stat"><strong style="color:#fcd34d">${mid}</strong><span>Progreso</span></div>
+        <div class="salon-overview-stat"><strong style="color:#fca5a5">${lo}</strong><span>Apoyo</span></div>
+        <div class="salon-overview-stat"><strong style="color:#cbd5e1">${none}</strong><span>Sin jugar</span></div>
+      </div>
+    </div>`;
+  }).join('');
+  renderTabSummary('Mi Salon','Panorama del grupo completo para ubicar alumnos destacados, quienes van en proceso y quienes aun casi no practican.',[
+    {value:players.length,label:'Registrados',tone:'purple'},
+    {value:gradeKeys.length,label:'Grados',tone:'blue'},
+    {value:data.length,label:'Partidas',tone:'gold'},
+    {value:new Set(data.map(d=>d.name.toLowerCase())).size,label:'Con actividad',tone:'green'}
+  ]);
+
+  const html='<div class="salon-overview">'+overview+'</div>'+orderedKeys.map(g=>{
+    const list=[...groups.get(g)];
+    list.sort((a,b)=>{
+      const sa=studentStatus(a,gameNames.has((a.name||'').toLowerCase())), sb=studentStatus(b,gameNames.has((b.name||'').toLowerCase()));
+      if(sa.order!==sb.order) return sa.order-sb.order;
+      return a.name.localeCompare(b.name,'es');
+    });
+
+    const rows=list.map(p=>{
+      const lastGame=data.find(d=>d.name.toLowerCase()===(p.name||'').toLowerCase());
+      const st=studentStatus(p,!!lastGame);
+      const initials=(p.name||'?').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+      const av=avatarHtml(p.name);
+      const lastInfo=lastGame?esc(lastGame.date+' '+lastGame.time):'Sin registro';
+      const effPct=p.avgPct||(lastGame?lastGame.pct:0)||0;
+      const pctInfo=st.key==='none'?'':' · <span class="'+pctClass(effPct)+'">'+Math.round(effPct)+'%</span> aciertos';
+      const badgeClass=st.key==='hi'?'hi':st.key==='mid'?'mid':st.key==='lo'?'lo':'none';
+
+      return `<div class="salon-row status-${st.key}" onclick="showStudent('${esc(p.name)}')">
+        <div class="sc-avatar${av?' has-avatar':''} salon-avatar">${av||initials}</div>
+        <div class="salon-info">
+          <div class="salon-name">${esc(p.name)}</div>
+          <div class="salon-meta"><span class="salon-status-badge ${badgeClass}">${st.label}</span>${pctInfo}</div>
+        </div>
+        <div class="salon-last">Última partida<br>${lastInfo}</div>
+      </div>`;
+    }).join('');
+
+    const title=g?esc(g):'Sin grado asignado';
+    return `<div class="salon-group">
+      <div class="salon-group-title">${title} <span class="salon-group-count">${list.length}</span></div>
+      <div class="salon-list">${rows}</div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('mainContent').innerHTML=html;
+}
+
+// ── TAB 3: Por Operación ──────────────────────────────────
+function setActiveOp(op){
+  activeOp=op;
+  if(currentTab==='modo-operaciones') renderModoOperaciones();
+  else renderOperaciones();
+}
+
+function renderOperaciones(){
+  const classicRows=data.filter(d=>!isOperationsModeRow(d));
+  currentDetailRows=classicRows;
+  document.getElementById('topCards').innerHTML='';
+  document.getElementById('countInfo').textContent='';
+
+  // Tarjetas resumen de las 4 operaciones
+  const cards=ALL_OPS.map(op=>{
+    const stats=calcOpStats(op);
+    const c=OP_COLORS[op];
+    const sel=activeOp===op;
+    const pctTxt=stats.pct!==null?stats.pct+'%':'Sin datos';
+    return `<div class="op-summary-card ${sel?'selected':''}"
+        style="background:${sel?c.selBg:c.bg};border-color:${sel?c.border:'rgba(255,255,255,.07)'}"
+        onclick="setActiveOp('${op}')">
+      <div class="op-icon">${OP_ICONS[op]}</div>
+      <div class="op-name" style="color:${sel?c.bar:'#cbd5e1'}">${OP_NAMES[op]}</div>
+      <div class="op-pct" style="color:${c.bar}">${pctTxt}</div>
+      <div class="op-meta">${stats.students} alumno${stats.students!==1?'s':''} · ${stats.total.toLocaleString()} resp.</div>
+      <div class="op-prog"><div class="op-prog-fill" style="width:${stats.pct||0}%;background:${c.bar}"></div></div>
+    </div>`;
+  }).join('');
+
+  const c=OP_COLORS[activeOp];
+  const activeStats=calcOpStats(activeOp);
+  const leaderText=activeStats.total?`${activeStats.correct}/${activeStats.total} respuestas correctas`:'Aun sin respuestas';
+  renderTabSummary('Por Operacion','Comparacion general por suma, resta, multiplicacion y division para descubrir que tipo de operacion domina o cuesta mas al grupo.',[
+    {value:activeStats.pct!==null?activeStats.pct+'%':'—',label:'Precision activa',tone:activeStats.pct>=80?'green':activeStats.pct>=50?'gold':'red'},
+    {value:activeStats.total.toLocaleString(),label:'Respuestas',tone:'purple'},
+    {value:activeStats.correct.toLocaleString(),label:'Correctas',tone:'green'},
+    {value:activeStats.students||0,label:'Alumnos',tone:'blue'}
+  ]);
+  document.getElementById('mainContent').innerHTML=
+    `<div class="op-summary-grid">${cards}</div>`+
+    `<div class="op-detail-header">
+      <div style="display:flex;align-items:center;gap:8px">
+        <span style="font-size:20px">${OP_ICONS[activeOp]}</span>
+        <span style="font-size:16px;font-weight:800;color:${c.bar}">${OP_NAMES[activeOp]}</span>
+        <span style="font-size:12px;color:#64748b">rendimiento por alumno</span>
+      </div>
+      <span class="operation-rank-pill">${leaderText}</span>
+    </div>`+
+    buildOpDetail(activeOp,classicRows);
+}
+
+function buildOpDetail(op,sourceRows=null,diagnosticMode=false){
+  const c=OP_COLORS[op];
+  const stepMeta=getOpStepMeta(op);
+  const studentMap=new Map();
+  const rows=(sourceRows||data).filter(d=>((d.tblResults||{})[op]||{}).total>0);
+  rows.forEach(d=>{
+    const r=(d.tblResults||{})[op];
+    const key=d.name;
+    if(!studentMap.has(key)) studentMap.set(key,{name:d.name,grade:'',correct:0,wrong:0,timeout:0,total:0,games:0,stepStats:buildEmptyStepStats(op)});
+    const st=studentMap.get(key);
+    if(!st.grade&&d.grade) st.grade=d.grade;
+    st.correct+=(r.correct||0); st.wrong+=(r.wrong||0);
+    st.timeout+=(r.timeout||0); st.total+=(r.total||0); st.games++;
+    const normalized=normalizeStudentStepStats(op,d.stepDetail?.[op]);
+    Object.entries(normalized).forEach(([bucket,stats])=>{
+      if(!st.stepStats[bucket]) st.stepStats[bucket]={correct:0,wrong:0};
+      st.stepStats[bucket].correct+=(stats.correct||0);
+      st.stepStats[bucket].wrong+=(stats.wrong||0);
+    });
+  });
+  const students=[...studentMap.values()]
+    .map(st=>{
+      const acc=playerAvatarMap.get(st.name.toLowerCase());
+      if(acc&&acc.grade) st.grade=acc.grade;
+      const dominantIssue=getDominantStepIssue(op,st.stepStats);
+      const trackedSteps=Object.values(st.stepStats).reduce((sum,item)=>sum+(item.correct||0)+(item.wrong||0),0);
+      return {...st,pct:st.total>0?Math.round((st.correct/st.total)*100):0,dominantIssue,trackedSteps};
+    })
+    .sort((a,b)=>{
+      const aWrong=a.dominantIssue?.wrong||0;
+      const bWrong=b.dominantIssue?.wrong||0;
+      return b.pct-a.pct||b.total-a.total||bWrong-aWrong;
+    });
+
+  if(!students.length){
+    return `<div class="empty"><span>${OP_ICONS[op]}</span>No hay partidas de ${OP_NAMES[op]} aún</div>`;
+  }
+
+  if(!diagnosticMode){
+    return `<div class="table-shell"><table class="data-table"><thead><tr>
+      <th>#</th><th>Alumno</th><th>Grado</th><th>% Aciertos</th>
+      <th>Correctas</th><th>Incorrectas</th><th>Sin tiempo</th><th>Total resp.</th><th>Partidas</th>
+    </tr></thead><tbody>
+    ${students.map((st,i)=>{
+      const rank=i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1);
+      const rowCls=i===0?'table-row-top1':i===1?'table-row-top2':i===2?'table-row-top3':'';
+      return `<tr class="${rowCls}">
+        <td class="rn rank-cell">${rank}</td>
+        <td class="name" style="cursor:pointer" onclick="showStudent('${esc(st.name)}')">${esc(st.name)}</td>
+        <td>${st.grade?'<span class="grade-badge">'+esc(st.grade)+'</span>':'—'}</td>
+        <td>
+          <span class="${pctClass(st.pct)}">${st.pct}%</span>
+          <span style="display:inline-block;vertical-align:middle;margin-left:8px">${pctBar(st.pct)}</span>
+        </td>
+        <td style="color:#34d399">${st.correct}</td>
+        <td style="color:#f87171">${st.wrong}</td>
+        <td style="color:#fb923c">${st.timeout}</td>
+        <td style="color:#94a3b8">${st.total}</td>
+        <td style="color:#64748b;font-size:12px">${st.games}</td>
+      </tr>`;
+    }).join('')}
+    </tbody></table></div>`;
+  }
+
+  return `<div class="op-diagnostic-grid">${students.map((st,i)=>{
+    const rank=i===0?'🥇':i===1?'🥈':i===2?'🥉':`#${i+1}`;
+    const cardCls=i===0?'top1':i===1?'top2':i===2?'top3':'';
+    const av=avatarHtml(st.name);
+    const initials=(st.name||'?').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+    const alertHtml=st.dominantIssue
+      ? `<div class="op-diagnostic-alert">
+          <div style="font-size:18px;line-height:1">⚠️</div>
+          <div>
+            <strong>Error más repetido</strong>
+            <span>${st.dominantIssue.label}: ${st.dominantIssue.wrong} fallo${st.dominantIssue.wrong!==1?'s':''} (${st.dominantIssue.rate}% de error en ese paso)</span>
+          </div>
+        </div>`
+      : `<div class="op-diagnostic-alert" style="background:rgba(52,211,153,.08);border-color:rgba(52,211,153,.18)">
+          <div style="font-size:18px;line-height:1">✅</div>
+          <div>
+            <strong style="color:#86efac">Sin foco rojo</strong>
+            <span style="color:#bbf7d0">No se registran errores de paso en esta operación con los datos disponibles.</span>
+          </div>
+        </div>`;
+    const stepRows=Object.entries(stepMeta).map(([bucket,meta])=>{
+      const stats=st.stepStats[bucket]||{correct:0,wrong:0};
+      const attempts=(stats.correct||0)+(stats.wrong||0);
+      const rate=attempts?Math.round(((stats.wrong||0)/attempts)*100):0;
+      const okRate=attempts?Math.max(0,100-rate):0;
+      if(!attempts){
+        return `<div class="op-step-row">
+          <div class="op-step-top"><span class="op-step-title">${meta.label}</span><span class="op-step-meta">Sin datos</span></div>
+          <div class="op-step-empty">${meta.help}</div>
+        </div>`;
+      }
+      return `<div class="op-step-row" title="${meta.help}">
+        <div class="op-step-top">
+          <span class="op-step-title">${meta.label}</span>
+          <span class="op-step-meta">${rate}% error · ${okRate}% correcto</span>
+        </div>
+        <div class="op-step-bar"><div class="op-step-bar-fill" style="width:${okRate}%;background:${rate>=50?'#f87171':rate>=25?'#fbbf24':'#34d399'}"></div></div>
+        <div class="op-step-foot">
+          <span><strong>${stats.wrong||0}</strong> errores</span>
+          <span><strong>${stats.correct||0}</strong> aciertos</span>
+          <span><strong>${attempts}</strong> intentos</span>
+        </div>
+      </div>`;
+    }).join('');
+    return `<div class="op-diagnostic-card ${cardCls}">
+      <div class="op-diagnostic-rail">
+        <div class="op-diagnostic-rank">${rank}</div>
+        <div>
+          <div class="op-diagnostic-side-label">Acierto</div>
+          <div class="op-diagnostic-side-value ${pctClass(st.pct)}">${st.pct}%</div>
+          <div class="op-diagnostic-side-sub">${st.correct}/${st.total} correctas</div>
+        </div>
+        <div>
+          <div class="op-diagnostic-side-label">Partidas</div>
+          <div class="op-diagnostic-side-value" style="color:${c.bar}">${st.games}</div>
+          <div class="op-diagnostic-side-sub">${st.trackedSteps} pasos revisados</div>
+        </div>
+      </div>
+      <div class="op-diagnostic-body">
+        <div class="op-diagnostic-head">
+          <div class="op-diagnostic-student" onclick="showStudent('${esc(st.name)}')">
+            <div class="op-diagnostic-avatar${av?' has-avatar':''}">${av||initials}</div>
+            <div class="op-diagnostic-student-copy">
+              <div class="op-diagnostic-name">${esc(st.name)}</div>
+              <div class="op-diagnostic-grade">${st.grade?esc(st.grade):'Sin grado asignado'} · ${OP_NAMES[op]}</div>
+            </div>
+          </div>
+          <div>
+            <div class="op-diagnostic-pct" style="color:${c.bar}">${OP_ICONS[op]}</div>
+            <div class="op-diagnostic-sub">detalle por pasos</div>
+          </div>
+        </div>
+        <div class="op-diagnostic-stats">
+          <div class="op-diagnostic-stat"><strong style="color:#34d399">${st.correct}</strong><span>Correctas</span></div>
+          <div class="op-diagnostic-stat"><strong style="color:#f87171">${st.wrong}</strong><span>Errores</span></div>
+          <div class="op-diagnostic-stat"><strong style="color:#fb923c">${st.timeout}</strong><span>Sin tiempo</span></div>
+          <div class="op-diagnostic-stat"><strong style="color:${c.bar}">${st.trackedSteps}</strong><span>Pasos leidos</span></div>
+        </div>
+        ${alertHtml}
+        <div class="op-step-list">${stepRows}</div>
+      </div>
+    </div>`;
+  }).join('')}</div>`;
+}
+
+// ── TAB: Mapa de Calor ────────────────────────────────────
+function heatColor(pct){
+  let r,g;
+  if(pct<=50){ r=248; g=Math.round(113+(191-113)*(pct/50)); }
+  else{ r=Math.round(251-(251-52)*((pct-50)/50)); g=Math.round(191+(211-191)*((pct-50)/50)); }
+  const b=pct<=50?113:153;
+  const alpha=0.18+(pct/100)*0.30;
+  const bg=`rgba(${r},${g},${b},${alpha.toFixed(2)})`;
+  const border=`rgba(${r},${g},${b},${(alpha+0.35).toFixed(2)})`;
+  const textColor=pct>=80?'#34d399':pct>=50?'#fbbf24':'#f87171';
+  return {bg,border,textColor};
+}
+
+function renderCalor(){
+  currentDetailRows=data;
+  document.getElementById('topCards').innerHTML='';
+  const map=new Map();
+  data.forEach(d=>{
+    const key=d.name;
+    if(!map.has(key)) map.set(key,{name:d.name,grade:'',opAgg:{}});
+    const st=map.get(key);
+    if(!st.grade&&d.grade) st.grade=d.grade;
+    Object.keys(d.tblResults||{}).forEach(op=>{
+      const r=d.tblResults[op];
+      if(!r||!r.total) return;
+      if(!st.opAgg[op]) st.opAgg[op]={correct:0,wrong:0,timeout:0,total:0};
+      st.opAgg[op].correct+=(r.correct||0);
+      st.opAgg[op].wrong+=(r.wrong||0);
+      st.opAgg[op].timeout+=(r.timeout||0);
+      st.opAgg[op].total+=(r.total||0);
+    });
+  });
+
+  const students=[...map.values()].map(st=>{
+    const acc=playerAvatarMap.get(st.name.toLowerCase());
+    if(acc&&acc.grade) st.grade=acc.grade;
+    const pcts=ALL_OPS.map(op=>{
+      const r=st.opAgg[op];
+      return r&&r.total>0?(r.correct/r.total)*100:null;
+    }).filter(p=>p!==null);
+    st.avgPct=pcts.length?Math.round(pcts.reduce((a,b)=>a+b,0)/pcts.length):null;
+    return st;
+  }).sort((a,b)=>(b.avgPct??-1)-(a.avgPct??-1));
+
+  document.getElementById('countInfo').textContent=students.length+' alumnos';
+  const wrap=document.getElementById('mainContent');
+  if(!students.length){ wrap.innerHTML='<div class="empty"><span>🗺️</span>No hay datos suficientes</div>'; return; }
+  const studentsWithAvg=students.filter(st=>st.avgPct!==null);
+  const groupAvgQuick=studentsWithAvg.length?Math.round(studentsWithAvg.reduce((s,st)=>s+(st.avgPct||0),0)/studentsWithAvg.length):0;
+  renderTabSummary('Mapa de Calor','Matriz visual para ubicar de inmediato que alumnos tienen mejor o peor rendimiento en cada operacion.',[
+    {value:students.length,label:'Alumnos',tone:'purple'},
+    {value:groupAvgQuick+'%',label:'Promedio',tone:groupAvgQuick>=80?'green':groupAvgQuick>=50?'gold':'red'},
+    {value:ALL_OPS.length,label:'Operaciones',tone:'blue'},
+    {value:data.length,label:'Partidas base',tone:'gold'}
+  ]);
+
+  const groupAgg={};
+  ALL_OPS.forEach(op=>{ groupAgg[op]={correct:0,total:0}; });
+  data.forEach(d=>{
+    ALL_OPS.forEach(op=>{
+      const r=(d.tblResults||{})[op];
+      if(r&&r.total>0){ groupAgg[op].correct+=r.correct||0; groupAgg[op].total+=r.total||0; }
+    });
+  });
+
+  function cellHtml(r){
+    if(!r||!r.total) return `<div class="heat-cell heat-empty">—</div>`;
+    const pct=Math.round((r.correct/r.total)*100);
+    const c=heatColor(pct);
+    const insight=pct>=80?'Fuerte':pct>=50?'Practicar':'Refuerzo';
+    return `<div class="heat-cell" style="background:${c.bg};border-color:${c.border}" title="${r.correct} correctas, ${r.wrong} incorrectas, ${r.total} total. ${insight}.">
+      <span style="color:${c.textColor}">${pct}%</span>
+      <span class="sub">${r.correct}/${r.total}</span>
+      <span class="heat-insight">${insight}</span>
+    </div>`;
+  }
+
+  const headerCells=ALL_OPS.map(op=>`<th title="${OP_NAMES[op]}">${OP_ICONS[op]} ${op}</th>`).join('');
+
+  const rows=students.map(st=>{
+    const av=avatarHtml(st.name);
+    const initials=st.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+    const cells=ALL_OPS.map(op=>`<td>${cellHtml(st.opAgg[op])}</td>`).join('');
+    const avgTxt=st.avgPct!==null?`<span class="${pctClass(st.avgPct)}">${st.avgPct}%</span>`:'<span style="color:#475569">—</span>';
+    return `<tr>
+      <td>
+        <div class="heat-name-cell" onclick="showStudent('${esc(st.name)}')">
+          <div class="heat-avatar">${av||initials}</div>
+          <div>
+            <div style="font-weight:700">${esc(st.name)}</div>
+            ${st.grade?'<div style="font-size:10px;color:#94a3b8">'+esc(st.grade)+'</div>':''}
+          </div>
+        </div>
+      </td>
+      ${cells}
+      <td>${avgTxt}</td>
+    </tr>`;
+  }).join('');
+
+  const avgRowCells=ALL_OPS.map(op=>{
+    const g=groupAgg[op];
+    return `<td>${cellHtml(g.total>0?g:null)}</td>`;
+  }).join('');
+  const groupPcts=ALL_OPS.map(op=>groupAgg[op].total>0?(groupAgg[op].correct/groupAgg[op].total)*100:null).filter(p=>p!==null);
+  const groupAvg=groupPcts.length?Math.round(groupPcts.reduce((a,b)=>a+b,0)/groupPcts.length):null;
+  const groupAvgTxt=groupAvg!==null?`<span class="${pctClass(groupAvg)}">${groupAvg}%</span>`:'—';
+
+  wrap.innerHTML=`
+    <div class="heat-legend">
+      <span><span class="dot" style="background:#f87171"></span>🔴 &lt;50%</span>
+      <span><span class="dot" style="background:#fbbf24"></span>🟡 50-79%</span>
+      <span><span class="dot" style="background:#34d399"></span>🟢 80%+</span>
+      <span><span class="dot" style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15)"></span>⬜ Sin datos</span>
+    </div>
+    <div class="heat-wrap">
+      <table class="heat-table">
+        <thead><tr>
+          <th class="heat-th-name">Alumno</th>
+          ${headerCells}
+          <th>Promedio</th>
+        </tr></thead>
+        <tbody>
+          ${rows}
+          <tr class="heat-row-avg">
+            <td style="font-weight:700;color:#94a3b8">📊 Promedio del grupo</td>
+            ${avgRowCells}
+            <td>${groupAvgTxt}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>`;
+}
+
+// ── Detalle por tabla (para modal y pruebas) ─────────────
+function buildTableDetailHtml(tblDetailAgg){
+  const toDigitBucket=raw=>{
+    const digits=String(Math.abs(parseInt(raw,10)||0)).length;
+    return String(Math.max(1,Math.min(6,digits)));
+  };
+  // Solo muestra operaciones que tienen datos por tabla
+  const opsWithData=ALL_OPS.filter(op=>{
+    const d=tblDetailAgg[op];
+    return d&&Object.keys(d).some(t=>d[t].total>0);
+  });
+  if(!opsWithData.length) return '';
+
+  const sections=opsWithData.map(op=>{
+    const c=OP_COLORS[op];
+    const rawTableData=tblDetailAgg[op];
+    if(currentTab==='modo-operaciones'&&op==='×'){
+      const multBuckets=Object.entries(rawTableData||{}).reduce((acc,[rawKey,stats])=>{
+        const bucket=String(Math.max(1,Math.min(3,String(Math.abs(parseInt(rawKey,10)||0)).length)));
+        if(!acc[bucket]) acc[bucket]={correct:0,wrong:0,timeout:0,total:0};
+        acc[bucket].correct+=(stats?.correct||0);
+        acc[bucket].wrong+=(stats?.wrong||0);
+        acc[bucket].timeout+=(stats?.timeout||0);
+        acc[bucket].total+=(stats?.total||0);
+        return acc;
+      },{});
+      const multCells=[1,2,3].map(n=>{
+        const r=multBuckets[String(n)];
+        if(!r||!r.total){
+          return `<div class="tbl-cell" style="opacity:.4;border-style:dashed">
+            <div class="tbl-cell-num">${n} cifra${n!==1?'s':''}</div>
+            <div class="tbl-cell-pct" style="font-size:14px;color:#64748b">—</div>
+            <div class="tbl-cell-sub">Sin datos</div>
+          </div>`;
+        }
+        const pct=Math.round((r.correct/r.total)*100);
+        const alpha=0.08+pct/100*0.25;
+        const bg=`rgba(${c.bar.replace(/[^\d,]/g,'').split(',').slice(0,3).join(',')},${alpha.toFixed(2)})`;
+        const borderAlpha=0.15+pct/100*0.5;
+        const border=`rgba(${c.bar.replace(/[^\d,]/g,'').split(',').slice(0,3).join(',')},${borderAlpha.toFixed(2)})`;
+        return `<div class="tbl-cell" style="background:${bg};border-color:${border}" title="Multiplicando de ${n} cifra${n!==1?'s':''}: ${r.correct}✓ ${r.wrong}✗ de ${r.total}">
+          <div class="tbl-cell-num">${n} cifra${n!==1?'s':''}</div>
+          <div class="tbl-cell-pct ${pctClass(pct)}" style="font-size:14px">${pct}%</div>
+          <div class="tbl-cell-sub">${r.correct}/${r.total}</div>
+        </div>`;
+      }).join('');
+      const multiplierCells=[1,2].map(n=>`<div class="tbl-cell" style="opacity:.4;border-style:dashed" title="El historial actual no guarda la cifra del multiplicador en Modo Operaciones.">
+          <div class="tbl-cell-num">${n} cifra${n!==1?'s':''}</div>
+          <div class="tbl-cell-pct" style="font-size:14px;color:#64748b">—</div>
+          <div class="tbl-cell-sub">Pendiente</div>
+        </div>`).join('');
+      return `<div style="margin-bottom:10px">
+        <div style="font-size:10px;font-weight:700;color:${c.bar};text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">${OP_ICONS[op]} ${OP_NAMES[op]} — vista por cifras</div>
+        <div style="font-size:10px;font-weight:700;color:#cbd5e1;margin:8px 0 6px">Multiplicando (1 a 3 cifras)</div>
+        <div class="tbl-detail-grid" style="grid-template-columns:repeat(3,minmax(0,1fr))">${multCells}</div>
+        <div style="font-size:10px;font-weight:700;color:#cbd5e1;margin:10px 0 6px">Multiplicador (1 a 2 cifras)</div>
+        <div class="tbl-detail-grid" style="grid-template-columns:repeat(2,minmax(0,1fr));max-width:240px">${multiplierCells}</div>
+        <div style="font-size:10px;color:#94a3b8;line-height:1.45;margin-top:8px">Vista previa: el historial actual sí guarda el multiplicando en <code>tableDetail</code>, pero todavía no persiste la cifra del multiplicador para poblar ese bloque automáticamente.</div>
+      </div>`;
+    }
+    const usesDigits=op==='+'||op==='−';
+    const bucketLabel=usesDigits?'cantidad de cifras':'tabla';
+    const tableData=usesDigits
+      ? Object.entries(rawTableData||{}).reduce((acc,[rawKey,stats])=>{
+          const bucket=toDigitBucket(rawKey);
+          if(!acc[bucket]) acc[bucket]={correct:0,wrong:0,timeout:0,total:0};
+          acc[bucket].correct+=(stats?.correct||0);
+          acc[bucket].wrong+=(stats?.wrong||0);
+          acc[bucket].timeout+=(stats?.timeout||0);
+          acc[bucket].total+=(stats?.total||0);
+          return acc;
+        },{})
+      : rawTableData;
+    // Ordenar tablas numéricamente
+    const tables=Object.keys(tableData).map(Number).sort((a,b)=>a-b);
+    const cells=tables.map(tbl=>{
+      const r=tableData[tbl];
+      if(!r||r.total===0) return '';
+      const pct=Math.round((r.correct/r.total)*100);
+      const alpha=0.08+pct/100*0.25;
+      const bg=`rgba(${c.bar.replace(/[^\d,]/g,'').split(',').slice(0,3).join(',')},${alpha.toFixed(2)})`;
+      const borderAlpha=0.15+pct/100*0.5;
+      const border=`rgba(${c.bar.replace(/[^\d,]/g,'').split(',').slice(0,3).join(',')},${borderAlpha.toFixed(2)})`;
+      const bucketTitle=usesDigits?`${tbl} cifra${tbl!==1?'s':''}`:`${op}${tbl}`;
+      const hoverLabel=usesDigits?`${OP_NAMES[op]} de ${tbl} cifra${tbl!==1?'s':''}`:`${OP_NAMES[op]} del ${tbl}`;
+      return `<div class="tbl-cell" style="background:${bg};border-color:${border}" title="${hoverLabel}: ${r.correct}✓ ${r.wrong}✗ de ${r.total}">
+        <div class="tbl-cell-num">${bucketTitle}</div>
+        <div class="tbl-cell-pct ${pctClass(pct)}" style="font-size:14px">${pct}%</div>
+        <div class="tbl-cell-sub">${r.correct}/${r.total}</div>
+      </div>`;
+    }).join('');
+    return `<div style="margin-bottom:10px">
+      <div style="font-size:10px;font-weight:700;color:${c.bar};text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">${OP_ICONS[op]} ${OP_NAMES[op]} — por ${bucketLabel}</div>
+      <div class="tbl-detail-grid">${cells}</div>
+    </div>`;
+  }).join('');
+
+  return `<p style="font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;margin:16px 0 8px">📊 Desglose por tabla y cifras</p>
+  ${sections}`;
+}
+
+function getStudentModalContext(){
+  const baseSource=(currentDetailRows&&currentDetailRows.length)?currentDetailRows:data;
+  if(currentTab==='partidas'){
+    return {
+      title:'👤 Ficha del alumno',
+      chip:'Vista Individual',
+      summaryLabel:'Promedio en individual',
+      gamesLabel:'Intentos visibles',
+      source:baseSource
+    };
+  }
+  if(currentTab==='multijugador'){
+    return {
+      title:'👤 Ficha multijugador',
+      chip:'Vista Multijugador',
+      summaryLabel:'Promedio en multijugador',
+      gamesLabel:'Partidas visibles',
+      source:baseSource
+    };
+  }
+  if(currentTab==='alumnos'){
+    return {
+      title:'👤 Ficha del alumno',
+      chip:'Vista Por Alumno',
+      summaryLabel:'Promedio filtrado',
+      gamesLabel:'Partidas usadas',
+      source:baseSource
+    };
+  }
+  if(currentTab==='modo-operaciones'){
+    return {
+      title:'⚙️ Ficha de operaciones',
+      chip:'Modo Operaciones',
+      summaryLabel:'Promedio en operaciones',
+      gamesLabel:'Partidas diagnosticadas',
+      source:baseSource
+    };
+  }
+  if(currentTab==='operaciones'){
+    return {
+      title:'📊 Ficha por operación',
+      chip:'Vista Por Operación',
+      summaryLabel:'Promedio en esta vista',
+      gamesLabel:'Partidas consideradas',
+      source:baseSource
+    };
+  }
+  if(currentTab==='calor'){
+    return {
+      title:'🗺️ Ficha de rendimiento',
+      chip:'Mapa de Calor',
+      summaryLabel:'Promedio en mapa',
+      gamesLabel:'Partidas base',
+      source:baseSource
+    };
+  }
+  if(currentTab==='pruebas'){
+    return {
+      title:'📝 Ficha de prueba',
+      chip:'Vista Pruebas',
+      summaryLabel:'Promedio en pruebas',
+      gamesLabel:'Resultados visibles',
+      source:data.filter(d=>d.isExam)
+    };
+  }
+  if(currentTab==='salon'){
+    return {
+      title:'🏫 Ficha del alumno',
+      chip:'Mi Salon',
+      summaryLabel:'Promedio general',
+      gamesLabel:'Partidas registradas',
+      source:data
+    };
+  }
+  return {
+    title:'👤 Ficha del alumno',
+    chip:'Vista general',
+    summaryLabel:'Promedio general',
+    gamesLabel:'Partidas',
+    source:baseSource
+  };
+}
+
+// ── Modal detalle alumno ──────────────────────────────────
+function showStudent(name){
+  const modalContext=getStudentModalContext();
+  const source=modalContext.source||data;
+  const games=source.filter(d=>d.name===name).sort((a,b)=>b.id-a.id);
+  if(!games.length) return;
+  const opAgg={};
+  const tblDetailAgg={};  // {op: {tabla: {correct,wrong,timeout,total}}}
+  games.forEach(d=>{
+    Object.keys(d.tblResults||{}).forEach(op=>{
+      if(!opAgg[op]) opAgg[op]={correct:0,wrong:0,timeout:0,total:0};
+      const r=d.tblResults[op];
+      opAgg[op].correct+=(r.correct||0); opAgg[op].wrong+=(r.wrong||0);
+      opAgg[op].timeout+=(r.timeout||0); opAgg[op].total+=(r.total||0);
+    });
+    Object.keys(d.tableDetail||{}).forEach(op=>{
+      if(!tblDetailAgg[op]) tblDetailAgg[op]={};
+      Object.keys(d.tableDetail[op]).forEach(tbl=>{
+        if(!tblDetailAgg[op][tbl]) tblDetailAgg[op][tbl]={correct:0,wrong:0,timeout:0,total:0};
+        const r=d.tableDetail[op][tbl];
+        tblDetailAgg[op][tbl].correct+=(r.correct||0);
+        tblDetailAgg[op][tbl].wrong+=(r.wrong||0);
+        tblDetailAgg[op][tbl].timeout+=(r.timeout||0);
+        tblDetailAgg[op][tbl].total+=(r.total||0);
+      });
+    });
+  });
+  const modalTotal=games.reduce((s,g)=>s+(g.score||0),0);
+  const avgPct=Math.round(games.reduce((s,g)=>s+(g.pct||0),0)/games.length);
+  const bestScore=Math.max(...games.map(g=>g.score||0));
+  const bestStreak=Math.max(...games.map(g=>g.streak||0));
+  const latest=games[0];
+  const oldest=games[games.length-1];
+  const chrono=[...games].reverse();
+  const earlyCount=Math.min(3,chrono.length);
+  const recentCount=Math.min(3,games.length);
+  const firstAvg=Math.round(chrono.slice(0,earlyCount).reduce((s,g)=>s+(g.pct||0),0)/earlyCount);
+  const lastAvg=Math.round(games.slice(0,recentCount).reduce((s,g)=>s+(g.pct||0),0)/recentCount);
+  const trendDelta=lastAvg-firstAvg;
+  const trendLabel=trendDelta>=8?'Subiendo':trendDelta<=-8?'Bajando':'Estable';
+  const trendTone=trendDelta>=8?'#34d399':trendDelta<=-8?'#f87171':'#fbbf24';
+  const trendText=trendDelta>=8?`+${trendDelta}% en sus ultimas partidas`:trendDelta<=-8?`${trendDelta}% frente a sus primeras partidas`:`Variacion de ${trendDelta>=0?'+':''}${trendDelta}%`;
+  const modeCounts={solo:0,duel:0,online:0,exam:0};
+  games.forEach(g=>{
+    if(g.isExam) modeCounts.exam++;
+    else if(isClassicSoloRow(g)) modeCounts.solo++;
+    else if(g.gameMode==='duel') modeCounts.duel++;
+    else if(g.gameMode==='online') modeCounts.online++;
+  });
+  const dominantModeKey=Object.entries(modeCounts).sort((a,b)=>b[1]-a[1])[0]?.[0]||'solo';
+  const dominantModeLabel=dominantModeKey==='exam'?'📝 Prueba':getModePresentation({gameMode:dominantModeKey,isExam:false}).label;
+  const av=avatarHtml(name);
+  const initials=name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+  const modalBadge=avgPct>=85?'Domina':avgPct>=70?'Constante':avgPct>=50?'En progreso':'Apoyo';
+  const tableSectionsHtml=buildTableDetailHtml(tblDetailAgg);
+  const opRankings=ALL_OPS.map(op=>{
+    const r=opAgg[op];
+    if(!r||!r.total) return null;
+    return {op,pct:Math.round((r.correct/r.total)*100),total:r.total};
+  }).filter(Boolean).sort((a,b)=>b.pct-a.pct||b.total-a.total);
+  const bestOp=opRankings[0];
+  const weakOp=opRankings[opRankings.length-1];
+
+  const opDetailHtml=ALL_OPS.map(op=>{
+    const r=opAgg[op];
+    const c=OP_COLORS[op];
+    if(!r||r.total===0){
+      return `<div class="op-detail-row" style="opacity:.3">
+        <div class="op-detail-top">
+          <span class="op-detail-icon">${OP_ICONS[op]}</span>
+          <div class="op-detail-info">
+            <div class="op-detail-name">${OP_NAMES[op]}</div>
+            <div class="op-detail-pct" style="color:#64748b;font-size:18px">Sin datos</div>
+            <div class="op-detail-sub">Todavia no hay respuestas registradas en esta operacion.</div>
+          </div>
+        </div>
+      </div>`;
+    }
+    const pct=Math.round((r.correct/r.total)*100);
+    const insight=pct>=85?'Fortaleza clara':pct>=70?'Buen dominio':pct>=50?'Conviene practicar':'Area de refuerzo';
+    return `<div class="op-detail-row" style="border-left-color:${c.bar}">
+      <div class="op-detail-top">
+        <span class="op-detail-icon">${OP_ICONS[op]}</span>
+        <div class="op-detail-info">
+          <div class="op-detail-name">${OP_NAMES[op]}</div>
+          <div class="op-detail-pct ${pctClass(pct)}">${pct}%</div>
+          <div class="op-detail-sub">${insight}</div>
+        </div>
+      </div>
+      <div class="op-detail-kpi">
+        <div class="op-detail-mini"><strong style="color:#34d399">${r.correct}</strong><span>Correctas</span></div>
+        <div class="op-detail-mini"><strong style="color:#f87171">${r.wrong}</strong><span>Incorrectas</span></div>
+        <div class="op-detail-mini"><strong style="color:#fb923c">${r.timeout}</strong><span>Sin tiempo</span></div>
+      </div>
+      <div class="op-detail-sub">de ${r.total} respuestas totales</div>
+      <div class="op-detail-bar"><div class="op-detail-bar-fill" style="width:${pct}%;background:${c.bar}"></div></div>
+    </div>`;
+  }).join('');
+
+  const historyHtml=games.map(d=>{
+    const ops=Object.keys(d.tblResults||{}).filter(k=>d.tblResults[k].total>0);
+    const opStr=ops.map(op=>opBadge(op)).join('');
+    const incMark=d.complete===false?'<span class="incomplete-badge">Incompleta</span>':'';
+    const note=d.isExam?'Resultado de prueba registrada':d.gameMode==='online'&&d.vs?`Enfrentamiento contra ${esc(d.vs)}`:d.gameType?`Tipo: ${esc(d.gameType)}`:'Partida registrada';
+    return `<div class="history-timeline">
+      <div class="hist-row" style="${d.complete===false?'opacity:.72':''}">
+        <div class="history-main">
+          <div class="history-dot"></div>
+          <div class="history-content">
+            <div class="history-top">
+              <div class="history-date">${d.date} · ${d.time}</div>
+              <div class="history-meta">
+                <span class="mode-badge ${getModePresentation(d).cls}">${getModePresentation(d).label}</span>
+                ${incMark}
+                ${d.streak>0?`<span class="history-pill" style="color:#fdba74">🔥 ${d.streak}</span>`:''}
+              </div>
+            </div>
+            <div class="history-stats">
+              <span class="history-pill" style="color:#c4b5fd">${(d.score||0).toLocaleString()} pts</span>
+              <span class="history-pill ${pctClass(d.pct)}">${d.pct}% acierto</span>
+              <span class="history-pill" style="color:#94a3b8">${d.correct}/${d.total} resp.</span>
+            </div>
+            <div>${opStr||'<span class="history-note">Sin operaciones visibles</span>'}</div>
+            <div class="history-note">${note}</div>
+          </div>
+        </div>
+        <button class="del-game-btn no-print" onclick="deleteGameFromModal(${d.id},'${esc(name)}')" title="Eliminar esta partida">✕</button>
+      </div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('modalTitle').innerHTML=modalContext.title;
+
+  document.getElementById('modalBody').innerHTML=
+    `<div class="modal-hero">
+      <div class="modal-header">
+        <div class="modal-student">
+          <div class="modal-avatar${av?' has-avatar':''}">${av||initials}</div>
+          <div>
+            <div class="modal-name">${esc(name)}</div>
+            <div class="modal-subline">
+              <span class="modal-chip">${esc(latest.grade||'Sin grado')}</span>
+              <span class="modal-chip">${esc(modalContext.chip)}</span>
+              <span class="modal-chip">${modalBadge}</span>
+              <span class="modal-chip">${dominantModeLabel}</span>
+              <span class="modal-chip">Desde ${esc(oldest.date||'—')}</span>
+              ${bestStreak>0?`<span class="modal-chip">🔥 ${bestStreak} mejor racha</span>`:''}
+            </div>
+          </div>
+        </div>
+        <div class="modal-actions no-print">
+          <button class="btn btn-purple" style="font-size:11px;padding:6px 10px" onclick="printStudentReport()">🖨️ Imprimir ficha</button>
+          <button class="btn btn-red" style="font-size:11px;padding:6px 10px" onclick="askClearStudent('${esc(name).replace(/'/g,"\\'")}')">🗑 Eliminar</button>
+        </div>
+      </div>
+      <div class="modal-highlight-grid">
+        <div class="modal-highlight"><strong style="color:#fcd34d">${modalTotal.toLocaleString()}</strong><span>Score total</span></div>
+        <div class="modal-highlight"><strong style="color:#c4b5fd">${bestScore.toLocaleString()}</strong><span>Mejor puntaje</span></div>
+        <div class="modal-highlight"><strong class="${pctClass(avgPct)}">${avgPct}%</strong><span>${esc(modalContext.summaryLabel)}</span></div>
+        <div class="modal-highlight"><strong style="color:#93c5fd">${games.length}</strong><span>${esc(modalContext.gamesLabel)}</span></div>
+      </div>
+      <div class="modal-mobile-note history-note">Desliza para revisar progreso, operaciones, tablas e historial completo.</div>
+    </div>
+    <div class="modal-insights">
+      <div class="modal-insight">
+        <div class="modal-insight-label">Tendencia reciente</div>
+        <div class="modal-insight-main" style="color:${trendTone}">${trendLabel}</div>
+        <div class="modal-insight-sub">${trendText}. Primer promedio: ${firstAvg}% · Ultimo promedio: ${lastAvg}%.</div>
+      </div>
+      <div class="modal-insight">
+        <div class="modal-insight-label">Fortaleza principal</div>
+        <div class="modal-insight-main">${bestOp?`${OP_ICONS[bestOp.op]} ${OP_NAMES[bestOp.op]}`:'Sin datos'}</div>
+        <div class="modal-insight-sub">${bestOp?`${bestOp.pct}% de acierto en ${bestOp.total} respuestas.`:'Todavia no hay suficiente informacion para detectar una fortaleza.'}</div>
+      </div>
+      <div class="modal-insight">
+        <div class="modal-insight-label">Area a reforzar</div>
+        <div class="modal-insight-main">${weakOp?`${OP_ICONS[weakOp.op]} ${OP_NAMES[weakOp.op]}`:'Sin datos'}</div>
+        <div class="modal-insight-sub">${weakOp?`${weakOp.pct}% de acierto. Conviene practicarla mas.`:'Aun no se puede identificar un area de apoyo.'}</div>
+      </div>
+    </div>
+    <div class="modal-section-title">📈 Progreso a través del tiempo</div>
+    <div class="modal-chart-card"><canvas id="modalProgressChart" height="180"></canvas></div>
+    <div class="modal-section-title">🔢 Rendimiento por operación</div>
+    <div class="op-detail-grid">${opDetailHtml}</div>
+    ${tableSectionsHtml?`<div class="modal-section-title">📚 Desglose por tabla</div><div class="table-detail-shell">${tableSectionsHtml}</div>`:''}
+    <div class="modal-section-title">📋 Historial de partidas</div>
+    <div class="history-list">${historyHtml}</div>`;
+  document.getElementById('studentModal').classList.add('open');
+  renderModalProgressChart(games);
+}
+function closeModal(){ document.getElementById('studentModal').classList.remove('open'); }
+document.getElementById('studentModal').addEventListener('click',e=>{ if(e.target===e.currentTarget) closeModal(); });
+
+// ── Export CSV ────────────────────────────────────────────
+function csvCell(v){
+  const s=String(v??'');
+  return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s;
+}
+function getExportRows(){
+  if(currentTab==='partidas'||currentTab==='multijugador'||currentTab==='alumnos'){
+    return [...currentDetailRows];
+  }
+  if(currentTab==='pruebas') return data.filter(d=>d.isExam);
+  return [...data];
+}
+function exportCSV(){
+  const rows=getExportRows();
+  if(!rows.length){ alert('No hay datos para exportar con los filtros actuales.'); return; }
+  const opNames={'×':'Multiplicación','+':'Suma','−':'Resta','÷':'División'};
+  const opHeaders=ALL_OPS.flatMap(op=>[
+    `${opNames[op]||op} % Aciertos`,
+    `${opNames[op]||op} Correctas`,
+    `${opNames[op]||op} Total`
+  ]);
+  const header=['Id','Nombre','Grado','Puntaje','% Aciertos','Correctas','Incorrectas','Sin Tiempo','Racha Max','Modo','Modo Multijugador','Tipo','Dificultad',...opHeaders,'Fecha','Hora'];
+  const csvRows=rows.map(d=>{
+    const opCols=ALL_OPS.flatMap(op=>{
+      const r=d.tblResults&&d.tblResults[op];
+      if(!r||r.total===0) return ['','',''];
+      return [Math.round((r.correct/r.total)*100)+'%',r.correct,r.total];
+    });
+    return [
+      d.id||'',d.name||'',d.grade||'',d.score||0,d.pct||0,d.correct||0,d.wrong||0,d.timeout||0,d.streak||0,
+      d.isExam?'prueba':(d.gameMode||''),d.mpGameMode||'',d.gameType||'',d.difficulty||'',
+      ...opCols,d.date||'',d.time||''
+    ].map(csvCell).join(',');
+  });
+  const csv='\uFEFF'+header.map(csvCell).join(',')+'\n'+csvRows.join('\n');
+  const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  const stamp=new Date().toISOString().slice(0,19).replace(/[:T]/g,'-');
+  a.href=url;
+  a.download=`math-attack-ranking-filtrado-${stamp}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
+function askImportCSV(){
+  document.getElementById('importCsvInput').click();
+}
+function parseCSV(text){
+  text=String(text||'').replace(/^\uFEFF/,'');
+  const rows=[]; let row=[], cell='', q=false;
+  for(let i=0;i<text.length;i++){
+    const ch=text[i], next=text[i+1];
+    if(q){
+      if(ch==='"'&&next==='"'){ cell+='"'; i++; }
+      else if(ch==='"') q=false;
+      else cell+=ch;
+    }else{
+      if(ch==='"') q=true;
+      else if(ch===','){ row.push(cell); cell=''; }
+      else if(ch==='\n'){ row.push(cell); rows.push(row); row=[]; cell=''; }
+      else if(ch!=='\r') cell+=ch;
+    }
+  }
+  row.push(cell);
+  if(row.length>1||row[0]) rows.push(row);
+  return rows;
+}
+function csvNum(v){
+  const n=Number(String(v??'').replace(/[% ,]/g,''));
+  return Number.isFinite(n)?n:0;
+}
+function csvImportRecord(obj){
+  const get=(...names)=>{
+    for(const n of names){ if(obj[n]!==undefined) return obj[n]; }
+    return '';
+  };
+  const mode=get('Modo','gameMode');
+  const rec={
+    id:get('Id','ID','id'),
+    name:get('Nombre','Alumno','name'),
+    grade:get('Grado','grade'),
+    score:csvNum(get('Puntaje','Score','score')),
+    pct:csvNum(get('% Aciertos','Aciertos %','pct')),
+    correct:csvNum(get('Correctas','Correctos','correct')),
+    wrong:csvNum(get('Incorrectas','Errores','wrong')),
+    timeout:csvNum(get('Sin Tiempo','Timeout','timeout')),
+    streak:csvNum(get('Racha Max','Racha','streak')),
+    gameMode:mode==='prueba'?'solo':mode,
+    mpGameMode:get('Modo Multijugador','mpGameMode'),
+    gameType:get('Tipo','gameType'),
+    difficulty:get('Dificultad','difficulty'),
+    date:get('Fecha','date'),
+    time:get('Hora','time'),
+    isExam:mode==='prueba',
+    tblResults:{}
+  };
+  const opMap=[
+    ['×','Multiplicacion','Multiplicación','×'],
+    ['+','Suma','+'],
+    ['−','Resta','−'],
+    ['÷','Division','División','÷']
+  ];
+  opMap.forEach(([op,...labels])=>{
+    let total=0, correct=0;
+    for(const label of labels){
+      total=csvNum(get(`${label} Total`));
+      correct=csvNum(get(`${label} Correctas`));
+      if(total>0||correct>0) break;
+    }
+    if(total>0||correct>0) rec.tblResults[op]={correct,wrong:Math.max(0,total-correct),timeout:0,total};
+  });
+  rec.total=rec.correct+rec.wrong+rec.timeout;
+  return rec;
+}
+async function importCSVFile(file){
+  if(!file) return;
+  const password=prompt('Contraseña de administrador para importar ranking:');
+  if(password===null) return;
+  try{
+    const table=parseCSV(await file.text());
+    if(table.length<2){ alert('El archivo no tiene partidas para importar.'); return; }
+    const headers=table[0].map(h=>h.trim());
+    const rows=table.slice(1).map(cols=>{
+      const obj={}; headers.forEach((h,i)=>obj[h]=cols[i]??'');
+      return csvImportRecord(obj);
+    }).filter(r=>r.name);
+    if(!rows.length){ alert('No se encontraron partidas validas en el archivo.'); return; }
+    const res=await fetch('/api/ranking/import',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password,rows})});
+    const out=await res.json();
+    if(!out.ok){ alert(out.error||'No se pudo importar el archivo.'); return; }
+    alert(`Importacion completada.\nNuevas: ${out.added}\nDuplicadas omitidas: ${out.skipped}`);
+    await load();
+  }catch(e){
+    alert('Error importando CSV: '+(e&&e.message?e.message:e));
+  }
+}
+
+// ── Borrar todo ───────────────────────────────────────────
+function askClear(){ document.getElementById('pwdInput').value=''; document.getElementById('pwdErr').textContent=''; document.getElementById('pwdModal').classList.add('open'); setTimeout(()=>document.getElementById('pwdInput').focus(),50); }
+function closePwd(){ document.getElementById('pwdModal').classList.remove('open'); }
+async function confirmClear(){
+  const pwd=document.getElementById('pwdInput').value;
+  if(!pwd){ document.getElementById('pwdErr').textContent='Ingresa la contraseña'; return; }
+  const r=await fetch('/api/ranking/clear',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:pwd})});
+  const res=await r.json();
+  if(!res.ok){ document.getElementById('pwdErr').textContent='Contraseña incorrecta'; return; }
+  closePwd();
+  data=[]; document.getElementById('topCards').innerHTML='';
+  document.getElementById('mainContent').innerHTML='<div class="empty"><span>🏆</span>Ranking borrado</div>';
+  document.getElementById('refreshInfo').textContent='0 partidas';
+}
+
+// ── Eliminar partida individual ───────────────────────
+async function deleteGame(id){
+  if(!confirm('¿Eliminar esta partida del registro?')) return;
+  const r=await fetch('/api/ranking/delete-game',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id})});
+  const res=await r.json();
+  if(res.ok){
+    data=data.filter(d=>d.id!==id);
+    selectedGameIds.delete(id);
+    renderAll();
+  }
+}
+async function deleteSelectedGames(){
+  const ids=getVisibleSelectedIds();
+  if(!ids.length){ alert('Selecciona al menos un registro visible.'); return; }
+  if(!confirm(`¿Eliminar ${ids.length} registro${ids.length!==1?'s':''} seleccionados?`)) return;
+  let deleted=0;
+  for(const id of ids){
+    const r=await fetch('/api/ranking/delete-game',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id})});
+    const res=await r.json();
+    if(res.ok){
+      deleted++;
+      data=data.filter(d=>d.id!==id);
+      selectedGameIds.delete(id);
+    }
+  }
+  if(!deleted){ alert('No se pudo eliminar la selección.'); return; }
+  renderAll();
+}
+async function deleteGameFromModal(id,name){
+  if(!confirm('¿Eliminar esta partida del registro?')) return;
+  const r=await fetch('/api/ranking/delete-game',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id})});
+  const res=await r.json();
+  if(res.ok){
+    data=data.filter(d=>d.id!==id);
+    selectedGameIds.delete(id);
+    currentDetailRows=currentDetailRows.filter(d=>d.id!==id);
+    const source=(getStudentModalContext().source||data).filter(d=>d.id!==id);
+    const remaining=source.filter(d=>d.name===name);
+    if(remaining.length===0){ closeModal(); renderAll(); }
+    else{ showStudent(name); }
+  }
+}
+
+// ── Borrar historial alumno ───────────────────────────────
+let _delStudentName='';
+function askClearStudent(name){
+  _delStudentName=name;
+  document.getElementById('delStudentName').textContent=name;
+  document.getElementById('pwdStudentInput').value='';
+  document.getElementById('pwdStudentErr').textContent='';
+  document.getElementById('pwdStudentModal').classList.add('open');
+  setTimeout(()=>document.getElementById('pwdStudentInput').focus(),50);
+}
+function closeStudentPwd(){ document.getElementById('pwdStudentModal').classList.remove('open'); }
+async function confirmClearStudent(){
+  const pwd=document.getElementById('pwdStudentInput').value;
+  if(!pwd){ document.getElementById('pwdStudentErr').textContent='Ingresa la contraseña'; return; }
+  const r=await fetch('/api/ranking/clear-student',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:pwd,name:_delStudentName})});
+  const res=await r.json();
+  if(!res.ok){ document.getElementById('pwdStudentErr').textContent='Contraseña incorrecta'; return; }
+  closeStudentPwd(); closeModal();
+  await load();
+}
+
+// ── Gráfica de progreso + impresión dentro del modal de alumno ──
+let _modalChart=null;
+function renderModalProgressChart(games){
+  if(_modalChart){ try{_modalChart.destroy()}catch(e){} _modalChart=null; }
+  const canvas=document.getElementById('modalProgressChart');
+  if(!canvas) return;
+  const chrono=[...games].reverse(); // de más antigua a más reciente
+  const labels=chrono.map((d,i)=>'#'+(i+1));
+  const pctSeries=chrono.map(d=>Math.max(0,Math.min(100,d.pct||0)));
+  const scoreSeries=chrono.map(d=>d.score||0);
+  const avgPct=Math.round(pctSeries.reduce((sum,val)=>sum+val,0)/Math.max(1,pctSeries.length));
+  const trendSeries=pctSeries.map((_,i,arr)=>{
+    const start=Math.max(0,i-1);
+    const slice=arr.slice(start,Math.min(arr.length,i+2));
+    return Math.round(slice.reduce((sum,val)=>sum+val,0)/slice.length);
+  });
+  const maxScore=Math.max(...scoreSeries,0);
+  Chart.defaults.color='#94a3b8';
+  Chart.defaults.font={family:'Segoe UI',size:11};
+  const gridColor='rgba(255,255,255,.06)';
+  _modalChart=new Chart(canvas,{
+    type:'bar',
+    data:{
+      labels,
+      datasets:[
+        {
+          type:'bar',
+          label:'Puntaje',
+          data:scoreSeries,
+          yAxisID:'yScore',
+          backgroundColor:scoreSeries.map(score=>score===maxScore&&maxScore>0?'rgba(251,191,36,.75)':'rgba(34,211,238,.28)'),
+          borderColor:scoreSeries.map(score=>score===maxScore&&maxScore>0?'#fbbf24':'rgba(34,211,238,.65)'),
+          borderWidth:1,
+          borderRadius:8,
+          maxBarThickness:24,
+          order:2
+        },
+        {
+          type:'line',
+          label:'% Acierto',
+          data:pctSeries,
+          yAxisID:'yPct',
+          borderColor:'#a78bfa',
+          backgroundColor:'rgba(167,139,250,.18)',
+          pointBackgroundColor:'#f8fafc',
+          pointBorderColor:'#a78bfa',
+          pointBorderWidth:2,
+          pointRadius:4,
+          pointHoverRadius:5,
+          fill:true,
+          tension:.32,
+          order:0
+        },
+        {
+          type:'line',
+          label:'Tendencia corta',
+          data:trendSeries,
+          yAxisID:'yPct',
+          borderColor:'rgba(52,211,153,.9)',
+          borderDash:[6,4],
+          pointRadius:0,
+          pointHoverRadius:0,
+          fill:false,
+          tension:.25,
+          order:1
+        },
+        {
+          type:'line',
+          label:'Promedio',
+          data:labels.map(()=>avgPct),
+          yAxisID:'yPct',
+          borderColor:'rgba(148,163,184,.75)',
+          borderDash:[3,5],
+          pointRadius:0,
+          pointHoverRadius:0,
+          fill:false,
+          order:3
+        }
+      ]
+    },
+    options:{
+      responsive:true,
+      maintainAspectRatio:false,
+      animation:false, // dibujar de inmediato: si el profesor imprime la ficha rápido, toDataURL() debe capturar el trazo completo
+      interaction:{mode:'index',intersect:false},
+      plugins:{
+        legend:{
+          display:true,
+          labels:{usePointStyle:true,boxWidth:10,boxHeight:10,padding:14}
+        },
+        tooltip:{
+          callbacks:{
+            title(items){
+              const idx=items[0]?.dataIndex??0;
+              const row=chrono[idx];
+              return `${labels[idx]} · ${row?.date||'Sin fecha'} ${row?.time||''}`.trim();
+            },
+            label(ctx){
+              const row=chrono[ctx.dataIndex];
+              if(ctx.dataset.label==='Puntaje') return `Puntaje: ${(row?.score||0).toLocaleString()} pts`;
+              if(ctx.dataset.label==='% Acierto') return `Acierto: ${row?.pct||0}% · ${row?.correct||0}/${row?.total||0} resp.`;
+              if(ctx.dataset.label==='Tendencia corta') return `Tendencia corta: ${ctx.parsed.y}%`;
+              if(ctx.dataset.label==='Promedio') return `Promedio visible: ${avgPct}%`;
+              return `${ctx.dataset.label}: ${ctx.parsed.y}`;
+            },
+            afterBody(items){
+              const idx=items[0]?.dataIndex;
+              const row=idx===undefined?null:chrono[idx];
+              if(!row) return [];
+              const extra=[];
+              if(row.streak>0) extra.push(`Racha: ${row.streak}`);
+              if(row.gameType) extra.push(`Tipo: ${row.gameType}`);
+              return extra;
+            }
+          }
+        }
+      },
+      scales:{
+        x:{
+          grid:{display:false},
+          ticks:{
+            color:'#cbd5e1',
+            callback:(value,index)=>chrono[index]?.date||labels[index]
+          }
+        },
+        yPct:{
+          type:'linear',
+          position:'left',
+          grid:{color:gridColor},
+          min:0,
+          max:100,
+          ticks:{callback:v=>v+'%'},
+          title:{display:true,text:'% Acierto'}
+        },
+        yScore:{
+          type:'linear',
+          position:'right',
+          grid:{drawOnChartArea:false},
+          beginAtZero:true,
+          ticks:{callback:v=>Number(v).toLocaleString()},
+          title:{display:true,text:'Puntaje'}
+        }
+      }
+    }
+  });
+}
+// Abre una ventana aparte con la previsualización de la ficha (no bloquea la página
+// principal como hacía window.print() directo, y funciona sin impresora conectada —
+// el usuario puede usar "Microsoft Print to PDF" o simplemente cerrar la vista previa).
+function printStudentReport(){
+  const noPrintBtn=/<button[^>]*class="[^"]*no-print[^"]*"[\s\S]*?<\/button>/g;
+  const canvas=document.getElementById('modalProgressChart');
+  const chartImg=canvas?canvas.toDataURL('image/png'):'';
+  const titleHtml=document.getElementById('modalTitle').innerHTML.replace(noPrintBtn,'');
+  let bodyHtml=document.getElementById('modalBody').innerHTML.replace(noPrintBtn,'');
+  if(chartImg) bodyHtml=bodyHtml.replace(/<canvas id="modalProgressChart"[^>]*><\/canvas>/,`<img src="${chartImg}" style="width:100%;display:block">`);
+  const styleTag=document.querySelector('style').outerHTML;
+  const w=window.open('','_blank');
+  if(!w){ alert('El navegador bloqueó la ventana de previsualización. Permite ventanas emergentes para este sitio e intenta de nuevo.'); return; }
+  w.document.write(`<!DOCTYPE html><html lang="es"><head><meta charset="utf-8"><title>Ficha de alumno</title>${styleTag}
+    <style>
+      body{padding:24px}
+      .modal-bg{position:static;display:block;background:transparent;padding:0}
+      .modal{max-width:680px;margin:0 auto;max-height:none;overflow:visible}
+      .preview-bar{display:flex;gap:8px;justify-content:flex-end;margin-bottom:14px}
+    </style>
+    </head><body>
+      <div class="preview-bar no-print">
+        <button class="btn btn-purple" onclick="window.print()">🖨️ Imprimir</button>
+        <button class="btn" style="background:rgba(255,255,255,.1);color:#e2e8f0" onclick="window.close()">✕ Cerrar</button>
+      </div>
+      <div class="modal-bg open"><div class="modal"><h2>${titleHtml}</h2><div>${bodyHtml}</div></div></div>
+    </body></html>`);
+  w.document.close();
+}
+
+// ── TAB 4: Gráficas ───────────────────────────────────────
+const _charts={};
+function destroyCharts(){
+  Object.values(_charts).forEach(c=>{ try{c.destroy()}catch(e){} });
+  Object.keys(_charts).forEach(k=>delete _charts[k]);
+}
+function renderGraficas(){
+  document.getElementById('topCards').innerHTML='';
+  document.getElementById('countInfo').textContent='';
+  destroyCharts();
+
+  const parseDate=s=>{ if(!s) return new Date(0); const [dd,mm,yy]=s.split('/'); return new Date(yy,mm-1,dd); };
+  const shortName=n=>(n||'').length>14?(n||'').slice(0,14)+'…':(n||'');
+  const safeAvg=(nums)=>nums.length?nums.reduce((a,b)=>a+b,0)/nums.length:0;
+  const dayCount={};
+  const dayPctAgg={};
+  data.forEach(d=>{
+    dayCount[d.date]=(dayCount[d.date]||0)+1;
+    if(!dayPctAgg[d.date]) dayPctAgg[d.date]=[];
+    dayPctAgg[d.date].push(d.pct||0);
+  });
+  const sortedDays=Object.keys(dayCount).sort((a,b)=>parseDate(a)-parseDate(b)).slice(-14);
+  const dailyAvgPct=sortedDays.map(day=>Math.round(safeAvg(dayPctAgg[day]||[])));
+
+  const opPcts=ALL_OPS.map(op=>calcOpStats(op).pct||0);
+  const opBarColors=['rgba(167,139,250,.65)','rgba(52,211,153,.65)','rgba(251,191,36,.65)','rgba(96,165,250,.65)'];
+  const opBorderColors=['#a78bfa','#34d399','#fbbf24','#60a5fa'];
+  const opCorrect=ALL_OPS.map(op=>calcOpStats(op).correct||0);
+  const opWrong=ALL_OPS.map(op=>calcOpStats(op).wrong||0);
+  const opTimeout=ALL_OPS.map(op=>calcOpStats(op).timeout||0);
+
+  const modeCounts={solo:0,duel:0,online:0,exam:0};
+  const gameTypeCounts={};
+  const hourCounts=Array.from({length:24},()=>0);
+  const incompleteByMode={solo:0,duel:0,online:0,exam:0};
+  const gradeAgg=new Map();
+  const rivalAgg=new Map();
+  const studentSeries=new Map();
+  const streakBest=new Map();
+  const tableAgg={};
+  data.forEach(d=>{
+    const modeKey=d.isExam?'exam':(modeCounts[d.gameMode]!==undefined?d.gameMode:null);
+    if(modeKey) modeCounts[modeKey]++;
+    if(d.complete===false&&modeKey) incompleteByMode[modeKey]++;
+    if(d.gameType) gameTypeCounts[d.gameType]=(gameTypeCounts[d.gameType]||0)+1;
+    const hour=parseInt((d.time||'').split(':')[0],10);
+    if(Number.isFinite(hour)&&hour>=0&&hour<24) hourCounts[hour]++;
+    const grade=d.grade||'Sin grado';
+    if(!gradeAgg.has(grade)) gradeAgg.set(grade,{score:0,pct:0,count:0});
+    const g=gradeAgg.get(grade);
+    g.score+=(d.score||0);
+    g.pct+=(d.pct||0);
+    g.count++;
+    if(d.gameMode==='online'&&d.vs){
+      const key=d.vs;
+      if(!rivalAgg.has(key)) rivalAgg.set(key,{count:0,pctSum:0,scoreSum:0});
+      const r=rivalAgg.get(key);
+      r.count++;
+      r.pctSum+=(d.pct||0);
+      r.scoreSum+=(d.score||0);
+    }
+    const studentKey=d.name||'Sin nombre';
+    if(!studentSeries.has(studentKey)) studentSeries.set(studentKey,[]);
+    studentSeries.get(studentKey).push(d);
+    streakBest.set(studentKey,Math.max(streakBest.get(studentKey)||0,d.streak||0));
+    Object.keys(d.tableDetail||{}).forEach(op=>{
+      Object.keys(d.tableDetail[op]||{}).forEach(tbl=>{
+        const n=String(tbl);
+        if(!tableAgg[n]) tableAgg[n]={correct:0,total:0};
+        const info=d.tableDetail[op][tbl];
+        if(info&&info.total>0){
+          tableAgg[n].correct+=(info.correct||0);
+          tableAgg[n].total+=(info.total||0);
+        }
+      });
+    });
+  });
+
+  const studentBest={};
+  data.forEach(d=>{ if(!studentBest[d.name]||d.score>studentBest[d.name]) studentBest[d.name]=d.score; });
+  const top10=Object.entries(studentBest).sort((a,b)=>b[1]-a[1]).slice(0,10);
+  const bestOpIndex=opPcts.reduce((best,pct,i,arr)=>pct>arr[best]?i:best,0);
+  const bestOp=ALL_OPS[bestOpIndex];
+  const busiestDay=sortedDays.length?sortedDays.reduce((best,day)=>dayCount[day]>(dayCount[best]||0)?day:best,sortedDays[0]):'—';
+  const topPlayer=top10[0];
+  renderTabSummary('Graficas','Lectura visual de tendencias del grupo para seguir progreso, volumen de juego y diferencias entre modos.',[
+    {value:data.length,label:'Partidas',tone:'purple'},
+    {value:busiestDay,label:'Dia mas activo',tone:'blue'},
+    {value:bestOp?OP_NAMES[bestOp]:'—',label:'Mejor operacion',tone:'green'},
+    {value:topPlayer?topPlayer[0]:'—',label:'Top alumno',tone:'gold'}
+  ]);
+
+  const gradeRows=[...gradeAgg.entries()]
+    .map(([grade,agg])=>({grade,pct:agg.count?Math.round(agg.pct/agg.count):0,score:agg.count?Math.round(agg.score/agg.count):0,count:agg.count}))
+    .sort((a,b)=>a.grade.localeCompare(b.grade,'es',{numeric:true,sensitivity:'base'}));
+  const gameTypeRows=Object.entries(gameTypeCounts).sort((a,b)=>b[1]-a[1]);
+  const tableRows=Object.entries(tableAgg)
+    .filter(([,agg])=>agg.total>0)
+    .map(([tbl,agg])=>({tbl:Number(tbl),pct:Math.round((agg.correct/agg.total)*100),total:agg.total}))
+    .sort((a,b)=>a.tbl-b.tbl);
+  const rivalRows=[...rivalAgg.entries()]
+    .map(([r,agg])=>({rival:r,pct:Math.round(agg.pctSum/agg.count),avgScore:Math.round(agg.scoreSum/agg.count),count:agg.count}))
+    .sort((a,b)=>b.count-a.count||b.pct-a.pct)
+    .slice(0,8);
+  const streakRows=[...streakBest.entries()]
+    .map(([name,streak])=>({name,streak}))
+    .filter(r=>r.streak>0)
+    .sort((a,b)=>b.streak-a.streak)
+    .slice(0,10);
+  const improvementRows=[...studentSeries.entries()]
+    .map(([name,games])=>{
+      const ordered=[...games].sort((a,b)=>(a.id||0)-(b.id||0));
+      if(ordered.length<2) return null;
+      const first=ordered.slice(0,Math.min(3,ordered.length));
+      const last=ordered.slice(-Math.min(3,ordered.length));
+      const firstAvg=safeAvg(first.map(g=>g.pct||0));
+      const lastAvg=safeAvg(last.map(g=>g.pct||0));
+      return {name,improve:Math.round(lastAvg-firstAvg),firstAvg:Math.round(firstAvg),lastAvg:Math.round(lastAvg),games:ordered.length};
+    })
+    .filter(Boolean)
+    .sort((a,b)=>b.improve-a.improve)
+    .slice(0,10);
+  const consistencyRows=[...studentSeries.entries()]
+    .map(([name,games])=>{
+      if(games.length<2) return null;
+      const pcts=games.map(g=>g.pct||0);
+      const avg=safeAvg(pcts);
+      const variance=safeAvg(pcts.map(v=>(v-avg)**2));
+      return {name,avg:Math.round(avg),std:Number(Math.sqrt(variance).toFixed(1)),games:games.length};
+    })
+    .filter(Boolean)
+    .sort((a,b)=>b.avg-a.avg)
+    .slice(0,18);
+  const incompleteLabels=['🧑 Individual','⚔️ Duelo','🌐 LAN','📝 Pruebas'];
+  const incompleteValues=[incompleteByMode.solo,incompleteByMode.duel,incompleteByMode.online,incompleteByMode.exam];
+  const chartCardsHtml=restoreChartCardDefsOrder().map(def=>`
+    <div class="${def.className}" data-chart-key="${def.key}"${def.style?` style="${def.style}"`:''}>
+      <div class="chart-title"${def.titleStyle?` style="${def.titleStyle}"`:''}>${def.title}</div>
+      <canvas id="${def.canvasId}"${def.canvasStyle?` style="${def.canvasStyle}"`:''}></canvas>
+    </div>`).join('');
+
+  document.getElementById('mainContent').innerHTML=`
+  <div class="chart-summary-grid">
+    <div class="chart-summary-card"><strong>${sortedDays.length?dayCount[busiestDay]:0}</strong><span>Partidas en el dia mas activo</span></div>
+    <div class="chart-summary-card"><strong>${bestOp?Math.round(opPcts[bestOpIndex]||0):0}%</strong><span>${bestOp?OP_NAMES[bestOp]:'Operacion'} con mejor precision</span></div>
+    <div class="chart-summary-card"><strong>${modeCounts.online}</strong><span>Partidas LAN registradas</span></div>
+    <div class="chart-summary-card"><strong>${topPlayer?topPlayer[1].toLocaleString():0}</strong><span>Mejor score visible</span></div>
+  </div>
+  <div class="charts-grid" id="chartsGrid">${chartCardsHtml}</div>`;
+  initChartCardReorder();
+
+  Chart.defaults.color='#94a3b8';
+  Chart.defaults.font={family:'Segoe UI',size:11};
+  const gridColor='rgba(255,255,255,.06)';
+
+  _charts.act=new Chart(document.getElementById('cAct'),{
+    type:'line',
+    data:{labels:sortedDays,datasets:[{label:'Partidas',data:sortedDays.map(d=>dayCount[d]),
+      borderColor:'#a78bfa',backgroundColor:'rgba(167,139,250,.15)',
+      pointBackgroundColor:'#a78bfa',fill:true,tension:.35,pointRadius:4}]},
+    options:{responsive:true,plugins:{legend:{display:false}},scales:{
+      x:{grid:{color:gridColor}},y:{grid:{color:gridColor},beginAtZero:true,ticks:{stepSize:1}}
+    }}
+  });
+
+  _charts.avgDay=new Chart(document.getElementById('cAvgDay'),{
+    type:'line',
+    data:{labels:sortedDays,datasets:[{label:'% Promedio',data:dailyAvgPct,
+      borderColor:'#60a5fa',backgroundColor:'rgba(96,165,250,.15)',
+      pointBackgroundColor:'#60a5fa',fill:true,tension:.35,pointRadius:4}]},
+    options:{responsive:true,plugins:{legend:{display:false}},scales:{
+      x:{grid:{color:gridColor}},y:{grid:{color:gridColor},min:0,max:100,ticks:{callback:v=>v+'%'}}
+    }}
+  });
+
+  _charts.ops=new Chart(document.getElementById('cOps'),{
+    type:'bar',
+    data:{
+      labels:ALL_OPS.map(op=>OP_ICONS[op]+' '+OP_NAMES[op]),
+      datasets:[{label:'% Aciertos',data:opPcts,backgroundColor:opBarColors,borderColor:opBorderColors,borderWidth:2,borderRadius:6}]
+    },
+    options:{responsive:true,plugins:{legend:{display:false}},scales:{
+      x:{grid:{color:gridColor}},y:{grid:{color:gridColor},min:0,max:100,ticks:{callback:v=>v+'%'}}
+    }}
+  });
+
+  _charts.opsStack=new Chart(document.getElementById('cOpsStack'),{
+    type:'bar',
+    data:{
+      labels:ALL_OPS.map(op=>OP_ICONS[op]+' '+OP_NAMES[op]),
+      datasets:[
+        {label:'Correctas',data:opCorrect,backgroundColor:'rgba(52,211,153,.72)',borderColor:'#34d399',borderWidth:1},
+        {label:'Incorrectas',data:opWrong,backgroundColor:'rgba(248,113,113,.72)',borderColor:'#f87171',borderWidth:1},
+        {label:'Sin tiempo',data:opTimeout,backgroundColor:'rgba(251,191,36,.72)',borderColor:'#fbbf24',borderWidth:1}
+      ]
+    },
+    options:{responsive:true,plugins:{legend:{position:'bottom'}},scales:{
+      x:{stacked:true,grid:{color:gridColor}},y:{stacked:true,grid:{color:gridColor},beginAtZero:true}
+    }}
+  });
+
+  _charts.mod=new Chart(document.getElementById('cMod'),{
+    type:'doughnut',
+    data:{
+      labels:['🧑 Individual','⚔️ Duelo','🌐 LAN'],
+      datasets:[{data:[modeCounts.solo,modeCounts.duel,modeCounts.online],
+        backgroundColor:['rgba(167,139,250,.7)','rgba(251,191,36,.7)','rgba(96,165,250,.7)'],
+        borderColor:['#a78bfa','#fbbf24','#60a5fa'],borderWidth:2}]
+    },
+    options:{responsive:true,plugins:{legend:{position:'bottom',labels:{padding:16,font:{size:12}}}}}
+  });
+
+  _charts.modeBalance=new Chart(document.getElementById('cModeBalance'),{
+    type:'bar',
+    data:{
+      labels:['🧑 Individual','⚔️ Duelo','🌐 LAN','📝 Pruebas'],
+      datasets:[{label:'Partidas',data:[modeCounts.solo,modeCounts.duel,modeCounts.online,modeCounts.exam],
+        backgroundColor:['rgba(167,139,250,.7)','rgba(251,191,36,.7)','rgba(96,165,250,.7)','rgba(52,211,153,.7)'],
+        borderColor:['#a78bfa','#fbbf24','#60a5fa','#34d399'],borderWidth:2,borderRadius:8}]
+    },
+    options:{responsive:true,plugins:{legend:{display:false}},scales:{
+      x:{grid:{display:false}},y:{grid:{color:gridColor},beginAtZero:true}
+    }}
+  });
+
+  _charts.top=new Chart(document.getElementById('cTop'),{
+    type:'bar',
+    data:{
+      labels:top10.map(([n])=>shortName(n)),
+      datasets:[{label:'Mejor puntaje',data:top10.map(([,s])=>s),
+        backgroundColor:'rgba(96,165,250,.65)',borderColor:'#60a5fa',borderWidth:1}]
+    },
+    options:{indexAxis:'y',responsive:true,plugins:{legend:{display:false}},scales:{
+      x:{grid:{color:gridColor},ticks:{callback:v=>v.toLocaleString()}},y:{grid:{display:false}}
+    }}
+  });
+
+  _charts.grades=new Chart(document.getElementById('cGrades'),{
+    type:'bar',
+    data:{
+      labels:gradeRows.map(r=>r.grade),
+      datasets:[{label:'% Promedio',data:gradeRows.map(r=>r.pct),backgroundColor:'rgba(167,139,250,.68)',borderColor:'#a78bfa',borderWidth:1,borderRadius:8}]
+    },
+    options:{responsive:true,plugins:{legend:{display:false}},scales:{
+      x:{grid:{display:false}},y:{grid:{color:gridColor},min:0,max:100,ticks:{callback:v=>v+'%'}}
+    }}
+  });
+
+  _charts.streak=new Chart(document.getElementById('cStreak'),{
+    type:'bar',
+    data:{
+      labels:streakRows.map(r=>shortName(r.name)),
+      datasets:[{label:'Racha máxima',data:streakRows.map(r=>r.streak),backgroundColor:'rgba(251,191,36,.68)',borderColor:'#fbbf24',borderWidth:1}]
+    },
+    options:{indexAxis:'y',responsive:true,plugins:{legend:{display:false}},scales:{
+      x:{grid:{color:gridColor},beginAtZero:true},y:{grid:{display:false}}
+    }}
+  });
+
+  _charts.gameTypes=new Chart(document.getElementById('cGameTypes'),{
+    type:'doughnut',
+    data:{
+      labels:gameTypeRows.map(([k])=>k||'Sin tipo'),
+      datasets:[{data:gameTypeRows.map(([,v])=>v),backgroundColor:[
+        'rgba(167,139,250,.75)','rgba(52,211,153,.75)','rgba(251,191,36,.75)','rgba(96,165,250,.75)',
+        'rgba(248,113,113,.75)','rgba(244,114,182,.75)','rgba(45,212,191,.75)'
+      ]}]
+    },
+    options:{responsive:true,plugins:{legend:{position:'bottom',labels:{padding:14,font:{size:11}}}}}
+  });
+
+  _charts.hours=new Chart(document.getElementById('cHours'),{
+    type:'bar',
+    data:{
+      labels:hourCounts.map((_,i)=>String(i).padStart(2,'0')+':00'),
+      datasets:[{label:'Partidas',data:hourCounts,backgroundColor:'rgba(96,165,250,.68)',borderColor:'#60a5fa',borderWidth:1,borderRadius:4}]
+    },
+    options:{responsive:true,plugins:{legend:{display:false}},scales:{
+      x:{grid:{display:false}},y:{grid:{color:gridColor},beginAtZero:true}
+    }}
+  });
+
+  _charts.improve=new Chart(document.getElementById('cImprove'),{
+    type:'bar',
+    data:{
+      labels:improvementRows.map(r=>shortName(r.name)),
+      datasets:[{label:'Mejora en %',data:improvementRows.map(r=>r.improve),backgroundColor:'rgba(52,211,153,.7)',borderColor:'#34d399',borderWidth:1}]
+    },
+    options:{indexAxis:'y',responsive:true,plugins:{
+      legend:{display:false},
+      tooltip:{callbacks:{label:(ctx)=>{
+        const row=improvementRows[ctx.dataIndex];
+        return `Mejora ${row.improve}% · ${row.firstAvg}% → ${row.lastAvg}%`;
+      }}}
+    },scales:{
+      x:{grid:{color:gridColor}},y:{grid:{display:false}}
+    }}
+  });
+
+  _charts.tables=new Chart(document.getElementById('cTables'),{
+    type:'line',
+    data:{
+      labels:tableRows.map(r=>'Tabla '+r.tbl),
+      datasets:[{label:'% Acierto',data:tableRows.map(r=>r.pct),borderColor:'#fbbf24',backgroundColor:'rgba(251,191,36,.14)',pointBackgroundColor:'#fbbf24',fill:true,tension:.3,pointRadius:4}]
+    },
+    options:{responsive:true,plugins:{legend:{display:false}},scales:{
+      x:{grid:{display:false}},y:{grid:{color:gridColor},min:0,max:100,ticks:{callback:v=>v+'%'}}
+    }}
+  });
+
+  _charts.consistency=new Chart(document.getElementById('cConsistency'),{
+    type:'scatter',
+    data:{
+      datasets:[{label:'Alumno',data:consistencyRows.map(r=>({x:r.avg,y:r.std,name:r.name,games:r.games})),
+        backgroundColor:'rgba(96,165,250,.75)',borderColor:'#60a5fa',pointRadius:5,pointHoverRadius:6}]
+    },
+    options:{responsive:true,plugins:{
+      legend:{display:false},
+      tooltip:{callbacks:{
+        label:(ctx)=>{
+          const p=ctx.raw;
+          return `${p.name}: promedio ${p.x}% · variacion ${p.y} · ${p.games} partidas`;
+        }
+      }}
+    },scales:{
+      x:{grid:{color:gridColor},min:0,max:100,title:{display:true,text:'Promedio %'}},
+      y:{grid:{color:gridColor},beginAtZero:true,title:{display:true,text:'Variacion del rendimiento'}}
+    }}
+  });
+
+  _charts.incomplete=new Chart(document.getElementById('cIncomplete'),{
+    type:'bar',
+    data:{
+      labels:incompleteLabels,
+      datasets:[{label:'Incompletas',data:incompleteValues,backgroundColor:'rgba(248,113,113,.7)',borderColor:'#f87171',borderWidth:1,borderRadius:8}]
+    },
+    options:{responsive:true,plugins:{legend:{display:false}},scales:{
+      x:{grid:{display:false}},y:{grid:{color:gridColor},beginAtZero:true}
+    }}
+  });
+
+  _charts.rivals=new Chart(document.getElementById('cRivals'),{
+    type:'bar',
+    data:{
+      labels:rivalRows.map(r=>shortName(r.rival)),
+      datasets:[{label:'% Acierto',data:rivalRows.map(r=>r.pct),backgroundColor:'rgba(52,211,153,.68)',borderColor:'#34d399',borderWidth:1}]
+    },
+    options:{indexAxis:'y',responsive:true,plugins:{
+      legend:{display:false},
+      tooltip:{callbacks:{label:(ctx)=>{
+        const row=rivalRows[ctx.dataIndex];
+        return `${row.pct}% · ${row.count} partidas · ${row.avgScore} pts promedio`;
+      }}}
+    },scales:{
+      x:{grid:{color:gridColor},min:0,max:100,ticks:{callback:v=>v+'%'}},y:{grid:{display:false}}
+    }}
+  });
+}
+
+// ── TAB 5: Pruebas ────────────────────────────────────────
+function renderPruebas(){
+  document.getElementById('topCards').innerHTML='';
+  document.getElementById('countInfo').textContent='';
+
+  const examData=data.filter(d=>d.isExam);
+  currentDetailRows=examData;
+  renderTabSummary('Pruebas','Resultados de evaluaciones por sesion para comparar desempeno, precision y comportamiento entre distintos cortes.',[
+    {value:examData.length,label:'Resultados',tone:'purple'},
+    {value:new Set(examData.map(d=>d.name)).size,label:'Alumnos',tone:'blue'},
+    {value:examData.length?Math.round(examData.reduce((s,d)=>s+(d.pct||0),0)/examData.length)+'%':'0%',label:'Promedio',tone:examData.length&&Math.round(examData.reduce((s,d)=>s+(d.pct||0),0)/examData.length)>=80?'green':'gold'},
+    {value:new Set(examData.map(d=>d.date)).size,label:'Sesiones',tone:'gold'}
+  ]);
+  if(!examData.length){
+    document.getElementById('mainContent').innerHTML='<div class="empty"><span>📝</span>No hay resultados de pruebas aún.<br><small style="font-size:13px;color:#4b5563;display:block;margin-top:8px">Los resultados aparecerán aquí cuando los alumnos completen una prueba configurada desde el Panel Maestro.</small></div>';
+    return;
+  }
+
+  // Detectar qué operaciones tienen datos
+  const presentOps=ALL_OPS.filter(op=>examData.some(d=>(d.tblResults||{})[op]?.total>0));
+
+  // Agrupar por fecha para mostrar "sesiones"
+  const parseDate=s=>{ if(!s) return new Date(0); const [dd,mm,yy]=s.split('/'); return new Date(+yy,+mm-1,+dd); };
+  const sessionDates=[...new Set(examData.map(d=>d.date))].sort((a,b)=>parseDate(b)-parseDate(a));
+
+  // Estadísticas globales
+  const totalStudents=new Set(examData.map(d=>d.name)).size;
+  const avgPct=Math.round(examData.reduce((s,d)=>s+(d.pct||0),0)/examData.length);
+  // Tarjetas de resumen
+  let summaryHtml=`
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px">
+      <div style="background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.3);border-radius:12px;padding:12px 20px;text-align:center;min-width:110px">
+        <div style="font-size:26px;font-weight:800;color:#34d399">${examData.length}</div>
+        <div style="font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px">Resultados</div>
+      </div>
+      <div style="background:rgba(167,139,250,.1);border:1px solid rgba(167,139,250,.3);border-radius:12px;padding:12px 20px;text-align:center;min-width:110px">
+        <div style="font-size:26px;font-weight:800;color:#a78bfa">${totalStudents}</div>
+        <div style="font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px">Alumnos</div>
+      </div>
+      <div style="background:rgba(96,165,250,.1);border:1px solid rgba(96,165,250,.3);border-radius:12px;padding:12px 20px;text-align:center;min-width:110px">
+        <div style="font-size:26px;font-weight:800;color:${avgPct>=80?'#34d399':avgPct>=50?'#fbbf24':'#f87171'}">${avgPct}%</div>
+        <div style="font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px">Promedio</div>
+      </div>
+      ${sessionDates.length>1
+        ?`<div style="background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.3);border-radius:12px;padding:12px 20px;text-align:center;min-width:110px">
+            <div style="font-size:26px;font-weight:800;color:#fbbf24">${sessionDates.length}</div>
+            <div style="font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px">Sesiones</div>
+          </div>`
+        :`<div style="display:flex;align-items:center;padding:0 12px;font-size:12px;color:#64748b">📅 ${sessionDates[0]}</div>`}
+    </div>`;
+
+  // Si hay múltiples sesiones, mostrar por sesión separada
+  let tableHtml='';
+  if(sessionDates.length>1){
+    sessionDates.forEach(date=>{
+      const sessionRows=examData.filter(d=>d.date===date).sort((a,b)=>b.pct-a.pct||b.score-a.score);
+      const sessionOps=presentOps.filter(op=>sessionRows.some(d=>(d.tblResults||{})[op]?.total>0));
+      const sAvg=Math.round(sessionRows.reduce((s,d)=>s+d.pct,0)/sessionRows.length);
+      const sessionTop=sessionRows[0];
+      tableHtml+=`
+        <div class="exam-session">
+          <div class="exam-session-head">
+            <div>
+              <div class="exam-session-title">📅 ${date}</div>
+              <div class="exam-session-meta">${sessionRows.length} alumno${sessionRows.length!==1?'s':''} · promedio <span class="${pctClass(sAvg)}">${sAvg}%</span></div>
+            </div>
+            <div class="exam-highlight-grid" style="margin-bottom:0">
+              <div class="exam-highlight"><strong class="${pctClass(sAvg)}">${sAvg}%</strong><span>Promedio</span></div>
+              <div class="exam-highlight"><strong>${sessionTop?sessionTop.score.toLocaleString():0}</strong><span>Mejor score</span></div>
+              <div class="exam-highlight"><strong>${sessionTop?esc(sessionTop.name):'—'}</strong><span>Mejor alumno</span></div>
+            </div>
+          </div>
+          ${buildExamTable(sessionRows,sessionOps)}
+        </div>`;
+    });
+  } else {
+    const sorted=[...examData].sort((a,b)=>b.pct-a.pct||b.score-a.score);
+    const topExam=sorted[0];
+    tableHtml=`<div class="exam-session">
+      <div class="exam-session-head">
+        <div>
+          <div class="exam-session-title">📅 ${sessionDates[0]}</div>
+          <div class="exam-session-meta">${sorted.length} resultado${sorted.length!==1?'s':''} registrados</div>
+        </div>
+        <div class="exam-highlight-grid" style="margin-bottom:0">
+          <div class="exam-highlight"><strong class="${pctClass(avgPct)}">${avgPct}%</strong><span>Promedio</span></div>
+          <div class="exam-highlight"><strong>${topExam?topExam.score.toLocaleString():0}</strong><span>Mejor score</span></div>
+          <div class="exam-highlight"><strong>${topExam?esc(topExam.name):'—'}</strong><span>Mejor alumno</span></div>
+        </div>
+      </div>
+      ${buildExamTable(sorted,presentOps)}
+    </div>`;
+  }
+
+  document.getElementById('mainContent').innerHTML=summaryHtml+tableHtml;
+}
+
+function buildExamTable(rows, ops){
+  if(!rows.length) return '';
+  const rowIds=rows.map(d=>d.id);
+  const opHeaders=ops.map(op=>`<th style="text-align:center" title="${OP_NAMES[op]}">${OP_ICONS[op]} ${OP_NAMES[op]}</th>`).join('');
+  const opRows=rows.map((d,i)=>{
+    const rank=i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1);
+    const rowId='ex-'+d.id;
+    const hasTblDetail=d.tableDetail&&Object.keys(d.tableDetail).length>0;
+    const opCells=ops.map(op=>{
+      const r=(d.tblResults||{})[op];
+      if(!r||r.total===0) return `<td style="text-align:center;color:#374151">—</td>`;
+      const pct=Math.round((r.correct/r.total)*100);
+      const bar=`<div style="height:4px;background:rgba(255,255,255,.07);border-radius:2px;margin-top:3px;overflow:hidden"><div style="height:100%;width:${pct}%;background:${OP_COLORS[op].bar};border-radius:2px"></div></div>`;
+      return `<td style="text-align:center"><span class="${pctClass(pct)}">${pct}%</span><div style="font-size:10px;color:#64748b">${r.correct}/${r.total}</div>${bar}</td>`;
+    }).join('');
+    const toggleBtn=hasTblDetail
+      ?`<td><button onclick="toggleExamDetail('${rowId}')" style="background:rgba(167,139,250,.15);border:1px solid rgba(167,139,250,.3);color:#a78bfa;border-radius:6px;padding:2px 7px;font-size:11px;cursor:pointer;white-space:nowrap">📊 Tablas</button></td>`
+      :`<td></td>`;
+    const detailRowHtml=hasTblDetail
+      ?`<tr id="${rowId}" style="display:none"><td colspan="${5+ops.length+2}" style="padding:12px 16px;background:rgba(167,139,250,.04);border-bottom:1px solid rgba(255,255,255,.06)">${buildTableDetailHtml(d.tableDetail)}</td></tr>`
+      :'';
+    const rowCls=i===0?'table-row-top1':i===1?'table-row-top2':i===2?'table-row-top3':'';
+    return `<tr class="${rowCls}">
+      ${buildBulkRowCheckbox(d.id)}
+      <td class="rn rank-cell">${rank}</td>
+      <td class="name" style="cursor:pointer" onclick="showStudent('${esc(d.name)}')">${esc(d.name)}</td>
+      <td>${d.grade?'<span class="grade-badge">'+esc(d.grade)+'</span>':'—'}</td>
+      <td><div class="score-stack"><span class="score-main">${(d.score||0).toLocaleString()}</span><span class="score-sub">puntaje</span></div></td>
+      <td><div class="pct-stack"><span class="${pctClass(d.pct)}">${d.pct}%</span>${pctBar(d.pct)}<span style="font-size:11px;color:#64748b"> (${d.correct}/${d.total})</span></div></td>
+      ${opCells}
+      <td class="dt">${d.time}</td>
+      ${toggleBtn}
+    </tr>${detailRowHtml}`;
+  }).join('');
+  return `<div class="table-shell"><table class="data-table"><thead><tr>
+    ${buildBulkHeaderCheckbox(rowIds)}<th>#</th><th>Alumno</th><th>Grado</th><th>Puntaje</th><th>% Total</th>
+    ${opHeaders}<th>Hora</th><th></th>
+  </tr></thead><tbody>${opRows}</tbody></table></div>`;
+}
+
+function toggleExamDetail(id){
+  const row=document.getElementById(id);
+  if(!row) return;
+  row.style.display=row.style.display==='none'?'':'none';
+}
+
+// ── Init ──────────────────────────────────────────────────
+window.addEventListener('offline',()=>setConnectionStatus('offline','Sin internet'));
+window.addEventListener('online',()=>setConnectionStatus('loading','Reconectando…'));
+initTabReorder();
+load();
+setInterval(load,30000);
+</script>
+</body>
+</html>
+
+
+
+

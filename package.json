@@ -1,0 +1,13 @@
+{
+  "scripts": {
+    "check:encoding": "node scripts/check-utf8.js maestro.html math-attack.html ranking.html server.js Panel-Control.ps1 hotspot.ps1 ejecutables/Conectar-MathAttack.ps1 scripts/check-utf8.js scripts/fix-mojibake.js",
+    "check:ordered": "node scripts/check-ordered-questions.js"
+  },
+  "dependencies": {
+    "ws": "^8.21.0"
+  },
+  "devDependencies": {
+    "playwright": "^1.60.0",
+    "puppeteer": "^25.1.0"
+  }
+}
