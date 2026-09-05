@@ -4,6 +4,7 @@
 
 - Responde en espanol.
 - Explica un resumen de lo realizado pero hasta el final y dame sugerencia de algo a mejorar o algo que se me haya pasado ver.
+-No reeleas informacion ya revisada almenos que sea necesario para ahorar tokens.
 - Si algo puede romper datos, configuracion o historial de git, pide permiso primero.
 
 ## Proyecto MATH-ATTACK

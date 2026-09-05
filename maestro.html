@@ -657,6 +657,13 @@ body.proj-mode .q-display{font-size:48px;letter-spacing:4px}
 .pr-digits-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:5px;margin-top:6px}
 .pr-digits-btn{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:3px;padding:6px 0;font-size:12px;color:#cbd5e1;cursor:pointer;transition:.15s;text-align:center}
 .pr-digits-btn.sel{background:rgba(167,139,250,.15);border-color:rgba(167,139,250,.5);color:#a78bfa}
+.pr-mode-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px}
+.pr-mode-btn{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:4px;padding:8px 10px;font-size:12px;color:#cbd5e1;cursor:pointer;transition:.15s;text-align:center}
+.pr-mode-btn.sel{background:rgba(52,211,153,.14);border-color:rgba(52,211,153,.5);color:#34d399}
+.pr-subgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.pr-summary{background:rgba(0,0,0,.28);border:1px solid rgba(52,211,153,.18);border-radius:6px;padding:12px;margin:4px 0 12px;color:#94a3b8;font-size:12px;line-height:1.7}
+.pr-summary-title{font-family:'Press Start 2P',monospace;font-size:7px;color:#34d399;letter-spacing:.7px;margin-bottom:6px}
+.pr-summary strong{color:#e2e8f0}
 .pr-start-btn{background:linear-gradient(135deg,#059669,#34d399);border:none;border-radius:4px;padding:12px 28px;font-family:'Press Start 2P',monospace;font-size:9px;color:#fff;cursor:pointer;transition:.15s;margin-top:6px}
 .pr-start-btn:hover{opacity:.88}
 .pr-stop-btn{background:rgba(239,68,68,.18);border:1px solid rgba(239,68,68,.4);border-radius:3px;padding:6px 14px;font-family:'Press Start 2P',monospace;font-size:7px;color:#f87171;cursor:pointer;transition:.15s}
@@ -1094,13 +1101,14 @@ body.proj-mode .q-display{font-size:48px;letter-spacing:4px}
       <div class="pr-field">
         <label>OPERACIONES A EVALUAR</label>
         <div class="pr-ops-grid">
-          <label class="pr-op-chk"><input type="checkbox" id="prOpMult" onchange="prToggleOpSection('mult',this.checked)" checked> ✖️ Multiplicación</label>
-          <label class="pr-op-chk"><input type="checkbox" id="prOpAdd" onchange="prToggleOpSection('add',this.checked)"> ➕ Suma</label>
-          <label class="pr-op-chk"><input type="checkbox" id="prOpSub" onchange="prToggleOpSection('sub',this.checked)"> ➖ Resta</label>
-          <label class="pr-op-chk"><input type="checkbox" id="prOpDiv" onchange="prToggleOpSection('div',this.checked)"> ➗ División</label>
+          <label class="pr-op-chk"><input type="checkbox" id="prOpMult" onchange="prToggleOpSection('mult',this.checked);prUpdateSummary()" checked> ✖️ Multiplicación</label>
+          <label class="pr-op-chk"><input type="checkbox" id="prOpAdd" onchange="prToggleOpSection('add',this.checked);prUpdateSummary()"> ➕ Suma</label>
+          <label class="pr-op-chk"><input type="checkbox" id="prOpSub" onchange="prToggleOpSection('sub',this.checked);prUpdateSummary()"> ➖ Resta</label>
+          <label class="pr-op-chk"><input type="checkbox" id="prOpDiv" onchange="prToggleOpSection('div',this.checked);prUpdateSummary()"> ➗ División</label>
         </div>
       </div>
       <div id="prOpSections"></div>
+      <div class="pr-summary" id="prSummary"></div>
       <button class="pr-start-btn" onclick="startPrueba(this)">▶ INICIAR PRUEBA</button>
     </div>
 
@@ -1127,7 +1135,7 @@ body.proj-mode .q-display{font-size:48px;letter-spacing:4px}
         </div>
         <div style="overflow-x:auto">
           <table class="pr-table">
-            <thead><tr><th>Alumno</th><th>Grado</th><th>Puntaje</th><th>Precisión</th><th>Correctas</th><th>Estado</th></tr></thead>
+            <thead><tr><th>Alumno</th><th>Grado</th><th>Tiempo</th><th>Puntaje</th><th>Precisión</th><th>Correctas</th><th>Estado</th></tr></thead>
             <tbody id="prFinishedBody"></tbody>
           </table>
         </div>
@@ -2759,6 +2767,17 @@ const _PR_QTY_DEFAULT={mult:4,div:3,add:10,sub:10};
 function _prOpSectionHTML(op){
   if(_PR_HAS_TABLES[op]){
     const tblBtns=Array.from({length:12},(_,i)=>i+1).map(t=>`<button class="em-tbl-btn sel" data-t="${t}" onclick="this.classList.toggle('sel')">${t}</button>`).join('');
+    const multExtra=op==='mult'?`<div class="pr-field" style="margin-top:10px;margin-bottom:0">
+        <label>MANERA</label>
+        <div class="pr-mode-grid" id="prMannerGrid_${op}">
+          <button class="pr-mode-btn sel" data-manner="ordered" onclick="prSelManner('${op}',this)">En orden</button>
+          <button class="pr-mode-btn" data-manner="random" onclick="prSelManner('${op}',this)">En desorden</button>
+        </div>
+      </div>`:'';
+    const divExtra=op==='div'?`<div class="pr-field" style="margin-top:10px;margin-bottom:0">
+        <label>CIFRAS DEL DIVIDENDO</label>
+        <div class="pr-digits-grid" id="prDigitsGrid_${op}" style="grid-template-columns:repeat(4,1fr)">${[2,3,4,5].map(n=>`<button class="pr-digits-btn${n===2?' sel':''}" data-d="${n}" onclick="prSelDigits('${op}',this)">${n}</button>`).join('')}</div>
+      </div>`:'';
     return `<div class="pr-op-section" id="prOpSection_${op}">
       <div class="pr-op-section-title">${_PR_OP_TITLE[op]}</div>
       <div class="em-tables-grid" id="prTablesGrid_${op}">${tblBtns}</div>
@@ -2770,9 +2789,12 @@ function _prOpSectionHTML(op){
         <label>${_PR_QTY_LABEL[op]}</label>
         <input type="number" id="prQty_${op}" value="${_PR_QTY_DEFAULT[op]}" min="1" max="20" step="1">
       </div>
+      ${multExtra}${divExtra}
     </div>`;
   }
   const digitsBtns=[1,2,3,4,5,6].map(n=>`<button class="pr-digits-btn${n===1?' sel':''}" data-d="${n}" onclick="prSelDigits('${op}',this)">${n}</button>`).join('');
+  const directText=op==='sub'?'Sin prestar':'Sin llevar';
+  const carryText=op==='sub'?'Con prestar':'Con llevar';
   return `<div class="pr-op-section" id="prOpSection_${op}">
     <div class="pr-op-section-title">${_PR_OP_TITLE[op]}</div>
     <div class="pr-op-qty-row">
@@ -2782,6 +2804,13 @@ function _prOpSectionHTML(op){
     <div class="pr-field" style="margin-top:10px;margin-bottom:0">
       <label>CANTIDAD DE CIFRAS</label>
       <div class="pr-digits-grid" id="prDigitsGrid_${op}">${digitsBtns}</div>
+    </div>
+    <div class="pr-field" style="margin-top:10px;margin-bottom:0">
+      <label>TIPO DE ${op==='sub'?'RESTA':'SUMA'}</label>
+      <div class="pr-mode-grid" id="prCarryGrid_${op}">
+        <button class="pr-mode-btn sel" data-mode="direct" onclick="prSelCarryMode('${op}',this)">${directText}</button>
+        <button class="pr-mode-btn" data-mode="carry" onclick="prSelCarryMode('${op}',this)">${carryText}</button>
+      </div>
     </div>
   </div>`;
 }
@@ -2802,9 +2831,23 @@ function prSelDigits(op,btn){
   document.querySelectorAll('#prDigitsGrid_'+op+' .pr-digits-btn').forEach(b=>b.classList.remove('sel'));
   btn.classList.add('sel');
 }
+function prSelCarryMode(op,btn){
+  document.querySelectorAll('#prCarryGrid_'+op+' .pr-mode-btn').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel');
+}
+function prSelManner(op,btn){
+  document.querySelectorAll('#prMannerGrid_'+op+' .pr-mode-btn').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel');
+}
 // Inicializa la seccion de Multiplicacion (unica marcada por defecto al cargar la pagina).
 // Este bloque JS esta al final de <body>, asi que #prOpMult ya existe en el DOM en este punto.
 if(document.getElementById('prOpMult')?.checked) prToggleOpSection('mult',true);
+const _prConfigEl=document.getElementById('prConfig');
+if(_prConfigEl){
+  _prConfigEl.addEventListener('input',()=>setTimeout(prUpdateSummary,0));
+  _prConfigEl.addEventListener('click',()=>setTimeout(prUpdateSummary,0));
+  prUpdateSummary();
+}
 
 function _prCollectOpsConfig(ops){
   const opsConfig={};
@@ -2813,10 +2856,19 @@ function _prCollectOpsConfig(ops){
     if(_PR_HAS_TABLES[op]){
       const tables=[...document.querySelectorAll('#prTablesGrid_'+op+' .em-tbl-btn.sel')].map(b=>Number(b.dataset.t));
       opsConfig[op]={tables,qty};
+      if(op==='mult'){
+        const mannerBtn=document.querySelector('#prMannerGrid_'+op+' .pr-mode-btn.sel');
+        opsConfig[op].manner=mannerBtn?.dataset.manner||'ordered';
+      }
+      if(op==='div'){
+        const digitsBtn=document.querySelector('#prDigitsGrid_'+op+' .pr-digits-btn.sel');
+        opsConfig[op].digits=digitsBtn?Number(digitsBtn.dataset.d):2;
+      }
     } else {
       const digitsBtn=document.querySelector('#prDigitsGrid_'+op+' .pr-digits-btn.sel');
       const digits=digitsBtn?Number(digitsBtn.dataset.d):1;
-      opsConfig[op]={qty,digits};
+      const modeBtn=document.querySelector('#prCarryGrid_'+op+' .pr-mode-btn.sel');
+      opsConfig[op]={qty,digits,carryMode:modeBtn?.dataset.mode||'direct'};
     }
   });
   return opsConfig;
@@ -2826,6 +2878,42 @@ function _prCalcTotal(opsConfig){
     if(_PR_HAS_TABLES[op]) return sum+(c.qty*(c.tables?.length||0));
     return sum+c.qty;
   },0);
+}
+function prDescribeOp(op,cfg){
+  const name=_PR_OP_NAME[op]||op;
+  if(op==='mult'){
+    const tableCount=cfg.tables?.length||0;
+    return `${name}: ${cfg.qty} preg. x ${tableCount} tabla${tableCount!==1?'s':''}, ${cfg.manner==='random'?'en desorden':'en orden'}`;
+  }
+  if(op==='div'){
+    const tableCount=cfg.tables?.length||0;
+    return `${name}: ${cfg.qty} preg. x ${tableCount} divisor${tableCount!==1?'es':''}, dividendo de ${cfg.digits||2} cifras`;
+  }
+  const mode=cfg.carryMode==='carry'
+    ? (op==='sub'?'con prestar':'con llevar')
+    : (op==='sub'?'sin prestar':'sin llevar');
+  return `${name}: ${cfg.qty} preguntas, ${cfg.digits||1} cifra${(cfg.digits||1)!==1?'s':''}, ${mode}`;
+}
+function prUpdateSummary(){
+  const el=document.getElementById('prSummary');
+  if(!el) return;
+  const ops=_PR_OP_LIST.filter(o=>document.getElementById('prOp'+o.charAt(0).toUpperCase()+o.slice(1))?.checked);
+  if(!ops.length){
+    el.innerHTML='<div class="pr-summary-title">RESUMEN ANTES DE INICIAR</div>Selecciona al menos una operacion.';
+    return;
+  }
+  const cfg=_prCollectOpsConfig(ops);
+  const total=_prCalcTotal(cfg)||0;
+  const grade=document.getElementById('prGrade')?.value||'Todos los grados';
+  const time=Number(document.getElementById('prTime')?.value)||0;
+  const details=ops.map(o=>prDescribeOp(o,cfg[o])).join('<br>');
+  el.innerHTML=`<div class="pr-summary-title">RESUMEN ANTES DE INICIAR</div><strong>${grade}</strong> · <strong>${total}</strong> preguntas · <strong>${time?time+' seg por pregunta':'tiempo libre'}</strong><br>${details}`;
+}
+function prFmtDuration(ms){
+  const totalSec=Math.max(0,Math.round((Number(ms)||0)/1000));
+  const min=Math.floor(totalSec/60);
+  const sec=totalSec%60;
+  return min?`${min}m ${String(sec).padStart(2,'0')}s`:`${sec}s`;
 }
 async function startPrueba(btn){
   const grade=document.getElementById('prGrade').value;
@@ -2977,6 +3065,7 @@ function renderPruebas(){
         return `<tr class="pr-done">
           <td>${esc(f.name)}</td>
           <td style="color:#64748b">${f.grade||'—'}</td>
+          <td style="color:#94a3b8">${f.durationMs!=null?prFmtDuration(f.durationMs):'—'}</td>
           <td style="font-weight:700">${(f.score||0).toLocaleString()}</td>
           <td style="color:${pctColor};font-weight:700">${f.pct||0}%</td>
           <td>${f.correct||0}/${f.total||0}</td>
