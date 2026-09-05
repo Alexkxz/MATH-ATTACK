@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -575,12 +575,12 @@ button:disabled .wave-letter{animation:none;}
 .write-submit:disabled{opacity:.4;cursor:not-allowed;transform:none;}
 .write-area.voice-mode .write-input,
 .write-area.voice-mode .write-submit{display:none;}
-.voice-area{display:none;flex-direction:column;align-items:center;gap:8px;width:100%;}
-.voice-pill{padding:8px 14px;border-radius:999px;border:2px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);font-family:'Baloo 2',cursive;font-size:16px;color:var(--text);font-weight:800;text-align:center;}
+.voice-area{display:none;flex-direction:column;align-items:center;gap:12px;width:100%;max-width:min(92vw,420px);}
+.voice-pill{width:100%;padding:10px 16px;border-radius:999px;border:2px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);font-family:'Baloo 2',cursive;font-size:clamp(16px,3.8vw,19px);color:var(--text);font-weight:800;text-align:center;}
 .voice-pill.ready{border-color:rgba(52,211,153,.35);color:#86efac;}
 .voice-pill.listening{border-color:rgba(52,211,153,.45);color:#bbf7d0;box-shadow:0 0 18px rgba(52,211,153,.18);}
 .voice-pill.error{border-color:rgba(248,113,113,.45);color:#fca5a5;}
-.voice-transcript{min-height:52px;width:100%;max-width:240px;padding:12px 10px;border-radius:14px;background:rgba(255,255,255,.06);border:2px solid rgba(167,139,250,.18);font-size:16px;font-weight:700;color:var(--text);text-align:center;line-height:1.25;}
+.voice-transcript{min-height:88px;width:100%;padding:18px 16px;border-radius:16px;background:rgba(255,255,255,.06);border:2px solid rgba(167,139,250,.18);font-size:clamp(18px,4.5vw,23px);font-weight:800;color:var(--text);text-align:center;line-height:1.25;display:flex;align-items:center;justify-content:center;}
 .voice-transcript.muted{color:var(--muted);}
 .voice-retry{background:rgba(255,255,255,.08);border:2px solid rgba(255,255,255,.16);border-radius:11px;padding:8px 18px;font-family:'Baloo 2',cursive;font-size:14px;color:var(--text);cursor:pointer;transition:all .2s;}
 .voice-retry:hover{transform:translateY(-2px);border-color:rgba(52,211,153,.35);}
@@ -1495,6 +1495,215 @@ body.frozen-cursor *{cursor:not-allowed!important;}
   #timerLbl{flex:1 1 100%;text-align:left;}
   #tableLbl{width:100%;font-size:14px;text-align:right;}
 }
+
+/* ── RESPONSIVE GAME LAYOUT ── */
+@media (min-width:700px){
+  .screen{padding:24px;}
+  .setup-card{max-width:620px;padding:26px 28px;border-radius:24px;}
+  .login-card{max-width:440px;}
+  .duel-toggle{grid-template-columns:repeat(4,minmax(0,1fr));}
+  .sel-btn{min-height:92px;padding:12px 8px;}
+  .game-wrap{
+    max-width:min(760px,92vw);
+    gap:14px;
+    padding:22px;
+  }
+  .game-wrap.wide{max-width:min(920px,94vw);}
+  .player-tag{max-width:220px;font-size:12px;padding:6px 12px;}
+  .progress-text{font-size:15px;}
+  .diff-tag{font-size:11px;padding:5px 12px;}
+  .pause-btn{font-size:16px;padding:6px 12px;}
+  .duel-scores{gap:10px;}
+  .duel-scores.multi .dp{min-width:132px;max-width:190px;}
+  .dp{padding:9px 12px;border-radius:12px;}
+  .dp-name{font-size:12px;}
+  .dp-score{font-size:28px;}
+  .timer-track{height:20px;}
+  .timer-row{font-size:12px;margin-top:6px;}
+  #tableLbl{font-size:18px;}
+  .question-card{padding:32px 24px;border-radius:22px;}
+  .table-ind{font-size:16px;margin-bottom:8px;}
+  .question-text{font-size:72px;}
+  .options-grid{gap:12px;}
+  .opt-btn{min-height:78px;font-size:34px;padding:18px 12px;border-radius:15px;}
+  .write-area{gap:12px;}
+  .write-input{width:190px;font-size:40px;padding:12px;}
+  .write-submit{font-size:18px;padding:11px 42px;}
+  .feedback{font-size:18px;height:26px;}
+  .progress-bar-game{height:14px;}
+  .prog-info{font-size:12px;margin-top:5px;}
+  .results-wrap{max-width:720px;gap:16px;padding:24px;}
+  .stat-row{gap:10px;}
+  .stat{padding:12px 10px;}
+  .stat .sv{font-size:28px;}
+  .stat .sl{font-size:10px;}
+  .tbl-grid{grid-template-columns:repeat(4,1fr);gap:8px;}
+}
+
+@media (min-width:1024px){
+  #gameScreen{justify-content:center;}
+  .screen{padding:32px;}
+  .setup-card{max-width:760px;}
+  .game-wrap{
+    max-width:min(900px,88vw);
+    gap:16px;
+    padding:24px 28px;
+  }
+  .game-wrap.wide{max-width:min(1080px,92vw);}
+  .game-header{gap:14px;}
+  .question-card{padding:38px 30px;}
+  .question-text{font-size:88px;}
+  .options-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;}
+  .opt-btn{min-height:92px;font-size:36px;}
+  .question-card.notebook-mode{max-width:860px;margin:0 auto;padding:30px 32px 34px;}
+  .vertical-board{max-width:620px;}
+  .vertical-number-row,
+  .vertical-result-row,
+  .vertical-mult-row,
+  .vertical-division-row,
+  .vertical-division-dividend,
+  .vertical-division-divisor{font-size:60px;}
+  .vcell,.vop{width:54px;height:54px;}
+  .vertical-inline-input{width:50px;min-width:50px;font-size:60px;}
+  .game-wrap.online-layout{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) minmax(220px,260px);
+    grid-template-areas:
+      "header header"
+      "scores powers"
+      "turn powers"
+      "score powers"
+      "lives powers"
+      "mode powers"
+      "timer powers"
+      "question powers"
+      "feedback powers"
+      "answers powers"
+      "progress powers";
+    align-items:start;
+  }
+  .game-wrap.online-layout .game-header{grid-area:header;}
+  .game-wrap.online-layout #duelScoresEl{grid-area:scores;}
+  .game-wrap.online-layout #turnWrap{grid-area:turn;}
+  .game-wrap.online-layout #scoreBar{grid-area:score;}
+  .game-wrap.online-layout #soloLives{grid-area:lives;}
+  .game-wrap.online-layout #globalTimer,
+  .game-wrap.online-layout #livesRow,
+  .game-wrap.online-layout #bombInd,
+  .game-wrap.online-layout #streakBanner{grid-area:mode;}
+  .game-wrap.online-layout .timer-shell{grid-area:timer;}
+  .game-wrap.online-layout #questionCard{grid-area:question;}
+  .game-wrap.online-layout #feedbackEl{grid-area:feedback;}
+  .game-wrap.online-layout #optionsGrid,
+  .game-wrap.online-layout #writeArea{grid-area:answers;}
+  .game-wrap.online-layout #miniTablesEl{grid-area:progress;}
+  .game-wrap.online-layout #powerDock{grid-area:powers;}
+  .game-wrap.online-layout .power-dock{
+    position:sticky;
+    top:18px;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    max-height:calc(100vh - 54px);
+    padding:14px;
+    border:2px solid rgba(251,191,36,.22);
+    border-radius:18px;
+    background:linear-gradient(180deg,rgba(46,31,87,.88),rgba(26,16,51,.84));
+    box-shadow:0 18px 44px rgba(0,0,0,.34);
+    overflow:hidden;
+  }
+  .power-dock-hd{display:none;}
+  .game-wrap.online-layout .power-dock-hd{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;}
+  .power-dock-title{font-family:'Baloo 2',cursive;font-size:18px;font-weight:800;color:var(--accent);line-height:1;}
+  .power-dock-sub{margin-top:3px;font-size:10px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:1px;}
+  .power-dock-help{font-size:10px;font-weight:800;color:#fde68a;background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.26);border-radius:999px;padding:4px 8px;white-space:nowrap;}
+  .game-wrap.online-layout .power-panel.visible{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:8px;
+    overflow-y:auto;
+    overflow-x:hidden;
+    padding:2px 3px 4px 0;
+  }
+  .game-wrap.online-layout .power-panel::-webkit-scrollbar{width:5px;height:5px;}
+  .game-wrap.online-layout .power-btn{
+    width:100%;
+    min-height:56px;
+    justify-content:flex-start;
+    gap:10px;
+    padding:9px 34px 9px 10px;
+    border-radius:13px;
+    text-align:left;
+  }
+  .game-wrap.online-layout .power-btn-icon{font-size:22px;width:28px;text-align:center;}
+  .game-wrap.online-layout .power-btn-name{display:block;font-size:13px;line-height:1.05;}
+  .power-btn-meta{display:none;}
+  .game-wrap.online-layout .power-btn-meta{display:block;margin-top:2px;font-size:9px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;}
+  .power-btn-key{display:none;}
+  .game-wrap.online-layout .power-btn-key{
+    display:flex;
+    position:absolute;
+    left:6px;
+    top:5px;
+    width:17px;
+    height:17px;
+    align-items:center;
+    justify-content:center;
+    border-radius:5px;
+    background:rgba(255,255,255,.12);
+    color:#fde68a;
+    font-size:9px;
+    font-weight:900;
+  }
+  .game-wrap.online-layout .power-btn-qty{top:8px;right:8px;}
+  .game-wrap.online-layout .power-btn.active-power{box-shadow:0 0 0 2px rgba(52,211,153,.2),0 0 16px rgba(52,211,153,.24);}
+  .game-wrap.online-layout .power-btn:disabled .power-btn-meta{color:#94a3b8;}
+  .game-wrap.online-layout .power-btn.just-used{animation:powerUsedDesktop .45s ease-out;}
+  @keyframes powerUsedDesktop{0%{transform:scale(.96)}55%{transform:scale(1.03);border-color:rgba(251,191,36,.8)}100%{transform:scale(1)}}
+  .shop-card{max-width:720px;}
+  .shop-grid{grid-template-columns:repeat(4,1fr);gap:10px;}
+}
+
+@media (min-width:1280px){
+  .setup-card{max-width:860px;}
+  .game-wrap{max-width:min(980px,82vw);}
+  .game-wrap.wide{max-width:min(1180px,86vw);}
+  .question-text{font-size:96px;}
+  .opt-btn{min-height:102px;font-size:40px;}
+}
+
+@media (max-height:680px) and (min-width:700px){
+  .screen{align-items:flex-start;padding-top:14px;padding-bottom:14px;}
+  .game-wrap{gap:9px;padding-top:12px;padding-bottom:12px;}
+  .question-card{padding-top:20px;padding-bottom:20px;}
+  .question-text{font-size:60px;}
+  .opt-btn{min-height:62px;font-size:30px;padding-top:12px;padding-bottom:12px;}
+  .timer-track{height:16px;}
+  .feedback{height:20px;font-size:15px;}
+  .progress-wrap{padding-top:2px;}
+}
+
+@media (max-width:699px){
+  .setup-card{max-width:min(440px,100%);}
+  .duel-toggle{grid-template-columns:repeat(2,minmax(0,1fr));}
+  .sel-btn{min-height:82px;}
+  .game-wrap{max-width:min(480px,100%);}
+  .question-text{font-size:clamp(42px,14vw,56px);}
+  .opt-btn{min-height:58px;}
+  .streak-toast{max-width:calc(100vw - 28px);white-space:normal;font-size:24px;}
+  .power-toast{max-width:calc(100vw - 24px);white-space:normal;}
+}
+
+@media (max-width:360px){
+  .screen{padding:8px;}
+  .game-wrap{padding:8px;gap:8px;}
+  .question-card{padding:15px 9px;}
+  .question-text{font-size:40px;}
+  .opt-btn{font-size:22px;min-height:52px;padding:12px 6px;}
+  .write-input{width:120px;font-size:26px;}
+  .power-btn-name{display:none;}
+  .shop-grid{grid-template-columns:repeat(2,1fr);}
+}
 </style>
 </head>
 <body>
@@ -2316,7 +2525,7 @@ body.frozen-cursor *{cursor:not-allowed!important;}
   </div>
   <div class="bomb-ind" id="bombInd">💣 La bomba está contigo</div>
   <div class="streak-banner" id="streakBanner" style="display:none"></div>
-  <div>
+  <div class="timer-shell">
     <div class="timer-track" id="timerTrack"><div class="timer-bar" id="timerBar"></div></div>
     <div class="timer-row"><span id="timerLbl">—</span><span id="tableLbl">Tabla del 1</span></div>
   </div>
@@ -2352,7 +2561,16 @@ body.frozen-cursor *{cursor:not-allowed!important;}
     </div>
   </div>
   <!-- Panel de poderes activos durante la partida -->
-  <div class="power-panel" id="powerPanel"></div>
+  <aside class="power-dock" id="powerDock" aria-label="Poderes multijugador">
+    <div class="power-dock-hd">
+      <div>
+        <div class="power-dock-title">Poderes</div>
+        <div class="power-dock-sub">Multijugador</div>
+      </div>
+      <div class="power-dock-help">1-9</div>
+    </div>
+    <div class="power-panel" id="powerPanel"></div>
+  </aside>
 
   <div id="miniTablesEl">
     <div class="progress-wrap" id="progressWrap" style="display:none">
@@ -4096,6 +4314,7 @@ const VOICE_WARMUP_STEPS=[
   }
 ];
 let voiceWarmupActive=false,voiceWarmupResolve=null,voiceWarmupStepIndex=0,voiceWarmupTokenSeq=0,voiceWarmupTimer=null;
+let voiceWarmupSteps=VOICE_WARMUP_STEPS;
 let voicePreparePromise=null;
 let currentGameId=null,_checkpointIv=null,_checkpointSoonIv=null,_lastCheckpointTs=0; // guardado progresivo de partida
 let _resultsShownGameId=null,_saveResultSentGameId=null;
@@ -5178,6 +5397,7 @@ function isPowerCompatibleWithAnswerMode(powerId){
 function renderPowerPanel(){
   const panel=$('powerPanel');
   if(!panel) return;
+  const dock=$('powerDock');
   if(!arePowersEnabled()){ panel.classList.remove('visible'); panel.innerHTML=''; return; }
   const isMulti=gameMode==='online';
   const availablePowers=POWERS.filter(p=>{
@@ -5186,20 +5406,38 @@ function renderPowerPanel(){
     const qty=sessionInventory[p.id]||0;
     return qty>0;
   });
-  if(availablePowers.length===0){ panel.classList.remove('visible'); panel.innerHTML=''; return; }
+  if(availablePowers.length===0){ panel.classList.remove('visible'); panel.innerHTML=''; if(dock) dock.classList.remove('has-powers'); return; }
   panel.classList.add('visible');
-  panel.innerHTML=availablePowers.map(p=>{
+  if(dock) dock.classList.add('has-powers');
+  panel.innerHTML=availablePowers.map((p,idx)=>{
     const qty=sessionInventory[p.id]||0;
     const isUsed=(p.id==='magnifier'&&powerState.magnifierUsed)||(p.id==='extratime'&&powerState.extratimeUsed)||(p.id==='blind'&&powerState.blindUsed)||(p.id==='chaos'&&powerState.chaosUsed)||(p.id==='mirror'&&powerState.mirrorUsed)||(p.id==='inversion'&&powerState.inversionUsed)||(p.id==='steal'&&powerState.stealUsed)||(p.id==='slow'&&powerState.slowUsed)||(p.id==='coinrob'&&powerState.coinrobUsed)||(p.id==='blackout'&&powerState.blackoutUsed)||(p.id==='aura'&&powerState.auraUsed)||(p.id==='aureosmagnet'&&powerState.aureosMagnetActive)||(p.id==='sabotage'&&powerState.sabotageUsed);
     const isActive=(p.id==='shield'&&powerState.shield)||(p.id==='doublepts'&&powerState.doublePts)||(p.id==='streaksafe'&&powerState.streakSafe)||(p.id==='mirror'&&powerState.mirrorActive)||(p.id==='bounce'&&powerState.bounceActive)||(p.id==='fifty'&&powerState.fiftyTablesLeft>0)||(p.id==='aura'&&powerState.auraActive);
+    const key=idx<9?idx+1:'';
+    const status=isActive?'Activo':isUsed?'Usado':p.modes==='multi'?'Ataque':'Apoyo';
     return `<button class="power-btn ${isActive?'active-power':''} ${!p.multi?'one-use':''}"
-      id="pbtn_${p.id}" ${isUsed?'disabled':''} onclick="activatePower('${p.id}')" title="${p.desc}">
+      id="pbtn_${p.id}" data-power-id="${p.id}" data-power-key="${key}" ${isUsed?'disabled':''} onclick="activatePower('${p.id}')" title="${p.desc}" aria-label="${p.name}. ${status}. Cantidad ${qty}${key?`. Tecla ${key}`:''}">
+      ${key?`<span class="power-btn-key">${key}</span>`:''}
       <span class="power-btn-icon">${p.icon}</span>
-      <span class="power-btn-name">${p.name}</span>
+      <span><span class="power-btn-name">${p.name}</span><span class="power-btn-meta">${status}${key?` · Tecla ${key}`:''}</span></span>
       <span class="power-btn-qty">${qty}</span>
     </button>`;
   }).join('');
 }
+function handlePowerHotkey(event){
+  if(event.defaultPrevented) return;
+  if(!/^[1-9]$/.test(event.key)) return;
+  const target=event.target;
+  const tag=(target?.tagName||'').toLowerCase();
+  if(tag==='input'||tag==='textarea'||tag==='select'||target?.isContentEditable) return;
+  if(gameMode!=='online'||!$('gameScreen')?.classList.contains('active')) return;
+  const btn=document.querySelector(`.power-btn[data-power-key="${event.key}"]:not(:disabled)`);
+  if(!btn) return;
+  event.preventDefault();
+  const powerId=btn.dataset.powerId;
+  if(powerId) activatePower(powerId);
+}
+document.addEventListener('keydown',handlePowerHotkey);
 function consumePower(id){
   if(!arePowersEnabled()) return;
   if(sessionInventory[id]>0) sessionInventory[id]--;
@@ -5231,6 +5469,12 @@ function activatePower(id){
   if(!isPowerCompatibleWithAnswerMode(id)){ showPowerToast('🎤 Ese poder no se usa en modo voz'); return; }
   const qty=sessionInventory[id]||0;
   if(qty<=0) return;
+  const powerBtn=$('pbtn_'+id);
+  if(powerBtn){
+    powerBtn.classList.remove('just-used');
+    void powerBtn.offsetWidth;
+    powerBtn.classList.add('just-used');
+  }
   switch(id){
     case 'shield':       activateShield(); break;
     case 'magnifier':    activateMagnifier(); break;
@@ -6203,7 +6447,7 @@ async function _checkOrphanedExamCheckpoint(){
         difficulty:cp.difficulty||'', op:cp.op||'mult', tables:cp.tables||[],
         tblResults:_summarizeCpTbl(cp.tblResultsFull), tableDetail:cp.tableDetailResults||{},
         stepDetail:cp.stepDetailResults||{},
-        isExam:true, examStartedAt:cp.startedAt, finished:false
+        isExam:true, examStartedAt:cp.startedAt, durationMs:Math.max(0,Date.now()-(cp.startedAt||Date.now())), finished:false
       }));
     }catch(e){}
   }
@@ -7020,6 +7264,7 @@ function sendSaveResult(){
   const _vs1=gameMode==='online'?mpPlayers.filter(p=>p.idx!==mpMyIdx).map(p=>p.name).join(', ')
            : gameMode==='duel'?(pName2||'')
            : '';
+  const examDurationMs=_examPlaythrough&&_pendingExamConfig?.startedAt?Math.max(0,Date.now()-_pendingExamConfig.startedAt):null;
   const msg1=JSON.stringify({type:'save_result',
     id:currentGameId,
     name:pName, grade:gradeName,
@@ -7041,6 +7286,7 @@ function sendSaveResult(){
     // me deja terminar a mi ritmo) — mando el startedAt de la prueba que en realidad estaba
     // jugando para que el servidor pueda registrarme como terminado aunque ya no sea la activa.
     examStartedAt:_examPlaythrough?(_pendingExamConfig?.startedAt||null):null,
+    durationMs:examDurationMs,
     aureosBonus: !!powerState.aureosMagnetActive,
     isWinner:_p1IsWinner,
     gameId: gameMode==='online'?mpSeed:null,
@@ -7521,6 +7767,47 @@ function parseVoiceNumberChunk(text){
   if(/^-?\d+$/.test(normalized)) return Number(normalized);
   return spanishWordsToNumber(normalized);
 }
+function voiceTextHasNumber(text,num){
+  const normalized=normalizeVoiceText(text);
+  if(!normalized) return false;
+  const escaped=String(num).replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+  if(new RegExp(`\\b${escaped}\\b`).test(normalized)) return true;
+  const tokens=normalized.split(' ').filter(Boolean);
+  for(let i=0;i<tokens.length;i++){
+    const one=parseVoiceNumberChunk(tokens[i]);
+    if(one===num) return true;
+    const two=parseVoiceNumberChunk(tokens.slice(i,i+2).join(' '));
+    if(two===num) return true;
+    const three=parseVoiceNumberChunk(tokens.slice(i,i+3).join(' '));
+    if(three===num) return true;
+  }
+  return false;
+}
+function buildVoiceWarmupSteps(){
+  const seqStart=randInt(1,7);
+  const seq=[seqStart,seqStart+1,seqStart+2];
+  const a=randInt(2,9);
+  const b=randInt(2,9);
+  return [
+    {
+      prompt:`Di: "${seq.join(' ')}"`,
+      hint:'Paso 1 de 2',
+      match(text){
+        const normalized=normalizeVoiceText(text);
+        const digitPattern=new RegExp(seq.map(n=>`\\b${n}\\b`).join('.*'));
+        return digitPattern.test(normalized)||seq.every(n=>voiceTextHasNumber(normalized,n));
+      }
+    },
+    {
+      prompt:`Di: "${a} por ${b}"`,
+      hint:'Paso 2 de 2',
+      match(text){
+        const parsed=parseVoiceInverseExpression(text,'Ã—');
+        return !!parsed&&parsed.left===a&&parsed.right===b;
+      }
+    }
+  ];
+}
 function parseVoiceInverseExpression(text,expectedOp){
   const normalized=(text||'')
     .toLowerCase()
@@ -7622,6 +7909,9 @@ function stopVoiceCapture(releaseStream=false){
     setVoiceStatus(status,voiceErrorMessage?'error':(voiceReady?'ready':''));
   }
 }
+function hasActiveVoiceStream(){
+  return !!(voiceStream&&voiceStream.getAudioTracks&&voiceStream.getAudioTracks().some(t=>t.readyState==='live'));
+}
 function startVoiceCapture(){
   if(ansMode!=='voice'||!voiceReady||paused||!$('gameScreen')?.classList.contains('active')) return;
   voiceShouldRun=true;
@@ -7660,7 +7950,7 @@ function saveVoiceWarmupData(data){
 }
 function shouldSkipVoiceWarmup(){
   const data=loadVoiceWarmupData();
-  return (data[getVoiceWarmupPlayerKey()]?.successes||0)>=VOICE_WARMUP_SKIP_AFTER;
+  return hasActiveVoiceStream()&&(data[getVoiceWarmupPlayerKey()]?.successes||0)>=VOICE_WARMUP_SKIP_AFTER;
 }
 function markVoiceWarmupSuccess(){
   const data=loadVoiceWarmupData();
@@ -7676,7 +7966,7 @@ function setVoiceWarmupVisible(active){
   $('cntScreen')?.classList.toggle('warmup-mode',!!active);
 }
 function renderVoiceWarmup(transcript='',muted=true){
-  const step=VOICE_WARMUP_STEPS[voiceWarmupStepIndex]||VOICE_WARMUP_STEPS[0];
+  const step=voiceWarmupSteps[voiceWarmupStepIndex]||voiceWarmupSteps[0]||VOICE_WARMUP_STEPS[0];
   $('voiceWarmupStep').textContent=step.hint;
   $('voiceWarmupPrompt').textContent=step.prompt;
   $('voiceWarmupHeard').textContent=transcript||'Esperando la voz del alumno...';
@@ -7729,6 +8019,13 @@ function skipVoiceWarmup(){
   finishVoiceWarmup(false);
 }
 function startVoiceWarmupCapture(){
+  if(!voiceReady||!voiceRecognition){
+    ensureVoiceReady().then(ok=>{
+      if(ok) startVoiceWarmupCapture();
+      else finishVoiceWarmup(false);
+    });
+    return;
+  }
   voicePendingSessionSeq=++voiceSessionSeq;
   voicePendingQuestionToken=-(++voiceWarmupTokenSeq);
   try{
@@ -7743,14 +8040,14 @@ function handleVoiceWarmupResult(transcript,isFinal=false,questionToken=voiceAct
   if(!voiceWarmupActive||!sessionSeq||questionToken!==voiceActiveQuestionToken||sessionSeq!==voiceActiveSessionSeq) return;
   const heard=(transcript||'').trim();
   renderVoiceWarmup(heard,!heard);
-  const step=VOICE_WARMUP_STEPS[voiceWarmupStepIndex];
+  const step=voiceWarmupSteps[voiceWarmupStepIndex];
   if(!step||!step.match(heard)) return;
   if(!isFinal){
     setVoiceStatus('🎤 Voz detectada, confirmando...','listening');
     return;
   }
   voiceWarmupStepIndex++;
-  if(voiceWarmupStepIndex>=VOICE_WARMUP_STEPS.length){
+  if(voiceWarmupStepIndex>=voiceWarmupSteps.length){
     renderVoiceWarmup('Listo. Reconocimiento confirmado.',false);
     setTimeout(()=>finishVoiceWarmup(true),220);
     return;
@@ -7764,6 +8061,7 @@ function runVoiceWarmup(){
   stopVoiceCapture(false);
   voiceWarmupActive=true;
   voiceWarmupStepIndex=0;
+  voiceWarmupSteps=buildVoiceWarmupSteps();
   prepareCountdownScreen(true);
   setVoiceWarmupVisible(true);
   renderVoiceWarmup('',true);
@@ -7798,6 +8096,25 @@ function getVoiceCandidateKey(parsed,inverseParsed){
   if(visualMode==='inversa'&&inverseParsed) return `expr:${inverseParsed.left}:${inverseParsed.opSymbol}:${inverseParsed.right}`;
   if(parsed!=null) return `num:${parsed}`;
   return '';
+}
+function chooseVoiceTranscript(texts){
+  const list=[...new Set((texts||[]).map(t=>(t||'').trim()).filter(Boolean))];
+  if(!list.length) return '';
+  for(const text of list){
+    const {inverseParsed,parsed}=parseVoiceCandidate(text);
+    if(visualMode==='inversa'?!!inverseParsed:parsed!=null) return text;
+  }
+  return list[0];
+}
+function chooseVoiceWarmupTranscript(texts){
+  const list=[...new Set((texts||[]).map(t=>(t||'').trim()).filter(Boolean))];
+  if(!list.length) return '';
+  const step=voiceWarmupSteps[voiceWarmupStepIndex];
+  if(step){
+    const match=list.find(text=>step.match(text));
+    if(match) return match;
+  }
+  return list[0];
 }
 function confirmVoiceCandidate(parsed,inverseParsed,isFinal=false){
   const key=getVoiceCandidateKey(parsed,inverseParsed);
@@ -7848,6 +8165,7 @@ function handleVoiceResult(transcript,isFinal=false,questionToken=voiceQuestionT
 }
 async function ensureVoiceReady(){
   if(ansMode!=='voice') return true;
+  if(voiceReady&&hasActiveVoiceStream()&&voiceRecognition) return true;
   if(voicePreparePromise) return voicePreparePromise;
   if(!hasInternetConnection()){
     voiceReady=false;
@@ -7871,13 +8189,20 @@ async function ensureVoiceReady(){
   }
   voicePreparePromise=(async()=>{
     try{
-    if(!voiceStream){
+    if(!hasActiveVoiceStream()){
       if(!navigator.mediaDevices?.getUserMedia) throw new Error('getUserMedia unavailable');
       voiceStream=await navigator.mediaDevices.getUserMedia({audio:{
         echoCancellation:true,
         noiseSuppression:true,
         autoGainControl:true
       }});
+      voiceStream.getAudioTracks().forEach(track=>{
+        track.onended=()=>{
+          voiceReady=false;
+          voiceShouldRun=false;
+          if(ansMode==='voice') setVoiceStatus('ðŸŽ¤ MicrÃ³fono desconectado','error');
+        };
+      });
     }
     if(!voiceRecognition){
       const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
@@ -7885,7 +8210,7 @@ async function ensureVoiceReady(){
       voiceRecognition.lang='es-MX';
       voiceRecognition.continuous=true;
       voiceRecognition.interimResults=true;
-      voiceRecognition.maxAlternatives=3;
+      voiceRecognition.maxAlternatives=5;
       voiceRecognition.onstart=()=>{
         voiceRecognitionRunning=true;
         voiceActiveSessionSeq=voicePendingSessionSeq||voiceActiveSessionSeq||(++voiceSessionSeq);
@@ -7943,15 +8268,17 @@ async function ensureVoiceReady(){
         const sessionSeq=voiceActiveSessionSeq;
         const questionToken=voiceActiveQuestionToken;
         if(!sessionSeq||(!voiceWarmupActive&&questionToken!==voiceQuestionToken)) return;
-        let interim='';
+        let interimTexts=[];
         for(let i=ev.resultIndex;i<ev.results.length;i++){
           const result=ev.results[i];
-          const text=result?.[0]?.transcript||'';
+          const texts=[];
+          for(let j=0;j<result.length;j++) texts.push(result[j]?.transcript||'');
+          const text=voiceWarmupActive?chooseVoiceWarmupTranscript(texts):chooseVoiceTranscript(texts);
           if(result.isFinal) handleVoiceResult(text,true,questionToken,sessionSeq);
-          else interim=text;
+          else if(text) interimTexts.push(text);
         }
-        if(interim){
-          handleVoiceResult(interim,false,questionToken,sessionSeq);
+        if(interimTexts.length){
+          handleVoiceResult(voiceWarmupActive?chooseVoiceWarmupTranscript(interimTexts):chooseVoiceTranscript(interimTexts),false,questionToken,sessionSeq);
         }
       };
     }
@@ -8035,13 +8362,11 @@ function runCountdown(cb){
   if(_countdownRunning) return;
   if(ansMode==='voice'){
     _countdownRunning=true;
-    ensureVoiceReady().then(ok=>{
-      if(!ok){
+    runVoiceWarmup().then(ok=>{
+      if(!ok&&!voiceReady){
         _countdownRunning=false;
-        throw new Error('voice-ready-failed');
+        return;
       }
-      return runVoiceWarmup();
-    }).then(()=>{
       _countdownRunning=false;
       beginCountdownNow(cb);
     }).catch(()=>{
@@ -8212,6 +8537,7 @@ function initGame(isOnline){
   $('gameScreen').classList.add('active');
   document.body.classList.add('game-active'); // ocultar botones flotantes durante la partida
   $('gameWrap').classList.toggle('wide', isOnline);
+  $('gameWrap').classList.toggle('online-layout', isOnline);
   earnedAureosThisGame=0;
   $('aureosEarnedBox').style.display='none';
   // En modo apuestas: descontar la apuesta al inicio de la partida
@@ -8554,17 +8880,22 @@ function buildQForOpConfig(opSym,cfg){
     const qty=Math.max(1,cfg.qty||1);
     for(const tbl of pool){
       for(let i=0;i<qty;i++){
+        if(opSym===_PR_OPMAP_REV.div&&cfg.digits){
+          qs.push(makeDivisionQuestion(tbl,cfg.digits));
+          continue;
+        }
         let b;
         if(opSym==='÷'&&isOperationsDivisionContext(opSym)){
           qs.push(makeDivisionQuestion(tbl,cfg.digits||selectedCifras||2));
           continue;
         }else{
-          b=randInt(opSym==='÷'?Math.max(1,multMin):multMin,multMax);
+          b=(opSym===_PR_OPMAP_REV.mult&&cfg.manner==='ordered')?orderedRangeValue(i,opSym):randInt(opSym===_PR_OPMAP_REV.div?Math.max(1,multMin):multMin,multMax);
         }
         if(opSym==='×') qs.push({table:tbl,a:tbl,op:opSym,b,answer:tbl*b});
         else qs.push({table:tbl,a:tbl,op:opSym,b,answer:b,_divA:tbl*b});
       }
     }
+    if(opSym===_PR_OPMAP_REV.mult&&cfg.manner==='random') return shuffle(qs);
   } else {
     // + y −: usa cifras propias de esta operación (fallback a selectedCifras si no se especifica)
     const digits=cfg.digits||selectedCifras;
@@ -9752,6 +10083,7 @@ function doCf(){
     if(gameMode==='online'&&mpConnected) mpDisconnect();
     document.body.classList.remove('duel-p1','duel-p2');
     $('gameScreen').classList.remove('active');
+    $('gameWrap').classList.remove('online-layout');
     $('step1Screen').classList.add('active');
   } else if(pendingAct==='restart'){
     if(gameMode==='online'){
@@ -9833,6 +10165,7 @@ function showResults(){
   root.style.setProperty('--theme-btn-hover-bg','rgba(167,139,250,.1)');
   root.style.setProperty('--theme-btn-text','#f1f5f9');
   $('gameScreen').classList.remove('active');
+  $('gameWrap').classList.remove('online-layout');
   document.body.classList.remove('game-active'); // restaurar botones flotantes
   $('resultsScreen').classList.add('active');
   $('scoreBar').classList.remove('visible');
@@ -10445,6 +10778,7 @@ function doReturnToRoom(){
   if(rrBtn){ rrBtn.textContent='🏠 Regresar a la sala'; rrBtn.disabled=false; }
   // Go back to step3 (mode/config screen) keeping connection alive
   $('gameScreen').classList.remove('active');
+  $('gameWrap').classList.remove('online-layout');
   $('step3bScreen').classList.remove('active');
   $('step3Screen').classList.add('active');
   // Reset game state but keep players connected
@@ -10561,12 +10895,13 @@ function replayGame(){
   $('gameScreen').classList.add('active');
   document.body.classList.add('game-active'); // ocultar botones flotantes al volver a jugar
   $('gameWrap').classList.toggle('wide', gameMode==='online');
+  $('gameWrap').classList.toggle('online-layout', gameMode==='online');
   initPowerPanel();       // reinicia sessionInventory con el inventario actual del jugador
   startSessionReporting(); // notifica al maestro desde el inicio de la nueva partida
   stopBgMusic();startBgMusic();loadQuestion();
 }
 function goStart(){
-  stopVoiceCapture(true);
+  stopVoiceCapture(false);
   stopBgMusic(); document.body.classList.remove('duel-p1','duel-p2','game-active');
   // Si el alumno YA ENTREGÓ su prueba (_examDone) y vuelve al menú, limpiar estado local de
   // examen. Si la prueba sigue pendiente (p.ej. el aviso llegó mientras jugaba una partida
@@ -11611,6 +11946,7 @@ function mpOnDisconnected(){
   if($('gameScreen').classList.contains('active')||$('step3Screen').classList.contains('active')||$('resultsScreen').classList.contains('active')){
     stopBgMusic(); document.body.classList.remove('duel-p1','duel-p2');
     $('gameScreen').classList.remove('active');
+    $('gameWrap').classList.remove('online-layout');
     $('step3Screen').classList.remove('active');
     $('step1Screen').classList.add('active');
     alert('Conexión perdida. Regresando al inicio.');

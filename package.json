@@ -1,7 +1,12 @@
 {
+  "version": "2.0.0",
   "scripts": {
-    "check:encoding": "node scripts/check-utf8.js maestro.html math-attack.html ranking.html server.js Panel-Control.ps1 hotspot.ps1 ejecutables/Conectar-MathAttack.ps1 scripts/check-utf8.js scripts/fix-mojibake.js",
-    "check:ordered": "node scripts/check-ordered-questions.js"
+    "check:syntax": "node -c server.js && node -c src/data/jsonStore.js && node -c src/server/htmlPages.js",
+    "check:encoding": "node scripts/check-utf8.js maestro.html math-attack.html ranking.html server.js src/data/jsonStore.js src/server/htmlPages.js Panel-Control.ps1 hotspot.ps1 ejecutables/Conectar-MathAttack.ps1 scripts/check-utf8.js scripts/fix-mojibake.js scripts/check-responsive.js scripts/check-multiplayer-powers-ui.js",
+    "check:ordered": "node scripts/check-ordered-questions.js",
+    "check:responsive": "node scripts/check-responsive.js",
+    "check:powers-ui": "node scripts/check-multiplayer-powers-ui.js",
+    "check": "npm run check:syntax && npm run check:encoding && npm run check:ordered"
   },
   "dependencies": {
     "ws": "^8.21.0"

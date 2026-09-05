@@ -14,16 +14,12 @@
 
 const http = require('http');
 const WebSocket = require('ws');
-const zlib = require('zlib');
 const os   = require('os');
 const fs   = require('fs');
 const path = require('path');
+const { createJsonStore } = require('./src/data/jsonStore');
+const { createHtmlPages } = require('./src/server/htmlPages');
 const PORT = 8080;
-const RANKING_FILE   = path.join(__dirname, 'ranking.json');
-const PLAYERS_FILE   = path.join(__dirname, 'players.json');
-const CONFIG_FILE    = path.join(__dirname, 'config.json');
-const AUREOS_LOG_FILE= path.join(__dirname, 'aureosLog.json');
-const MAX_AUREOS_LOG = 10000;
 // Poderes que SOLO deben afectar a un rival (no a toda la sala) — si el cliente
 // olvida mandar targetIdx, el servidor descarta el mensaje en vez de reenviarlo
 // a todos (eso fue exactamente el bug original de robo/drenar/inversión en 3-4p).
@@ -130,15 +126,6 @@ function checkNewAchievements(player, result){
   return newOnes;
 }
 
-let _config = {};
-try { _config = JSON.parse(fs.readFileSync(CONFIG_FILE, 'utf8')); } catch(e) {}
-let ADMIN_USERNAME = _config.adminUsername || 'admin';
-let ADMIN_PASSWORD = _config.adminPassword || 'admin';
-
-function saveConfig(){
-  try{ fs.writeFileSync(CONFIG_FILE, JSON.stringify({ adminUsername: ADMIN_USERNAME, adminPassword: ADMIN_PASSWORD }, null, 2), 'utf8'); }catch(e){ L.err('Error guardando config:', e); }
-}
-
 // ── File logger ──────────────────────────────────────────────
 const LOG_FILE = path.join(__dirname, 'server.log');
 const LOG_MAX_BYTES = 1_000_000; // rota al llegar a 1 MB
@@ -181,6 +168,24 @@ const L={
   rank: (...a)=>log(C.green, '\u{1F3C5} RANK  ',...a),
   err:  (...a)=>log(C.red,   '\u274C ERROR ',...a),
 };
+const dataStore = createJsonStore({ baseDir: __dirname, logger: L });
+const htmlPages = createHtmlPages({ baseDir: __dirname, logger: L });
+const {
+  loadRanking,
+  saveRanking,
+  loadPlayers,
+  savePlayers,
+  loadAureosLog,
+  saveAureosLog,
+  logAureosTx,
+} = dataStore;
+const _config = dataStore.loadConfig();
+let ADMIN_USERNAME = _config.adminUsername || 'admin';
+let ADMIN_PASSWORD = _config.adminPassword || 'admin';
+
+function saveConfig(){
+  dataStore.saveConfig({ adminUsername: ADMIN_USERNAME, adminPassword: ADMIN_PASSWORD });
+}
 let _connCount=0;
 function getActiveClientCount(excludeWs=null){
   let count=0;
@@ -233,66 +238,6 @@ function pushConnLog(evType, msg) {
   maestroClients.forEach(mc => { if (mc.readyState === WebSocket.OPEN) try { mc.send(payload); } catch(e) {} });
 }
 
-// ── Escritura asíncrona en cola: no bloquea el event loop (importante con
-// 20-40 alumnos conectados) y serializa las escrituras de un mismo archivo
-// para que nunca se solapen ni se pisen entre sí ──────────────────────────
-function makeQueuedWriter(file){
-  let writing=false, nextData=null, tmpSeq=0;
-  function makeTmpFile(){
-    tmpSeq=(tmpSeq+1)%1000000;
-    return `${file}.${process.pid}.${Date.now()}.${tmpSeq}.tmp`;
-  }
-  function cleanupTmp(tmp){ fs.unlink(tmp,()=>{}); }
-  function commitTmp(tmp, cb){
-    fs.rename(tmp,file,err=>{
-      if(!err){ cb(null,false); return; }
-      // OneDrive/antivirus en Windows a veces bloquean el rename temporalmente.
-      fs.copyFile(tmp,file,copyErr=>{
-        if(copyErr){ cb(err,false); return; }
-        cleanupTmp(tmp);
-        cb(null,true);
-      });
-    });
-  }
-  function flush(){
-    const data=nextData; nextData=null; writing=true;
-    const tmp=makeTmpFile();
-    fs.writeFile(tmp,JSON.stringify(data),err=>{
-      if(err){
-        L.err('Escritura falló ('+path.basename(file)+'):',err.message);
-        cleanupTmp(tmp);
-        writing=false; if(nextData!==null) flush();
-        return;
-      }
-      commitTmp(tmp,(err2,usedFallback)=>{
-        if(err2) L.err('Rename falló ('+path.basename(file)+'):',err2.message);
-        if(err2) cleanupTmp(tmp);
-        else if(usedFallback) L.game('Persistencia recuperada con copia de respaldo ('+path.basename(file)+')');
-        writing=false;
-        if(nextData!==null) flush();
-      });
-    });
-  }
-  function queueWrite(data){ nextData=data; if(!writing) flush(); }
-  // Último recurso al apagar el servidor: escribe de forma síncrona lo que quedó en cola
-  queueWrite.flushSync=function(){
-    if(nextData===null) return;
-    const data=nextData; nextData=null;
-    try{
-      const tmp=makeTmpFile();
-      fs.writeFileSync(tmp,JSON.stringify(data));
-      try{
-        fs.renameSync(tmp,file);
-      }catch(renameErr){
-        fs.copyFileSync(tmp,file);
-        cleanupTmp(tmp);
-        L.game('flushSync recuperado con copia de respaldo ('+path.basename(file)+')');
-      }
-    }catch(e){ L.err('flushSync falló ('+path.basename(file)+'):',e.message); }
-  };
-  return queueWrite;
-}
-
 // ── Ranking persistence ──────────────────────────────────────
 function hasProgressInTblResults(tblResults){
   return Object.values(tblResults||{}).some(v=>(v?.total||0)>0);
@@ -339,79 +284,6 @@ function saveCheckpointRecord(msg, canonicalName){
   saveRanking(ranking.slice(0,500));
   return {saved:true,reason:idx>=0?'updated':'inserted'};
 }
-let _rankingCache = null;
-const _writeRanking=makeQueuedWriter(RANKING_FILE);
-function loadRanking(){ // Carga el ranking desde el archivo JSON (con caché en memoria)
-  if(_rankingCache) return _rankingCache;
-  try{ const d=JSON.parse(fs.readFileSync(RANKING_FILE,'utf8')); _rankingCache=Array.isArray(d)?d:[]; }
-  catch(e){ _rankingCache=[]; }
-  return _rankingCache;
-}
-function saveRanking(data){ // Guarda el ranking y actualiza la caché (escritura atómica, no bloqueante)
-  _rankingCache=data;
-  _writeRanking(data);
-}
-
-// ── Players persistence ──────────────────────────────────────
-let _playersCache = null;
-const _writePlayers=makeQueuedWriter(PLAYERS_FILE);
-function loadPlayers(){ // Carga jugadores registrados desde players.json (con caché)
-  if(_playersCache) return _playersCache;
-  try{ const d=JSON.parse(fs.readFileSync(PLAYERS_FILE,'utf8')); _playersCache=Array.isArray(d)?d:[]; }
-  catch(e){ _playersCache=[]; }
-  // Limpiar campo aureosLog legado (migrado a aureosLog.json)
-  _playersCache.forEach(p=>{ delete p.aureosLog; });
-  return _playersCache;
-}
-function savePlayers(data){ // Guarda jugadores y actualiza caché (escritura atómica, no bloqueante)
-  _playersCache=data;
-  _writePlayers(data);
-}
-
-// ── Registro de transacciones de Áureos (archivo separado) ───
-let _aureosLogCache=null;
-const _writeAureosLog=makeQueuedWriter(AUREOS_LOG_FILE);
-function loadAureosLog(){
-  if(_aureosLogCache) return _aureosLogCache;
-  try{ const d=JSON.parse(fs.readFileSync(AUREOS_LOG_FILE,'utf8')); _aureosLogCache=Array.isArray(d)?d:[]; }
-  catch(e){ _aureosLogCache=[]; }
-  return _aureosLogCache;
-}
-function saveAureosLog(data){
-  _aureosLogCache=data;
-  _writeAureosLog(data);
-}
-function logAureosTx(player,delta,reason){
-  if(!delta) return;
-  let log=loadAureosLog();
-  log.push({ts:Date.now(),delta,reason,balance:player.aureos||0,
-    playerId:player.id||'',name:player.name||'',grade:player.grade||''});
-  if(log.length>MAX_AUREOS_LOG) log=log.slice(-MAX_AUREOS_LOG);
-  saveAureosLog(log);
-}
-
-// ── Game HTML cache ──────────────────────────────────────────
-let _gameHTML=null;
-let _gameHTMLGzip=null;
-const _gameHTMLPath=path.join(__dirname,'math-attack.html');
-function getGameHTML(){ // Lee math-attack.html del disco una vez y lo mantiene en memoria
-  if(_gameHTML!==null) return _gameHTML;
-  try{ _gameHTML=fs.readFileSync(_gameHTMLPath,'utf8'); }catch(e){ return null; }
-  return _gameHTML;
-}
-function getGameHTMLGzip(){ // Versión comprimida con gzip del HTML (generada una vez y cacheada)
-  if(_gameHTMLGzip!==null) return _gameHTMLGzip;
-  const html=getGameHTML();
-  if(!html) return null;
-  try{ _gameHTMLGzip=zlib.gzipSync(html); }catch(e){ return null; }
-  return _gameHTMLGzip;
-}
-try{
-  getGameHTML();
-  fs.watch(_gameHTMLPath,()=>{ _gameHTML=null; _gameHTMLGzip=null; L.game('math-attack.html modificado — caché invalidada'); });
-}catch(e){}
-
-
 // ── Utilities ────────────────────────────────────────────────
 function genId(){ return Math.random().toString(36).substr(2,6).toUpperCase(); } // Genera un ID aleatorio de 6 caracteres en mayúsculas
 function send(ws,obj){ // Envía un objeto JSON a un cliente WebSocket si está abierto
@@ -557,27 +429,13 @@ const server=http.createServer((req,res)=>{
 
   // ── Servir Chart.js local ──
   if(req.method==='GET'&&url==='/chart.umd.min.js'){
-    try{
-      const js=fs.readFileSync(path.join(__dirname,'chart.umd.min.js'));
-      res.writeHead(200,{'Content-Type':'application/javascript','Cache-Control':'public, max-age=86400'});
-      res.end(js);
-    }catch(e){ res.writeHead(404); res.end(''); }
+    htmlPages.sendChart(req,res);
     return;
   }
 
   // ── Serve game HTML ──
   if(req.method==='GET'&&(url==='/'||url==='/math-attack.html'||url==='/juego')){
-    const html=getGameHTML();
-    if(html!==null){
-      const ae=req.headers['accept-encoding']||'';
-      const gz=ae.includes('gzip')&&getGameHTMLGzip();
-      const headers={'Content-Type':'text/html; charset=utf-8','Access-Control-Allow-Origin':'*','Cache-Control':'no-cache, no-store, must-revalidate','Pragma':'no-cache','Expires':'0'};
-      if(gz){ headers['Content-Encoding']='gzip'; headers['Content-Length']=gz.length; res.writeHead(200,headers); res.end(gz); }
-      else  { res.writeHead(200,headers); res.end(html); }
-    } else {
-      res.writeHead(200,{'Content-Type':'text/html; charset=utf-8'});
-      res.end(`<h1>Coloca math-attack.html en la misma carpeta que server.js</h1>`);
-    }
+    htmlPages.sendGame(req,res);
     return;
   }
 
@@ -585,34 +443,13 @@ const server=http.createServer((req,res)=>{
 
   if(req.method==='GET'&&url==='/maestro'){
     L.panel(`Panel consultado desde ${req.socket.remoteAddress}`);
-    const ae=req.headers['accept-encoding']||'';
-    if(ae.includes('gzip')){
-      if(!_maestroHTMLGzip) _maestroHTMLGzip=zlib.gzipSync(getMaestroHTML());
-      res.writeHead(200,{'Content-Type':'text/html; charset=utf-8','Content-Encoding':'gzip','Content-Length':_maestroHTMLGzip.length});
-      res.end(_maestroHTMLGzip);
-    } else {
-      res.writeHead(200,{'Content-Type':'text/html; charset=utf-8'});
-      res.end(getMaestroHTML());
-    }
+    htmlPages.sendMaestro(req,res);
     return;
   }
 
   // ── Ranking ──
   if(req.method==='GET'&&url==='/ranking'){
-    try{
-      const html=fs.readFileSync(path.join(__dirname,'ranking.html'),'utf8');
-      const ae=req.headers['accept-encoding']||'';
-      if(ae.includes('gzip')){
-        const gz=zlib.gzipSync(html);
-        res.writeHead(200,{'Content-Type':'text/html; charset=utf-8','Content-Encoding':'gzip','Content-Length':gz.length});
-        res.end(gz);
-      } else {
-        res.writeHead(200,{'Content-Type':'text/html; charset=utf-8'});
-        res.end(html);
-      }
-    }catch(e){
-      res.writeHead(500); res.end('Error al leer ranking.html');
-    }
+    htmlPages.sendRanking(req,res);
     return;
   }
 
@@ -1392,6 +1229,7 @@ const server=http.createServer((req,res)=>{
             const entry={qty:Math.max(1,Number(cfg.qty)||1)};
             if(Array.isArray(cfg.tables)) entry.tables=cfg.tables.map(Number).filter(n=>!isNaN(n));
             if(cfg.digits!=null) entry.digits=Math.max(1,Number(cfg.digits)||1);
+            if(cfg.manner==='ordered'||cfg.manner==='random') entry.manner=cfg.manner;
             if(cfg.carryMode==='direct'||cfg.carryMode==='carry') entry.carryMode=cfg.carryMode;
             opsConfig[opKey]=entry;
           }
@@ -1462,8 +1300,7 @@ const server=http.createServer((req,res)=>{
 
   // ── Ranking en vivo ──
   if(req.method==='GET'&&url==='/ranking-live'){
-    res.writeHead(200,{'Content-Type':'text/html; charset=utf-8'});
-    res.end(getRankingLiveHTML());
+    htmlPages.sendRankingLive(req,res);
     return;
   }
 
@@ -1685,10 +1522,14 @@ function handle(ws,msg){ // Procesa todos los mensajes entrantes de los clientes
       const player=msg.playerId
         ? players.find(p=>p.id===msg.playerId&&p.name.toLowerCase()===msgName)
         : players.find(p=>p.name.toLowerCase()===msgName);
+      const resolvedGrade=msg.grade||player?.grade||ws.grade||'';
+      const resolvedDurationMs=Number(msg.durationMs)||(
+        msg.isExam&&msg.examStartedAt?Math.max(0,Date.now()-Number(msg.examStartedAt)):0
+      );
       const finalRecord={
         id:msg.id||Date.now(),
         name:player?player.name:(msg.name||'?'),
-        grade:msg.grade||'',
+        grade:resolvedGrade,
         score:msg.score||0,
         correct:msg.correct||0,
         wrong:msg.wrong||0,
@@ -1795,7 +1636,7 @@ function handle(ws,msg){ // Procesa todos los mensajes entrantes de los clientes
       const diffLabel=msg.difficulty?`[${msg.difficulty}]`:'';
       const tables=(msg.tables||[]).length?`tablas:${(msg.tables||[]).join(',')}`:'';
       const stats=`\u2705${msg.correct||0} \u274C${msg.wrong||0} \u23F1${msg.timeout||0}`;
-      const gradeStr=msg.grade?` \u00B7 ${msg.grade}`:'';
+      const gradeStr=resolvedGrade?` \u00B7 ${resolvedGrade}`:'';
       if((msg.gameMode||'solo')==='solo'){
         L.rank(`${msg.name}${gradeStr} - ${msg.score}pts (${msg.pct}%) | ${modeLabel} ${typeLabel} ${diffLabel} ${tables} | ${stats}`);
       } else {
@@ -1809,11 +1650,12 @@ function handle(ws,msg){ // Procesa todos los mensajes entrantes de los clientes
         const eName=msg.name||ws.playerName||'?';
         examFinished.set(eName,{
           name:eName,
-          grade:msg.grade||ws.grade||'',
+          grade:resolvedGrade,
           score:msg.score||0,
           pct:msg.pct||0,
           correct:msg.correct||0,
           total:msg.total||0,
+          durationMs:resolvedDurationMs,
           finished:msg.finished!==false, // false = se le acabó la prueba sin terminar (alumno se salió)
           finishedAt:Date.now()
         });
@@ -2161,203 +2003,6 @@ function onDisconnect(ws){ // Marca la sesión como desconectada; la borra en 15
 function getRoomsList(){ return [...rooms.entries()].filter(([,r])=>r.status==='lobby'&&r.players.length<r.maxPlayers).map(([id,r])=>({id,name:r.name,host:r.hostName,playerCount:r.players.length,maxPlayers:r.maxPlayers})); } // Retorna la lista de salas disponibles en lobby con espacio libre
 function broadcastRoomsList(){ const msg={type:'rooms_list',rooms:getRoomsList()}; wss.clients.forEach(ws=>{ if(!ws.roomId) send(ws,msg); }); }
 
-// ────────────────────────────────────────────────────────────
-// 📋 PANEL DEL MAESTRO HTML
-// ────────────────────────────────────────────────────────────
-let _maestroHTML=null; let _maestroHTMLGzip=null;
-const _maestroHTMLPath=path.join(__dirname,'maestro.html');
-function getMaestroHTML(){ // Lee maestro.html del disco una vez y lo mantiene en memoria
-  if(_maestroHTML) return _maestroHTML;
-  try{ _maestroHTML=fs.readFileSync(_maestroHTMLPath,'utf8'); }catch(e){ return '<h1>maestro.html no encontrado</h1>'; }
-  return _maestroHTML;
-}
-try{
-  getMaestroHTML();
-  fs.watch(_maestroHTMLPath,()=>{ _maestroHTML=null; _maestroHTMLGzip=null; L.panel('maestro.html modificado — caché invalidada'); });
-}catch(e){}
-
-
-// ────────────────────────────────────────────────────────────
-// 📡 RANKING EN VIVO HTML
-// ────────────────────────────────────────────────────────────
-let _rankingLiveHTML=null;
-function getRankingLiveHTML(){
-  if(_rankingLiveHTML) return _rankingLiveHTML;
-  return (_rankingLiveHTML=`<!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>🏆 Math Attack - Ranking en Vivo</title>
-<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
-<style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Segoe UI',sans-serif;background:#07060f;color:#e2e8f0;min-height:100vh;overflow-x:hidden}
-body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9000;
-  background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,.09) 3px,rgba(0,0,0,.09) 4px)}
-header{background:#07060f;padding:10px 20px;display:flex;align-items:center;justify-content:space-between;
-  border-bottom:2px solid #00e5ff;box-shadow:0 0 20px rgba(0,229,255,.2)}
-.h-title{font-family:'Press Start 2P',monospace;font-size:11px;color:#00e5ff;
-  text-shadow:0 0 8px #00e5ff;letter-spacing:1px}
-.h-right{display:flex;align-items:center;gap:12px}
-.live-dot{width:8px;height:8px;border-radius:2px;background:#00ff88;display:inline-block;animation:ldot 1s steps(1) infinite}
-@keyframes ldot{0%,100%{opacity:1}50%{opacity:0}}
-.h-count{font-family:'Press Start 2P',monospace;font-size:8px;color:#445566}
-.h-link{font-family:'Press Start 2P',monospace;font-size:8px;color:#a78bfa;text-decoration:none}
-.h-link:hover{color:#c4b5fd}
-.container{padding:16px 20px;max-width:1100px;margin:0 auto}
-
-/* Podio top 3 */
-.podio{display:grid;grid-template-columns:1fr 1.2fr 1fr;gap:12px;margin-bottom:24px;align-items:end;min-height:180px}
-.podio-slot{background:#0c0a1a;border-radius:6px;padding:14px 10px;text-align:center;position:relative;
-  border:1px solid rgba(255,255,255,.07);overflow:hidden;transition:all .4s ease}
-.podio-slot::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
-.p1-slot{border-color:rgba(251,191,36,.5);box-shadow:0 0 20px rgba(251,191,36,.08),0 0 0 1px rgba(251,191,36,.12)}
-.p1-slot::before{background:linear-gradient(90deg,transparent,#fbbf24,transparent)}
-.p2-slot{border-color:rgba(148,163,184,.35);box-shadow:0 0 12px rgba(148,163,184,.05)}
-.p2-slot::before{background:linear-gradient(90deg,transparent,#94a3b8,transparent)}
-.p3-slot{border-color:rgba(180,120,60,.3);box-shadow:0 0 12px rgba(180,120,60,.04)}
-.p3-slot::before{background:linear-gradient(90deg,transparent,rgba(180,120,60,.7),transparent)}
-.podio-medal{font-size:26px;display:block;margin-bottom:6px;animation:medalBob 2s ease-in-out infinite}
-@keyframes medalBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
-.podio-rank{font-family:'Press Start 2P',monospace;font-size:7px;margin-bottom:8px}
-.p1-slot .podio-rank{color:#fbbf24;text-shadow:0 0 8px rgba(251,191,36,.6)}
-.p2-slot .podio-rank{color:#94a3b8}
-.p3-slot .podio-rank{color:rgba(180,120,60,.9)}
-.podio-av{width:52px;height:52px;border-radius:4px;margin:0 auto 8px;
-  background:linear-gradient(135deg,#2e1065,#7c3aed);display:flex;align-items:center;
-  justify-content:center;font-family:'Press Start 2P',monospace;font-size:14px;color:#fff;
-  border:2px solid rgba(255,255,255,.15)}
-.p1-slot .podio-av{border-color:rgba(251,191,36,.6);box-shadow:0 0 12px rgba(251,191,36,.3)}
-.podio-name{font-family:'Press Start 2P',monospace;font-size:7px;color:#e2e8f0;
-  margin-bottom:5px;line-height:1.7;min-height:14px}
-.podio-grade{font-size:9px;color:#445566;margin-bottom:6px}
-.podio-score{font-family:'Press Start 2P',monospace;font-size:13px;margin-bottom:3px}
-.p1-slot .podio-score{color:#fbbf24;text-shadow:0 0 10px rgba(251,191,36,.5)}
-.p2-slot .podio-score{color:#94a3b8}
-.p3-slot .podio-score{color:rgba(180,120,60,.9)}
-.podio-pct{font-size:10px;color:#4b5563}
-.podio-empty{opacity:.25;filter:grayscale(.8)}
-
-/* Lista del resto */
-.rank-list{display:flex;flex-direction:column;gap:4px}
-.rank-row{background:#0c0a1a;border:1px solid rgba(255,255,255,.05);border-radius:4px;
-  padding:8px 12px;display:flex;align-items:center;gap:10px;transition:all .3s ease;position:relative;overflow:hidden}
-.rank-row::before{content:'';position:absolute;top:0;left:0;bottom:0;width:3px;background:rgba(167,139,250,.3)}
-.rank-row.rank-4::before,.rank-row.rank-5::before{background:rgba(96,165,250,.2)}
-.rr-pos{font-family:'Press Start 2P',monospace;font-size:8px;color:#2a2545;width:22px;text-align:right;flex-shrink:0}
-.rr-av{width:28px;height:28px;border-radius:3px;background:linear-gradient(135deg,#2e1065,#7c3aed);
-  display:flex;align-items:center;justify-content:center;font-family:'Press Start 2P',monospace;
-  font-size:9px;color:#fff;flex-shrink:0;border:1px solid rgba(255,255,255,.1)}
-.rr-name{font-family:'Press Start 2P',monospace;font-size:7px;color:#d4c8ff;flex:1;line-height:1.7}
-.rr-grade{font-size:10px;color:#374151;flex-shrink:0}
-.rr-score{font-family:'Press Start 2P',monospace;font-size:10px;color:#a78bfa;
-  text-shadow:0 0 6px rgba(167,139,250,.4);flex-shrink:0;min-width:80px;text-align:right}
-.rr-pct{font-size:11px;color:#374151;width:44px;text-align:right;flex-shrink:0}
-
-/* Estado vacio */
-.empty-state{text-align:center;padding:60px 20px;color:#2a2545}
-.empty-title{font-family:'Press Start 2P',monospace;font-size:10px;letter-spacing:1px;margin-top:20px}
-
-/* Animaciones de entrada */
-@keyframes slideIn{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:translateX(0)}}
-.rank-row{animation:slideIn .3s ease both}
-</style>
-</head>
-<body>
-<header>
-  <div style="display:flex;align-items:center;gap:10px">
-    <span style="font-size:16px">🏆</span>
-    <span class="h-title">RANKING EN VIVO</span>
-  </div>
-  <div class="h-right">
-    <span class="live-dot"></span>
-    <span class="h-count" id="hCount">0 jugadores</span>
-    <a href="/maestro" class="h-link">📋 MAESTRO</a>
-  </div>
-</header>
-<div class="container">
-  <div class="podio" id="podio">
-    <div class="podio-slot p2-slot podio-empty" id="p2"><span class="podio-medal">🥈</span><div class="podio-rank">#2</div><div class="podio-av">👤</div><div class="podio-name">-</div><div class="podio-score">-</div></div>
-    <div class="podio-slot p1-slot podio-empty" id="p1"><span class="podio-medal">🥇</span><div class="podio-rank">#1</div><div class="podio-av">👤</div><div class="podio-name">-</div><div class="podio-score">-</div></div>
-    <div class="podio-slot p3-slot podio-empty" id="p3"><span class="podio-medal">🥉</span><div class="podio-rank">#3</div><div class="podio-av">👤</div><div class="podio-name">-</div><div class="podio-score">-</div></div>
-  </div>
-  <div class="rank-list" id="rankList"></div>
-</div>
-<script>
-const WS_URL='ws://'+location.host+'/ws-ranking-live';
-let ws, sessions=[];
-
-function connect(){
-  ws=new WebSocket(WS_URL);
-  ws.onmessage=e=>{
-    try{
-      const d=JSON.parse(e.data);
-      if(d.type==='live_scores'){ sessions=d.sessions||[]; render(); }
-    }catch(_){}
-  };
-  ws.onclose=()=>setTimeout(connect,1500);
-}
-
-function initials(name){ return (name||'?').split(' ').map(w=>w[0]||'').join('').slice(0,2).toUpperCase()||'?'; }
-
-function render(){
-  const sorted=[...sessions].filter(s=>s.status!=='finished').sort((a,b)=>b.score-a.score);
-  document.getElementById('hCount').textContent=sorted.length+' jugador'+(sorted.length!==1?'es':'');
-
-  // Podio (orden visual: 2, 1, 3)
-  const slots=[
-    {el:document.getElementById('p1'),idx:0,cls:'p1-slot',medal:'🥇',rank:'#1'},
-    {el:document.getElementById('p2'),idx:1,cls:'p2-slot',medal:'🥈',rank:'#2'},
-    {el:document.getElementById('p3'),idx:2,cls:'p3-slot',medal:'🥉',rank:'#3'},
-  ];
-  slots.forEach(({el,idx,medal,rank})=>{
-    const s=sorted[idx];
-    if(!s){ el.classList.add('podio-empty'); el.innerHTML=\`<span class="podio-medal">\${medal}</span><div class="podio-rank">\${rank}</div><div class="podio-av">👤</div><div class="podio-name">-</div><div class="podio-score">-</div>\`; return; }
-    el.classList.remove('podio-empty');
-    const pct=s.correct+s.wrong>0?Math.round(s.correct/(s.correct+s.wrong)*100):0;
-    el.innerHTML=\`
-      <span class="podio-medal">\${medal}</span>
-      <div class="podio-rank">\${rank}</div>
-      <div class="podio-av">\${initials(s.name)}</div>
-      <div class="podio-name">\${s.name}</div>
-      \${s.grade?'<div class="podio-grade">'+s.grade+'</div>':''}
-      <div class="podio-score">\${s.score.toLocaleString()}</div>
-      <div class="podio-pct">\${pct}% precisión</div>
-    \`;
-  });
-
-  // Lista resto
-  const rest=sorted.slice(3);
-  const list=document.getElementById('rankList');
-  if(!rest.length){ list.innerHTML=''; return; }
-  list.innerHTML=rest.map((s,i)=>{
-    const pct=s.correct+s.wrong>0?Math.round(s.correct/(s.correct+s.wrong)*100):0;
-    return \`<div class="rank-row rank-\${i+4}" style="animation-delay:\${i*40}ms">
-      <span class="rr-pos">#\${i+4}</span>
-      <div class="rr-av">\${initials(s.name)}</div>
-      <span class="rr-name">\${s.name}</span>
-      <span class="rr-grade">\${s.grade||''}</span>
-      <span class="rr-score">\${s.score.toLocaleString()}</span>
-      <span class="rr-pct">\${pct}%</span>
-    </div>\`;
-  }).join('');
-
-  // Estado vacio
-  if(!sorted.length){
-    document.getElementById('podio').style.display='none';
-    list.innerHTML='<div class="empty-state"><div style="font-size:48px">👾</div><div class="empty-title">ESPERANDO JUGADORES...</div></div>';
-  } else {
-    document.getElementById('podio').style.display='';
-  }
-}
-
-connect();
-render();
-</script>
-</body></html>`);
-}
-
 // ── IP helper ────────────────────────────────────────────────
 function getLocalIP(){
   for(const ifaces of Object.values(os.networkInterfaces()))
@@ -2388,7 +2033,7 @@ function shutdown(){
   if(_panelThrottleTimer)  clearTimeout(_panelThrottleTimer);
   clearInterval(heartbeatInterval);
   // Por si quedó algo en cola sin escribir todavía (las escrituras son asíncronas)
-  _writeRanking.flushSync(); _writePlayers.flushSync(); _writeAureosLog.flushSync();
+  dataStore.flushSync();
   wss.clients.forEach(ws=>{ try{ ws.close(); }catch(e){} });
   server.close(()=>{ console.log('  Servidor detenido. Hasta luego.\\n'); process.exit(0); });
   setTimeout(()=>process.exit(0), 2000);
