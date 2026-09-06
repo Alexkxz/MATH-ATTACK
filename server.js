@@ -186,6 +186,32 @@ let ADMIN_PASSWORD = _config.adminPassword || 'admin';
 function saveConfig(){
   dataStore.saveConfig({ adminUsername: ADMIN_USERNAME, adminPassword: ADMIN_PASSWORD });
 }
+function sendJson(res,status,obj){
+  res.writeHead(status,{'Content-Type':'application/json'});
+  res.end(JSON.stringify(obj));
+}
+function getAdminPasswordFromRequest(req, bodyData=null){
+  if(bodyData&&typeof bodyData==='object'){
+    const pwd=bodyData.password??bodyData.currentPassword??bodyData.pwd;
+    if(pwd!==undefined) return String(pwd);
+  }
+  const headerPwd=req.headers['x-admin-password'];
+  if(headerPwd!==undefined) return String(headerPwd);
+  try{
+    const qs=new URL('http://x'+req.url).searchParams;
+    return qs.get('password')??qs.get('pwd')??'';
+  }catch(e){
+    return '';
+  }
+}
+function isAdminAuthorized(req, bodyData=null){
+  return getAdminPasswordFromRequest(req, bodyData)===ADMIN_PASSWORD;
+}
+function requireAdmin(req,res,bodyData=null){
+  if(isAdminAuthorized(req,bodyData)) return true;
+  sendJson(res,401,{ok:false,error:'No autorizado'});
+  return false;
+}
 let _connCount=0;
 function getActiveClientCount(excludeWs=null){
   let count=0;
@@ -456,6 +482,7 @@ const server=http.createServer((req,res)=>{
   // ── Ranking data API ──
   // ── Export CSV ──
   if(req.method==='GET'&&url==='/api/ranking/export'){
+    if(!requireAdmin(req,res)) return;
     const ranking=loadRanking();
     const allOps=['×','+','−','÷'];
     const opNames={'×':'Multiplicacion','+':'Suma','−':'Resta','÷':'Division'};
@@ -492,9 +519,8 @@ const server=http.createServer((req,res)=>{
   // ── Estado de conexiones WS (pestaña Conexión del maestro) ──
   if(req.method==='POST'&&url==='/api/connections'){
     readBody(req, res, body=>{
-      let _connPwd='';
-      try{ _connPwd=JSON.parse(body||'{}').pwd||''; }catch(e){}
-      if(_connPwd!==ADMIN_PASSWORD){ res.writeHead(401,{'Content-Type':'application/json'}); res.end(JSON.stringify({ok:false,error:'No autorizado'})); return; }
+      let parsed={}; try{ parsed=JSON.parse(body||'{}'); }catch(e){}
+      if(!requireAdmin(req,res,parsed)) return;
       const now=Date.now();
       const conns=[];
       wss.clients.forEach(c=>{
@@ -527,10 +553,9 @@ const server=http.createServer((req,res)=>{
     readBody(req, res, body=>{
       try{
         const {username,password}=JSON.parse(body);
-        if(username!==ADMIN_USERNAME||password!==ADMIN_PASSWORD){ res.writeHead(401,{'Content-Type':'application/json'}); res.end(JSON.stringify({ok:false})); return; }
-      }catch(e){ res.writeHead(401,{'Content-Type':'application/json'}); res.end(JSON.stringify({ok:false})); return; }
-      res.writeHead(200,{'Content-Type':'application/json'});
-      res.end(JSON.stringify({ok:true}));
+        if(username!==ADMIN_USERNAME||password!==ADMIN_PASSWORD){ sendJson(res,401,{ok:false}); return; }
+      }catch(e){ sendJson(res,401,{ok:false}); return; }
+      sendJson(res,200,{ok:true});
     });
     return;
   }
@@ -547,14 +572,13 @@ const server=http.createServer((req,res)=>{
     readBody(req, res, body=>{
       try{
         const {currentPassword,newUsername,newPassword}=JSON.parse(body);
-        if(currentPassword!==ADMIN_PASSWORD){ res.writeHead(401,{'Content-Type':'application/json'}); res.end(JSON.stringify({ok:false,error:'Contraseña actual incorrecta'})); return; }
+        if(!requireAdmin(req,res,{currentPassword})){ return; }
         if(newUsername) ADMIN_USERNAME=newUsername.trim();
         if(newPassword) ADMIN_PASSWORD=newPassword;
         saveConfig();
         L.panel(`Credenciales del maestro actualizadas — usuario: ${ADMIN_USERNAME}`);
-        res.writeHead(200,{'Content-Type':'application/json'});
-        res.end(JSON.stringify({ok:true}));
-      }catch(e){ res.writeHead(400,{'Content-Type':'application/json'}); res.end(JSON.stringify({ok:false,error:'Solicitud inválida'})); }
+        sendJson(res,200,{ok:true});
+       }catch(e){ sendJson(res,400,{ok:false,error:'Solicitud inválida'}); }
     });
     return;
   }
@@ -562,7 +586,9 @@ const server=http.createServer((req,res)=>{
   // ── Clear ranking ──
   if(req.method==='POST'&&url==='/api/ranking/clear'){
     readBody(req, res, body=>{
-      try{ const {password}=JSON.parse(body); if(password!==ADMIN_PASSWORD){ res.writeHead(401,{'Content-Type':'application/json'}); res.end(JSON.stringify({ok:false})); return; } }catch(e){ res.writeHead(401,{'Content-Type':'application/json'}); res.end(JSON.stringify({ok:false})); return; }
+      let parsed;
+      try{ parsed=JSON.parse(body); }catch(e){ sendJson(res,401,{ok:false}); return; }
+      if(!requireAdmin(req,res,parsed)) return;
       saveRanking([]);
       L.rank('Ranking limpiado manualmente');
       res.writeHead(200,{'Content-Type':'application/json'});
@@ -577,7 +603,7 @@ const server=http.createServer((req,res)=>{
       let parsed;
       try{ parsed=JSON.parse(body); }catch(e){ res.writeHead(400,{'Content-Type':'application/json'}); res.end(JSON.stringify({ok:false})); return; }
       const {password,name}=parsed;
-      if(password!==ADMIN_PASSWORD){ res.writeHead(401,{'Content-Type':'application/json'}); res.end(JSON.stringify({ok:false})); return; }
+      if(!requireAdmin(req,res,parsed)) return;
       if(!name){ res.writeHead(400,{'Content-Type':'application/json'}); res.end(JSON.stringify({ok:false})); return; }
       const lower=name.toLowerCase();
       const ranking=loadRanking();
@@ -595,7 +621,9 @@ const server=http.createServer((req,res)=>{
   if(req.method==='POST'&&url==='/api/ranking/delete-game'){
     readBody(req, res, body=>{
       try{
-        const {id}=JSON.parse(body);
+        const parsed=JSON.parse(body);
+        if(!requireAdmin(req,res,parsed)) return;
+        const {id}=parsed;
         if(!id){ res.writeHead(400,{'Content-Type':'application/json'}); res.end(JSON.stringify({ok:false})); return; }
         const ranking=loadRanking();
         const filtered=ranking.filter(r=>r.id!==id);
@@ -615,11 +643,7 @@ const server=http.createServer((req,res)=>{
         const parsed=JSON.parse(body);
         const {password}=parsed;
         const rows=Array.isArray(parsed.rows)?parsed.rows:[];
-        if(password!==ADMIN_PASSWORD){
-          res.writeHead(401,{'Content-Type':'application/json'});
-          res.end(JSON.stringify({ok:false,error:'Contraseña incorrecta'}));
-          return;
-        }
+        if(!requireAdmin(req,res,parsed)) return;
         if(!rows.length){
           res.writeHead(400,{'Content-Type':'application/json'});
           res.end(JSON.stringify({ok:false,error:'No hay partidas para importar'}));
@@ -695,7 +719,9 @@ const server=http.createServer((req,res)=>{
   if(req.method==='POST'&&url.startsWith('/api/cmd/')){
     readBody(req, res, body=>{
       try{
-        const {action,playerId}=JSON.parse(body);
+        const parsed=JSON.parse(body);
+        if(!requireAdmin(req,res,parsed)) return;
+        const {action,playerId}=parsed;
         const session=gameSessions.get(playerId);
         if(!session){ res.writeHead(404); res.end('{}'); return; }
         if(action==='pause'){
@@ -721,7 +747,9 @@ const server=http.createServer((req,res)=>{
   if(req.method==='POST'&&url==='/api/cmd/all'){
     readBody(req, res, body=>{
       try{
-        const {action,grade}=JSON.parse(body);
+        const parsed=JSON.parse(body);
+        if(!requireAdmin(req,res,parsed)) return;
+        const {action,grade}=parsed;
         let count=0;
         gameSessions.forEach(s=>{
           if(grade&&s.grade!==grade) return;
@@ -738,6 +766,7 @@ const server=http.createServer((req,res)=>{
 
   // ── Listar jugadores (panel maestro) ──
   if(req.method==='GET'&&url==='/api/players'){
+    if(!requireAdmin(req,res)) return;
     const players=loadPlayers();
     const ranking=loadRanking();
     res.writeHead(200,{'Content-Type':'application/json','Access-Control-Allow-Origin':'*'});
@@ -759,7 +788,7 @@ const server=http.createServer((req,res)=>{
   if(req.method==='GET'&&url.startsWith('/api/players/get-pin')){
     const _qs=new URL('http://x'+req.url).searchParams;
     const id=_qs.get('id')||'';
-    if((_qs.get('pwd')||'')!==ADMIN_PASSWORD){ res.writeHead(401,{'Content-Type':'application/json'}); res.end(JSON.stringify({ok:false,error:'No autorizado'})); return; }
+    if(!requireAdmin(req,res)) return;
     const players=loadPlayers();
     const player=players.find(p=>p.id===id);
     if(!player){ res.writeHead(404,{'Content-Type':'application/json'}); res.end(JSON.stringify({ok:false})); return; }
@@ -770,6 +799,7 @@ const server=http.createServer((req,res)=>{
 
   // ── Exportar alumnos como CSV ──
   if(req.method==='GET'&&url==='/api/players/export'){
+    if(!requireAdmin(req,res)) return;
     const players=loadPlayers();
     const ranking=loadRanking();
     const header='Nombre,Grado,Áureos,Experiencia,Nivel,Partidas,Puntaje Promedio,Precisión Promedio,Racha Actual,Logros\n';
@@ -883,8 +913,8 @@ const server=http.createServer((req,res)=>{
     const pid=url.split('/').pop();
     readBody(req, res, body=>{
       try{
-        const {password}=JSON.parse(body||'{}');
-        if(password!==ADMIN_PASSWORD){ res.writeHead(401,{'Content-Type':'application/json'}); res.end(JSON.stringify({ok:false,error:'No autorizado'})); return; }
+        const parsed=JSON.parse(body||'{}');
+        if(!requireAdmin(req,res,parsed)) return;
         const players=loadPlayers();
         const idx=players.findIndex(p=>p.id===pid);
         if(idx===-1){ res.writeHead(404); res.end('{}'); return; }
@@ -901,8 +931,9 @@ const server=http.createServer((req,res)=>{
   if(req.method==='POST'&&url==='/api/players/admin-aureos'){
     readBody(req, res, body=>{
       try{
-        const {id,aureos,password}=JSON.parse(body);
-        if(password!==ADMIN_PASSWORD){ res.writeHead(401,{'Content-Type':'application/json'}); res.end(JSON.stringify({ok:false,error:'No autorizado'})); return; }
+        const parsed=JSON.parse(body);
+        if(!requireAdmin(req,res,parsed)) return;
+        const {id,aureos}=parsed;
         const players=loadPlayers();
         const player=players.find(p=>p.id===id);
         if(!player){ res.writeHead(404); res.end('{}'); return; }
@@ -925,8 +956,9 @@ const server=http.createServer((req,res)=>{
   if(req.method==='POST'&&url==='/api/players/admin-power'){
     readBody(req, res, body=>{
       try{
-        const {id,powerId,qty,password}=JSON.parse(body);
-        if(password!==ADMIN_PASSWORD){ res.writeHead(401,{'Content-Type':'application/json'}); res.end(JSON.stringify({ok:false,error:'No autorizado'})); return; }
+        const parsed=JSON.parse(body);
+        if(!requireAdmin(req,res,parsed)) return;
+        const {id,powerId,qty}=parsed;
         const players=loadPlayers();
         const player=players.find(p=>p.id===id);
         if(!player){ res.writeHead(404); res.end('{}'); return; }
@@ -999,7 +1031,9 @@ const server=http.createServer((req,res)=>{
   if(req.method==='POST'&&url==='/api/players/admin-pin'){
     readBody(req, res, body=>{
       try{
-        const {id,pin}=JSON.parse(body);
+        const parsed=JSON.parse(body);
+        if(!requireAdmin(req,res,parsed)) return;
+        const {id,pin}=parsed;
         const pinStr=String(pin).padStart(4,'0');
         if(pinStr.length!==4||isNaN(Number(pinStr))){ res.writeHead(400); res.end(JSON.stringify({ok:false,error:'PIN debe ser de 4 dígitos'})); return; }
         const players=loadPlayers();
@@ -1018,7 +1052,9 @@ const server=http.createServer((req,res)=>{
   if(req.method==='POST'&&url==='/api/players/admin-grade'){
     readBody(req, res, body=>{
       try{
-        const {id,grade}=JSON.parse(body);
+        const parsed=JSON.parse(body);
+        if(!requireAdmin(req,res,parsed)) return;
+        const {id,grade}=parsed;
         const players=loadPlayers();
         const player=players.find(p=>p.id===id);
         if(!player){ res.writeHead(404); res.end(JSON.stringify({ok:false,error:'Jugador no encontrado'})); return; }
@@ -1033,6 +1069,7 @@ const server=http.createServer((req,res)=>{
 
   // ── Historial de partidas de un alumno ──
   if(req.method==='GET'&&url.startsWith('/api/students/history')){
+    if(!requireAdmin(req,res)) return;
     const name=new URL('http://x'+req.url).searchParams.get('name')||'';
     const ranking=loadRanking();
     const lower=name.toLowerCase().trim();
@@ -1052,7 +1089,9 @@ const server=http.createServer((req,res)=>{
   if(req.method==='POST'&&url==='/api/players/aureos-log/clear'){
     readBody(req,res,body=>{
       try{
-        const {name,grade,date}=JSON.parse(body||'{}');
+        const parsed=JSON.parse(body||'{}');
+        if(!requireAdmin(req,res,parsed)) return;
+        const {name,grade,date}=parsed;
         const nameLow=(name||'').toLowerCase().trim();
         const gradeVal=(grade||'').trim();
         const dateVal=(date||'').trim(); // 'YYYY-MM-DD'
@@ -1075,6 +1114,7 @@ const server=http.createServer((req,res)=>{
 
   // ── Historial de transacciones de Áureos ──
   if(req.method==='GET'&&url.startsWith('/api/players/aureos-log')){
+    if(!requireAdmin(req,res)) return;
     const qs=new URL('http://x'+req.url).searchParams;
     const name=(qs.get('name')||'').toLowerCase().trim();
     const grade=(qs.get('grade')||'').trim();
@@ -1093,7 +1133,9 @@ const server=http.createServer((req,res)=>{
   if(req.method==='POST'&&url==='/api/players/bulk-aureos'){
     readBody(req, res, body=>{
       try{
-        const {grade,amount}=JSON.parse(body);
+        const parsed=JSON.parse(body);
+        if(!requireAdmin(req,res,parsed)) return;
+        const {grade,amount}=parsed;
         const n=Math.max(1,Math.round(Number(amount))||1);
         const players=loadPlayers();
         const affected=players.filter(p=>!grade||p.grade===grade);
@@ -1206,7 +1248,7 @@ const server=http.createServer((req,res)=>{
     readBody(req, res, body=>{
       try{
         const d=JSON.parse(body);
-        if(d.password!==ADMIN_PASSWORD){ res.writeHead(401,{'Content-Type':'application/json'}); res.end(JSON.stringify({ok:false,error:'No autorizado'})); return; }
+        if(!requireAdmin(req,res,d)) return;
         const _now=Date.now();
         if(_now-_lastExamStartAt<2000){
           // Doble-submit accidental (doble click) — ignorar y devolver el estado ya vigente
@@ -1266,8 +1308,8 @@ const server=http.createServer((req,res)=>{
   // ── Modo Examen: desactivar ──
   if(req.method==='POST'&&url==='/api/exam/stop'){
     readBody(req, res, body=>{
-      let pwd=''; try{ pwd=JSON.parse(body||'{}').password||''; }catch(e){}
-      if(pwd!==ADMIN_PASSWORD){ res.writeHead(401,{'Content-Type':'application/json'}); res.end(JSON.stringify({ok:false,error:'No autorizado'})); return; }
+      let parsed={}; try{ parsed=JSON.parse(body||'{}'); }catch(e){}
+      if(!requireAdmin(req,res,parsed)) return;
       examMode=null;
       examFinished.clear(); // Limpiar registro de terminados al detener el examen
       const payload=JSON.stringify({type:'exam_stop'});

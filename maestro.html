@@ -1319,6 +1319,13 @@ let _popupCb=null;
 let customStudentOrder=JSON.parse(localStorage.getItem('maestroStudentOrder')||'null')||[];
 let _dragSrcId=null;
 let _isDragging=false;
+function withAdminPassword(data){
+  return Object.assign({},data||{},{password:_adminPass});
+}
+function adminUrl(url){
+  const sep=url.includes('?')?'&':'?';
+  return url+sep+'pwd='+encodeURIComponent(_adminPass);
+}
 
 // ── WebSocket ──
 const WS_URL='ws://'+location.host+'/ws-maestro';
@@ -1803,7 +1810,7 @@ function switchTab(name){
 async function cmd(id,action){
   if(action==='end'&&!confirm('¿Terminar la partida de este jugador?'))return;
   try{
-    const r=await fetch('/api/cmd/'+action,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action,playerId:id})});
+    const r=await fetch('/api/cmd/'+action,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(withAdminPassword({action,playerId:id}))});
     if(!r.ok) showMsg('❌ No se pudo enviar el comando',false);
   }catch(e){ showMsg('❌ Error de red',false); }
 }
@@ -1820,7 +1827,7 @@ function showMsg(txt,ok=true){
 
 async function loadStudents(){
   try{
-    const res=await fetch('/api/players');
+    const res=await fetch(adminUrl('/api/players'));
     studentsData=await res.json();
     renderStudents();
   }catch(e){ showMsg('Error al cargar alumnos',false); }
@@ -2241,7 +2248,7 @@ function openPinEdit(btn){
     const pin=input.value.trim().padStart(4,'0');
     if(pin.length!==4||isNaN(Number(pin))){ showMsg('❌ PIN debe ser de 4 dígitos',false); return false; }
     try{
-      const res=await fetch('/api/players/admin-pin',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:sid,pin})});
+      const res=await fetch('/api/players/admin-pin',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(withAdminPassword({id:sid,pin}))});
       const data=await res.json();
       if(data.ok){ showMsg('✅ PIN actualizado'); input.type='number'; return true; }
       else { showMsg('❌ '+(data.error||'Error'),false); return false; }
@@ -2293,7 +2300,7 @@ function openGradeEdit(btn){
   sel.focus();
   _popupCb=async (grade)=>{
     try{
-      const res=await fetch('/api/players/admin-grade',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:sid,grade})});
+      const res=await fetch('/api/players/admin-grade',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(withAdminPassword({id:sid,grade}))});
       const data=await res.json();
       if(data.ok){
         const s=studentsData.find(x=>x.id===sid);
@@ -2400,7 +2407,7 @@ async function cmdAll(action){
   const who=grade||'todos';
   if(action==='end'&&!confirm(`¿Terminar la partida de ${who}?`)) return;
   try{
-    const r=await fetch('/api/cmd/all',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action,grade})});
+    const r=await fetch('/api/cmd/all',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(withAdminPassword({action,grade}))});
     const d=await r.json();
     if(!r.ok||!d.ok) showMsg('❌ No se pudo enviar el comando',false);
   }catch(e){ showMsg('❌ Error de red',false); }
@@ -2446,7 +2453,7 @@ async function saveBulkAureos(){
   const msgEl=document.getElementById('bulkMsg');
   if(amount<1){ msgEl.style.color='#f87171'; msgEl.textContent='Cantidad mínima: 1'; return; }
   try{
-    const res=await fetch('/api/players/bulk-aureos',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({grade,amount})});
+    const res=await fetch('/api/players/bulk-aureos',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(withAdminPassword({grade,amount}))});
     const data=await res.json();
     if(data.ok){ showMsg(`✅ +${amount} Áureos a ${data.count} alumnos`); closeBulkAureos(); }
     else { msgEl.style.color='#f87171'; msgEl.textContent='Error al procesar'; }
@@ -2519,7 +2526,7 @@ async function loadTransactions(silent){
   const qs=_txParams().toString();
   if(!silent) tbody.innerHTML='<tr><td colspan="5" style="text-align:center;color:#64748b;padding:16px">Cargando...</td></tr>';
   try{
-    const res=await fetch('/api/players/aureos-log'+(qs?'?'+qs:''));
+    const res=await fetch(adminUrl('/api/players/aureos-log'+(qs?'?'+qs:'')));
     const log=await res.json();
     if(!log.length){ tbody.innerHTML='<tr><td colspan="5" style="text-align:center;color:#64748b;padding:16px">Sin transacciones registradas.</td></tr>'; return; }
     tbody.innerHTML=log.map(t=>{
@@ -2552,7 +2559,7 @@ async function clearTransactions(){
     if(name) body.name=name;
     else if(_txGrade) body.grade=_txGrade;
     if(date) body.date=date;
-    const res=await fetch('/api/players/aureos-log/clear',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    const res=await fetch('/api/players/aureos-log/clear',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(withAdminPassword(body))});
     const data=await res.json();
     if(data.ok){ showMsg(`🗑 ${data.removed} registros eliminados`); loadTransactions(); }
     else showMsg('Error al borrar',false);
@@ -2567,7 +2574,7 @@ async function showHistory(name){
   document.getElementById('histContent').innerHTML='<div style="text-align:center;padding:24px;color:#64748b">Cargando...</div>';
   openHistory();
   try{
-    const res=await fetch('/api/students/history?name='+encodeURIComponent(name));
+    const res=await fetch(adminUrl('/api/students/history?name='+encodeURIComponent(name)));
     const history=await res.json();
     if(!history.length){ document.getElementById('histContent').innerHTML='<div style="color:#64748b;text-align:center;padding:20px">Sin partidas registradas.</div>'; return; }
     const modeLbl={solo:'Individual',duel:'Duelo',online:'LAN'};
@@ -2632,7 +2639,7 @@ async function loadHeatmap(sid, name){
   if(_heatCache[name]){ renderHeatmap(cont, _heatCache[name]); return; }
   cont.innerHTML='<span style="font-size:10px;color:#64748b">Cargando...</span>';
   try{
-    const res=await fetch('/api/students/history?name='+encodeURIComponent(name));
+    const res=await fetch(adminUrl('/api/students/history?name='+encodeURIComponent(name)));
     const history=await res.json();
     // Acumular resultados por tabla
     const tblStats={};
@@ -3126,7 +3133,7 @@ function initTabDrag(){
 // ── Exportar CSV ──
 async function exportCSV(){
   try{
-    const res=await fetch('/api/players/export');
+    const res=await fetch(adminUrl('/api/players/export'));
     if(!res.ok){ showMsg('❌ Error al exportar'); return; }
     const blob=await res.blob();
     const url=URL.createObjectURL(blob);
@@ -3183,7 +3190,7 @@ function initLoginCanvas(){
   // Cargar top score y conteo de alumnos
   Promise.all([
     fetch('/api/ranking').then(r=>r.json()).catch(()=>[]),
-    fetch('/api/players').then(r=>r.json()).catch(()=>[])
+    fetch(adminUrl('/api/players')).then(r=>r.json()).catch(()=>[])
   ]).then(([ranking, players])=>{
     if(ranking.length){
       const top=Math.max(...ranking.map(r=>r.score||0));

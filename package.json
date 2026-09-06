@@ -2,11 +2,15 @@
   "version": "2.0.0",
   "scripts": {
     "check:syntax": "node -c server.js && node -c src/data/jsonStore.js && node -c src/server/htmlPages.js",
-    "check:encoding": "node scripts/check-utf8.js maestro.html math-attack.html ranking.html server.js src/data/jsonStore.js src/server/htmlPages.js Panel-Control.ps1 hotspot.ps1 ejecutables/Conectar-MathAttack.ps1 scripts/check-utf8.js scripts/fix-mojibake.js scripts/check-responsive.js scripts/check-multiplayer-powers-ui.js",
+    "check:encoding": "node scripts/check-utf8.js maestro.html math-attack.html ranking.html server.js src/data/jsonStore.js src/server/htmlPages.js Panel-Control.ps1 hotspot.ps1 ejecutables/Conectar-MathAttack.ps1 scripts/check-utf8.js scripts/fix-mojibake.js scripts/check-responsive.js scripts/check-multiplayer-powers-ui.js scripts/check-admin-auth.js scripts/check-json-store.js scripts/check-server-basic.js scripts/check-basic-ui.js",
     "check:ordered": "node scripts/check-ordered-questions.js",
+    "check:json-store": "node scripts/check-json-store.js",
+    "check:server": "node scripts/check-server-basic.js",
+    "check:ui": "node scripts/check-basic-ui.js",
     "check:responsive": "node scripts/check-responsive.js",
     "check:powers-ui": "node scripts/check-multiplayer-powers-ui.js",
-    "check": "npm run check:syntax && npm run check:encoding && npm run check:ordered"
+    "check:admin-auth": "node scripts/check-admin-auth.js",
+    "check": "npm run check:syntax && npm run check:encoding && npm run check:ordered && npm run check:json-store && npm run check:server && npm run check:admin-auth && npm run check:ui && npm run check:responsive && npm run check:powers-ui"
   },
   "dependencies": {
     "ws": "^8.21.0"

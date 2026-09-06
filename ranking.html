@@ -1249,7 +1249,7 @@ async function load(){
   try{
     const [rankingJson,playersJson]=await Promise.all([
       fetchJsonWithTimeout('/api/ranking'),
-      fetchJsonWithTimeout('/api/players')
+      fetchJsonWithTimeout('/api/players').catch(()=>[])
     ]);
     if(seq!==loadSeq) return;
     data=(Array.isArray(rankingJson)?rankingJson:[]).map(normalizeRankingRow);
@@ -2637,7 +2637,9 @@ async function confirmClear(){
 // ── Eliminar partida individual ───────────────────────
 async function deleteGame(id){
   if(!confirm('¿Eliminar esta partida del registro?')) return;
-  const r=await fetch('/api/ranking/delete-game',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id})});
+  const password=prompt('Contraseña de administrador:');
+  if(password===null) return;
+  const r=await fetch('/api/ranking/delete-game',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id,password})});
   const res=await r.json();
   if(res.ok){
     data=data.filter(d=>d.id!==id);
@@ -2649,9 +2651,11 @@ async function deleteSelectedGames(){
   const ids=getVisibleSelectedIds();
   if(!ids.length){ alert('Selecciona al menos un registro visible.'); return; }
   if(!confirm(`¿Eliminar ${ids.length} registro${ids.length!==1?'s':''} seleccionados?`)) return;
+  const password=prompt('Contraseña de administrador:');
+  if(password===null) return;
   let deleted=0;
   for(const id of ids){
-    const r=await fetch('/api/ranking/delete-game',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id})});
+    const r=await fetch('/api/ranking/delete-game',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id,password})});
     const res=await r.json();
     if(res.ok){
       deleted++;
@@ -2664,7 +2668,9 @@ async function deleteSelectedGames(){
 }
 async function deleteGameFromModal(id,name){
   if(!confirm('¿Eliminar esta partida del registro?')) return;
-  const r=await fetch('/api/ranking/delete-game',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id})});
+  const password=prompt('Contraseña de administrador:');
+  if(password===null) return;
+  const r=await fetch('/api/ranking/delete-game',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id,password})});
   const res=await r.json();
   if(res.ok){
     data=data.filter(d=>d.id!==id);
