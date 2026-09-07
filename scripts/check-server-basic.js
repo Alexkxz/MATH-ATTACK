@@ -1,24 +1,8 @@
 'use strict';
 
-const { spawn } = require('child_process');
+const { startTestServer } = require('./server-test-utils');
 
-const BASE_URL = 'http://localhost:8080';
-
-function wait(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-async function waitForServer(timeoutMs = 10000) {
-  const startedAt = Date.now();
-  while (Date.now() - startedAt < timeoutMs) {
-    try {
-      const res = await fetch(BASE_URL + '/api/ranking');
-      if (res.ok) return;
-    } catch (e) {}
-    await wait(250);
-  }
-  throw new Error('No se pudo iniciar el servidor local');
-}
+let BASE_URL;
 
 async function expectStatus(label, pathname, expected, options = {}) {
   const res = await fetch(BASE_URL + pathname, options);
@@ -34,18 +18,11 @@ async function expectHtml(label, pathname, expectedText) {
 }
 
 async function main() {
-  const server = spawn(process.execPath, ['server.js'], {
-    cwd: process.cwd(),
-    stdio: ['ignore', 'pipe', 'pipe'],
-    windowsHide: true,
-  });
-  let serverOutput = '';
-  server.stdout.on('data', chunk => { serverOutput += chunk.toString(); });
-  server.stderr.on('data', chunk => { serverOutput += chunk.toString(); });
+  const testServer = await startTestServer({ waitPath: '/api/ranking' });
+  const { server } = testServer;
+  BASE_URL = testServer.baseUrl;
 
   try {
-    await waitForServer();
-
     await expectHtml('math-attack.html servido', '/math-attack.html', 'Math Attack');
     await expectHtml('maestro.html servido', '/maestro', 'Panel del Maestro');
     await expectHtml('ranking.html servido', '/ranking', 'Ranking');
@@ -73,7 +50,7 @@ async function main() {
     await expectStatus('servidor sigue vivo tras json invalido', '/api/ranking', 200);
     await expectStatus('ruta desconocida responde estado ok legacy', '/api/no-existe', 200);
   } catch (err) {
-    if (serverOutput.trim()) console.error(serverOutput.trim());
+    if (testServer.getOutput().trim()) console.error(testServer.getOutput().trim());
     throw err;
   } finally {
     server.kill('SIGINT');

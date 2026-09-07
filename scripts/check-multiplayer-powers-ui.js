@@ -1,39 +1,15 @@
-const { spawn } = require('child_process');
 const { chromium } = require('playwright');
-
-function wait(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-async function waitForServer(url, timeoutMs = 10000) {
-  const startedAt = Date.now();
-  while (Date.now() - startedAt < timeoutMs) {
-    try {
-      const res = await fetch(url);
-      if (res.ok) return;
-    } catch (e) {}
-    await wait(250);
-  }
-  throw new Error(`No se pudo conectar a ${url}`);
-}
+const { startTestServer } = require('./server-test-utils');
 
 async function main() {
-  const server = spawn(process.execPath, ['server.js'], {
-    cwd: process.cwd(),
-    stdio: ['ignore', 'pipe', 'pipe'],
-    windowsHide: true,
-  });
-
-  let serverOutput = '';
-  server.stdout.on('data', chunk => { serverOutput += chunk.toString(); });
-  server.stderr.on('data', chunk => { serverOutput += chunk.toString(); });
+  const testServer = await startTestServer();
+  const { server, baseUrl } = testServer;
 
   try {
-    await waitForServer('http://localhost:8080/');
     const browser = await chromium.launch();
     try {
       const page = await browser.newPage({ viewport: { width: 1366, height: 768 } });
-      await page.goto('http://localhost:8080/', { waitUntil: 'domcontentloaded' });
+      await page.goto(baseUrl + '/', { waitUntil: 'domcontentloaded' });
 
       const result = await page.evaluate(() => {
         document.querySelectorAll('.screen').forEach(screen => screen.classList.remove('active'));
@@ -129,7 +105,7 @@ async function main() {
       await browser.close();
     }
   } catch (err) {
-    if (serverOutput.trim()) console.error(serverOutput.trim());
+    if (testServer.getOutput().trim()) console.error(testServer.getOutput().trim());
     throw err;
   } finally {
     server.kill('SIGINT');

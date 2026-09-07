@@ -19,7 +19,29 @@ const fs   = require('fs');
 const path = require('path');
 const { createJsonStore } = require('./src/data/jsonStore');
 const { createHtmlPages } = require('./src/server/htmlPages');
-const PORT = 8080;
+const {
+  getPlayerExperience,
+  ensurePlayerExperience,
+  getPlayerLevel,
+} = require('./src/game/playerLevels');
+const { ACHIEVEMENTS_DEF, checkNewAchievements } = require('./src/game/achievements');
+const { calculateDailyStreak } = require('./src/game/dailyStreak');
+const { calculateDirectGameReward, calculateGameRewards } = require('./src/game/gameRewards');
+const {
+  buildCompletedResultRecord,
+  buildRankingCsv,
+  importRankingRows,
+  removePlayerResults,
+  removeRankingResult,
+  upsertCompletedResult,
+} = require('./src/game/ranking');
+const { upsertCheckpoint } = require('./src/game/checkpoints');
+const {
+  buildStudentHistory,
+  calculatePlayerAverages,
+  createOperationStatsCache,
+} = require('./src/game/statistics');
+const PORT = Number(process.env.PORT) || 8080;
 // Poderes que SOLO deben afectar a un rival (no a toda la sala) — si el cliente
 // olvida mandar targetIdx, el servidor descarta el mensaje en vez de reenviarlo
 // a todos (eso fue exactamente el bug original de robo/drenar/inversión en 3-4p).
@@ -29,102 +51,11 @@ const SINGLE_TARGET_POWERS = new Set(['steal','drainlife','inversion']);
 // esta es la verificación de respaldo del lado del servidor.
 const TWO_PLAYER_ONLY_MODES = new Set(['bomb','survival']);
 
-// ── Definición de logros ──────────────────────────────────────
-const ACHIEVEMENTS_DEF = [
-  { id:'perfect',    icon:'💯', name:'Perfección',    desc:'100% precisión en una partida', bonus:50  },
-  { id:'streak20',   icon:'🔥', name:'Racha ×20',     desc:'20 respuestas seguidas correctas', bonus:30 },
-  { id:'master_mult',icon:'✖️', name:'Maestro ×',     desc:'90%+ acumulado en Multiplicación (mín. 10 resp.)', bonus:100 },
-  { id:'master_add', icon:'➕', name:'Maestro +',     desc:'90%+ acumulado en Suma (mín. 10 resp.)', bonus:100 },
-  { id:'master_sub', icon:'➖', name:'Maestro −',     desc:'90%+ acumulado en Resta (mín. 10 resp.)', bonus:100 },
-  { id:'master_div', icon:'➗', name:'Maestro ÷',     desc:'90%+ acumulado en División (mín. 10 resp.)', bonus:100 },
-];
-
-// ── Niveles de jugador ────────────────────────────────────────
-const PLAYER_LEVELS = [
-  { level:0,  name:'Novato',       minExperience:0     },
-  { level:1,  name:'Explorador',   minExperience:100   },
-  { level:2,  name:'Estudioso',    minExperience:250   },
-  { level:3,  name:'Calculador',   minExperience:500   },
-  { level:4,  name:'Resolvedor',   minExperience:1000  },
-  { level:5,  name:'Matematico',   minExperience:1600  },
-  { level:6,  name:'Analitico',    minExperience:2400  },
-  { level:7,  name:'Estratega',    minExperience:3600  },
-  { level:8,  name:'Genio',        minExperience:5200  },
-  { level:9,  name:'Sabio',        minExperience:7500  },
-  { level:10, name:'Gran Maestro', minExperience:10000 },
-];
-function getPlayerExperience(player){
-  return Math.max(0, Math.round(Number(player?.experiencia ?? player?.experience ?? player?.xp ?? player?.aureos ?? 0))||0);
-}
-function ensurePlayerExperience(player){
-  const xp=getPlayerExperience(player);
-  if(player) player.experiencia=xp;
-  return xp;
-}
-function getPlayerLevel(experience){
-  const xp=Math.max(0, Math.round(Number(experience))||0);
-  let lvl=PLAYER_LEVELS[0];
-  for(const l of PLAYER_LEVELS){ if(xp>=l.minExperience) lvl=l; else break; }
-  return lvl;
-}
-const GAME_AUREOS_MULT = 2;
-const GAME_EXPERIENCE_MULT = 3;
-
 // ── Estado del modo examen ────────────────────────────────────
 let examMode=null; // null=inactivo, o {grade,tables,op,ops,opsConfig,timeLimit,total,startedAt} — opsConfig (config por operación, opcional) es la fuente de verdad para generar preguntas cuando está presente; tables/total son agregados para compatibilidad con UI existente
 // Alumnos que terminaron durante el examen (visible en panel hasta que se detenga el examen)
 const examFinished=new Map();
 let _lastExamStartAt=0; // evita que un doble-submit accidental borre examFinished
-
-// ── Racha diaria ──────────────────────────────────────────────
-function updateDailyStreak(player){
-  const today=new Date().toLocaleDateString('es-MX');
-  const s=player.dailyStreak||(player.dailyStreak={current:0,best:0,lastDate:''});
-  if(s.lastDate===today) return 0; // ya jugó hoy
-  const yesterday=new Date(); yesterday.setDate(yesterday.getDate()-1);
-  const yStr=yesterday.toLocaleDateString('es-MX');
-  s.current=(s.lastDate===yStr)?(s.current||0)+1:1;
-  s.best=Math.max(s.best||0,s.current);
-  s.lastDate=today;
-  const c=s.current;
-  return c>=30?200:c>=7?50:c>=3?15:5;
-}
-
-// ── Verificar logros nuevos ───────────────────────────────────
-function checkNewAchievements(player, result){
-  const earned=player.achievements||(player.achievements=[]);
-  const newOnes=[];
-
-  // Perfección
-  if(!earned.includes('perfect')&&(result.pct||0)===100&&(result.total||0)>=5){
-    earned.push('perfect'); newOnes.push('perfect');
-  }
-  // Racha ×20
-  if(!earned.includes('streak20')&&(result.streak||0)>=20){
-    earned.push('streak20'); newOnes.push('streak20');
-  }
-  // Maestro de operación (comprueba acumulado histórico por clave de operación: ×, +, −, ÷)
-  const ranking=loadRanking();
-  const lower=(result.name||'').toLowerCase();
-  const hist=ranking.filter(r=>(r.name||'').toLowerCase()===lower);
-  const tblStats={};
-  [...hist,result].forEach(r=>{
-    Object.entries(r.tblResults||{}).forEach(([op,v])=>{
-      if(!tblStats[op]) tblStats[op]={c:0,w:0};
-      tblStats[op].c+=(v.correct||v.c||0);
-      tblStats[op].w+=(v.wrong||v.w||0);
-    });
-  });
-  const opChecks=[{id:'master_mult',op:'×'},{id:'master_add',op:'+'},{id:'master_sub',op:'−'},{id:'master_div',op:'÷'}];
-  for(const {id,op} of opChecks){
-    if(earned.includes(id)) continue;
-    const st=tblStats[op];
-    if(st&&(st.c+st.w)>=10&&st.c/(st.c+st.w)>=0.9){
-      earned.push(id); newOnes.push(id);
-    }
-  }
-  return newOnes;
-}
 
 // ── File logger ──────────────────────────────────────────────
 const LOG_FILE = path.join(__dirname, 'server.log');
@@ -172,13 +103,15 @@ const dataStore = createJsonStore({ baseDir: __dirname, logger: L });
 const htmlPages = createHtmlPages({ baseDir: __dirname, logger: L });
 const {
   loadRanking,
-  saveRanking,
+  saveRanking:saveRankingData,
   loadPlayers,
   savePlayers,
   loadAureosLog,
   saveAureosLog,
   logAureosTx,
 } = dataStore;
+const operationStatsCache=createOperationStatsCache(loadRanking);
+const saveRanking=operationStatsCache.wrapSave(saveRankingData);
 const _config = dataStore.loadConfig();
 let ADMIN_USERNAME = _config.adminUsername || 'admin';
 let ADMIN_PASSWORD = _config.adminPassword || 'admin';
@@ -265,50 +198,10 @@ function pushConnLog(evType, msg) {
 }
 
 // ── Ranking persistence ──────────────────────────────────────
-function hasProgressInTblResults(tblResults){
-  return Object.values(tblResults||{}).some(v=>(v?.total||0)>0);
-}
-function shouldPersistCheckpoint(msg){
-  if(!msg||!msg.id||!msg.name) return false;
-  if((msg.total||0)>0) return true;
-  if((msg.score||0)>0||(msg.correct||0)>0||(msg.wrong||0)>0||(msg.timeout||0)>0||(msg.streak||0)>0) return true;
-  return hasProgressInTblResults(msg.tblResults);
-}
-function buildCheckpointRecord(msg, canonicalName){
-  return {
-    id:msg.id,
-    name:canonicalName||msg.name||'?',
-    grade:msg.grade||'',
-    score:msg.score||0,
-    correct:msg.correct||0,
-    wrong:msg.wrong||0,
-    timeout:msg.timeout||0,
-    total:msg.total||0,
-    pct:msg.pct||0,
-    streak:msg.streak||0,
-    gameMode:msg.gameMode||'solo',
-    setupMode:msg.setupMode||msg.gameMode||'solo',
-    mpGameMode:msg.mpGameMode||'',
-    gameType:msg.gameType||'timed',
-    difficulty:msg.difficulty||'',
-    tables:msg.tables||[],
-    tblResults:msg.tblResults||{},
-    tableDetail:msg.tableDetail||{},
-    stepDetail:msg.stepDetail||{},
-    date:new Date().toLocaleDateString('es-MX'),
-    time:new Date().toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'}),
-    complete:false
-  };
-}
-function saveCheckpointRecord(msg, canonicalName){
-  if(!shouldPersistCheckpoint(msg)) return {saved:false,reason:'empty'};
-  const ranking=loadRanking();
-  const idx=ranking.findIndex(r=>r.id===msg.id);
-  if(idx>=0&&ranking[idx]?.complete) return {saved:false,reason:'completed'};
-  const record=buildCheckpointRecord(msg, canonicalName);
-  if(idx>=0) ranking[idx]=record; else ranking.unshift(record);
-  saveRanking(ranking.slice(0,500));
-  return {saved:true,reason:idx>=0?'updated':'inserted'};
+function persistCheckpoint(msg,canonicalName){
+  const result=upsertCheckpoint(loadRanking(),msg,canonicalName);
+  if(result.saved) saveRanking(result.ranking);
+  return result;
 }
 // ── Utilities ────────────────────────────────────────────────
 function genId(){ return Math.random().toString(36).substr(2,6).toUpperCase(); } // Genera un ID aleatorio de 6 caracteres en mayúsculas
@@ -330,22 +223,6 @@ function readBody(req,res,cb){
   req.on('end',()=>{ if(!res.writableEnded) cb(body); });
 }
 // ── Stats generales por operación (caché invalidada al guardar partida) ──
-let _opStatsCache=null;
-function getOpStats(){
-  if(_opStatsCache) return _opStatsCache;
-  const ranking=loadRanking();
-  const ops={mult:{c:0,total:0,games:0},add:{c:0,total:0,games:0},sub:{c:0,total:0,games:0},div:{c:0,total:0,games:0}};
-  ranking.forEach(d=>{
-    const k=d.op||'mult';
-    if(!ops[k]) return;
-    ops[k].c+=(d.correct||0); ops[k].total+=(d.total||0); ops[k].games++;
-  });
-  _opStatsCache=Object.fromEntries(Object.entries(ops).map(([k,v])=>[k,{
-    pct:v.total>0?Math.round(v.c/v.total*100):null, games:v.games
-  }]));
-  return _opStatsCache;
-}
-
 // ── Broadcast panel state to all maestro clients ─────────────
 let _lastPanelHash='';
 function broadcastPanelState(){ // Envía el estado de las sesiones al panel; omite el envío si nada cambió
@@ -389,7 +266,7 @@ function broadcastPanelState(){ // Envía el estado de las sesiones al panel; om
     };
   });
   const connectedNames=[...gameSessions.values()].filter(s=>s.ws?.readyState===WebSocket.OPEN).map(s=>s.name.toLowerCase());
-  const opStats=getOpStats();
+  const opStats=operationStatsCache.get();
   // Comparar sin ts (que siempre cambia) — si el estado es idéntico, no enviar
   const examFinishedArr=[...examFinished.values()];
   const hash=JSON.stringify({sessions,connectedNames,examMode:examMode||null,opStats,examFinished:examFinishedArr});
@@ -483,31 +360,11 @@ const server=http.createServer((req,res)=>{
   // ── Export CSV ──
   if(req.method==='GET'&&url==='/api/ranking/export'){
     if(!requireAdmin(req,res)) return;
-    const ranking=loadRanking();
-    const allOps=['×','+','−','÷'];
-    const opNames={'×':'Multiplicacion','+':'Suma','−':'Resta','÷':'Division'};
-    const opHeaders=allOps.map(op=>`${opNames[op]} % Aciertos,${opNames[op]} Correctas,${opNames[op]} Total`).join(',');
-    const header=`Nombre,Grado,Puntaje,% Aciertos,Correctas,Incorrectas,Sin Tiempo,Racha Max,Modo,Tipo,Dificultad,${opHeaders},Fecha,Hora\n`;
-    const rows=ranking.map(d=>{
-      const opCols=allOps.map(op=>{
-        const r=d.tblResults&&d.tblResults[op];
-        if(!r||r.total===0) return ',,';
-        return `${Math.round((r.correct/r.total)*100)}%,${r.correct},${r.total}`;
-      }).join(',');
-      return [
-        `"${(d.name||'').replace(/"/g,'""')}"`,
-        `"${(d.grade||'').replace(/"/g,'""')}"`,
-        d.score||0, d.pct||0, d.correct||0, d.wrong||0, d.timeout||0, d.streak||0,
-        d.gameMode||'', d.gameType||'', d.difficulty||'',
-        opCols,
-        d.date||'', d.time||''
-      ].join(',');
-    }).join('\n');
     res.writeHead(200,{
       'Content-Type':'text/csv;charset=utf-8',
       'Content-Disposition':'attachment;filename="math-attack-ranking.csv"'
     });
-    res.end('\uFEFF'+header+rows); // BOM for Excel UTF-8
+    res.end(buildRankingCsv(loadRanking())); // BOM for Excel UTF-8
     return;
   }
   if(req.method==='GET'&&url==='/api/ranking'){
@@ -606,10 +463,9 @@ const server=http.createServer((req,res)=>{
       if(!requireAdmin(req,res,parsed)) return;
       if(!name){ res.writeHead(400,{'Content-Type':'application/json'}); res.end(JSON.stringify({ok:false})); return; }
       const lower=name.toLowerCase();
-      const ranking=loadRanking();
-      const filtered=ranking.filter(r=>(r.name||'').toLowerCase()!==lower);
-      const removed=ranking.length-filtered.length;
-      saveRanking(filtered);
+      const result=removePlayerResults(loadRanking(),lower);
+      const {removed}=result;
+      saveRanking(result.ranking);
       L.rank(`Historial de "${name}" eliminado (${removed} partidas)`);
       res.writeHead(200,{'Content-Type':'application/json'});
       res.end(JSON.stringify({ok:true,removed}));
@@ -625,10 +481,9 @@ const server=http.createServer((req,res)=>{
         if(!requireAdmin(req,res,parsed)) return;
         const {id}=parsed;
         if(!id){ res.writeHead(400,{'Content-Type':'application/json'}); res.end(JSON.stringify({ok:false})); return; }
-        const ranking=loadRanking();
-        const filtered=ranking.filter(r=>r.id!==id);
-        const removed=ranking.length-filtered.length;
-        if(removed>0){ saveRanking(filtered); L.rank(`Partida ${id} eliminada`); }
+        const result=removeRankingResult(loadRanking(),id);
+        const {removed}=result;
+        if(removed>0){ saveRanking(result.ranking); L.rank(`Partida ${id} eliminada`); }
         res.writeHead(200,{'Content-Type':'application/json'});
         res.end(JSON.stringify({ok:true,removed}));
       }catch(e){ res.writeHead(400,{'Content-Type':'application/json'}); res.end(JSON.stringify({ok:false})); }
@@ -649,52 +504,11 @@ const server=http.createServer((req,res)=>{
           res.end(JSON.stringify({ok:false,error:'No hay partidas para importar'}));
           return;
         }
-        const cleanText=v=>String(v??'').trim();
-        const num=v=>Number.isFinite(Number(v))?Number(v):0;
-        const normalizeId=id=>{
-          const s=cleanText(id);
-          if(!s) return '';
-          return /^\d+$/.test(s)?Number(s):s;
-        };
-        const signature=r=>[
-          cleanText(r.name).toLowerCase(),cleanText(r.grade),num(r.score),num(r.correct),num(r.wrong),
-          num(r.timeout),num(r.total),num(r.pct),num(r.streak),cleanText(r.gameMode),
-          cleanText(r.mpGameMode),cleanText(r.gameType),cleanText(r.difficulty),cleanText(r.date),cleanText(r.time)
-        ].join('|');
-        const normalizeRecord=(r,i)=>{
-          const id=normalizeId(r.id)||('imp-'+Date.now()+'-'+i);
-          return {
-            id,name:cleanText(r.name)||'?',grade:cleanText(r.grade),
-            score:num(r.score),correct:num(r.correct),wrong:num(r.wrong),timeout:num(r.timeout),
-            total:num(r.total)||num(r.correct)+num(r.wrong)+num(r.timeout),
-            pct:num(r.pct),streak:num(r.streak),gameMode:cleanText(r.gameMode)||'solo',
-            mpGameMode:cleanText(r.mpGameMode),gameType:cleanText(r.gameType)||'timed',
-            difficulty:cleanText(r.difficulty),tables:Array.isArray(r.tables)?r.tables:[],
-            tblResults:(r.tblResults&&typeof r.tblResults==='object')?r.tblResults:{},
-            tableDetail:(r.tableDetail&&typeof r.tableDetail==='object')?r.tableDetail:{},
-            stepDetail:(r.stepDetail&&typeof r.stepDetail==='object')?r.stepDetail:{},
-            date:cleanText(r.date)||new Date().toLocaleDateString('es-MX'),
-            time:cleanText(r.time)||new Date().toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'}),
-            isExam:!!r.isExam,complete:r.complete!==false
-          };
-        };
-        const ranking=loadRanking();
-        const ids=new Set(ranking.map(r=>cleanText(r.id)).filter(Boolean));
-        const sigs=new Set(ranking.map(signature));
-        const imported=[];
-        let skipped=0, invalid=0;
-        rows.forEach((raw,i)=>{
-          const rec=normalizeRecord(raw,i);
-          if(!rec.name){ invalid++; return; }
-          const idKey=cleanText(rec.id);
-          const sig=signature(rec);
-          if((idKey&&ids.has(idKey))||sigs.has(sig)){ skipped++; return; }
-          ids.add(idKey); sigs.add(sig); imported.push(rec);
-        });
-        if(imported.length) saveRanking([...imported,...ranking].slice(0,500));
-        L.rank(`Importación ranking: ${imported.length} nuevas, ${skipped} duplicadas, ${invalid} inválidas`);
+        const imported=importRankingRows(loadRanking(),rows);
+        if(imported.added) saveRanking(imported.ranking);
+        L.rank(`Importación ranking: ${imported.added} nuevas, ${imported.skipped} duplicadas, ${imported.invalid} inválidas`);
         res.writeHead(200,{'Content-Type':'application/json'});
-        res.end(JSON.stringify({ok:true,added:imported.length,skipped,invalid,total:loadRanking().length}));
+        res.end(JSON.stringify({ok:true,added:imported.added,skipped:imported.skipped,invalid:imported.invalid,total:loadRanking().length}));
       }catch(e){
         res.writeHead(400,{'Content-Type':'application/json'});
         res.end(JSON.stringify({ok:false,error:'Archivo o solicitud inválida'}));
@@ -707,7 +521,7 @@ const server=http.createServer((req,res)=>{
     readBody(req, res, body=>{
       try{
         const msg=JSON.parse(body);
-        const saved=saveCheckpointRecord(msg,msg.name||'?');
+        const saved=persistCheckpoint(msg,msg.name||'?');
         if(saved.saved) L.rank(`Checkpoint incompleto: ${msg.name} (${msg.gameMode} ${msg.gameType})`);
         res.writeHead(204); res.end();
       }catch(e){ res.writeHead(400); res.end(); }
@@ -771,8 +585,7 @@ const server=http.createServer((req,res)=>{
     const ranking=loadRanking();
     res.writeHead(200,{'Content-Type':'application/json','Access-Control-Allow-Origin':'*'});
     res.end(JSON.stringify(players.map(p=>{
-      const hist=ranking.filter(r=>(r.name||'').toLowerCase()===(p.name||'').toLowerCase());
-      const avgPct=hist.length?Math.round(hist.reduce((a,r)=>a+(r.pct||0),0)/hist.length):0;
+      const {avgPct}=calculatePlayerAverages(ranking,p.name);
       const experiencia=getPlayerExperience(p);
       return {
         id:p.id,name:p.name,grade:p.grade||'',aureos:p.aureos||0,experiencia,inventory:p.inventory||{},
@@ -804,9 +617,7 @@ const server=http.createServer((req,res)=>{
     const ranking=loadRanking();
     const header='Nombre,Grado,Áureos,Experiencia,Nivel,Partidas,Puntaje Promedio,Precisión Promedio,Racha Actual,Logros\n';
     const rows=players.map(p=>{
-      const hist=ranking.filter(r=>(r.name||'').toLowerCase()===(p.name||'').toLowerCase());
-      const avgScore=hist.length?Math.round(hist.reduce((a,r)=>a+(r.score||0),0)/hist.length):0;
-      const avgPct=hist.length?Math.round(hist.reduce((a,r)=>a+(r.pct||0),0)/hist.length):0;
+      const {avgScore,avgPct}=calculatePlayerAverages(ranking,p.name);
       const experiencia=getPlayerExperience(p);
       const lvl=getPlayerLevel(experiencia);
       return [
@@ -986,9 +797,7 @@ const server=http.createServer((req,res)=>{
         const players=loadPlayers();
         const player=players.find(p=>p.id===id);
         if(!player){ res.writeHead(404); res.end('{}'); return; }
-        const baseReward=Math.floor(amount);
-        const gained=baseReward*GAME_AUREOS_MULT;
-        const gainedExperience=baseReward*GAME_EXPERIENCE_MULT;
+        const {earnedAureos:gained,earnedExperience:gainedExperience}=calculateDirectGameReward(amount);
         const baseExperience=ensurePlayerExperience(player);
         player.aureos=(player.aureos||0)+gained;
         player.experiencia=baseExperience+gainedExperience;
@@ -1071,16 +880,7 @@ const server=http.createServer((req,res)=>{
   if(req.method==='GET'&&url.startsWith('/api/students/history')){
     if(!requireAdmin(req,res)) return;
     const name=new URL('http://x'+req.url).searchParams.get('name')||'';
-    const ranking=loadRanking();
-    const lower=name.toLowerCase().trim();
-    // Coincidencia exacta (case-insensitive, sin espacios extra)
-    let matches=ranking.filter(r=>(r.name||'').toLowerCase().trim()===lower);
-    const history=matches.sort((a,b)=>(b.id||0)-(a.id||0)).slice(0,10).map(r=>({
-      date:r.date||'', time:r.time||'', score:r.score||0, pct:r.pct||0,
-      correct:r.correct||0, wrong:r.wrong||0, gameMode:r.gameMode||'solo',
-      gameType:r.gameType||'', difficulty:r.difficulty||'', tblResults:r.tblResults||{},
-      tableDetail:r.tableDetail||{}
-    }));
+    const history=buildStudentHistory(loadRanking(),name,10);
     res.writeHead(200,{'Content-Type':'application/json'});
     res.end(JSON.stringify(history)); return;
   }
@@ -1482,7 +1282,7 @@ function handle(ws,msg){ // Procesa todos los mensajes entrantes de los clientes
       const cpPlayer=msg.playerId
         ? cpPlayers.find(p=>p.id===msg.playerId&&p.name.toLowerCase()===cpMsgName)
         : cpPlayers.find(p=>p.name.toLowerCase()===cpMsgName);
-      saveCheckpointRecord(msg,cpPlayer?cpPlayer.name:(msg.name||'?'));
+      persistCheckpoint(msg,cpPlayer?cpPlayer.name:(msg.name||'?'));
       break;
     }
 
@@ -1568,68 +1368,18 @@ function handle(ws,msg){ // Procesa todos los mensajes entrantes de los clientes
       const resolvedDurationMs=Number(msg.durationMs)||(
         msg.isExam&&msg.examStartedAt?Math.max(0,Date.now()-Number(msg.examStartedAt)):0
       );
-      const finalRecord={
-        id:msg.id||Date.now(),
-        name:player?player.name:(msg.name||'?'),
+      const finalRecord=buildCompletedResultRecord(msg,{
+        canonicalName:player?player.name:(msg.name||'?'),
         grade:resolvedGrade,
-        score:msg.score||0,
-        correct:msg.correct||0,
-        wrong:msg.wrong||0,
-        timeout:msg.timeout||0,
-        total:msg.total||0,
-        pct:msg.pct||0,
-        streak:msg.streak||0,
-        gameMode:msg.gameMode||'solo',
-        setupMode:msg.setupMode||msg.gameMode||'solo',
-        mpGameMode:msg.mpGameMode||'',
-        gameType:msg.gameType||'timed',
-        difficulty:msg.difficulty||'',
-        op:msg.op||'mult',
-        vs:msg.vs||'',
-        tables:msg.tables||[],
-        tblResults:msg.tblResults||{},
-        tableDetail:msg.tableDetail||{},
-        stepDetail:msg.stepDetail||{},
-        isExam:!!msg.isExam,
-        date:new Date().toLocaleDateString('es-MX'),
-        time:new Date().toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'}),
-        complete:true
-      };
+      });
       // Actualizar checkpoint existente si hay (misma partida), o insertar nuevo
-      const srIdx=msg.id?ranking.findIndex(r=>r.id===msg.id):-1;
-      if(srIdx>=0) ranking[srIdx]=finalRecord; else ranking.unshift(finalRecord);
-      saveRanking(ranking.slice(0,500));
-      _opStatsCache=null; // Invalida caché de estadísticas por operación
-      // Multiplicador de Áureos según modo y dificultad
-      const TIMED_MULT={easy:0.8,medium:1.0,hard:1.3,expert:1.6};
-      const LIVES_MULT={'lives_8':0.8,'lives_5':1.0,'lives_3':1.3};
-      const BASE_MULT={free:0.5,countdown:1.0,streak:2.0,survival:1.5};
-      const gtype=msg.gameType||'free';
-      const diff=msg.difficulty||'';
-      let mult=1.0;
-      if(gtype==='timed') mult=TIMED_MULT[diff]??1.0;
-      else if(gtype==='lives') mult=LIVES_MULT[diff]??1.0;
-      else mult=BASE_MULT[gtype]??1.0;
-      // players/msgName/player ya se calcularon arriba, antes de armar finalRecord
-      // Multiplicador de variedad: penaliza repetir las mismas tablas (cooldown 30min)
-      let varietyMult=1.0;
-      const _playedTbls=Object.keys(msg.tblResults||{}).filter(k=>(msg.tblResults[k]?.total||0)>0);
-      if(player&&_playedTbls.length>0){
-        const _COOL=30*60*1000;
-        const _now=Date.now();
-        if(!player.tableHistory) player.tableHistory={};
-        const _hist=player.tableHistory;
-        const _fresh=_playedTbls.filter(t=>!_hist[t]||(_now-_hist[t])>_COOL).length;
-        varietyMult=Math.max(0.5,_fresh/_playedTbls.length);
-        _playedTbls.forEach(t=>{_hist[t]=_now;});
-      }
-      const magnetMult=msg.aureosBonus?1.3:1.0;
-      let baseReward=Math.floor((msg.score||0)/100*mult*varietyMult*magnetMult);
-      // Duelo local: ambos jugadores se reportan desde el mismo dispositivo, así que aquí ya
-      // se sabe quién ganó — se duplica de inmediato (sin necesidad de esperar a nadie más)
-      if(msg.gameMode==='duel'&&msg.isWinner) baseReward*=2;
-      const earnedAureos=baseReward*GAME_AUREOS_MULT;
-      const earnedExperience=baseReward*GAME_EXPERIENCE_MULT;
+      saveRanking(upsertCompletedResult(ranking,finalRecord,msg.id));
+      const gameRewards=calculateGameRewards(msg,{
+        hasPlayer:!!player,
+        tableHistory:player?.tableHistory,
+      });
+      const {earnedAureos,earnedExperience,varietyMult}=gameRewards;
+      if(player&&gameRewards.tableHistoryChanged) player.tableHistory=gameRewards.tableHistory;
       if(player){
         // Áureos por partida
         const baseExperience=ensurePlayerExperience(player);
@@ -1646,10 +1396,12 @@ function handle(ws,msg){ // Procesa todos los mensajes entrantes de los clientes
         // Partidas jugadas
         player.gamesPlayed=(player.gamesPlayed||0)+1;
         // Racha diaria
-        const streakBonus=updateDailyStreak(player);
+        const dailyStreak=calculateDailyStreak(player.dailyStreak);
+        player.dailyStreak=dailyStreak.dailyStreak;
+        const streakBonus=dailyStreak.bonus;
         if(streakBonus>0){ player.aureos+=streakBonus; player.experiencia+=streakBonus; logAureosTx(player,streakBonus,'racha_diaria'); }
         // Logros nuevos
-        const newAchievements=checkNewAchievements(player,{...msg,tblResults:msg.tblResults||{}});
+        const newAchievements=checkNewAchievements(player,{...msg,tblResults:msg.tblResults||{}},loadRanking());
         let bonusTotal=earnedAureos+streakBonus;
         if(newAchievements.length){
           newAchievements.forEach(aid=>{

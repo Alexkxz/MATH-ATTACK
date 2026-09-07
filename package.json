@@ -1,16 +1,23 @@
 {
   "version": "2.0.0",
   "scripts": {
-    "check:syntax": "node -c server.js && node -c src/data/jsonStore.js && node -c src/server/htmlPages.js",
-    "check:encoding": "node scripts/check-utf8.js maestro.html math-attack.html ranking.html server.js src/data/jsonStore.js src/server/htmlPages.js Panel-Control.ps1 hotspot.ps1 ejecutables/Conectar-MathAttack.ps1 scripts/check-utf8.js scripts/fix-mojibake.js scripts/check-responsive.js scripts/check-multiplayer-powers-ui.js scripts/check-admin-auth.js scripts/check-json-store.js scripts/check-server-basic.js scripts/check-basic-ui.js",
+    "check:syntax": "node -c server.js && node -c src/data/jsonStore.js && node -c src/server/htmlPages.js && node -c src/game/playerLevels.js && node -c src/game/achievements.js && node -c src/game/dailyStreak.js && node -c src/game/gameRewards.js && node -c src/game/ranking.js && node -c src/game/checkpoints.js && node -c src/game/statistics.js && node -c scripts/server-test-utils.js && node -c scripts/check-player-levels.js && node -c scripts/check-achievements.js && node -c scripts/check-daily-streak.js && node -c scripts/check-game-rewards.js && node -c scripts/check-ranking.js && node -c scripts/check-checkpoints.js && node -c scripts/check-statistics.js",
+    "check:encoding": "node scripts/check-utf8.js maestro.html math-attack.html ranking.html server.js src/data/jsonStore.js src/server/htmlPages.js src/game/playerLevels.js src/game/achievements.js src/game/dailyStreak.js src/game/gameRewards.js src/game/ranking.js src/game/checkpoints.js src/game/statistics.js Panel-Control.ps1 hotspot.ps1 ejecutables/Conectar-MathAttack.ps1 scripts/check-utf8.js scripts/fix-mojibake.js scripts/check-responsive.js scripts/check-multiplayer-powers-ui.js scripts/check-admin-auth.js scripts/check-json-store.js scripts/check-server-basic.js scripts/check-basic-ui.js scripts/server-test-utils.js scripts/check-player-levels.js scripts/check-achievements.js scripts/check-daily-streak.js scripts/check-game-rewards.js scripts/check-ranking.js scripts/check-checkpoints.js scripts/check-statistics.js",
     "check:ordered": "node scripts/check-ordered-questions.js",
     "check:json-store": "node scripts/check-json-store.js",
+    "check:player-levels": "node scripts/check-player-levels.js",
+    "check:achievements": "node scripts/check-achievements.js",
+    "check:daily-streak": "node scripts/check-daily-streak.js",
+    "check:game-rewards": "node scripts/check-game-rewards.js",
+    "check:ranking": "node scripts/check-ranking.js",
+    "check:checkpoints": "node scripts/check-checkpoints.js",
+    "check:statistics": "node scripts/check-statistics.js",
     "check:server": "node scripts/check-server-basic.js",
     "check:ui": "node scripts/check-basic-ui.js",
     "check:responsive": "node scripts/check-responsive.js",
     "check:powers-ui": "node scripts/check-multiplayer-powers-ui.js",
     "check:admin-auth": "node scripts/check-admin-auth.js",
-    "check": "npm run check:syntax && npm run check:encoding && npm run check:ordered && npm run check:json-store && npm run check:server && npm run check:admin-auth && npm run check:ui && npm run check:responsive && npm run check:powers-ui"
+    "check": "npm run check:syntax && npm run check:encoding && npm run check:ordered && npm run check:json-store && npm run check:player-levels && npm run check:achievements && npm run check:daily-streak && npm run check:game-rewards && npm run check:ranking && npm run check:checkpoints && npm run check:statistics && npm run check:server && npm run check:admin-auth && npm run check:ui && npm run check:responsive && npm run check:powers-ui"
   },
   "dependencies": {
     "ws": "^8.21.0"
