@@ -24,6 +24,27 @@ const {
   ensurePlayerExperience,
   getPlayerLevel,
 } = require('./src/game/playerLevels');
+const {
+  REGISTRATION_REQUIRED_ERROR,
+  findPlayerById,
+  findPlayerIndexById,
+  findPlayerByName,
+  resolveCanonicalPlayer,
+  indexPlayersByName,
+  preparePlayerRegistration,
+  authenticatePlayer,
+  buildPlayerProfile,
+  normalizeAdminPin,
+  updatePlayerPin,
+  updatePlayerGrade,
+  updatePlayerThemeColor,
+  updatePlayerAvatar,
+  addPlayerInventoryItem,
+  setPlayerInventoryQuantity,
+  consumePlayerInventoryItem,
+  ensurePlayerCosmetics,
+  unlockPlayerCosmetic,
+} = require('./src/game/players');
 const { ACHIEVEMENTS_DEF, checkNewAchievements } = require('./src/game/achievements');
 const { calculateDailyStreak } = require('./src/game/dailyStreak');
 const { calculateDirectGameReward, calculateGameRewards } = require('./src/game/gameRewards');
@@ -229,7 +250,7 @@ function broadcastPanelState(){ // Envía el estado de las sesiones al panel; om
   if(maestroClients.size===0) return;
   const now=Date.now();
   const players=loadPlayers();
-  const playersByName=new Map(players.map(p=>[(p.name||'').toLowerCase(),p]));
+  const playersByName=indexPlayersByName(players);
   const sessions=[...gameSessions.values()].map(s=>{
     const player=playersByName.get((s.name||'').toLowerCase());
     const roomId=s.roomId||s.ws?.roomId||null;
@@ -586,13 +607,7 @@ const server=http.createServer((req,res)=>{
     res.writeHead(200,{'Content-Type':'application/json','Access-Control-Allow-Origin':'*'});
     res.end(JSON.stringify(players.map(p=>{
       const {avgPct}=calculatePlayerAverages(ranking,p.name);
-      const experiencia=getPlayerExperience(p);
-      return {
-        id:p.id,name:p.name,grade:p.grade||'',aureos:p.aureos||0,experiencia,inventory:p.inventory||{},
-        achievements:p.achievements||[],gamesPlayed:p.gamesPlayed||0,themeColor:p.themeColor||'',
-        avatar:p.avatar||{},cosmetics:p.cosmetics||{},dailyStreak:p.dailyStreak||{current:0,best:0,lastDate:''},
-        level:getPlayerLevel(experiencia),avgPct,
-      };
+      return {...buildPlayerProfile(p),avgPct};
     })));
     return;
   }
@@ -603,7 +618,7 @@ const server=http.createServer((req,res)=>{
     const id=_qs.get('id')||'';
     if(!requireAdmin(req,res)) return;
     const players=loadPlayers();
-    const player=players.find(p=>p.id===id);
+    const player=findPlayerById(players,id);
     if(!player){ res.writeHead(404,{'Content-Type':'application/json'}); res.end(JSON.stringify({ok:false})); return; }
     res.writeHead(200,{'Content-Type':'application/json','Access-Control-Allow-Origin':'*'});
     res.end(JSON.stringify({ok:true,pin:player.pin}));
@@ -638,13 +653,15 @@ const server=http.createServer((req,res)=>{
   if(req.method==='POST'&&url==='/api/players/register'){
     readBody(req, res, body=>{
       try{
-        const {name,pin,grade}=JSON.parse(body);
-        if(!name||!pin||String(pin).length!==4){ res.writeHead(400,{'Content-Type':'application/json'}); res.end(JSON.stringify({ok:false,error:'Nombre y PIN de 4 dígitos requeridos'})); return; }
+        const input=JSON.parse(body);
         const players=loadPlayers();
-        if(players.find(p=>p.name.toLowerCase()===name.toLowerCase())){
-          res.writeHead(200,{'Content-Type':'application/json'}); res.end(JSON.stringify({ok:false,error:'Jugador ya existe'})); return;
+        const registration=preparePlayerRegistration(players,input);
+        if(!registration.ok){
+          res.writeHead(registration.error===REGISTRATION_REQUIRED_ERROR?400:200,{'Content-Type':'application/json'});
+          res.end(JSON.stringify(registration)); return;
         }
-        const newPlayer={id:Date.now().toString(36),name,pin:String(pin),grade:grade||'',aureos:0,experiencia:0,inventory:{},achievements:[],gamesPlayed:0,themeColor:'',dailyStreak:{current:0,best:0,lastDate:''},tableHistory:{}};
+        const {name,pin}=input;
+        const newPlayer=registration.player;
         players.push(newPlayer); savePlayers(players);
         L.game(`Jugador registrado: ${name} (PIN:${pin})`);
         maestroClients.forEach(mc=>{ if(mc.readyState===WebSocket.OPEN) mc.send(JSON.stringify({type:'students_updated',newUser:name})); });
@@ -660,11 +677,10 @@ const server=http.createServer((req,res)=>{
       try{
         const {name,pin}=JSON.parse(body);
         const players=loadPlayers();
-        const player=players.find(p=>p.name.toLowerCase()===name.toLowerCase()&&p.pin===String(pin));
+        const player=authenticatePlayer(players,name,pin);
         if(!player){ res.writeHead(200,{'Content-Type':'application/json'}); res.end(JSON.stringify({ok:false,error:'PIN incorrecto'})); return; }
-        const experiencia=getPlayerExperience(player);
         res.writeHead(200,{'Content-Type':'application/json'});
-        res.end(JSON.stringify({ok:true,player:{id:player.id,name:player.name,grade:player.grade||'',aureos:player.aureos||0,experiencia,inventory:player.inventory||{},achievements:player.achievements||[],gamesPlayed:player.gamesPlayed||0,themeColor:player.themeColor||'',avatar:player.avatar||{},cosmetics:player.cosmetics||{},dailyStreak:player.dailyStreak||{current:0,best:0,lastDate:''},level:getPlayerLevel(experiencia)}}));
+        res.end(JSON.stringify({ok:true,player:buildPlayerProfile(player)}));
       }catch(e){ res.writeHead(400); res.end('{}'); }
     }); return;
   }
@@ -675,7 +691,7 @@ const server=http.createServer((req,res)=>{
       try{
         const {id,aureos}=JSON.parse(body);
         const players=loadPlayers();
-        const player=players.find(p=>p.id===id);
+        const player=findPlayerById(players,id);
         if(!player){ res.writeHead(404); res.end('{}'); return; }
         ensurePlayerExperience(player);
         player.aureos=Math.max(player.aureos||0,aureos||0);
@@ -703,14 +719,13 @@ const server=http.createServer((req,res)=>{
         const cost=POWER_COSTS[powerId];
         if(!cost){ res.writeHead(200,{'Content-Type':'application/json'}); res.end(JSON.stringify({ok:false,error:'Poder no válido'})); return; }
         const players=loadPlayers();
-        const player=players.find(p=>p.id===id);
+        const player=findPlayerById(players,id);
         if(!player){ res.writeHead(404); res.end('{}'); return; }
         ensurePlayerExperience(player);
         if((player.aureos||0)<cost){ res.writeHead(200,{'Content-Type':'application/json'}); res.end(JSON.stringify({ok:false,error:'Áureos insuficientes'})); return; }
         player.aureos-=cost;
         logAureosTx(player,-cost,'compra_poder:'+powerId);
-        if(!player.inventory) player.inventory={};
-        player.inventory[powerId]=(player.inventory[powerId]||0)+1;
+        addPlayerInventoryItem(player,powerId);
         savePlayers(players);
         L.game(`${player.name} compró poder [${powerId}] por ${cost} Áureos`);
         res.writeHead(200,{'Content-Type':'application/json'});
@@ -727,7 +742,7 @@ const server=http.createServer((req,res)=>{
         const parsed=JSON.parse(body||'{}');
         if(!requireAdmin(req,res,parsed)) return;
         const players=loadPlayers();
-        const idx=players.findIndex(p=>p.id===pid);
+        const idx=findPlayerIndexById(players,pid);
         if(idx===-1){ res.writeHead(404); res.end('{}'); return; }
         const name=players[idx].name;
         players.splice(idx,1); savePlayers(players);
@@ -746,7 +761,7 @@ const server=http.createServer((req,res)=>{
         if(!requireAdmin(req,res,parsed)) return;
         const {id,aureos}=parsed;
         const players=loadPlayers();
-        const player=players.find(p=>p.id===id);
+        const player=findPlayerById(players,id);
         if(!player){ res.writeHead(404); res.end('{}'); return; }
         ensurePlayerExperience(player);
         const _prevAureos=player.aureos||0;
@@ -771,12 +786,9 @@ const server=http.createServer((req,res)=>{
         if(!requireAdmin(req,res,parsed)) return;
         const {id,powerId,qty}=parsed;
         const players=loadPlayers();
-        const player=players.find(p=>p.id===id);
+        const player=findPlayerById(players,id);
         if(!player){ res.writeHead(404); res.end('{}'); return; }
-        if(!player.inventory) player.inventory={};
-        const n=Math.max(0,Math.round(Number(qty))||0);
-        if(n===0) delete player.inventory[powerId];
-        else player.inventory[powerId]=n;
+        const n=setPlayerInventoryQuantity(player,powerId,qty);
         savePlayers(players);
         L.panel(`Maestro ajustó poder [${powerId}]×${n} de ${player.name}`);
         const _ps=[...gameSessions.values()].find(s=>s.name.toLowerCase()===player.name.toLowerCase());
@@ -795,7 +807,7 @@ const server=http.createServer((req,res)=>{
         const {id,amount}=JSON.parse(body);
         if(!Number.isFinite(amount)||amount<=0){ res.writeHead(400); res.end('{}'); return; }
         const players=loadPlayers();
-        const player=players.find(p=>p.id===id);
+        const player=findPlayerById(players,id);
         if(!player){ res.writeHead(404); res.end('{}'); return; }
         const {earnedAureos:gained,earnedExperience:gainedExperience}=calculateDirectGameReward(amount);
         const baseExperience=ensurePlayerExperience(player);
@@ -816,18 +828,16 @@ const server=http.createServer((req,res)=>{
       try{
         const {id,powerId}=JSON.parse(body);
         const players=loadPlayers();
-        const player=players.find(p=>p.id===id);
+        const player=findPlayerById(players,id);
         if(!player){ res.writeHead(404); res.end('{}'); return; }
-        if(!player.inventory) player.inventory={};
-        if((player.inventory[powerId]||0)<=0){
+        const useResult=consumePlayerInventoryItem(player,powerId);
+        if(!useResult.ok){
           // El inventario del servidor ya estaba en 0 (desincronizado con el cliente) —
           // avisar con ok:false para que el cliente revierta el efecto/uso local
           res.writeHead(200,{'Content-Type':'application/json','Access-Control-Allow-Origin':'*'});
           res.end(JSON.stringify({ok:false,error:'Sin inventario',inventory:player.inventory}));
           return;
         }
-        player.inventory[powerId]--;
-        if(player.inventory[powerId]===0) delete player.inventory[powerId];
         savePlayers(players);
         L.game(`${player.name} usó poder [${powerId}]`);
         res.writeHead(200,{'Content-Type':'application/json','Access-Control-Allow-Origin':'*'});
@@ -843,12 +853,12 @@ const server=http.createServer((req,res)=>{
         const parsed=JSON.parse(body);
         if(!requireAdmin(req,res,parsed)) return;
         const {id,pin}=parsed;
-        const pinStr=String(pin).padStart(4,'0');
-        if(pinStr.length!==4||isNaN(Number(pinStr))){ res.writeHead(400); res.end(JSON.stringify({ok:false,error:'PIN debe ser de 4 dígitos'})); return; }
+        const normalizedPin=normalizeAdminPin(pin);
+        if(!normalizedPin.ok){ res.writeHead(400); res.end(JSON.stringify(normalizedPin)); return; }
         const players=loadPlayers();
-        const player=players.find(p=>p.id===id);
+        const player=findPlayerById(players,id);
         if(!player){ res.writeHead(404); res.end(JSON.stringify({ok:false,error:'Jugador no encontrado'})); return; }
-        player.pin=pinStr;
+        updatePlayerPin(player,normalizedPin.pin);
         savePlayers(players);
         L.panel(`Maestro cambió PIN de ${player.name}`);
         res.writeHead(200,{'Content-Type':'application/json'});
@@ -865,9 +875,9 @@ const server=http.createServer((req,res)=>{
         if(!requireAdmin(req,res,parsed)) return;
         const {id,grade}=parsed;
         const players=loadPlayers();
-        const player=players.find(p=>p.id===id);
+        const player=findPlayerById(players,id);
         if(!player){ res.writeHead(404); res.end(JSON.stringify({ok:false,error:'Jugador no encontrado'})); return; }
-        player.grade=grade||'';
+        updatePlayerGrade(player,grade);
         savePlayers(players);
         L.panel(`Maestro cambió grado de ${player.name} a "${player.grade||'sin grado'}"`);
         res.writeHead(200,{'Content-Type':'application/json'});
@@ -960,9 +970,9 @@ const server=http.createServer((req,res)=>{
       try{
         const {id,color}=JSON.parse(body);
         const players=loadPlayers();
-        const player=players.find(p=>p.id===id);
+        const player=findPlayerById(players,id);
         if(!player){ res.writeHead(404); res.end('{}'); return; }
-        player.themeColor=color||'';
+        updatePlayerThemeColor(player,color);
         savePlayers(players);
         res.writeHead(200,{'Content-Type':'application/json','Access-Control-Allow-Origin':'*'});
         res.end(JSON.stringify({ok:true,themeColor:player.themeColor}));
@@ -990,15 +1000,15 @@ const server=http.createServer((req,res)=>{
         const cost=COSMETIC_PRICES[item];
         if(!cost){ res.writeHead(200,{'Content-Type':'application/json'}); res.end(JSON.stringify({ok:false,error:'Accesorio no válido'})); return; }
         const players=loadPlayers();
-        const player=players.find(p=>p.id===id);
+        const player=findPlayerById(players,id);
         if(!player){ res.writeHead(404); res.end('{}'); return; }
         ensurePlayerExperience(player);
-        if(!player.cosmetics) player.cosmetics={};
-        if(player.cosmetics[item]){ res.writeHead(200); res.end(JSON.stringify({ok:false,error:'Ya desbloqueado'})); return; }
+        const cosmetics=ensurePlayerCosmetics(player);
+        if(cosmetics[item]){ res.writeHead(200); res.end(JSON.stringify({ok:false,error:'Ya desbloqueado'})); return; }
         if((player.aureos||0)<cost){ res.writeHead(200); res.end(JSON.stringify({ok:false,error:'Áureos insuficientes'})); return; }
         player.aureos-=cost;
         logAureosTx(player,-cost,'compra_cosmetico:'+item);
-        player.cosmetics[item]=true;
+        unlockPlayerCosmetic(player,item);
         savePlayers(players);
         res.writeHead(200,{'Content-Type':'application/json','Access-Control-Allow-Origin':'*'});
         res.end(JSON.stringify({ok:true,aureos:player.aureos,item}));
@@ -1014,10 +1024,8 @@ const server=http.createServer((req,res)=>{
         const amount=Math.max(0,Math.floor(stolen||0));
         if(!amount){ res.writeHead(200,{'Content-Type':'application/json'}); res.end(JSON.stringify({ok:true})); return; }
         const players=loadPlayers();
-        const attacker=attackerId
-          ? players.find(p=>p.id===attackerId&&p.name.toLowerCase()===(attackerName||'').toLowerCase())
-          : players.find(p=>p.name.toLowerCase()===(attackerName||'').toLowerCase());
-        const victim=players.find(p=>p.name.toLowerCase()===(victimName||'').toLowerCase());
+        const attacker=resolveCanonicalPlayer(players,{id:attackerId,name:attackerName||''});
+        const victim=findPlayerByName(players,victimName||'');
         if(attacker){ ensurePlayerExperience(attacker); attacker.aureos=(attacker.aureos||0)+amount; logAureosTx(attacker,amount,'robo_realizado'); }
         if(victim){ ensurePlayerExperience(victim); victim.aureos=Math.max(0,(victim.aureos||0)-amount); logAureosTx(victim,-amount,'robo_recibido'); }
         if(attacker||victim){ savePlayers(players); L.game(`Coinrob: ${attackerName||'?'} robó ${amount} 🪙 a ${victimName||'?'}`); }
@@ -1033,9 +1041,9 @@ const server=http.createServer((req,res)=>{
       try{
         const {id,avatar}=JSON.parse(body);
         const players=loadPlayers();
-        const player=players.find(p=>p.id===id);
+        const player=findPlayerById(players,id);
         if(!player){ res.writeHead(404); res.end('{}'); return; }
-        player.avatar=avatar||{};
+        updatePlayerAvatar(player,avatar);
         savePlayers(players);
         res.writeHead(200,{'Content-Type':'application/json','Access-Control-Allow-Origin':'*'});
         res.end(JSON.stringify({ok:true}));
@@ -1277,11 +1285,8 @@ function handle(ws,msg){ // Procesa todos los mensajes entrantes de los clientes
       if(!msg.id||!msg.name) break;
       // Mismo criterio que save_result: usar el nombre exacto de la cuenta si coincide
       // (sin distinguir mayúsculas), para no fragmentar el ranking por capitalización.
-      const cpMsgName=(msg.name||'').toLowerCase();
       const cpPlayers=loadPlayers();
-      const cpPlayer=msg.playerId
-        ? cpPlayers.find(p=>p.id===msg.playerId&&p.name.toLowerCase()===cpMsgName)
-        : cpPlayers.find(p=>p.name.toLowerCase()===cpMsgName);
+      const cpPlayer=resolveCanonicalPlayer(cpPlayers,{id:msg.playerId,name:msg.name||''});
       persistCheckpoint(msg,cpPlayer?cpPlayer.name:(msg.name||'?'));
       break;
     }
@@ -1360,10 +1365,7 @@ function handle(ws,msg){ // Procesa todos los mensajes entrantes de los clientes
       // distinta capitalización cada vez (ej. "Fernanda"/"FERNANDA"/"fernanda") terminan
       // fragmentados en entradas separadas que se ven como personas distintas.
       const players=loadPlayers();
-      const msgName=(msg.name||'').toLowerCase();
-      const player=msg.playerId
-        ? players.find(p=>p.id===msg.playerId&&p.name.toLowerCase()===msgName)
-        : players.find(p=>p.name.toLowerCase()===msgName);
+      const player=resolveCanonicalPlayer(players,{id:msg.playerId,name:msg.name||''});
       const resolvedGrade=msg.grade||player?.grade||ws.grade||'';
       const resolvedDurationMs=Number(msg.durationMs)||(
         msg.isExam&&msg.examStartedAt?Math.max(0,Date.now()-Number(msg.examStartedAt)):0
@@ -1573,7 +1575,7 @@ function handle(ws,msg){ // Procesa todos los mensajes entrantes de los clientes
       const pname=ws.playerName||'';
       if(!pname||!msg.amount) break;
       const players=loadPlayers();
-      const player=players.find(p=>p.name.toLowerCase()===pname.toLowerCase());
+      const player=findPlayerByName(players,pname);
       if(!player){ send(ws,{type:'pot_deduct_result',ok:false,error:'Jugador no encontrado'}); break; }
       ensurePlayerExperience(player);
       const cost=Math.max(0,Math.floor(msg.amount));
@@ -1597,7 +1599,7 @@ function handle(ws,msg){ // Procesa todos los mensajes entrantes de los clientes
       if(_awardedPotGames.has(gameKey)) break;
       _awardedPotGames.add(gameKey);
       const players=loadPlayers();
-      const winner=players.find(p=>p.name.toLowerCase()===winnerName.toLowerCase());
+      const winner=findPlayerByName(players,winnerName);
       const prize=Math.max(0,Math.floor(msg.amount));
       if(winner){
         ensurePlayerExperience(winner);
@@ -1628,7 +1630,7 @@ function handle(ws,msg){ // Procesa todos los mensajes entrantes de los clientes
       if(betAmount<=0||!names.length) break;
       const players=loadPlayers();
       names.forEach(name=>{
-        const p=players.find(pl=>pl.name.toLowerCase()===name.toLowerCase());
+        const p=findPlayerByName(players,name);
         if(!p) return;
         ensurePlayerExperience(p);
         p.aureos=(p.aureos||0)+betAmount;
@@ -1656,7 +1658,7 @@ function handle(ws,msg){ // Procesa todos los mensajes entrantes de los clientes
         const earnedKey=`${ws.roomId||'?'}_${msg.gameId}_${(name||'').toLowerCase()}`;
         const earned=_mpEarnedByGame.get(earnedKey);
         if(!earned) return; // no se registró esta partida para este jugador — nada que duplicar
-        const p=players.find(pl=>pl.name.toLowerCase()===(name||'').toLowerCase());
+        const p=findPlayerByName(players,name||'');
         if(!p) return;
         const baseExperience=ensurePlayerExperience(p);
         p.aureos=(p.aureos||0)+earned;
