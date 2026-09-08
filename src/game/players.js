@@ -1,19 +1,25 @@
 'use strict';
 
+const { randomUUID } = require('crypto');
+
 const { getPlayerExperience, getPlayerLevel } = require('./playerLevels');
 
 const REGISTRATION_REQUIRED_ERROR = 'Nombre y PIN de 4 dígitos requeridos';
 const PLAYER_EXISTS_ERROR = 'Jugador ya existe';
+const PLAYER_ID_GENERATION_ERROR = 'No se pudo generar un ID de jugador unico';
+const MAX_PLAYER_ID_ATTEMPTS = 5;
 
 function normalizePlayerName(name){
   return name.toLowerCase();
 }
 
 function findPlayerById(players, id){
+  if(id===undefined||id===null||id==='') return undefined;
   return (Array.isArray(players)?players:[]).find(player=>player.id===id);
 }
 
 function findPlayerIndexById(players, id){
+  if(id===undefined||id===null||id==='') return -1;
   return (Array.isArray(players)?players:[]).findIndex(player=>player.id===id);
 }
 
@@ -26,7 +32,11 @@ function findPlayerByName(players, name){
 // Cuando llega un ID, el nombre también debe coincidir. Esto conserva el criterio
 // usado por checkpoints, save_result y coinrob: un ID válido no autoriza un nombre distinto.
 function resolveCanonicalPlayer(players, { id, name }){
-  if(!id) return findPlayerByName(players,name);
+  if(id===undefined||id===null||id===''){
+    if(name===undefined||name===null||name==='') return undefined;
+    return findPlayerByName(players,name);
+  }
+  if(name===undefined||name===null||name==='') return undefined;
   const normalizedName=normalizePlayerName(name);
   return (Array.isArray(players)?players:[])
     .find(player=>player.id===id&&normalizePlayerName(player.name)===normalizedName);
@@ -44,10 +54,14 @@ function validatePlayerRegistration({ name, pin }){
   return { ok:true };
 }
 
+function generatePlayerId(options={}){
+  const generator=options.idGenerator||randomUUID;
+  return generator();
+}
+
 function createInitialPlayer({ name, pin, grade }, options={}){
-  const now=options.now??Date.now();
   return {
-    id:now.toString(36),
+    id:generatePlayerId(options),
     name,
     pin:String(pin),
     grade:grade||'',
@@ -67,7 +81,14 @@ function preparePlayerRegistration(players, input, options={}){
   const validation=validatePlayerRegistration(input);
   if(!validation.ok) return validation;
   if(findPlayerByName(players,input.name)) return { ok:false, error:PLAYER_EXISTS_ERROR };
-  return { ok:true, player:createInitialPlayer(input,options) };
+  const maxAttempts=options.maxIdAttempts??MAX_PLAYER_ID_ATTEMPTS;
+  for(let attempt=0;attempt<maxAttempts;attempt++){
+    const player=createInitialPlayer(input,options);
+    if(typeof player.id==='string'&&player.id!==''&&findPlayerById(players,player.id)===undefined){
+      return { ok:true, player };
+    }
+  }
+  return { ok:false, error:PLAYER_ID_GENERATION_ERROR };
 }
 
 function authenticatePlayer(players, name, pin){
@@ -165,6 +186,8 @@ function unlockPlayerCosmetic(player, itemId){
 module.exports={
   REGISTRATION_REQUIRED_ERROR,
   PLAYER_EXISTS_ERROR,
+  PLAYER_ID_GENERATION_ERROR,
+  MAX_PLAYER_ID_ATTEMPTS,
   normalizePlayerName,
   findPlayerById,
   findPlayerIndexById,
@@ -172,6 +195,7 @@ module.exports={
   resolveCanonicalPlayer,
   indexPlayersByName,
   validatePlayerRegistration,
+  generatePlayerId,
   createInitialPlayer,
   preparePlayerRegistration,
   authenticatePlayer,

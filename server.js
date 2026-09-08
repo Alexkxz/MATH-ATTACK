@@ -200,6 +200,9 @@ for(const stream of [process.stdout, process.stderr]){
 }
 
 // ── Stores ──────────────────────────────────────────────────
+// gameSessions usa una identidad efimera: sessionId/connection player ID.
+// El playerId externo se conserva por compatibilidad y no es el ID persistente
+// de la cuenta en players.json (accountPlayerId).
 const rooms       = new Map();
 const gameSessions= new Map(); // playerId → session state
 const pendingPotMsgs = new Map(); // nombre (lowercase) → mensaje pot_result pendiente de entregar
@@ -404,7 +407,8 @@ const server=http.createServer((req,res)=>{
       wss.clients.forEach(c=>{
         if(c.readyState!==WebSocket.OPEN) return;
         const isMaestro=maestroClients.has(c);
-        const session=!isMaestro&&c.playerId?gameSessions.get(c.playerId):null;
+        const sessionId=c.playerId;
+        const session=!isMaestro&&sessionId?gameSessions.get(sessionId):null;
         conns.push({
           id:       c._connId||0,
           type:     isMaestro?'maestro':'player',
@@ -415,7 +419,7 @@ const server=http.createServer((req,res)=>{
           msgIn:    c._msgIn||0,
           msgOut:   c._msgOut||0,
           latency:  c._latency,
-          playerId: c.playerId||null,
+          playerId: c.playerId||null, // Contrato externo: aqui significa sessionId.
           gameMode: session?.gameMode||'',
           score:    session?.score||0
         });
@@ -1286,7 +1290,8 @@ function handle(ws,msg){ // Procesa todos los mensajes entrantes de los clientes
       // Mismo criterio que save_result: usar el nombre exacto de la cuenta si coincide
       // (sin distinguir mayúsculas), para no fragmentar el ranking por capitalización.
       const cpPlayers=loadPlayers();
-      const cpPlayer=resolveCanonicalPlayer(cpPlayers,{id:msg.playerId,name:msg.name||''});
+      const accountPlayerId=msg.playerId;
+      const cpPlayer=resolveCanonicalPlayer(cpPlayers,{id:accountPlayerId,name:msg.name||''});
       persistCheckpoint(msg,cpPlayer?cpPlayer.name:(msg.name||'?'));
       break;
     }
@@ -1296,11 +1301,11 @@ function handle(ws,msg){ // Procesa todos los mensajes entrantes de los clientes
       // Intentar revivir sesión desconectada del mismo jugador
       let s=_reviveSession(ws, msg.name);
       if(!s){
-        const sid=ws.playerId||ws._uid||(ws._uid=genId());
+        const sessionId=ws.playerId||ws._uid||(ws._uid=genId());
         if(msg.name) ws.playerName=msg.name;
-        if(!ws.playerId) ws.playerId=sid;
-        s=gameSessions.get(sid);
-        if(!s){ s={id:sid,startTime:Date.now()}; gameSessions.set(sid,s); }
+        if(!ws.playerId) ws.playerId=sessionId;
+        s=gameSessions.get(sessionId);
+        if(!s){ s={id:sessionId,startTime:Date.now()}; gameSessions.set(sessionId,s); }
       }
       s.ws=ws; s.id=ws.playerId;
       s.name=msg.name||s.name||'?';
@@ -1317,11 +1322,11 @@ function handle(ws,msg){ // Procesa todos los mensajes entrantes de los clientes
       // Intentar revivir sesión desconectada del mismo jugador
       let s=_reviveSession(ws, msg.name);
       if(!s){
-        const sid=ws.playerId||ws._uid||(ws._uid=genId());
+        const sessionId=ws.playerId||ws._uid||(ws._uid=genId());
         if(msg.name){ ws.playerName=msg.name; }
-        if(!ws.playerId) ws.playerId=sid;
-        s=gameSessions.get(sid);
-        if(!s){ s={id:sid,startTime:Date.now()}; gameSessions.set(sid,s); }
+        if(!ws.playerId) ws.playerId=sessionId;
+        s=gameSessions.get(sessionId);
+        if(!s){ s={id:sessionId,startTime:Date.now()}; gameSessions.set(sessionId,s); }
       } else {
         if(msg.name) ws.playerName=msg.name;
       }
@@ -1365,7 +1370,8 @@ function handle(ws,msg){ // Procesa todos los mensajes entrantes de los clientes
       // distinta capitalización cada vez (ej. "Fernanda"/"FERNANDA"/"fernanda") terminan
       // fragmentados en entradas separadas que se ven como personas distintas.
       const players=loadPlayers();
-      const player=resolveCanonicalPlayer(players,{id:msg.playerId,name:msg.name||''});
+      const accountPlayerId=msg.playerId;
+      const player=resolveCanonicalPlayer(players,{id:accountPlayerId,name:msg.name||''});
       const resolvedGrade=msg.grade||player?.grade||ws.grade||'';
       const resolvedDurationMs=Number(msg.durationMs)||(
         msg.isExam&&msg.examStartedAt?Math.max(0,Date.now()-Number(msg.examStartedAt)):0
@@ -1712,11 +1718,11 @@ function _deliverPendingPotMsg(s){
 function _reviveSession(ws, name){
   if(!name) return null;
   const low=name.toLowerCase();
-  for(const [sid,s] of gameSessions){
+  for(const [sessionId,s] of gameSessions){
     if(s.disconnected&&s.name&&s.name.toLowerCase()===low){
       if(s._disconnectTimer){ clearTimeout(s._disconnectTimer); s._disconnectTimer=null; }
       s.disconnected=false; s.disconnectedAt=null; s.ws=ws;
-      ws.playerId=sid; ws._uid=sid; ws.playerName=name;
+      ws.playerId=sessionId; ws._uid=sessionId; ws.playerName=name;
       return s;
     }
   }
@@ -1725,18 +1731,18 @@ function _reviveSession(ws, name){
 
 // ── Disconnect ───────────────────────────────────────────────
 function onDisconnect(ws){ // Marca la sesión como desconectada; la borra en 15 s si no reconecta
-  const sid=ws.playerId||ws._uid;
-  if(sid){
-    const s=gameSessions.get(sid);
+  const sessionId=ws.playerId||ws._uid;
+  if(sessionId){
+    const s=gameSessions.get(sessionId);
     if(s&&s.name&&s.name!=='?'&&!ws._kicked){
       s.disconnected=true; s.disconnectedAt=Date.now(); s.ws=null;
       if(s._disconnectTimer) clearTimeout(s._disconnectTimer);
       s._disconnectTimer=setTimeout(()=>{
-        if(gameSessions.get(sid)===s){ gameSessions.delete(sid); schedulePanelBroadcast(); }
+        if(gameSessions.get(sessionId)===s){ gameSessions.delete(sessionId); schedulePanelBroadcast(); }
       },15000);
       schedulePanelBroadcast();
     } else {
-      gameSessions.delete(sid);
+      gameSessions.delete(sessionId);
     }
   }
   if(ws.roomId){
