@@ -29,12 +29,14 @@
     "check:economic-idempotency": "node scripts/check-economic-idempotency.js",
     "check:steal-power": "node scripts/check-steal-power.js",
     "check:maestro-announcement": "node scripts/check-maestro-announcement-messages.js",
+    "check:kick-player": "node scripts/check-kick-player-messages.js",
+    "check:websocket-integration": "node scripts/check-websocket-integration.js",
     "check:server": "node scripts/check-server-basic.js",
     "check:ui": "node scripts/check-basic-ui.js",
     "check:responsive": "node scripts/check-responsive.js",
     "check:powers-ui": "node scripts/check-multiplayer-powers-ui.js",
     "check:admin-auth": "node scripts/check-admin-auth.js",
-    "check": "npm run check:syntax && npm run check:encoding && npm run check:ordered && npm run check:json-store && npm run check:player-levels && npm run check:players && npm run check:identity && npm run check:session-store && npm run check:panel-state && npm run check:ws-context && npm run check:player-identity && npm run check:game-checkpoint && npm run check:checkpoint-save-result && npm run check:result-idempotency && npm run check:economy-context && npm run check:pot-deduct && npm run check:pot-award && npm run check:pot-draw && npm run check:mp-winner-bonus && npm run check:economic-idempotency && npm run check:steal-power && npm run check:maestro-announcement && npm run check:achievements && npm run check:daily-streak && npm run check:game-rewards && npm run check:ranking && npm run check:checkpoints && npm run check:statistics && npm run check:server && npm run check:admin-auth && npm run check:ui && npm run check:responsive && npm run check:powers-ui"
+    "check": "npm run check:syntax && npm run check:encoding && npm run check:ordered && npm run check:json-store && npm run check:player-levels && npm run check:players && npm run check:identity && npm run check:session-store && npm run check:panel-state && npm run check:ws-context && npm run check:player-identity && npm run check:game-checkpoint && npm run check:checkpoint-save-result && npm run check:result-idempotency && npm run check:economy-context && npm run check:pot-deduct && npm run check:pot-award && npm run check:pot-draw && npm run check:mp-winner-bonus && npm run check:economic-idempotency && npm run check:steal-power && npm run check:maestro-announcement && npm run check:kick-player && npm run check:websocket-integration && npm run check:achievements && npm run check:daily-streak && npm run check:game-rewards && npm run check:ranking && npm run check:checkpoints && npm run check:statistics && npm run check:server && npm run check:admin-auth && npm run check:ui && npm run check:responsive && npm run check:powers-ui"
   },
   "dependencies": {
     "ws": "^8.21.0"

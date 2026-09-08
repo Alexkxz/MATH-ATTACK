@@ -80,6 +80,7 @@ const { createMpWinnerBonusMessages } = require('./src/server/ws/mpWinnerBonusMe
 const { createEconomicIdempotency } = require('./src/server/ws/economicIdempotency');
 const { createStealPower } = require('./src/server/ws/stealPower');
 const { createMaestroAnnouncementMessages } = require('./src/server/ws/maestroAnnouncementMessages');
+const { createKickPlayerMessages } = require('./src/server/ws/kickPlayerMessages');
 const {
   buildStudentHistory,
   calculatePlayerAverages,
@@ -503,19 +504,7 @@ wss.on('connection',(ws,req)=>{
       try{
         const msg=JSON.parse(raw);
         maestroAnnouncementMessages.handleMaestroAnnouncement(ws,msg);
-        // Desconexión forzada de cliente desde el panel de Conexión
-        if(msg.type==='kick_player'&&msg.playerId&&msg.password===ADMIN_PASSWORD){
-          const sess=findActiveSession(gameSessions,msg.playerId);
-          if(sess?.ws?.readyState===WebSocket.OPEN){
-            const kname=sess.name||msg.playerId;
-            pushConnLog('kick',`⚡ Maestro desconectó a ${kname}`);
-            L.disc(`Maestro desconectó forzosamente a ${kname}`);
-            const kickedWs=sess.ws;
-            kickedWs._kicked=true; // evita que onDisconnect reserve el slot para reconexión
-            send(kickedWs,{type:'kicked',reason:'El maestro te desconectó del juego.'});
-            setTimeout(()=>kickedWs.terminate(),150); // da tiempo a que el mensaje llegue antes de cerrar
-          }
-        }
+        kickPlayerMessages.handleKickPlayer(ws,msg);
       }catch(e){}
     });
     connectionLifecycle.attachCloseAndError(ws,{
@@ -693,6 +682,15 @@ const maestroAnnouncementMessages = createMaestroAnnouncementMessages({
   ADMIN_PASSWORD,
   gameSessions,
   send,
+  L,
+  WebSocket,
+});
+const kickPlayerMessages = createKickPlayerMessages({
+  ADMIN_PASSWORD,
+  gameSessions,
+  findActiveSession,
+  send,
+  pushConnLog,
   L,
   WebSocket,
 });
