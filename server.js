@@ -307,6 +307,57 @@ function schedulePanelHeartbeat(){ panelBroadcaster.scheduleHeartbeat(); }
 function schedulePanelBroadcast(){ return panelBroadcaster.scheduleBroadcast(); }
 schedulePanelHeartbeat();
 
+const MAESTRO_FRONTEND_JS_ROUTE = '/src/client/maestro/';
+const MAESTRO_FRONTEND_JS_DIR = path.resolve(__dirname, 'src', 'client', 'maestro');
+
+function sendMaestroFrontendJavaScript(res, requestPath) {
+  let decodedPath;
+  try {
+    decodedPath = decodeURIComponent(requestPath);
+  } catch (e) {
+    res.writeHead(403);
+    res.end('');
+    return;
+  }
+
+  if (!decodedPath.startsWith(MAESTRO_FRONTEND_JS_ROUTE)) {
+    res.writeHead(403);
+    res.end('');
+    return;
+  }
+
+  const relativePath = decodedPath.slice(MAESTRO_FRONTEND_JS_ROUTE.length);
+  const filePath = path.resolve(MAESTRO_FRONTEND_JS_DIR, relativePath);
+  const allowedPrefix = MAESTRO_FRONTEND_JS_DIR + path.sep;
+  if (
+    !relativePath ||
+    relativePath.includes('\0') ||
+    path.isAbsolute(relativePath) ||
+    !filePath.startsWith(allowedPrefix) ||
+    path.extname(filePath) !== '.js'
+  ) {
+    res.writeHead(403);
+    res.end('');
+    return;
+  }
+
+  try {
+    const realBaseDir = fs.realpathSync(MAESTRO_FRONTEND_JS_DIR);
+    const realFilePath = fs.realpathSync(filePath);
+    if (!realFilePath.startsWith(realBaseDir + path.sep)) {
+      res.writeHead(403);
+      res.end('');
+      return;
+    }
+    const js = fs.readFileSync(realFilePath);
+    res.writeHead(200, { 'Content-Type': 'application/javascript; charset=utf-8' });
+    res.end(js);
+  } catch (e) {
+    res.writeHead(404);
+    res.end('');
+  }
+}
+
 
 // ── HTTP Server ──────────────────────────────────────────────
 const server=http.createServer((req,res)=>{
@@ -315,6 +366,12 @@ const server=http.createServer((req,res)=>{
   // ── Servir Chart.js local ──
   if(req.method==='GET'&&url==='/chart.umd.min.js'){
     htmlPages.sendChart(req,res);
+    return;
+  }
+
+  // ── JavaScript frontend del maestro (directorio restringido) ──
+  if(req.method==='GET'&&url.startsWith(MAESTRO_FRONTEND_JS_ROUTE)){
+    sendMaestroFrontendJavaScript(res,url);
     return;
   }
 
