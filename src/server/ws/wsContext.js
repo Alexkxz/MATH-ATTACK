@@ -16,6 +16,7 @@ function createWsContext(dependencies = {}) {
     broadcasts = {},
     identity = {},
     panelState = {},
+    economy,
   } = dependencies;
 
   return Object.freeze({
@@ -37,6 +38,7 @@ function createWsContext(dependencies = {}) {
     broadcasts: Object.freeze({ ...broadcasts }),
     identity: Object.freeze({ ...identity }),
     panelState: Object.freeze({ ...panelState }),
+    economy,
   });
 }
 

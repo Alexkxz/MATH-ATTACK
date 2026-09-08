@@ -72,6 +72,14 @@ const { createPlayerIdentityMessages } = require('./src/server/ws/playerIdentity
 const { handleGameCheckpoint } = require('./src/server/ws/gameCheckpointMessages');
 const { createSaveResultMessages } = require('./src/server/ws/saveResultMessages');
 const { createResultIdempotency } = require('./src/server/ws/resultIdempotency');
+const { createEconomyContext } = require('./src/server/ws/economyContext');
+const { createPotDeductMessages } = require('./src/server/ws/potDeductMessages');
+const { createPotAwardMessages } = require('./src/server/ws/potAwardMessages');
+const { createPotDrawMessages } = require('./src/server/ws/potDrawMessages');
+const { createMpWinnerBonusMessages } = require('./src/server/ws/mpWinnerBonusMessages');
+const { createEconomicIdempotency } = require('./src/server/ws/economicIdempotency');
+const { createStealPower } = require('./src/server/ws/stealPower');
+const { createMaestroAnnouncementMessages } = require('./src/server/ws/maestroAnnouncementMessages');
 const {
   buildStudentHistory,
   calculatePlayerAverages,
@@ -224,6 +232,7 @@ const pendingPotMsgs = new Map(); // nombre (lowercase) → mensaje pot_result p
 const _awardedPotGames = new Set(); // roomId_gameId ya liquidados — evita doble crédito por condición de carrera
 const _mpEarnedByGame = new Map(); // roomId_gameId_nombre → Áureos ganados en esa partida (para duplicar al ganador)
 const _awardedBonusGames = new Set(); // roomId_gameId ya con bono de ganador repartido
+const economicIdempotency = createEconomicIdempotency();
 const maestroClients     = new Set(); // WebSocket connections of /maestro panel
 const rankingLiveClients = new Set(); // WebSocket connections of /ranking-live (datos mínimos)
 
@@ -493,12 +502,7 @@ wss.on('connection',(ws,req)=>{
       ws._msgIn++;
       try{
         const msg=JSON.parse(raw);
-        if(msg.type==='maestro_announcement'&&msg.text&&msg.password===ADMIN_PASSWORD){
-          const txt=String(msg.text).slice(0,300);
-          const payload=JSON.stringify({type:'announcement',text:txt});
-          gameSessions.listSessions().forEach(s=>{ if(s.ws?.readyState===WebSocket.OPEN) s.ws.send(payload); });
-          L.panel(`Anuncio maestro: "${txt}"`);
-        }
+        maestroAnnouncementMessages.handleMaestroAnnouncement(ws,msg);
         // Desconexión forzada de cliente desde el panel de Conexión
         if(msg.type==='kick_player'&&msg.playerId&&msg.password===ADMIN_PASSWORD){
           const sess=findActiveSession(gameSessions,msg.playerId);
@@ -563,6 +567,21 @@ const heartbeatInterval = setInterval(()=>{
 }, HEARTBEAT_INTERVAL);
 wss.on('close',()=>clearInterval(heartbeatInterval));
 
+const economyContext = createEconomyContext({
+  rooms,
+  gameSessions,
+  _awardedPotGames,
+  _awardedBonusGames,
+  _mpEarnedByGame,
+  pendingPotMsgs,
+  sendOrQueueMsg: _sendOrQueueMsg,
+  persistence: { loadPlayers, savePlayers, loadAureosLog, saveAureosLog, logAureosTx },
+  identity: { getAccountPlayerId, getSessionId, getExternalPlayerId, getConnectionId, findActiveSession, resolveAccountPlayer },
+  send,
+  broadcasts: { panel: broadcastPanelState, rankingLive: broadcastRankingLive, rooms: broadcastRoomsList, connectionLog: pushConnLog },
+  idempotency: economicIdempotency,
+});
+
 const wsContext = createWsContext({
   gameSessions,
   rooms,
@@ -603,6 +622,7 @@ const wsContext = createWsContext({
     build: buildPanelState,
     broadcaster: panelBroadcaster,
   },
+  economy: economyContext,
 });
 const resultIdempotency = createResultIdempotency();
 
@@ -637,6 +657,44 @@ const saveResultMessages = createSaveResultMessages({
   send,
   L,
   resultIdempotency,
+});
+
+const potDeductMessages = createPotDeductMessages({
+  wsContext,
+  findPlayerByName,
+  ensurePlayerExperience,
+  logAureosTx,
+  L,
+});
+
+const potAwardMessages = createPotAwardMessages({
+  wsContext,
+  findPlayerByName,
+  ensurePlayerExperience,
+  logAureosTx,
+  L,
+});
+const potDrawMessages = createPotDrawMessages({
+  wsContext,
+  findPlayerByName,
+  ensurePlayerExperience,
+  logAureosTx,
+  L,
+});
+const mpWinnerBonusMessages = createMpWinnerBonusMessages({
+  wsContext,
+  findPlayerByName,
+  ensurePlayerExperience,
+  logAureosTx,
+  L,
+});
+const stealPower = createStealPower({ send, L });
+const maestroAnnouncementMessages = createMaestroAnnouncementMessages({
+  ADMIN_PASSWORD,
+  gameSessions,
+  send,
+  L,
+  WebSocket,
 });
 
 // ── Message handler ──────────────────────────────────────────
@@ -764,6 +822,7 @@ function handle(ws,msg){ // Procesa todos los mensajes entrantes de los clientes
         }
       }
       else if(d.type==='peer_finished') L.game(`${ws.playerName} termino`);
+      if(stealPower.handleStealPower(ws, room, msg)) break;
       if(d.type==='power_use'&&SINGLE_TARGET_POWERS.has(d.powerId)&&d.targetIdx==null&&!d.area){
         // Salvaguarda: este poder debe traer targetIdx sí o sí — sin él, reenviarlo
         // a todos reproduciría el bug original (afectar a todos los rivales a la vez).
@@ -782,76 +841,19 @@ function handle(ws,msg){ // Procesa todos los mensajes entrantes de los clientes
       break;
     }
 
-    // ── Apuesta multijugador: descontar Áureos del jugador actual ──
     case 'pot_deduct': {
-      const pname=ws.playerName||'';
-      if(!pname||!msg.amount) break;
-      const players=loadPlayers();
-      const player=findPlayerByName(players,pname);
-      if(!player){ send(ws,{type:'pot_deduct_result',ok:false,error:'Jugador no encontrado'}); break; }
-      ensurePlayerExperience(player);
-      const cost=Math.max(0,Math.floor(msg.amount));
-      if((player.aureos||0)<cost){ send(ws,{type:'pot_deduct_result',ok:false,error:'Áureos insuficientes',aureos:player.aureos||0}); break; }
-      player.aureos=(player.aureos||0)-cost;
-      logAureosTx(player,-cost,'apuesta_jugada');
-      savePlayers(players);
-      L.game(`${pname} apostó ${cost} Áureos (pot_deduct) — quedan ${player.aureos}`);
-      send(ws,{type:'pot_deduct_result',ok:true,aureos:player.aureos,amount:cost});
+      potDeductMessages.handlePotDeduct(ws,msg);
       break;
     }
 
-    // ── Apuesta multijugador: única fuente de verdad — acredita al ganador y
-    // notifica a todos los participantes (gane, pierda o se haya ido de la sala) ──
     case 'pot_award': {
-      const winnerName=msg.winnerName||'';
-      if(!winnerName||!msg.amount) break;
-      // gameId (mpSeed del cliente) + sala identifican la partida concreta — si dos clientes
-      // se creen "el último en terminar" por una condición de carrera, solo se paga una vez
-      const gameKey=`${ws.roomId||'?'}_${msg.gameId||''}`;
-      if(_awardedPotGames.has(gameKey)) break;
-      _awardedPotGames.add(gameKey);
-      const players=loadPlayers();
-      const winner=findPlayerByName(players,winnerName);
-      const prize=Math.max(0,Math.floor(msg.amount));
-      if(winner){
-        ensurePlayerExperience(winner);
-        winner.aureos=(winner.aureos||0)+prize;
-        logAureosTx(winner,prize,'apuesta_ganada');
-        savePlayers(players);
-      }
-      L.game(`${winnerName} ganó ${prize} Áureos (pot_award) — total ${winner?winner.aureos:'?'}`);
-      if(winner) _sendOrQueueMsg(winnerName,{type:'pot_result',result:'win',amount:prize,total:winner.aureos});
-      // Perdedores: ya se les descontó la apuesta al inicio (pot_deduct) — aquí solo se les avisa
-      const betAmount=Math.max(0,Math.floor(msg.betAmount||0));
-      const losers=Array.isArray(msg.losers)?msg.losers:[];
-      losers.forEach(name=>{
-        if(!name||name.toLowerCase()===winnerName.toLowerCase()) return;
-        _sendOrQueueMsg(name,{type:'pot_result',result:'lose',amount:betAmount});
-      });
-      send(ws,{type:'pot_award_result',ok:true,winnerName,amount:prize,total:winner?winner.aureos:null});
+      potAwardMessages.handlePotAward(ws,msg);
       break;
     }
 
     // ── Apuesta multijugador: empate — reembolsa la apuesta a cada participante ──
     case 'pot_draw': {
-      const gameKey=`${ws.roomId||'?'}_${msg.gameId||''}`;
-      if(_awardedPotGames.has(gameKey)) break;
-      _awardedPotGames.add(gameKey);
-      const betAmount=Math.max(0,Math.floor(msg.betAmount||0));
-      const names=Array.isArray(msg.names)?msg.names:[];
-      if(betAmount<=0||!names.length) break;
-      const players=loadPlayers();
-      names.forEach(name=>{
-        const p=findPlayerByName(players,name);
-        if(!p) return;
-        ensurePlayerExperience(p);
-        p.aureos=(p.aureos||0)+betAmount;
-        logAureosTx(p,betAmount,'apuesta_empate');
-        _sendOrQueueMsg(name,{type:'pot_result',result:'draw',amount:betAmount,total:p.aureos});
-      });
-      savePlayers(players);
-      L.game(`Empate en pozo de apuestas — reembolsados ${betAmount} a [${names.join(', ')}]`);
-      send(ws,{type:'pot_award_result',ok:true,draw:true});
+      potDrawMessages.handlePotDraw(ws,msg);
       break;
     }
 
@@ -860,27 +862,7 @@ function handle(ws,msg){ // Procesa todos los mensajes entrantes de los clientes
     // manda quién ganó; el servidor busca cuánto le acreditó save_result a esa partida y le
     // suma esa misma cantidad otra vez (efecto: el ganador recibe el doble, el resto lo normal).
     case 'mp_winner_bonus': {
-      const winners=Array.isArray(msg.winners)?msg.winners:[];
-      if(!winners.length||!msg.gameId) break;
-      const gameKey=`${ws.roomId||'?'}_${msg.gameId}_bonus`;
-      if(_awardedBonusGames.has(gameKey)) break;
-      _awardedBonusGames.add(gameKey);
-      const players=loadPlayers();
-      winners.forEach(name=>{
-        const earnedKey=`${ws.roomId||'?'}_${msg.gameId}_${(name||'').toLowerCase()}`;
-        const earned=_mpEarnedByGame.get(earnedKey);
-        if(!earned) return; // no se registró esta partida para este jugador — nada que duplicar
-        const p=findPlayerByName(players,name||'');
-        if(!p) return;
-        const baseExperience=ensurePlayerExperience(p);
-        p.aureos=(p.aureos||0)+earned;
-        p.experiencia=baseExperience+earned;
-        logAureosTx(p,earned,'bono_ganador_mp');
-        _mpEarnedByGame.delete(earnedKey);
-        _sendOrQueueMsg(name,{type:'coin_bonus',amount:earned,total:p.aureos,experiencia:p.experiencia,experience:p.experiencia});
-      });
-      savePlayers(players);
-      L.game(`Bono de ganador (x2) repartido a [${winners.join(', ')}] en sala [${ws.roomId||'?'}]`);
+      mpWinnerBonusMessages.handleMpWinnerBonus(ws,msg);
       break;
     }
 
