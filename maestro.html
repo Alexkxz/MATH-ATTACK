@@ -252,86 +252,9 @@ body.proj-mode .mp-rooms{grid-template-columns:repeat(auto-fill,minmax(300px,1fr
 .btn-logout{background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.25);border-radius:8px;padding:9px 20px;color:#f87171;font-size:13px;font-weight:700;cursor:pointer;transition:.15s}
 .btn-logout:hover{background:rgba(248,113,113,.25)}
 
-/* ── Login overlay retro dinámico ── */
-#loginOverlay{position:fixed;inset:0;background:#07060f;z-index:9999;display:flex;align-items:center;justify-content:center;overflow:hidden}
-#loginOverlay.hidden{display:none}
-#loginCanvas{position:absolute;inset:0;z-index:1;pointer-events:none}
-/* Grid de perspectiva animado */
-#loginOverlay .lg-grid{position:absolute;inset:0;z-index:2;pointer-events:none;
-  background-image:linear-gradient(rgba(0,229,255,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,.07) 1px,transparent 1px);
-  background-size:52px 52px;
-  transform:perspective(480px) rotateX(54deg) scale(2.4) translateY(8%);
-  transform-origin:50% 100%;
-  animation:lgGrid 5s linear infinite}
-@keyframes lgGrid{from{background-position:0 0}to{background-position:0 52px}}
-/* Línea de horizonte */
-#loginOverlay .lg-horizon{position:absolute;bottom:37%;left:0;right:0;height:1px;z-index:3;pointer-events:none;
-  background:linear-gradient(90deg,transparent,rgba(0,229,255,.55) 20%,rgba(167,139,250,.9) 50%,rgba(0,229,255,.55) 80%,transparent);
-  box-shadow:0 0 22px rgba(0,229,255,.45),0 -6px 40px rgba(167,139,250,.12),0 6px 40px rgba(0,229,255,.12)}
-/* Scanlines sobre el login */
-#loginOverlay .lg-scan{position:absolute;inset:0;z-index:4;pointer-events:none;
-  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.12) 2px,rgba(0,0,0,.12) 3px)}
-/* Invaders flotantes */
-.login-inv{position:absolute;z-index:5;opacity:.18;pointer-events:none;
-  filter:drop-shadow(0 0 7px rgba(0,229,255,.7));
-  animation:loginInvFloat var(--d,5s) ease-in-out infinite var(--dl,0s)}
-@keyframes loginInvFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-16px)}}
-/* Caja principal */
-.login-box{background:rgba(10,8,22,.93);border:1px solid rgba(0,229,255,.35);border-radius:4px;
-  padding:34px 30px 26px;width:340px;position:relative;z-index:10;backdrop-filter:blur(14px);
-  box-shadow:0 0 0 1px rgba(0,229,255,.07),0 0 40px rgba(0,229,255,.07),0 0 80px rgba(167,139,250,.04),0 30px 70px rgba(0,0,0,.85);
-  animation:fadeIn .3s ease}
-.login-box::before{content:'';position:absolute;top:0;left:12%;right:12%;height:1px;
-  background:linear-gradient(90deg,transparent,rgba(0,229,255,.9),rgba(167,139,250,.8),rgba(0,229,255,.9),transparent)}
-.login-box::after{content:'';position:absolute;bottom:0;left:12%;right:12%;height:1px;
-  background:linear-gradient(90deg,transparent,rgba(167,139,250,.5),rgba(0,229,255,.4),rgba(167,139,250,.5),transparent)}
-/* Esquinas decorativas */
-.login-corner{position:absolute;width:14px;height:14px;border-color:rgba(0,229,255,.55);border-style:solid}
-.login-corner.tl{top:7px;left:7px;border-width:2px 0 0 2px}
-.login-corner.tr{top:7px;right:7px;border-width:2px 2px 0 0}
-.login-corner.bl{bottom:7px;left:7px;border-width:0 0 2px 2px}
-.login-corner.br{bottom:7px;right:7px;border-width:0 2px 2px 0}
-.login-title{font-family:'Press Start 2P',monospace;font-size:13px;color:#00e5ff;text-align:center;
-  margin-bottom:4px;letter-spacing:2px;
-  text-shadow:0 0 10px #00e5ff,0 0 26px rgba(0,229,255,.5);
-  animation:loginGlitch 9s steps(1) infinite}
-@keyframes loginGlitch{
-  0%,91%,100%{text-shadow:0 0 10px #00e5ff,0 0 26px rgba(0,229,255,.5);transform:none;clip-path:none}
-  92%{text-shadow:3px 0 #ff4466,-1px 0 #00e5ff;transform:translateX(2px)}
-  93%{text-shadow:-2px 0 #ff4466,2px 0 #a78bfa;transform:translateX(-1px);clip-path:polygon(0 25%,100% 25%,100% 65%,0 65%)}
-  94%{text-shadow:0 0 10px #00e5ff;transform:translateX(1px);clip-path:none}
-  95%{text-shadow:0 0 10px #00e5ff;transform:none}
-}
-.login-sub{font-family:'Press Start 2P',monospace;font-size:7px;color:#374151;text-align:center;
-  margin-bottom:20px;letter-spacing:1.5px}
-/* Fila de stats arcade */
-.login-score-row{display:flex;justify-content:space-between;margin-bottom:20px;
-  padding:8px 4px 12px;border-bottom:1px solid rgba(255,255,255,.05)}
-.login-score-item{text-align:center}
-.ls-lbl{font-family:'Press Start 2P',monospace;font-size:5.5px;color:#2a2545;
-  letter-spacing:.8px;display:block;margin-bottom:5px;text-transform:uppercase}
-.ls-val{font-family:'Press Start 2P',monospace;font-size:9px;color:#a78bfa;display:block;
-  text-shadow:0 0 8px rgba(167,139,250,.5)}
-.login-field{margin-bottom:15px}
-.login-field label{display:block;font-family:'Press Start 2P',monospace;font-size:7px;
-  color:#445566;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
-.login-field input{width:100%;background:rgba(0,0,0,.45);border:1px solid rgba(0,229,255,.2);
-  border-radius:2px;padding:11px 14px;color:#e2e8f0;font-size:14px;outline:none;transition:.2s;font-family:'Segoe UI',sans-serif}
-.login-field input:focus{border-color:rgba(0,229,255,.65);background:rgba(0,229,255,.04);
-  box-shadow:0 0 14px rgba(0,229,255,.1),inset 0 0 8px rgba(0,229,255,.03)}
-.login-btn{width:100%;background:transparent;border:1px solid rgba(0,229,255,.55);border-radius:2px;
-  padding:12px;color:#00e5ff;font-family:'Press Start 2P',monospace;font-size:9px;
-  font-weight:700;cursor:pointer;transition:.15s;margin-top:4px;letter-spacing:1.5px;
-  text-shadow:0 0 8px rgba(0,229,255,.6)}
-.login-btn:hover{background:rgba(0,229,255,.08);box-shadow:0 0 18px rgba(0,229,255,.2);border-color:#00e5ff}
-.login-btn:active{background:rgba(0,229,255,.15)}
-.login-err{font-family:'Press Start 2P',monospace;font-size:8px;color:#ff4466;text-align:center;
-  min-height:20px;margin-top:10px;text-shadow:0 0 8px rgba(255,68,102,.5)}
-/* INSERT COIN parpadeante */
-.login-insert{text-align:center;margin-top:16px;font-family:'Press Start 2P',monospace;font-size:7px;
-  color:#fbbf24;letter-spacing:1px;animation:insertBlink 1.1s steps(1) infinite;
-  text-shadow:0 0 8px rgba(251,191,36,.5)}
-@keyframes insertBlink{0%,49%{opacity:1}50%,100%{opacity:0}}
+</style>
+<link rel="stylesheet" href="/src/client/maestro/login.css">
+<style>
 
 /* ── Filtros de grado ── */
 .filter-bar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;align-items:center}
@@ -814,20 +737,20 @@ body.proj-mode .q-display{font-size:48px;letter-spacing:4px}
 </head>
 <body>
 
-<!-- ── Pantalla de login ── -->
+<!-- â”€â”€ Pantalla de login â”€â”€ -->
 <div id="loginOverlay">
   <canvas id="loginCanvas"></canvas>
   <div class="lg-grid"></div>
   <div class="lg-horizon"></div>
   <div class="lg-scan"></div>
-  <span class="login-inv" style="top:11%;left:7%;--d:4.6s;--dl:0s">👾</span>
-  <span class="login-inv" style="top:18%;right:8%;--d:5.4s;--dl:.8s">👾</span>
-  <span class="login-inv" style="top:66%;left:9%;--d:4.1s;--dl:1.5s">🛸</span>
-  <span class="login-inv" style="top:73%;right:6%;--d:6.2s;--dl:.4s">⭐</span>
-  <span class="login-inv" style="top:40%;left:3%;--d:5.1s;--dl:2s">💫</span>
-  <span class="login-inv" style="top:53%;right:4%;--d:4.9s;--dl:1.2s">🌟</span>
-  <span class="login-inv" style="top:30%;left:14%;--d:6s;--dl:.6s;font-size:11px">✦</span>
-  <span class="login-inv" style="top:80%;left:22%;--d:5.7s;--dl:3s;font-size:11px">✦</span>
+  <span class="login-inv" style="top:11%;left:7%;--d:4.6s;--dl:0s">ðŸ‘¾</span>
+  <span class="login-inv" style="top:18%;right:8%;--d:5.4s;--dl:.8s">ðŸ‘¾</span>
+  <span class="login-inv" style="top:66%;left:9%;--d:4.1s;--dl:1.5s">ðŸ›¸</span>
+  <span class="login-inv" style="top:73%;right:6%;--d:6.2s;--dl:.4s">â­</span>
+  <span class="login-inv" style="top:40%;left:3%;--d:5.1s;--dl:2s">ðŸ’«</span>
+  <span class="login-inv" style="top:53%;right:4%;--d:4.9s;--dl:1.2s">ðŸŒŸ</span>
+  <span class="login-inv" style="top:30%;left:14%;--d:6s;--dl:.6s;font-size:11px">âœ¦</span>
+  <span class="login-inv" style="top:80%;left:22%;--d:5.7s;--dl:3s;font-size:11px">âœ¦</span>
   <div class="login-box">
     <span class="login-corner tl"></span>
     <span class="login-corner tr"></span>
@@ -838,7 +761,7 @@ body.proj-mode .q-display{font-size:48px;letter-spacing:4px}
     <div class="login-score-row">
       <div class="login-score-item">
         <span class="ls-lbl">Top Score</span>
-        <span class="ls-val" id="loginTopScore">──────</span>
+        <span class="ls-val" id="loginTopScore">â”€â”€â”€â”€â”€â”€</span>
       </div>
       <div class="login-score-item">
         <span class="ls-lbl">Stage</span>
@@ -846,20 +769,20 @@ body.proj-mode .q-display{font-size:48px;letter-spacing:4px}
       </div>
       <div class="login-score-item">
         <span class="ls-lbl">Alumnos</span>
-        <span class="ls-val" id="loginAlumnos">──</span>
+        <span class="ls-val" id="loginAlumnos">â”€â”€</span>
       </div>
     </div>
     <div class="login-field">
-      <label for="loginUser">▶ Usuario</label>
+      <label for="loginUser">â–¶ Usuario</label>
       <input type="text" id="loginUser" placeholder="admin" autocomplete="username">
     </div>
     <div class="login-field">
-      <label for="loginPass">▶ Contraseña</label>
-      <input type="password" id="loginPass" placeholder="••••••••" autocomplete="current-password">
+      <label for="loginPass">â–¶ ContraseÃ±a</label>
+      <input type="password" id="loginPass" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" autocomplete="current-password">
     </div>
     <button class="login-btn" onclick="doLogin()">[ ENTRAR ]</button>
     <div id="loginErr" class="login-err"></div>
-    <div class="login-insert">— PRESS START —</div>
+    <div class="login-insert">â€” PRESS START â€”</div>
   </div>
 </div>
 
@@ -869,101 +792,101 @@ body.proj-mode .q-display{font-size:48px;letter-spacing:4px}
   <span class="hdr-star" style="--dur:5s;--dl:3s;--y:80%"></span>
   <div style="display:flex;flex-direction:column;gap:4px;position:relative;z-index:1">
     <div style="display:flex;align-items:center;gap:12px">
-      <span class="hdr-inv" style="--d:3.2s;--dl:0s">👾</span>
-      <span class="hdr-inv" style="--d:3.8s;--dl:.6s">👾</span>
-      <h1>◈ MATH ATTACK ◈</h1>
-      <span class="hdr-inv" style="--d:2.9s;--dl:1.1s">👾</span>
-      <span class="hdr-inv" style="--d:3.5s;--dl:.3s">👾</span>
+      <span class="hdr-inv" style="--d:3.2s;--dl:0s">ðŸ‘¾</span>
+      <span class="hdr-inv" style="--d:3.8s;--dl:.6s">ðŸ‘¾</span>
+      <h1>â—ˆ MATH ATTACK â—ˆ</h1>
+      <span class="hdr-inv" style="--d:2.9s;--dl:1.1s">ðŸ‘¾</span>
+      <span class="hdr-inv" style="--d:3.5s;--dl:.3s">ðŸ‘¾</span>
     </div>
     <div style="font-family:'Press Start 2P',monospace;font-size:7px;color:#445566;letter-spacing:2px">PANEL DEL MAESTRO</div>
   </div>
   <div style="display:flex;align-items:center;gap:20px;position:relative;z-index:1">
-    <a href="/ranking" style="text-decoration:none">🏆 RANKING</a>
+    <a href="/ranking" style="text-decoration:none">ðŸ† RANKING</a>
     <div class="conn-status"><span class="status-dot" id="dot"></span><span id="connTxt">Conectando...</span></div>
   </div>
 </header>
 <div class="container">
   <div class="stats-row">
-    <div class="stat-card"><span class="stat-icon" style="--d:0s">👥</span><div class="val" id="statTotal">0</div><div class="lbl">Jugadores activos</div></div>
-    <div class="stat-card"><span class="stat-icon" style="--d:.4s">⚡</span><div class="val" id="statPlaying">0</div><div class="lbl">Jugando</div></div>
-    <div class="stat-card"><span class="stat-icon" style="--d:.8s">⏸</span><div class="val" id="statPaused">0</div><div class="lbl">En pausa</div></div>
-    <div class="stat-card"><span class="stat-icon" style="--d:1.2s">🏆</span><div class="val" id="statAvgScore">0</div><div class="lbl">Puntaje promedio</div></div>
+    <div class="stat-card"><span class="stat-icon" style="--d:0s">ðŸ‘¥</span><div class="val" id="statTotal">0</div><div class="lbl">Jugadores activos</div></div>
+    <div class="stat-card"><span class="stat-icon" style="--d:.4s">âš¡</span><div class="val" id="statPlaying">0</div><div class="lbl">Jugando</div></div>
+    <div class="stat-card"><span class="stat-icon" style="--d:.8s">â¸</span><div class="val" id="statPaused">0</div><div class="lbl">En pausa</div></div>
+    <div class="stat-card"><span class="stat-icon" style="--d:1.2s">ðŸ†</span><div class="val" id="statAvgScore">0</div><div class="lbl">Puntaje promedio</div></div>
   </div>
 
-  <!-- Estadísticas generales por operación -->
+  <!-- EstadÃ­sticas generales por operaciÃ³n -->
   <div class="op-stats-row">
     <div class="op-card" id="opCard-mult">
-      <span class="op-sym">×</span>
-      <div class="op-name">Multiplicación</div>
-      <div class="op-pct" id="opPct-mult">—</div>
+      <span class="op-sym">Ã—</span>
+      <div class="op-name">MultiplicaciÃ³n</div>
+      <div class="op-pct" id="opPct-mult">â€”</div>
       <div class="op-bar"><div class="op-bar-fill" id="opBar-mult" style="width:0%;background:#34d399"></div></div>
       <div class="op-games" id="opGames-mult">0 partidas</div>
     </div>
     <div class="op-card" id="opCard-add">
       <span class="op-sym">+</span>
       <div class="op-name">Suma</div>
-      <div class="op-pct" id="opPct-add">—</div>
+      <div class="op-pct" id="opPct-add">â€”</div>
       <div class="op-bar"><div class="op-bar-fill" id="opBar-add" style="width:0%;background:#60a5fa"></div></div>
       <div class="op-games" id="opGames-add">0 partidas</div>
     </div>
     <div class="op-card" id="opCard-sub">
-      <span class="op-sym">−</span>
+      <span class="op-sym">âˆ’</span>
       <div class="op-name">Resta</div>
-      <div class="op-pct" id="opPct-sub">—</div>
+      <div class="op-pct" id="opPct-sub">â€”</div>
       <div class="op-bar"><div class="op-bar-fill" id="opBar-sub" style="width:0%;background:#fb923c"></div></div>
       <div class="op-games" id="opGames-sub">0 partidas</div>
     </div>
     <div class="op-card" id="opCard-div">
-      <span class="op-sym">÷</span>
-      <div class="op-name">División</div>
-      <div class="op-pct" id="opPct-div">—</div>
+      <span class="op-sym">Ã·</span>
+      <div class="op-name">DivisiÃ³n</div>
+      <div class="op-pct" id="opPct-div">â€”</div>
       <div class="op-bar"><div class="op-bar-fill" id="opBar-div" style="width:0%;background:#f472b6"></div></div>
       <div class="op-games" id="opGames-div">0 partidas</div>
     </div>
   </div>
 
-  <!-- Barra de pestañas -->
+  <!-- Barra de pestaÃ±as -->
   <div class="tab-bar">
-    <button class="tab-btn active" id="tab-alumnos" draggable="true" onclick="switchTab('alumnos')">👥 Alumnos <span class="tab-badge" id="tabBadgeAlumnos">0</span></button>
-    <button class="tab-btn" id="tab-sesiones" draggable="true" onclick="switchTab('sesiones')">🎮 En Juego <span class="tab-badge" id="tabBadgeSesiones">0</span></button>
-    <button class="tab-btn" id="tab-pruebas" draggable="true" onclick="switchTab('pruebas')">📊 Pruebas</button>
-    <button class="tab-btn" id="tab-ajustes" draggable="true" onclick="switchTab('ajustes')">⚙️ Ajustes</button>
-    <button class="tab-btn" id="tab-conexion" draggable="true" onclick="switchTab('conexion')">🔌 Conexión <span class="tab-badge" id="tabBadgeConexion">0</span></button>
-    <button class="tab-btn" id="tab-transacciones" draggable="true" onclick="switchTab('transacciones')">💰 Transacciones</button>
+    <button class="tab-btn active" id="tab-alumnos" draggable="true" onclick="switchTab('alumnos')">ðŸ‘¥ Alumnos <span class="tab-badge" id="tabBadgeAlumnos">0</span></button>
+    <button class="tab-btn" id="tab-sesiones" draggable="true" onclick="switchTab('sesiones')">ðŸŽ® En Juego <span class="tab-badge" id="tabBadgeSesiones">0</span></button>
+    <button class="tab-btn" id="tab-pruebas" draggable="true" onclick="switchTab('pruebas')">ðŸ“Š Pruebas</button>
+    <button class="tab-btn" id="tab-ajustes" draggable="true" onclick="switchTab('ajustes')">âš™ï¸ Ajustes</button>
+    <button class="tab-btn" id="tab-conexion" draggable="true" onclick="switchTab('conexion')">ðŸ”Œ ConexiÃ³n <span class="tab-badge" id="tabBadgeConexion">0</span></button>
+    <button class="tab-btn" id="tab-transacciones" draggable="true" onclick="switchTab('transacciones')">ðŸ’° Transacciones</button>
   </div>
 
-  <!-- Pestaña: Sesiones activas -->
+  <!-- PestaÃ±a: Sesiones activas -->
   <div class="tab-panel" id="panel-sesiones">
     <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:12px">
       <div class="sort-row">
         <span class="filter-lbl">Ordenar:</span>
         <select class="sort-sel" id="sessionSort" onchange="renderFromState()">
           <option value="name">Nombre</option>
-          <option value="score">Puntaje ↓</option>
+          <option value="score">Puntaje â†“</option>
           <option value="grade">Grado</option>
           <option value="status">Estado</option>
         </select>
         <span class="filter-lbl" style="margin-left:8px">Grado:</span>
         <button class="fchip active" onclick="setSessionFilter('',this)">Todos</button>
-        <button class="fchip" onclick="setSessionFilter('1° Grado',this)">1°</button>
-        <button class="fchip" onclick="setSessionFilter('2° Grado',this)">2°</button>
-        <button class="fchip" onclick="setSessionFilter('3° Grado',this)">3°</button>
-        <button class="fchip" onclick="setSessionFilter('4° Grado',this)">4°</button>
-        <button class="fchip" onclick="setSessionFilter('5° Grado',this)">5°</button>
-        <button class="fchip" onclick="setSessionFilter('6° Grado',this)">6°</button>
+        <button class="fchip" onclick="setSessionFilter('1Â° Grado',this)">1Â°</button>
+        <button class="fchip" onclick="setSessionFilter('2Â° Grado',this)">2Â°</button>
+        <button class="fchip" onclick="setSessionFilter('3Â° Grado',this)">3Â°</button>
+        <button class="fchip" onclick="setSessionFilter('4Â° Grado',this)">4Â°</button>
+        <button class="fchip" onclick="setSessionFilter('5Â° Grado',this)">5Â°</button>
+        <button class="fchip" onclick="setSessionFilter('6Â° Grado',this)">6Â°</button>
       </div>
     <div style="display:flex;gap:7px;flex-wrap:wrap">
-        <button class="btn-announce" onclick="openAnnounce()">📢 Anuncio</button>
-        <button class="btn-grp" onclick="cmdAll('pause')">⏸ Pausar todos</button>
-        <button class="btn-grp" onclick="cmdAll('resume')">▶ Reanudar todos</button>
-        <button class="btn-grp" onclick="cmdAll('end')">🛑 Terminar todos</button>
-        <button class="btn-proj" id="btnProj" onclick="toggleProjector()">📽 Proyector</button>
-        <a class="btn-live" href="/ranking-live" target="_blank">🏆 Ranking Vivo</a>
+        <button class="btn-announce" onclick="openAnnounce()">ðŸ“¢ Anuncio</button>
+        <button class="btn-grp" onclick="cmdAll('pause')">â¸ Pausar todos</button>
+        <button class="btn-grp" onclick="cmdAll('resume')">â–¶ Reanudar todos</button>
+        <button class="btn-grp" onclick="cmdAll('end')">ðŸ›‘ Terminar todos</button>
+        <button class="btn-proj" id="btnProj" onclick="toggleProjector()">ðŸ“½ Proyector</button>
+        <a class="btn-live" href="/ranking-live" target="_blank">ðŸ† Ranking Vivo</a>
       </div>
     </div>
     <div class="session-viewbar">
-      <button class="session-viewbtn active" id="sessionView-individual" onclick="setSessionView('individual')">🧑 Individual <span class="tab-badge" id="sessionViewCountIndividual">0</span></button>
-      <button class="session-viewbtn" id="sessionView-multiplayer" onclick="setSessionView('multiplayer')">🌐 Multijugador <span class="tab-badge" id="sessionViewCountMultiplayer">0</span></button>
+      <button class="session-viewbtn active" id="sessionView-individual" onclick="setSessionView('individual')">ðŸ§‘ Individual <span class="tab-badge" id="sessionViewCountIndividual">0</span></button>
+      <button class="session-viewbtn" id="sessionView-multiplayer" onclick="setSessionView('multiplayer')">ðŸŒ Multijugador <span class="tab-badge" id="sessionViewCountMultiplayer">0</span></button>
     </div>
     <div class="session-pane active" id="sessionPane-individual">
       <div class="sessions-grid" id="grid"><div class="empty"><div class="invader-float"><div class="invader-wrap"><div class="px-f fc"></div><div class="px-f fp"></div></div><div class="invader-lbl">ESPERANDO JUGADORES...</div></div></div></div>
@@ -973,70 +896,70 @@ body.proj-mode .q-display{font-size:48px;letter-spacing:4px}
     </div>
   </div>
 
-  <!-- Pestaña: Alumnos registrados -->
+  <!-- PestaÃ±a: Alumnos registrados -->
   <div class="tab-panel active" id="panel-alumnos">
     <div class="students-header">
-      <div class="students-title">👥 Alumnos Registrados <span id="studentsCount" style="font-size:12px;font-weight:400;color:#64748b;margin-left:6px"></span></div>
+      <div class="students-title">ðŸ‘¥ Alumnos Registrados <span id="studentsCount" style="font-size:12px;font-weight:400;color:#64748b;margin-left:6px"></span></div>
       <div class="students-actions">
-        <button onclick="openAddStudent()" class="btn-reg">➕ Agregar alumno</button>
-        <button onclick="openBulkAureos()" class="btn-bulk">🎁 Dar Áureos</button>
-        <button onclick="exportCSV()" class="btn-bulk" title="Exportar CSV">📊 CSV</button>
-        <button onclick="loadStudents()" class="btn-icon">🔄</button>
-        <button onclick="resetStudentOrder()" class="btn-icon" title="Restablecer orden original">↕ Orden</button>
+        <button onclick="openAddStudent()" class="btn-reg">âž• Agregar alumno</button>
+        <button onclick="openBulkAureos()" class="btn-bulk">ðŸŽ Dar Ãureos</button>
+        <button onclick="exportCSV()" class="btn-bulk" title="Exportar CSV">ðŸ“Š CSV</button>
+        <button onclick="loadStudents()" class="btn-icon">ðŸ”„</button>
+        <button onclick="resetStudentOrder()" class="btn-icon" title="Restablecer orden original">â†• Orden</button>
       </div>
     </div>
     <div class="filter-bar" id="studentFilterBar">
       <span class="filter-lbl">Grado:</span>
       <button class="fchip active" onclick="setStudentFilter('',this)">Todos</button>
-      <button class="fchip" onclick="setStudentFilter('1° Grado',this)">1°</button>
-      <button class="fchip" onclick="setStudentFilter('2° Grado',this)">2°</button>
-      <button class="fchip" onclick="setStudentFilter('3° Grado',this)">3°</button>
-      <button class="fchip" onclick="setStudentFilter('4° Grado',this)">4°</button>
-      <button class="fchip" onclick="setStudentFilter('5° Grado',this)">5°</button>
-      <button class="fchip" onclick="setStudentFilter('6° Grado',this)">6°</button>
+      <button class="fchip" onclick="setStudentFilter('1Â° Grado',this)">1Â°</button>
+      <button class="fchip" onclick="setStudentFilter('2Â° Grado',this)">2Â°</button>
+      <button class="fchip" onclick="setStudentFilter('3Â° Grado',this)">3Â°</button>
+      <button class="fchip" onclick="setStudentFilter('4Â° Grado',this)">4Â°</button>
+      <button class="fchip" onclick="setStudentFilter('5Â° Grado',this)">5Â°</button>
+      <button class="fchip" onclick="setStudentFilter('6Â° Grado',this)">6Â°</button>
     </div>
     <div id="regMsg" class="reg-msg"></div>
     <div id="studentsList" class="students-grid"></div>
   </div>
 
-  <!-- Pestaña: Ajustes -->
+  <!-- PestaÃ±a: Ajustes -->
   <div class="tab-panel" id="panel-ajustes">
 
     <!-- Cambiar credenciales -->
     <div class="ajustes-section">
-      <h3>🔐 Credenciales de Acceso</h3>
-      <p class="aj-current" style="margin-bottom:16px">Usuario actual: <span id="ajCurrentUser">—</span></p>
+      <h3>ðŸ” Credenciales de Acceso</h3>
+      <p class="aj-current" style="margin-bottom:16px">Usuario actual: <span id="ajCurrentUser">â€”</span></p>
 
       <div class="aj-field">
-        <label>Contraseña actual</label>
-        <input type="password" id="ajCurPass" placeholder="Contraseña actual">
+        <label>ContraseÃ±a actual</label>
+        <input type="password" id="ajCurPass" placeholder="ContraseÃ±a actual">
       </div>
       <div class="aj-field">
-        <label>Nuevo usuario (dejar vacío para no cambiar)</label>
+        <label>Nuevo usuario (dejar vacÃ­o para no cambiar)</label>
         <input type="text" id="ajNewUser" placeholder="Nuevo usuario" autocomplete="off">
       </div>
       <div class="aj-field">
-        <label>Nueva contraseña (dejar vacío para no cambiar)</label>
-        <input type="password" id="ajNewPass" placeholder="Nueva contraseña" autocomplete="new-password">
+        <label>Nueva contraseÃ±a (dejar vacÃ­o para no cambiar)</label>
+        <input type="password" id="ajNewPass" placeholder="Nueva contraseÃ±a" autocomplete="new-password">
       </div>
       <div class="aj-field">
-        <label>Confirmar nueva contraseña</label>
-        <input type="password" id="ajNewPass2" placeholder="Repetir nueva contraseña" autocomplete="new-password">
+        <label>Confirmar nueva contraseÃ±a</label>
+        <input type="password" id="ajNewPass2" placeholder="Repetir nueva contraseÃ±a" autocomplete="new-password">
       </div>
       <button class="btn-save-aj" onclick="saveAjustes()">Guardar cambios</button>
       <div id="ajMsg" class="aj-msg"></div>
     </div>
 
-    <!-- Cerrar sesión -->
+    <!-- Cerrar sesiÃ³n -->
     <div class="ajustes-section">
-      <h3>🚪 Sesión</h3>
-      <p style="font-size:13px;color:#64748b;margin-bottom:16px">Cierra la sesión actual. Necesitarás ingresar las credenciales de nuevo.</p>
-      <button class="btn-logout" onclick="logout()">Cerrar sesión</button>
+      <h3>ðŸšª SesiÃ³n</h3>
+      <p style="font-size:13px;color:#64748b;margin-bottom:16px">Cierra la sesiÃ³n actual. NecesitarÃ¡s ingresar las credenciales de nuevo.</p>
+      <button class="btn-logout" onclick="logout()">Cerrar sesiÃ³n</button>
     </div>
 
   </div>
 
-  <!-- Pestaña: Conexión -->
+  <!-- PestaÃ±a: ConexiÃ³n -->
   <div class="tab-panel" id="panel-conexion">
 
     <!-- Stats row -->
@@ -1044,8 +967,8 @@ body.proj-mode .q-display{font-size:48px;letter-spacing:4px}
       <div class="cx-stat"><span class="cv" id="cxTotal">0</span><span class="cl">TOTAL</span></div>
       <div class="cx-stat"><span class="cv" id="cxMaestro">0</span><span class="cl">MAESTRO</span></div>
       <div class="cx-stat"><span class="cv" id="cxPlayers">0</span><span class="cl">JUGADORES</span></div>
-      <div class="cx-stat"><span class="cv" id="cxMsgRate">—</span><span class="cl">MSGS/S ↓</span></div>
-      <div class="cx-stat"><span class="cv" id="cxMsgRateOut">—</span><span class="cl">MSGS/S ↑</span></div>
+      <div class="cx-stat"><span class="cv" id="cxMsgRate">â€”</span><span class="cl">MSGS/S â†“</span></div>
+      <div class="cx-stat"><span class="cv" id="cxMsgRateOut">â€”</span><span class="cl">MSGS/S â†‘</span></div>
     </div>
 
     <!-- Tabla de conexiones -->
@@ -1054,7 +977,7 @@ body.proj-mode .q-display{font-size:48px;letter-spacing:4px}
       <table class="cx-table">
         <thead><tr>
           <th>Tipo</th><th>Nombre</th><th>Grado</th><th>IP</th>
-          <th>Tiempo</th><th>Msgs ↓</th><th>Msgs ↑</th><th>Latencia</th><th>Acción</th>
+          <th>Tiempo</th><th>Msgs â†“</th><th>Msgs â†‘</th><th>Latencia</th><th>AcciÃ³n</th>
         </tr></thead>
         <tbody id="cxTableBody"></tbody>
       </table>
@@ -1062,35 +985,35 @@ body.proj-mode .q-display{font-size:48px;letter-spacing:4px}
 
     <!-- Log de actividad -->
     <div class="cx-log-hdr">
-      <span class="cx-log-title">📋 Registro de actividad</span>
-      <button class="cx-clear-btn" onclick="clearCxLog()">🗑 Limpiar</button>
+      <span class="cx-log-title">ðŸ“‹ Registro de actividad</span>
+      <button class="cx-clear-btn" onclick="clearCxLog()">ðŸ—‘ Limpiar</button>
     </div>
     <div class="cx-log-wrap" id="cxLog"></div>
 
   </div>
 
 
-  <!-- Pestaña: Pruebas -->
+  <!-- PestaÃ±a: Pruebas -->
   <div class="tab-panel" id="panel-pruebas">
 
     <!-- Banner prueba activa -->
     <div class="pr-banner" id="prBanner">
-      <span>📊 PRUEBA EN CURSO</span>
+      <span>ðŸ“Š PRUEBA EN CURSO</span>
       <span id="prBannerInfo" style="color:#94a3b8;font-size:7px"></span>
-      <button class="pr-stop-btn" onclick="stopPrueba()">⏹ DETENER</button>
+      <button class="pr-stop-btn" onclick="stopPrueba()">â¹ DETENER</button>
     </div>
 
-    <!-- Configuración -->
+    <!-- ConfiguraciÃ³n -->
     <div id="prConfig">
-      <div class="pr-section-title">📊 CONFIGURAR SESIÓN DE PRUEBA</div>
+      <div class="pr-section-title">ðŸ“Š CONFIGURAR SESIÃ“N DE PRUEBA</div>
       <div class="pr-config-grid">
         <div class="pr-field">
           <label>GRADO / GRUPO</label>
           <select id="prGrade">
-            <option value="">— Todos los grados —</option>
-            <option>1° Grado</option><option>2° Grado</option>
-            <option>3° Grado</option><option>4° Grado</option>
-            <option>5° Grado</option><option>6° Grado</option>
+            <option value="">â€” Todos los grados â€”</option>
+            <option>1Â° Grado</option><option>2Â° Grado</option>
+            <option>3Â° Grado</option><option>4Â° Grado</option>
+            <option>5Â° Grado</option><option>6Â° Grado</option>
           </select>
         </div>
         <div class="pr-field">
@@ -1101,27 +1024,27 @@ body.proj-mode .q-display{font-size:48px;letter-spacing:4px}
       <div class="pr-field">
         <label>OPERACIONES A EVALUAR</label>
         <div class="pr-ops-grid">
-          <label class="pr-op-chk"><input type="checkbox" id="prOpMult" onchange="prToggleOpSection('mult',this.checked);prUpdateSummary()" checked> ✖️ Multiplicación</label>
-          <label class="pr-op-chk"><input type="checkbox" id="prOpAdd" onchange="prToggleOpSection('add',this.checked);prUpdateSummary()"> ➕ Suma</label>
-          <label class="pr-op-chk"><input type="checkbox" id="prOpSub" onchange="prToggleOpSection('sub',this.checked);prUpdateSummary()"> ➖ Resta</label>
-          <label class="pr-op-chk"><input type="checkbox" id="prOpDiv" onchange="prToggleOpSection('div',this.checked);prUpdateSummary()"> ➗ División</label>
+          <label class="pr-op-chk"><input type="checkbox" id="prOpMult" onchange="prToggleOpSection('mult',this.checked);prUpdateSummary()" checked> âœ–ï¸ MultiplicaciÃ³n</label>
+          <label class="pr-op-chk"><input type="checkbox" id="prOpAdd" onchange="prToggleOpSection('add',this.checked);prUpdateSummary()"> âž• Suma</label>
+          <label class="pr-op-chk"><input type="checkbox" id="prOpSub" onchange="prToggleOpSection('sub',this.checked);prUpdateSummary()"> âž– Resta</label>
+          <label class="pr-op-chk"><input type="checkbox" id="prOpDiv" onchange="prToggleOpSection('div',this.checked);prUpdateSummary()"> âž— DivisiÃ³n</label>
         </div>
       </div>
       <div id="prOpSections"></div>
       <div class="pr-summary" id="prSummary"></div>
-      <button class="pr-start-btn" onclick="startPrueba(this)">▶ INICIAR PRUEBA</button>
+      <button class="pr-start-btn" onclick="startPrueba(this)">â–¶ INICIAR PRUEBA</button>
     </div>
 
     <!-- Resultados en tiempo real -->
     <div id="prResultados" style="display:none">
       <div class="pr-results-hdr">
-        <span>📋 RESULTADOS EN TIEMPO REAL</span>
+        <span>ðŸ“‹ RESULTADOS EN TIEMPO REAL</span>
         <span id="prParticipantes" style="color:#34d399;font-size:10px"></span>
       </div>
       <div style="overflow-x:auto">
         <table class="pr-table">
           <thead id="prThead">
-            <tr><th>Alumno</th><th>Grado</th><th>Progreso</th><th>Precisión</th></tr>
+            <tr><th>Alumno</th><th>Grado</th><th>Progreso</th><th>PrecisiÃ³n</th></tr>
           </thead>
           <tbody id="prTbody"></tbody>
         </table>
@@ -1130,12 +1053,12 @@ body.proj-mode .q-display{font-size:48px;letter-spacing:4px}
       <!-- Alumnos que ya terminaron la prueba -->
       <div id="prFinishedWrap" style="display:none;margin-top:18px">
         <div class="pr-results-hdr" style="margin-bottom:8px">
-          <span>✅ TERMINARON LA PRUEBA</span>
+          <span>âœ… TERMINARON LA PRUEBA</span>
           <span id="prFinishedCount" style="color:#34d399;font-size:10px"></span>
         </div>
         <div style="overflow-x:auto">
           <table class="pr-table">
-            <thead><tr><th>Alumno</th><th>Grado</th><th>Tiempo</th><th>Puntaje</th><th>Precisión</th><th>Correctas</th><th>Estado</th></tr></thead>
+            <thead><tr><th>Alumno</th><th>Grado</th><th>Tiempo</th><th>Puntaje</th><th>PrecisiÃ³n</th><th>Correctas</th><th>Estado</th></tr></thead>
             <tbody id="prFinishedBody"></tbody>
           </table>
         </div>
@@ -1147,13 +1070,13 @@ body.proj-mode .q-display{font-size:48px;letter-spacing:4px}
   <!-- Modal: agregar nuevo alumno -->
   <div class="asm-overlay" id="asmOverlay" onclick="closeAddStudent()"></div>
   <div class="asm-modal" id="asmModal">
-    <h2>➕ Agregar nuevo alumno</h2>
-    <div class="asm-field"><label>Nombre completo</label><input id="asmName" type="text" placeholder="Ej. Juan Pérez" autocomplete="off"></div>
-    <div class="asm-field"><label>Grado escolar</label><select id="asmGrade"><option value="">— Selecciona grado —</option><option>1° Grado</option><option>2° Grado</option><option>3° Grado</option><option>4° Grado</option><option>5° Grado</option><option>6° Grado</option></select></div>
-    <div class="asm-field"><label>Contraseña (4 dígitos)</label><input id="asmPin" type="number" placeholder="0000" min="0" max="9999"></div>
+    <h2>âž• Agregar nuevo alumno</h2>
+    <div class="asm-field"><label>Nombre completo</label><input id="asmName" type="text" placeholder="Ej. Juan PÃ©rez" autocomplete="off"></div>
+    <div class="asm-field"><label>Grado escolar</label><select id="asmGrade"><option value="">â€” Selecciona grado â€”</option><option>1Â° Grado</option><option>2Â° Grado</option><option>3Â° Grado</option><option>4Â° Grado</option><option>5Â° Grado</option><option>6Â° Grado</option></select></div>
+    <div class="asm-field"><label>ContraseÃ±a (4 dÃ­gitos)</label><input id="asmPin" type="number" placeholder="0000" min="0" max="9999"></div>
     <div class="asm-msg" id="asmMsg"></div>
     <div class="asm-actions">
-      <button class="btn-reg" style="flex:1" onclick="registerStudent()">✅ Registrar</button>
+      <button class="btn-reg" style="flex:1" onclick="registerStudent()">âœ… Registrar</button>
       <button class="btn-icon" onclick="closeAddStudent()">Cancelar</button>
     </div>
   </div>
@@ -1161,34 +1084,34 @@ body.proj-mode .q-display{font-size:48px;letter-spacing:4px}
   <!-- Modal: Anuncio al grupo -->
   <div class="big-overlay" id="announceOverlay" onclick="closeAnnounce()"></div>
   <div class="big-modal" id="announceModal" style="display:none">
-    <h2>📢 Enviar anuncio a todos</h2>
+    <h2>ðŸ“¢ Enviar anuncio a todos</h2>
     <div class="bm-field">
-      <label>Mensaje (máx. 200 caracteres)</label>
-      <textarea id="annText" rows="3" maxlength="200" placeholder="Ej. ¡Prepárense para la siguiente ronda!"></textarea>
+      <label>Mensaje (mÃ¡x. 200 caracteres)</label>
+      <textarea id="annText" rows="3" maxlength="200" placeholder="Ej. Â¡PrepÃ¡rense para la siguiente ronda!"></textarea>
     </div>
     <div class="bm-field">
-      <label>Emojis rápidos</label>
+      <label>Emojis rÃ¡pidos</label>
       <div class="bm-emoji-row">
-        <span class="bm-emoji" onclick="addEmoji('🎉')">🎉</span>
-        <span class="bm-emoji" onclick="addEmoji('⏱️')">⏱️</span>
-        <span class="bm-emoji" onclick="addEmoji('🚨')">🚨</span>
-        <span class="bm-emoji" onclick="addEmoji('🏆')">🏆</span>
-        <span class="bm-emoji" onclick="addEmoji('💪')">💪</span>
-        <span class="bm-emoji" onclick="addEmoji('📖')">📖</span>
-        <span class="bm-emoji" onclick="addEmoji('🤫')">🤫</span>
-        <span class="bm-emoji" onclick="addEmoji('👏')">👏</span>
+        <span class="bm-emoji" onclick="addEmoji('ðŸŽ‰')">ðŸŽ‰</span>
+        <span class="bm-emoji" onclick="addEmoji('â±ï¸')">â±ï¸</span>
+        <span class="bm-emoji" onclick="addEmoji('ðŸš¨')">ðŸš¨</span>
+        <span class="bm-emoji" onclick="addEmoji('ðŸ†')">ðŸ†</span>
+        <span class="bm-emoji" onclick="addEmoji('ðŸ’ª')">ðŸ’ª</span>
+        <span class="bm-emoji" onclick="addEmoji('ðŸ“–')">ðŸ“–</span>
+        <span class="bm-emoji" onclick="addEmoji('ðŸ¤«')">ðŸ¤«</span>
+        <span class="bm-emoji" onclick="addEmoji('ðŸ‘')">ðŸ‘</span>
       </div>
     </div>
     <div class="bm-actions">
       <button class="bm-cancel" onclick="closeAnnounce()">Cancelar</button>
-      <button class="bm-save" onclick="sendAnnouncement()">📤 Enviar</button>
+      <button class="bm-save" onclick="sendAnnouncement()">ðŸ“¤ Enviar</button>
     </div>
   </div>
 
-  <!-- Modal: Dar Áureos masivos -->
+  <!-- Modal: Dar Ãureos masivos -->
   <div class="big-overlay" id="bulkOverlay" onclick="closeBulkAureos()"></div>
   <div class="big-modal" id="bulkModal" style="display:none">
-    <h2>🎁 Dar Áureos masivos</h2>
+    <h2>ðŸŽ Dar Ãureos masivos</h2>
     <div class="bm-field">
       <label>Cantidad a dar</label>
       <input id="bulkAmount" type="number" min="1" max="9999" value="50" placeholder="50">
@@ -1197,40 +1120,40 @@ body.proj-mode .q-display{font-size:48px;letter-spacing:4px}
       <label>Destinatarios</label>
       <select id="bulkGrade">
         <option value="">Todos los alumnos</option>
-        <option>1° Grado</option><option>2° Grado</option><option>3° Grado</option>
-        <option>4° Grado</option><option>5° Grado</option><option>6° Grado</option>
+        <option>1Â° Grado</option><option>2Â° Grado</option><option>3Â° Grado</option>
+        <option>4Â° Grado</option><option>5Â° Grado</option><option>6Â° Grado</option>
       </select>
     </div>
     <div id="bulkMsg" style="font-size:12px;min-height:16px;margin-top:2px"></div>
     <div class="bm-actions">
       <button class="bm-cancel" onclick="closeBulkAureos()">Cancelar</button>
-      <button class="bm-save" onclick="saveBulkAureos()">🎁 Dar Áureos</button>
+      <button class="bm-save" onclick="saveBulkAureos()">ðŸŽ Dar Ãureos</button>
     </div>
   </div>
 
-  <!-- Pestaña: Transacciones -->
+  <!-- PestaÃ±a: Transacciones -->
   <div class="tab-panel" id="panel-transacciones">
     <div class="students-header">
-      <div class="students-title">💰 Historial de Áureos</div>
+      <div class="students-title">ðŸ’° Historial de Ãureos</div>
       <div class="students-actions">
         <select id="txStudentFilter" onchange="setTxStudent(this.value)" style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);border-radius:6px;padding:5px 10px;color:#e2e8f0;font-size:12px;outline:none">
-          <option value="">— Todos los alumnos —</option>
+          <option value="">â€” Todos los alumnos â€”</option>
         </select>
-        <input type="date" id="txDateFilter" onchange="loadTransactions()" title="Filtrar por día"
+        <input type="date" id="txDateFilter" onchange="loadTransactions()" title="Filtrar por dÃ­a"
           style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);border-radius:6px;padding:5px 8px;color:#e2e8f0;font-size:12px;outline:none;color-scheme:dark">
-        <button onclick="loadTransactions()" class="btn-icon" title="Actualizar">🔄</button>
-        <button onclick="clearTransactions()" class="cx-clear-btn" style="border-color:rgba(248,113,113,.3);color:#f87171" title="Borrar registros visibles">🗑 Borrar</button>
+        <button onclick="loadTransactions()" class="btn-icon" title="Actualizar">ðŸ”„</button>
+        <button onclick="clearTransactions()" class="cx-clear-btn" style="border-color:rgba(248,113,113,.3);color:#f87171" title="Borrar registros visibles">ðŸ—‘ Borrar</button>
       </div>
     </div>
     <div class="filter-bar" id="txGradeBar">
       <span class="filter-lbl">Grado:</span>
       <button class="fchip active" onclick="setTxGrade('',this)">Todos</button>
-      <button class="fchip" onclick="setTxGrade('1° Grado',this)">1°</button>
-      <button class="fchip" onclick="setTxGrade('2° Grado',this)">2°</button>
-      <button class="fchip" onclick="setTxGrade('3° Grado',this)">3°</button>
-      <button class="fchip" onclick="setTxGrade('4° Grado',this)">4°</button>
-      <button class="fchip" onclick="setTxGrade('5° Grado',this)">5°</button>
-      <button class="fchip" onclick="setTxGrade('6° Grado',this)">6°</button>
+      <button class="fchip" onclick="setTxGrade('1Â° Grado',this)">1Â°</button>
+      <button class="fchip" onclick="setTxGrade('2Â° Grado',this)">2Â°</button>
+      <button class="fchip" onclick="setTxGrade('3Â° Grado',this)">3Â°</button>
+      <button class="fchip" onclick="setTxGrade('4Â° Grado',this)">4Â°</button>
+      <button class="fchip" onclick="setTxGrade('5Â° Grado',this)">5Â°</button>
+      <button class="fchip" onclick="setTxGrade('6Â° Grado',this)">6Â°</button>
     </div>
     <div style="overflow-x:auto;margin-top:4px">
       <table class="cx-table">
@@ -1238,7 +1161,7 @@ body.proj-mode .q-display{font-size:48px;letter-spacing:4px}
           <th>Fecha / Hora</th><th>Alumno</th><th>Motivo</th><th>Monto</th><th>Saldo</th>
         </tr></thead>
         <tbody id="txTableBody">
-          <tr><td colspan="5" style="text-align:center;color:#64748b;padding:20px">Selecciona esta pestaña para cargar.</td></tr>
+          <tr><td colspan="5" style="text-align:center;color:#64748b;padding:20px">Selecciona esta pestaÃ±a para cargar.</td></tr>
         </tbody>
       </table>
     </div>
@@ -1247,19 +1170,19 @@ body.proj-mode .q-display{font-size:48px;letter-spacing:4px}
   <!-- Modal: Historial de alumno -->
   <div class="big-overlay" id="histOverlay" onclick="closeHistory()"></div>
   <div class="big-modal" id="histModal" style="display:none">
-    <h2>📊 <span id="histTitle">Historial</span></h2>
+    <h2>ðŸ“Š <span id="histTitle">Historial</span></h2>
     <div id="histContent"><div style="text-align:center;padding:24px;color:#64748b">Cargando...</div></div>
   </div>
 
-  <!-- Overlay + popup de edición -->
+  <!-- Overlay + popup de ediciÃ³n -->
   <div class="edit-overlay" id="editOverlay" onclick="closePopup()"></div>
   <div class="edit-popup" id="editPopup" style="display:none">
     <div class="ep-title" id="epTitle">Editar</div>
     <input class="ep-input" type="number" id="epInput" min="0" max="9999">
     <select class="ep-input" id="epSelect" style="display:none;cursor:pointer;background:#1e1b4b;color:#e2e8f0;color-scheme:dark">
-      <option value="">— Sin grado —</option>
-      <option>1° Grado</option><option>2° Grado</option><option>3° Grado</option>
-      <option>4° Grado</option><option>5° Grado</option><option>6° Grado</option>
+      <option value="">â€” Sin grado â€”</option>
+      <option>1Â° Grado</option><option>2Â° Grado</option><option>3Â° Grado</option>
+      <option>4Â° Grado</option><option>5Â° Grado</option><option>6Â° Grado</option>
     </select>
     <div class="ep-hint" id="epHint"></div>
     <div class="ep-btns">
@@ -1277,9 +1200,15 @@ body.proj-mode .q-display{font-size:48px;letter-spacing:4px}
 <script src="/src/client/maestro/studentOrdering.js"></script>
 <script src="/src/client/maestro/tabOrdering.js"></script>
 <script src="/src/client/maestro/adminApi.js"></script>
+<script src="/src/client/maestro/bulkAureos.js"></script>
+<script src="/src/client/maestro/projectorControls.js"></script>
+<script src="/src/client/maestro/settingsControls.js"></script>
+<script src="/src/client/maestro/authControls.js"></script>
 <script src="/src/client/maestro/editPopup.js"></script>
 <script src="/src/client/maestro/studentEditActions.js"></script>
+<script src="/src/client/maestro/studentManagement.js"></script>
 <script src="/src/client/maestro/panelSocket.js"></script>
+<script src="/src/client/maestro/announcementControls.js"></script>
 <script src="/src/client/maestro/transactionViews.js"></script>
 <script>
 // ── Definición de poderes (espejo del cliente) ──
@@ -1334,12 +1263,12 @@ let _dragSrcId=null;
 let _isDragging=false;
 // Logros (espejo exacto de server.js ACHIEVEMENTS_DEF)
 const ACHIEVEMENTS_DEF=[
-  {id:'perfect',    icon:'💯', name:'Perfección',    desc:'100% precisión en una partida'},
-  {id:'streak20',   icon:'🔥', name:'Racha ×20',     desc:'20 respuestas seguidas correctas'},
-  {id:'master_mult',icon:'✖️', name:'Maestro ×',     desc:'90%+ acumulado en Multiplicación (mín. 10 resp.)'},
-  {id:'master_add', icon:'➕', name:'Maestro +',     desc:'90%+ acumulado en Suma (mín. 10 resp.)'},
-  {id:'master_sub', icon:'➖', name:'Maestro −',     desc:'90%+ acumulado en Resta (mín. 10 resp.)'},
-  {id:'master_div', icon:'➗', name:'Maestro ÷',     desc:'90%+ acumulado en División (mín. 10 resp.)'},
+  {id:'perfect',    icon:'ðŸ’¯', name:'PerfecciÃ³n',    desc:'100% precisiÃ³n en una partida'},
+  {id:'streak20',   icon:'ðŸ”¥', name:'Racha Ã—20',     desc:'20 respuestas seguidas correctas'},
+  {id:'master_mult',icon:'âœ–ï¸', name:'Maestro Ã—',     desc:'90%+ acumulado en MultiplicaciÃ³n (mÃ­n. 10 resp.)'},
+  {id:'master_add', icon:'âž•', name:'Maestro +',     desc:'90%+ acumulado en Suma (mÃ­n. 10 resp.)'},
+  {id:'master_sub', icon:'âž–', name:'Maestro âˆ’',     desc:'90%+ acumulado en Resta (mÃ­n. 10 resp.)'},
+  {id:'master_div', icon:'âž—', name:'Maestro Ã·',     desc:'90%+ acumulado en DivisiÃ³n (mÃ­n. 10 resp.)'},
 ];
 
 // Sesiones activas
@@ -1384,7 +1313,7 @@ function updateOpStats(opStats){
     const barEl=document.getElementById('opBar-'+op);
     const gamesEl=document.getElementById('opGames-'+op);
     if(!card) return;
-    if(pct===null){ pctEl.textContent='—'; barEl.style.width='0%'; }
+    if(pct===null){ pctEl.textContent='â€”'; barEl.style.width='0%'; }
     else{
       pctEl.textContent=pct+'%';
       pctEl.style.color=pct>=80?'#34d399':pct>=50?'#fbbf24':'#f87171';
@@ -1406,11 +1335,11 @@ function switchTab(name){
   if(name==='transacciones') initTxTab(); else stopTxTab();
 }
 async function cmd(id,action){
-  if(action==='end'&&!confirm('¿Terminar la partida de este jugador?'))return;
+  if(action==='end'&&!confirm('Â¿Terminar la partida de este jugador?'))return;
   try{
     const r=await fetch('/api/cmd/'+action,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(withAdminPassword({action,playerId:id}))});
-    if(!r.ok) showMsg('❌ No se pudo enviar el comando',false);
-  }catch(e){ showMsg('❌ Error de red',false); }
+    if(!r.ok) showMsg('âŒ No se pudo enviar el comando',false);
+  }catch(e){ showMsg('âŒ Error de red',false); }
 }
 
 // ── Alumnos registrados ──
@@ -1461,98 +1390,17 @@ document.addEventListener('keydown',e=>{
 });
 
 // ── Editar Áureos ──
-async function registerStudent(){
-  const name=document.getElementById('asmName').value.trim();
-  const grade=document.getElementById('asmGrade').value.trim();
-  const pin=String(document.getElementById('asmPin').value).padStart(4,'0');
-  const msgEl=document.getElementById('asmMsg');
-  if(!name){ msgEl.textContent='El nombre es requerido'; return; }
-  if(pin.length!==4||isNaN(Number(pin))){ msgEl.textContent='La contraseña debe ser de 4 dígitos'; return; }
-  try{
-    const res=await fetch('/api/players/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,pin,grade})});
-    const data=await res.json();
-    if(data.ok){ closeAddStudent(); showMsg('✅ '+name+' registrado'); loadStudents(); }
-    else { msgEl.textContent='❌ '+data.error; }
-  }catch(e){ msgEl.textContent='Error al registrar'; }
-}
-
-async function deleteStudent(id){
-  if(!confirm('¿Eliminar este alumno y todos sus datos?')) return;
-  const pwd=prompt('Contraseña de administrador:');
-  if(!pwd) return;
-  try{
-    const r=await fetch('/api/players/'+id,{method:'DELETE',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:pwd})});
-    const res=await r.json();
-    if(!res.ok){ alert('Contraseña incorrecta'); return; }
-    loadStudents();
-  }catch(e){}
-}
-
 // ── Filtros de grado ──
-function toggleProjector(){
-  projectorMode=!projectorMode;
-  if(projectorMode) switchTab('sesiones');
-  document.body.classList.toggle('proj-mode',projectorMode);
-  document.getElementById('btnProj').classList.toggle('on',projectorMode);
-}
-
 // ── Comandos grupales ──
 async function cmdAll(action){
   const grade=sessionGradeFilter||'';
   const who=grade||'todos';
-  if(action==='end'&&!confirm(`¿Terminar la partida de ${who}?`)) return;
+  if(action==='end'&&!confirm(`Â¿Terminar la partida de ${who}?`)) return;
   try{
     const r=await fetch('/api/cmd/all',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(withAdminPassword({action,grade}))});
     const d=await r.json();
-    if(!r.ok||!d.ok) showMsg('❌ No se pudo enviar el comando',false);
-  }catch(e){ showMsg('❌ Error de red',false); }
-}
-
-// ── Anuncio ──
-function openAnnounce(){
-  document.getElementById('annText').value='';
-  document.getElementById('announceOverlay').classList.add('open');
-  document.getElementById('announceModal').style.display='block';
-  document.getElementById('annText').focus();
-}
-function closeAnnounce(){
-  document.getElementById('announceOverlay').classList.remove('open');
-  document.getElementById('announceModal').style.display='none';
-}
-function addEmoji(e){ const t=document.getElementById('annText'); t.value+=e; t.focus(); }
-function sendAnnouncement(){
-  const text=document.getElementById('annText').value.trim();
-  if(!text) return;
-  if(!ws||ws.readyState!==WebSocket.OPEN){ showMsg('❌ Sin conexión — el anuncio no se envió',false); return; }
-  ws.send(JSON.stringify({type:'maestro_announcement',text,password:_adminPass}));
-  showMsg('✅ Anuncio enviado');
-  closeAnnounce();
-}
-
-// ── Áureos masivos ──
-function openBulkAureos(){
-  document.getElementById('bulkAmount').value=50;
-  document.getElementById('bulkGrade').value='';
-  document.getElementById('bulkMsg').textContent='';
-  document.getElementById('bulkOverlay').classList.add('open');
-  document.getElementById('bulkModal').style.display='block';
-  document.getElementById('bulkAmount').focus();
-}
-function closeBulkAureos(){
-  document.getElementById('bulkOverlay').classList.remove('open');
-  document.getElementById('bulkModal').style.display='none';
-}
-async function saveBulkAureos(){
-  const amount=parseInt(document.getElementById('bulkAmount').value)||0;
-  const grade=document.getElementById('bulkGrade').value;
-  const msgEl=document.getElementById('bulkMsg');
-  if(amount<1){ msgEl.style.color='#f87171'; msgEl.textContent='Cantidad mínima: 1'; return; }
-  try{
-    const res=await fetch('/api/players/bulk-aureos',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(withAdminPassword({grade,amount}))});
-    const data=await res.json();
-    if(data.ok){ showMsg(`✅ +${amount} Áureos a ${data.count} alumnos`); closeBulkAureos(); }
-    else { msgEl.style.color='#f87171'; msgEl.textContent='Error al procesar'; }
-  }catch(e){ msgEl.style.color='#f87171'; msgEl.textContent='Error de red'; }
+    if(!r.ok||!d.ok) showMsg('âŒ No se pudo enviar el comando',false);
+  }catch(e){ showMsg('âŒ Error de red',false); }
 }
 
 // ── Heatmap de tablas ──
@@ -1579,10 +1427,10 @@ function renderHeatmap(cont, tblStats){
   const cells=Array.from({length:12},(_,i)=>{
     const t=String(i+1);
     const st=tblStats[t];
-    if(!st||st.c+st.w===0) return `<div class="hcell hc-none" title="Tabla ${t}: sin datos"><span class="hn">${t}</span>—</div>`;
+    if(!st||st.c+st.w===0) return `<div class="hcell hc-none" title="Tabla ${t}: sin datos"><span class="hn">${t}</span>â€”</div>`;
     const pct=Math.round(st.c/(st.c+st.w)*100);
     const cls=pct>=80?'hc-good':pct>=50?'hc-ok':'hc-bad';
-    return `<div class="hcell ${cls}" title="Tabla ${t}: ${pct}% (${st.c}✅ ${st.w}❌)"><span class="hn">${t}</span>${pct}%</div>`;
+    return `<div class="hcell ${cls}" title="Tabla ${t}: ${pct}% (${st.c}âœ… ${st.w}âŒ)"><span class="hn">${t}</span>${pct}%</div>`;
   }).join('');
   cont.innerHTML=`<div class="heat-grid">${cells}</div>`;
 }
@@ -1603,7 +1451,7 @@ async function doLogin(){
   const pass=document.getElementById('loginPass').value;
   const errEl=document.getElementById('loginErr');
   errEl.textContent='';
-  if(!username||!pass){ errEl.textContent='Ingresa usuario y contraseña'; return; }
+  if(!username||!pass){ errEl.textContent='Ingresa usuario y contraseÃ±a'; return; }
   try{
     const res=await fetch('/api/maestro/auth',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username,password:pass})});
     const data=await res.json();
@@ -1614,11 +1462,11 @@ async function doLogin(){
       document.getElementById('loginOverlay').classList.add('hidden');
       initPanel();
     } else {
-      errEl.textContent='Usuario o contraseña incorrectos';
+      errEl.textContent='Usuario o contraseÃ±a incorrectos';
       document.getElementById('loginPass').value='';
       document.getElementById('loginUser').focus();
     }
-  }catch(e){ errEl.textContent='Error de conexión'; }
+  }catch(e){ errEl.textContent='Error de conexiÃ³n'; }
 }
 
 document.getElementById('loginUser').addEventListener('keydown',e=>{ if(e.key==='Enter') document.getElementById('loginPass').focus(); });
@@ -1629,42 +1477,8 @@ async function loadAjustes(){
   try{
     const res=await fetch('/api/maestro/config');
     const data=await res.json();
-    document.getElementById('ajCurrentUser').textContent=data.username||'—';
+    document.getElementById('ajCurrentUser').textContent=data.username||'â€”';
   }catch(e){}
-}
-
-async function saveAjustes(){
-  const curPass=document.getElementById('ajCurPass').value;
-  const newUser=document.getElementById('ajNewUser').value.trim();
-  const newPass=document.getElementById('ajNewPass').value;
-  const newPass2=document.getElementById('ajNewPass2').value;
-  const msgEl=document.getElementById('ajMsg');
-  msgEl.className='aj-msg';
-  msgEl.textContent='';
-
-  if(!curPass){ msgEl.className='aj-msg err'; msgEl.textContent='Ingresa tu contraseña actual'; return; }
-  if(!newUser&&!newPass){ msgEl.className='aj-msg err'; msgEl.textContent='Ingresa al menos un campo a cambiar'; return; }
-  if(newPass&&newPass!==newPass2){ msgEl.className='aj-msg err'; msgEl.textContent='Las contraseñas no coinciden'; return; }
-  if(newPass&&newPass.length<4){ msgEl.className='aj-msg err'; msgEl.textContent='La contraseña debe tener al menos 4 caracteres'; return; }
-  if(newUser&&newUser.length<2){ msgEl.className='aj-msg err'; msgEl.textContent='El usuario debe tener al menos 2 caracteres'; return; }
-
-  try{
-    const res=await fetch('/api/maestro/config',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({currentPassword:curPass,newUsername:newUser||undefined,newPassword:newPass||undefined})});
-    const data=await res.json();
-    if(data.ok){
-      msgEl.className='aj-msg ok'; msgEl.textContent='✅ Credenciales actualizadas correctamente';
-      document.getElementById('ajCurPass').value='';
-      document.getElementById('ajNewUser').value='';
-      document.getElementById('ajNewPass').value='';
-      document.getElementById('ajNewPass2').value='';
-      loadAjustes();
-      // Invalidar sesión para que deba iniciar sesión de nuevo con las nuevas credenciales
-      sessionStorage.removeItem('maestroAuth');
-      setTimeout(()=>{ location.reload(); }, 2000);
-    } else {
-      msgEl.className='aj-msg err'; msgEl.textContent='❌ '+(data.error||'Error al guardar');
-    }
-  }catch(e){ msgEl.className='aj-msg err'; msgEl.textContent='Error de conexión'; }
 }
 
 // ── Sincronización de estado de Prueba (examMode es el nombre del campo compartido en el servidor) ──
@@ -1684,13 +1498,13 @@ function updateExamBanner(examMode){
 
 // ── Pruebas ──
 let _pruebaConfig=JSON.parse(sessionStorage.getItem('pruebaConfig')||'null'); // persiste entre refreshes
-const _PR_OP_SYM={mult:'×',add:'+',sub:'−',div:'÷'};
-const _PR_OP_NAME={mult:'Multiplicación',add:'Suma',sub:'Resta',div:'División'};
-const _PR_OP_ICON={mult:'✖️',add:'➕',sub:'➖',div:'➗'};
+const _PR_OP_SYM={mult:'Ã—',add:'+',sub:'âˆ’',div:'Ã·'};
+const _PR_OP_NAME={mult:'MultiplicaciÃ³n',add:'Suma',sub:'Resta',div:'DivisiÃ³n'};
+const _PR_OP_ICON={mult:'âœ–ï¸',add:'âž•',sub:'âž–',div:'âž—'};
 
 // ── Configuración por operación (Feature 1 + 2) ──
 const _PR_OP_LIST=['mult','add','sub','div'];
-const _PR_OP_TITLE={mult:'✖️ Multiplicación — tablas y preguntas por tabla',add:'➕ Suma — cantidad de preguntas y cifras',sub:'➖ Resta — cantidad de preguntas y cifras',div:'➗ División — tablas y preguntas por tabla'};
+const _PR_OP_TITLE={mult:'âœ–ï¸ MultiplicaciÃ³n â€” tablas y preguntas por tabla',add:'âž• Suma â€” cantidad de preguntas y cifras',sub:'âž– Resta â€” cantidad de preguntas y cifras',div:'âž— DivisiÃ³n â€” tablas y preguntas por tabla'};
 const _PR_HAS_TABLES={mult:true,div:true,add:false,sub:false};
 const _PR_QTY_LABEL={mult:'PREG. POR TABLA',div:'PREG. POR TABLA',add:'TOTAL PREGUNTAS',sub:'TOTAL PREGUNTAS'};
 const _PR_QTY_DEFAULT={mult:4,div:3,add:10,sub:10};
@@ -1838,7 +1652,7 @@ function prUpdateSummary(){
   const grade=document.getElementById('prGrade')?.value||'Todos los grados';
   const time=Number(document.getElementById('prTime')?.value)||0;
   const details=ops.map(o=>prDescribeOp(o,cfg[o])).join('<br>');
-  el.innerHTML=`<div class="pr-summary-title">RESUMEN ANTES DE INICIAR</div><strong>${grade}</strong> · <strong>${total}</strong> preguntas · <strong>${time?time+' seg por pregunta':'tiempo libre'}</strong><br>${details}`;
+  el.innerHTML=`<div class="pr-summary-title">RESUMEN ANTES DE INICIAR</div><strong>${grade}</strong> Â· <strong>${total}</strong> preguntas Â· <strong>${time?time+' seg por pregunta':'tiempo libre'}</strong><br>${details}`;
 }
 function prFmtDuration(ms){
   const totalSec=Math.max(0,Math.round((Number(ms)||0)/1000));
@@ -1850,10 +1664,10 @@ async function startPrueba(btn){
   const grade=document.getElementById('prGrade').value;
   const ops=_PR_OP_LIST.filter(o=>document.getElementById('prOp'+o.charAt(0).toUpperCase()+o.slice(1))?.checked);
   const timeLimit=Number(document.getElementById('prTime').value)||0;
-  if(!ops.length){ showMsg('❌ Selecciona al menos una operación'); return; }
+  if(!ops.length){ showMsg('âŒ Selecciona al menos una operaciÃ³n'); return; }
   const opsConfig=_prCollectOpsConfig(ops);
   for(const op of ops){
-    if(_PR_HAS_TABLES[op]&&!opsConfig[op].tables.length){ showMsg(`❌ Selecciona al menos una tabla para ${_PR_OP_NAME[op]}`); return; }
+    if(_PR_HAS_TABLES[op]&&!opsConfig[op].tables.length){ showMsg(`âŒ Selecciona al menos una tabla para ${_PR_OP_NAME[op]}`); return; }
   }
   const total=_prCalcTotal(opsConfig)||20;
   // Compatibilidad: tables/op planos = de la primera operación con tablas (o vacío)
@@ -1869,16 +1683,16 @@ async function startPrueba(btn){
       _pruebaConfig={grade,ops,tables,opsConfig,total,timeLimit};
       sessionStorage.setItem('pruebaConfig',JSON.stringify(_pruebaConfig));
       _updatePruebasUI();
-      showMsg('📊 Prueba iniciada');
-    } else showMsg('❌ '+(d.error||'Error al iniciar'));
-  }catch(e){ showMsg('❌ Error de red'); }
+      showMsg('ðŸ“Š Prueba iniciada');
+    } else showMsg('âŒ '+(d.error||'Error al iniciar'));
+  }catch(e){ showMsg('âŒ Error de red'); }
   finally{ if(btn) btn.disabled=false; }
 }
 async function stopPrueba(){
   try{
     await fetch('/api/exam/stop',{method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({password:_adminPass})});
-    showMsg('🛑 Prueba detenida');
+    showMsg('ðŸ›‘ Prueba detenida');
   }catch(e){}
   _pruebaConfig=null;
   sessionStorage.removeItem('pruebaConfig');
@@ -1891,8 +1705,8 @@ function _updatePruebasUI(){
   document.getElementById('prResultados').style.display=active?'block':'none';
   if(active){
     const gradeStr=_pruebaConfig.grade||'Todos';
-    const opsStr=_pruebaConfig.ops.map(o=>_PR_OP_NAME[o]).join(' · ');
-    document.getElementById('prBannerInfo').textContent=`${gradeStr} · ${opsStr} · ${_pruebaConfig.total} preg.`;
+    const opsStr=_pruebaConfig.ops.map(o=>_PR_OP_NAME[o]).join(' Â· ');
+    document.getElementById('prBannerInfo').textContent=`${gradeStr} Â· ${opsStr} Â· ${_pruebaConfig.total} preg.`;
     _renderPruebasThead();
   }
 }
@@ -1912,15 +1726,15 @@ function _notifyLateExamFinishers(list){
     _examFinishedSeen.add(key);
     if(!_pruebaConfig){
       // Ya no hay vista en vivo de esta prueba — avisar por toast para que no se pierda de vista
-      const label=f.finished===false?'no terminó (se salió antes)':'entregó la prueba (después de detenerla)';
-      showMsg(`📊 ${f.name} ${label}: ${f.pct||0}% · ${f.score||0} pts`);
+      const label=f.finished===false?'no terminÃ³ (se saliÃ³ antes)':'entregÃ³ la prueba (despuÃ©s de detenerla)';
+      showMsg(`ðŸ“Š ${f.name} ${label}: ${f.pct||0}% Â· ${f.score||0} pts`);
     }
   });
 }
 function _renderPruebasThead(){
   if(!_pruebaConfig?.ops?.length) return;
   const opCols=_pruebaConfig.ops.map(o=>`<th>${_PR_OP_ICON[o]} ${_PR_OP_NAME[o]}</th>`).join('');
-  document.getElementById('prThead').innerHTML=`<tr><th>Alumno</th><th>Grado</th><th>Progreso</th><th>Precisión</th>${opCols}</tr>`;
+  document.getElementById('prThead').innerHTML=`<tr><th>Alumno</th><th>Grado</th><th>Progreso</th><th>PrecisiÃ³n</th>${opCols}</tr>`;
 }
 function renderPruebas(){
   if(!_pruebaConfig) return;
@@ -1946,21 +1760,21 @@ function renderPruebas(){
       const pct=s.totalQ>0?Math.round(s.qIndex/s.totalQ*100):0;
       const acc=s.correct+s.wrong>0?Math.round(s.correct/(s.correct+s.wrong)*100):null;
       const accColor=acc===null?'#64748b':acc>=80?'#34d399':acc>=60?'#fbbf24':'#f87171';
-      const progStr=s.status==='finished'?'✅ Terminó':s.paused?`⏸ ${s.qIndex}/${s.totalQ}`:`${s.qIndex}/${s.totalQ} (${pct}%)`;
+      const progStr=s.status==='finished'?'âœ… TerminÃ³':s.paused?`â¸ ${s.qIndex}/${s.totalQ}`:`${s.qIndex}/${s.totalQ} (${pct}%)`;
       const opCols=_pruebaConfig.ops.map(o=>{
         const sym=_PR_OP_SYM[o];
         const od=s.tblResults&&s.tblResults[sym];
         const tot=(od?(od.c||od.correct||0)+(od.w||od.wrong||0):0);
-        if(!tot) return '<td style="color:#334155">—</td>';
+        if(!tot) return '<td style="color:#334155">â€”</td>';
         const opAcc=Math.round((od.c||od.correct||0)/tot*100);
         const opColor=opAcc>=80?'#34d399':opAcc>=60?'#fbbf24':'#f87171';
         return `<td style="color:${opColor};font-weight:700">${opAcc}%<span style="font-size:10px;color:#64748b;margin-left:4px">(${tot})</span></td>`;
       }).join('');
       return `<tr class="${s.status==='finished'?'pr-done':''}">
         <td>${esc(s.name)}</td>
-        <td style="color:#64748b">${s.grade||'—'}</td>
+        <td style="color:#64748b">${s.grade||'â€”'}</td>
         <td>${progStr}</td>
-        <td style="color:${accColor}">${acc!==null?acc+'%':'—'}</td>
+        <td style="color:${accColor}">${acc!==null?acc+'%':'â€”'}</td>
         ${opCols}
       </tr>`;
     }).join('');
@@ -1973,9 +1787,9 @@ function renderPruebas(){
     const color=avg===null?'#64748b':avg>=80?'#34d399':avg>=60?'#fbbf24':'#f87171';
     return `<div class="pr-op-card" style="border-color:${avg===null?'rgba(255,255,255,.08)':color+'44'}">
       <div style="font-size:22px;margin-bottom:4px">${_PR_OP_ICON[o]}</div>
-      <div style="color:${color};font-size:22px;font-weight:700;margin-bottom:2px">${avg!==null?avg+'%':'—'}</div>
+      <div style="color:${color};font-size:22px;font-weight:700;margin-bottom:2px">${avg!==null?avg+'%':'â€”'}</div>
       <div style="font-size:10px;color:#94a3b8;margin-bottom:4px">${_PR_OP_NAME[o]}</div>
-      <div style="font-size:10px;color:#64748b">${t.c} ✓ &nbsp; ${t.w} ✗</div>
+      <div style="font-size:10px;color:#64748b">${t.c} âœ“ &nbsp; ${t.w} âœ—</div>
     </div>`;
   }).join('');
   // Alumnos que ya enviaron save_result durante el examen
@@ -1991,12 +1805,12 @@ function renderPruebas(){
       .map(f=>{
         const pctColor=f.pct>=80?'#34d399':f.pct>=60?'#fbbf24':'#f87171';
         const statusCell=f.finished===false
-          ? '<td style="color:#f87171;font-size:11px">⚠️ No terminó</td>'
-          : '<td style="color:#34d399;font-size:11px">✅ Terminó</td>';
+          ? '<td style="color:#f87171;font-size:11px">âš ï¸ No terminÃ³</td>'
+          : '<td style="color:#34d399;font-size:11px">âœ… TerminÃ³</td>';
         return `<tr class="pr-done">
           <td>${esc(f.name)}</td>
-          <td style="color:#64748b">${f.grade||'—'}</td>
-          <td style="color:#94a3b8">${f.durationMs!=null?prFmtDuration(f.durationMs):'—'}</td>
+          <td style="color:#64748b">${f.grade||'â€”'}</td>
+          <td style="color:#94a3b8">${f.durationMs!=null?prFmtDuration(f.durationMs):'â€”'}</td>
           <td style="font-weight:700">${(f.score||0).toLocaleString()}</td>
           <td style="color:${pctColor};font-weight:700">${f.pct||0}%</td>
           <td>${f.correct||0}/${f.total||0}</td>
@@ -2012,19 +1826,14 @@ function renderPruebas(){
 async function exportCSV(){
   try{
     const res=await fetch(adminUrl('/api/players/export'));
-    if(!res.ok){ showMsg('❌ Error al exportar'); return; }
+    if(!res.ok){ showMsg('âŒ Error al exportar'); return; }
     const blob=await res.blob();
     const url=URL.createObjectURL(blob);
     const a=document.createElement('a');
     a.href=url; a.download='alumnos_math_attack.csv'; a.click();
     URL.revokeObjectURL(url);
-    showMsg('📊 CSV descargado');
-  }catch(e){ showMsg('❌ Error de red'); }
-}
-
-function logout(){
-  sessionStorage.removeItem('maestroAuth');
-  location.reload();
+    showMsg('ðŸ“Š CSV descargado');
+  }catch(e){ showMsg('âŒ Error de red'); }
 }
 
 if(sessionStorage.getItem('maestroAuth')==='1'){
@@ -2036,58 +1845,6 @@ if(sessionStorage.getItem('maestroAuth')==='1'){
 }
 
 // ── Starfield canvas + datos del login ──
-function initLoginCanvas(){
-  const canvas=document.getElementById('loginCanvas');
-  if(!canvas) return;
-  const ctx=canvas.getContext('2d');
-  let stars=[], W, H, raf, running=true;
-  function resize(){ W=canvas.width=window.innerWidth; H=canvas.height=window.innerHeight; }
-  function mkStar(){ return {x:Math.random()*W, y:Math.random()*H, z:Math.random()*W, pz:0}; }
-  function initStars(){
-    stars=Array.from({length:130},()=>{ const s=mkStar(); s.pz=s.z; return s; });
-  }
-  function frame(){
-    if(!running) return;
-    ctx.fillStyle='rgba(7,6,15,.16)';
-    ctx.fillRect(0,0,W,H);
-    stars.forEach(s=>{
-      s.z-=2.8;
-      if(s.z<=0){ Object.assign(s,mkStar()); s.pz=s.z; }
-      const sx=(s.x-W/2)*(W/s.z)+W/2, sy=(s.y-H/2)*(W/s.z)+H/2;
-      const px=(s.x-W/2)*(W/s.pz)+W/2, py=(s.y-H/2)*(W/s.pz)+H/2;
-      s.pz=s.z;
-      const a=Math.max(0,Math.min(.85,(W-s.z)/W*1.3));
-      const sz=Math.max(.4,(W-s.z)/W*2.8);
-      ctx.beginPath(); ctx.strokeStyle=`rgba(0,229,255,${a})`; ctx.lineWidth=sz;
-      ctx.moveTo(px,py); ctx.lineTo(sx,sy); ctx.stroke();
-    });
-    raf=requestAnimationFrame(frame);
-  }
-  window.addEventListener('resize',()=>{ resize(); initStars(); });
-  resize(); initStars(); frame();
-  // Cargar top score y conteo de alumnos
-  Promise.all([
-    fetch('/api/ranking').then(r=>r.json()).catch(()=>[]),
-    fetch(adminUrl('/api/players')).then(r=>r.json()).catch(()=>[])
-  ]).then(([ranking, players])=>{
-    if(ranking.length){
-      const top=Math.max(...ranking.map(r=>r.score||0));
-      const el=document.getElementById('loginTopScore');
-      if(el) el.textContent=String(top).padStart(6,'0');
-    }
-    if(players.length){
-      const el=document.getElementById('loginAlumnos');
-      if(el) el.textContent=String(players.length).padStart(2,'0');
-    }
-  });
-  // Detener al ocultar el overlay
-  new MutationObserver(()=>{
-    if(document.getElementById('loginOverlay').classList.contains('hidden')){
-      running=false; cancelAnimationFrame(raf);
-    }
-  }).observe(document.getElementById('loginOverlay'),{attributes:true,attributeFilter:['class']});
-}
-
 // ── Pestaña Conexión ──────────────────────────────────────────
 let _cxInterval=null, _cxPrevIn=null, _cxPrevOut=null, _cxPrevTs=null;
 
@@ -2149,18 +1906,18 @@ function renderCxTable(conns){
   const now=Date.now();
   tbody.innerHTML=conns.map(c=>{
     const isMaestro=c.type==='maestro';
-    const typeIcon=isMaestro?'<span class="cx-type-m" title="Panel Maestro">🖥</span>':'<span class="cx-type-p" title="Jugador">🎮</span>';
-    const latency=c.latency==null?'<span class="cx-lat na">—</span>'
+    const typeIcon=isMaestro?'<span class="cx-type-m" title="Panel Maestro">ðŸ–¥</span>':'<span class="cx-type-p" title="Jugador">ðŸŽ®</span>';
+    const latency=c.latency==null?'<span class="cx-lat na">â€”</span>'
       :`<span class="cx-lat ${c.latency<30?'good':c.latency<80?'ok':'bad'}">${c.latency}ms</span>`;
     const tiempo=fmtMs(c.connectedMs||0);
     const nombre=esc(c.name);
     const kickBtn=!isMaestro&&c.playerId
-      ?`<button class="cx-kick" onclick="kickPlayer('${esc(c.playerId)}','${esc(c.name)}')">⚡ Kick</button>`
-      :'<span style="color:#334155;font-size:10px">—</span>';
+      ?`<button class="cx-kick" onclick="kickPlayer('${esc(c.playerId)}','${esc(c.name)}')">âš¡ Kick</button>`
+      :'<span style="color:#334155;font-size:10px">â€”</span>';
     return `<tr>
       <td style="text-align:center">${typeIcon}</td>
       <td>${nombre}</td>
-      <td style="color:#64748b;font-size:11px">${esc(c.grade)||'—'}</td>
+      <td style="color:#64748b;font-size:11px">${esc(c.grade)||'â€”'}</td>
       <td style="font-family:monospace;font-size:11px;color:#64748b">${esc(c.ip)}</td>
       <td style="font-family:'Press Start 2P',monospace;font-size:9px;color:#a78bfa">${tiempo}</td>
       <td style="text-align:right;font-family:monospace;color:#34d399">${c.msgIn||0}</td>
@@ -2172,10 +1929,10 @@ function renderCxTable(conns){
 }
 
 function kickPlayer(playerId, name){
-  if(!confirm('¿Desconectar a '+name+'? Se reconectará automáticamente si el juego sigue abierto.')) return;
-  if(!ws||ws.readyState!==WebSocket.OPEN){ showMsg('❌ Sin conexión — no se pudo desconectar a '+name,false); return; }
+  if(!confirm('Â¿Desconectar a '+name+'? Se reconectarÃ¡ automÃ¡ticamente si el juego sigue abierto.')) return;
+  if(!ws||ws.readyState!==WebSocket.OPEN){ showMsg('âŒ Sin conexiÃ³n â€” no se pudo desconectar a '+name,false); return; }
   ws.send(JSON.stringify({type:'kick_player',playerId,password:_adminPass}));
-  appendCxLog({ts:Date.now(),evType:'kick',msg:'⚡ Solicitud de desconexión: '+name});
+  appendCxLog({ts:Date.now(),evType:'kick',msg:'âš¡ Solicitud de desconexiÃ³n: '+name});
 }
 
 function appendCxLog(entry){

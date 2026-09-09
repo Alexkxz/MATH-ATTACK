@@ -307,10 +307,14 @@ function schedulePanelHeartbeat(){ panelBroadcaster.scheduleHeartbeat(); }
 function schedulePanelBroadcast(){ return panelBroadcaster.scheduleBroadcast(); }
 schedulePanelHeartbeat();
 
-const MAESTRO_FRONTEND_JS_ROUTE = '/src/client/maestro/';
-const MAESTRO_FRONTEND_JS_DIR = path.resolve(__dirname, 'src', 'client', 'maestro');
+const MAESTRO_FRONTEND_ASSET_ROUTE = '/src/client/maestro/';
+const MAESTRO_FRONTEND_ASSET_DIR = path.resolve(__dirname, 'src', 'client', 'maestro');
+const MAESTRO_FRONTEND_ASSET_TYPES = {
+  '.css': 'text/css; charset=utf-8',
+  '.js': 'application/javascript; charset=utf-8',
+};
 
-function sendMaestroFrontendJavaScript(res, requestPath) {
+function sendMaestroFrontendAsset(res, requestPath) {
   let decodedPath;
   try {
     decodedPath = decodeURIComponent(requestPath);
@@ -320,21 +324,22 @@ function sendMaestroFrontendJavaScript(res, requestPath) {
     return;
   }
 
-  if (!decodedPath.startsWith(MAESTRO_FRONTEND_JS_ROUTE)) {
+  if (!decodedPath.startsWith(MAESTRO_FRONTEND_ASSET_ROUTE)) {
     res.writeHead(403);
     res.end('');
     return;
   }
 
-  const relativePath = decodedPath.slice(MAESTRO_FRONTEND_JS_ROUTE.length);
-  const filePath = path.resolve(MAESTRO_FRONTEND_JS_DIR, relativePath);
-  const allowedPrefix = MAESTRO_FRONTEND_JS_DIR + path.sep;
+  const relativePath = decodedPath.slice(MAESTRO_FRONTEND_ASSET_ROUTE.length);
+  const filePath = path.resolve(MAESTRO_FRONTEND_ASSET_DIR, relativePath);
+  const allowedPrefix = MAESTRO_FRONTEND_ASSET_DIR + path.sep;
+  const contentType = MAESTRO_FRONTEND_ASSET_TYPES[path.extname(filePath)];
   if (
     !relativePath ||
     relativePath.includes('\0') ||
     path.isAbsolute(relativePath) ||
     !filePath.startsWith(allowedPrefix) ||
-    path.extname(filePath) !== '.js'
+    !contentType
   ) {
     res.writeHead(403);
     res.end('');
@@ -342,16 +347,16 @@ function sendMaestroFrontendJavaScript(res, requestPath) {
   }
 
   try {
-    const realBaseDir = fs.realpathSync(MAESTRO_FRONTEND_JS_DIR);
+    const realBaseDir = fs.realpathSync(MAESTRO_FRONTEND_ASSET_DIR);
     const realFilePath = fs.realpathSync(filePath);
     if (!realFilePath.startsWith(realBaseDir + path.sep)) {
       res.writeHead(403);
       res.end('');
       return;
     }
-    const js = fs.readFileSync(realFilePath);
-    res.writeHead(200, { 'Content-Type': 'application/javascript; charset=utf-8' });
-    res.end(js);
+    const asset = fs.readFileSync(realFilePath);
+    res.writeHead(200, { 'Content-Type': contentType });
+    res.end(asset);
   } catch (e) {
     res.writeHead(404);
     res.end('');
@@ -369,9 +374,9 @@ const server=http.createServer((req,res)=>{
     return;
   }
 
-  // ── JavaScript frontend del maestro (directorio restringido) ──
-  if(req.method==='GET'&&url.startsWith(MAESTRO_FRONTEND_JS_ROUTE)){
-    sendMaestroFrontendJavaScript(res,url);
+  // ── Assets frontend del maestro (directorio y extensiones restringidos) ──
+  if(req.method==='GET'&&url.startsWith(MAESTRO_FRONTEND_ASSET_ROUTE)){
+    sendMaestroFrontendAsset(res,url);
     return;
   }
 

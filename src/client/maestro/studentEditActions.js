@@ -13,7 +13,6 @@ function openAureosEdit(btn){
     }catch(e){ showMsg('Error al actualizar Áureos',false); }
   });
 }
-
 // ── Cambiar PIN ──
 function openPinEdit(btn){
   const sid=btn.dataset.sid;
@@ -130,19 +129,4 @@ function openPowerEdit(tile){
       }
     }catch(e){ showMsg('Error al actualizar poder',false); }
   });
-}
-
-// ── Registrar y eliminar alumnos ──
-function openAddStudent(){
-  document.getElementById('asmName').value='';
-  document.getElementById('asmGrade').value='';
-  document.getElementById('asmPin').value='';
-  document.getElementById('asmMsg').textContent='';
-  document.getElementById('asmOverlay').classList.add('open');
-  document.getElementById('asmModal').style.display='block';
-  document.getElementById('asmName').focus();
-}
-function closeAddStudent(){
-  document.getElementById('asmOverlay').classList.remove('open');
-  document.getElementById('asmModal').style.display='none';
 }
