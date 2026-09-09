@@ -1,0 +1,24 @@
+/* ── Modales grandes ── */
+.big-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:700}
+.big-overlay.open{display:block}
+.big-modal{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#1a1730;border:1px solid rgba(167,139,250,.4);border-radius:18px;padding:28px 24px;z-index:800;box-shadow:0 24px 64px rgba(0,0,0,.7);width:min(95vw,520px);max-height:85vh;overflow-y:auto}
+.big-modal h2{font-size:17px;font-weight:800;color:#a78bfa;margin-bottom:18px;display:flex;align-items:center;gap:8px}
+.bm-field{margin-bottom:14px}
+.bm-field label{display:block;font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:.6px;margin-bottom:5px}
+.bm-field input,.bm-field select,.bm-field textarea{width:100%;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);border-radius:9px;padding:10px 14px;color:#e2e8f0;font-size:14px;outline:none;transition:.15s;resize:vertical;font-family:inherit}
+.bm-field input:focus,.bm-field select:focus,.bm-field textarea:focus{border-color:#a78bfa;background:rgba(167,139,250,.08)}
+.bm-field select option{background:#1a1730;color:#e2e8f0}
+.bm-emoji-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.bm-emoji{font-size:22px;cursor:pointer;padding:4px 6px;border-radius:8px;transition:.15s;border:1px solid transparent}
+.bm-emoji:hover{background:rgba(167,139,250,.15);border-color:rgba(167,139,250,.3)}
+.bm-actions{display:flex;gap:8px;margin-top:18px}
+.bm-save{flex:1;background:linear-gradient(135deg,#7c3aed,#a855f7);border:none;border-radius:10px;padding:11px;color:#fff;font-weight:700;font-size:14px;cursor:pointer;transition:.15s}
+.bm-save:hover{opacity:.85}
+.bm-cancel{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:11px 18px;color:#94a3b8;font-size:14px;cursor:pointer}
+.bm-cancel:hover{background:rgba(255,255,255,.12)}
+/* ── Historial ── */
+.hist-table{width:100%;border-collapse:collapse;font-size:12px;margin-top:8px}
+.hist-table th{padding:6px 8px;text-align:left;color:#64748b;font-size:10px;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid rgba(255,255,255,.07)}
+.hist-table td{padding:7px 8px;border-bottom:1px solid rgba(255,255,255,.05);color:#cbd5e1}
+.hist-table tr:hover td{background:rgba(255,255,255,.03)}
+.hist-pct.g{color:#34d399}.hist-pct.y{color:#fbbf24}.hist-pct.r{color:#f87171}

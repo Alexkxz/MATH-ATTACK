@@ -9,17 +9,9 @@
 </style>
 <script src="/chart.umd.min.js"></script>
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Segoe UI',sans-serif;background:#07060f;color:#e2e8f0;min-height:100vh;
-  background-image:radial-gradient(ellipse 80% 60% at 20% 10%,rgba(80,0,160,.18) 0%,transparent 60%),
-                   radial-gradient(ellipse 60% 50% at 80% 90%,rgba(0,180,255,.08) 0%,transparent 60%)}
-/* Scanlines CRT */
-body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9000;
-  background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,.09) 3px,rgba(0,0,0,.09) 4px)}
-/* Vignette CRT */
-body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:8999;
-  background:radial-gradient(ellipse 130% 110% at 50% 50%,transparent 50%,rgba(0,0,0,.55) 100%)}
-header{background:#07060f;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;
+</style>
+<link rel="stylesheet" href="/src/client/maestro/crtFoundation.css">
+<style>header{background:#07060f;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;
   border-bottom:2px solid #00e5ff;box-shadow:0 0 24px rgba(0,229,255,.2),0 2px 0 #00e5ff}
 header h1{font-family:'Press Start 2P',monospace;font-size:12px;color:#00e5ff;letter-spacing:1px;
   text-shadow:0 0 8px #00e5ff,0 0 20px rgba(0,229,255,.5)}
@@ -185,18 +177,9 @@ body.proj-mode .mp-rooms{grid-template-columns:repeat(auto-fill,minmax(300px,1fr
 .btn-reg:hover{opacity:.85}
 .btn-icon{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:7px 12px;color:#94a3b8;font-size:12px;cursor:pointer;transition:.15s}
 .btn-icon:hover{background:rgba(255,255,255,.12);color:#e2e8f0}
-.asm-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:199;display:none}
-.asm-overlay.open{display:block}
-.asm-modal{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#1e1b2e;border:1px solid rgba(167,139,250,.35);border-radius:16px;padding:28px 24px;width:340px;z-index:200;box-shadow:0 24px 60px rgba(0,0,0,.6);display:none}
-.asm-modal h2{color:#a78bfa;font-size:16px;font-weight:700;margin-bottom:20px}
-.asm-field{margin-bottom:14px}
-.asm-field label{display:block;font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:.6px;margin-bottom:5px}
-.asm-field input,.asm-field select{width:100%;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:9px 12px;color:#e2e8f0;font-size:14px;outline:none;transition:.15s;appearance:none}
-.asm-field input:focus,.asm-field select:focus{border-color:#a78bfa;background:rgba(167,139,250,.08)}
-.asm-field select option{background:#1e1b2e;color:#e2e8f0}
-.asm-actions{display:flex;gap:8px;margin-top:20px}
-.asm-msg{font-size:12px;min-height:16px;margin-top:4px}
-.reg-msg{font-size:11px;min-height:16px;color:#34d399;margin-bottom:10px}
+</style>
+<link rel="stylesheet" href="/src/client/maestro/addStudentModal.css">
+<style>.reg-msg{font-size:11px;min-height:16px;color:#34d399;margin-bottom:10px}
 .students-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px}
 .sca{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:14px;padding:14px;transition:border-color .2s}
 .sca:hover{border-color:rgba(167,139,250,.3)}
@@ -231,20 +214,9 @@ body.proj-mode .mp-rooms{grid-template-columns:repeat(auto-fill,minmax(300px,1fr
 .ep-input:focus{border-color:#a78bfa}
 .ep-hint{font-size:10px;color:#4b5563;text-align:center;margin-top:5px}
 .ep-btns{display:flex;gap:7px;margin-top:12px}
-.ep-save{flex:1;background:linear-gradient(135deg,#7c3aed,#a855f7);border:none;border-radius:8px;padding:8px;color:#fff;font-weight:700;font-size:13px;cursor:pointer}
-.ep-cancel{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:8px 14px;color:#94a3b8;font-size:13px;cursor:pointer}
-.ep-cancel:hover{background:rgba(255,255,255,.12)}
-
-/* ── Pestaña de Ajustes ── */
-.ajustes-section{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:24px;margin-bottom:16px;max-width:480px}
-.ajustes-section h3{font-size:13px;font-weight:700;color:#a78bfa;margin-bottom:16px;display:flex;align-items:center;gap:8px}
-.aj-field{margin-bottom:14px}
-.aj-field label{display:block;font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px}
-.aj-field input{width:100%;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:9px 12px;color:#e2e8f0;font-size:14px;outline:none;transition:.2s}
-.aj-field input:focus{border-color:#a78bfa;background:rgba(167,139,250,.08)}
-.aj-current{font-size:12px;color:#64748b;margin-top:4px}
-.aj-current span{color:#94a3b8;font-weight:600}
-.btn-save-aj{background:linear-gradient(135deg,#7c3aed,#a855f7);border:none;border-radius:8px;padding:9px 20px;color:#fff;font-size:13px;font-weight:700;cursor:pointer;transition:.15s;margin-top:4px}
+.ep-save{flex:1;background:linear-gradient(135deg,#7c3aed,#a855f7);border:none;border-radius:8px;pa</style>
+<link rel="stylesheet" href="/src/client/maestro/editPopup.css">
+<style>pointer;transition:.15s;margin-top:4px}
 .btn-save-aj:hover{opacity:.85}
 .aj-msg{font-size:12px;min-height:18px;margin-top:10px}
 .aj-msg.ok{color:#34d399}
@@ -286,31 +258,9 @@ body.proj-mode .mp-rooms{grid-template-columns:repeat(auto-fill,minmax(300px,1fr
 .hcell.hc-good{background:rgba(52,211,153,.12);color:#34d399;border-color:rgba(52,211,153,.25)}
 .hcell.hc-ok{background:rgba(251,191,36,.12);color:#fbbf24;border-color:rgba(251,191,36,.25)}
 .hcell.hc-bad{background:rgba(248,113,113,.12);color:#f87171;border-color:rgba(248,113,113,.25)}
-/* ── Modales grandes ── */
-.big-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:700}
-.big-overlay.open{display:block}
-.big-modal{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#1a1730;border:1px solid rgba(167,139,250,.4);border-radius:18px;padding:28px 24px;z-index:800;box-shadow:0 24px 64px rgba(0,0,0,.7);width:min(95vw,520px);max-height:85vh;overflow-y:auto}
-.big-modal h2{font-size:17px;font-weight:800;color:#a78bfa;margin-bottom:18px;display:flex;align-items:center;gap:8px}
-.bm-field{margin-bottom:14px}
-.bm-field label{display:block;font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:.6px;margin-bottom:5px}
-.bm-field input,.bm-field select,.bm-field textarea{width:100%;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);border-radius:9px;padding:10px 14px;color:#e2e8f0;font-size:14px;outline:none;transition:.15s;resize:vertical;font-family:inherit}
-.bm-field input:focus,.bm-field select:focus,.bm-field textarea:focus{border-color:#a78bfa;background:rgba(167,139,250,.08)}
-.bm-field select option{background:#1a1730;color:#e2e8f0}
-.bm-emoji-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
-.bm-emoji{font-size:22px;cursor:pointer;padding:4px 6px;border-radius:8px;transition:.15s;border:1px solid transparent}
-.bm-emoji:hover{background:rgba(167,139,250,.15);border-color:rgba(167,139,250,.3)}
-.bm-actions{display:flex;gap:8px;margin-top:18px}
-.bm-save{flex:1;background:linear-gradient(135deg,#7c3aed,#a855f7);border:none;border-radius:10px;padding:11px;color:#fff;font-weight:700;font-size:14px;cursor:pointer;transition:.15s}
-.bm-save:hover{opacity:.85}
-.bm-cancel{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:11px 18px;color:#94a3b8;font-size:14px;cursor:pointer}
-.bm-cancel:hover{background:rgba(255,255,255,.12)}
-/* ── Historial ── */
-.hist-table{width:100%;border-collapse:collapse;font-size:12px;margin-top:8px}
-.hist-table th{padding:6px 8px;text-align:left;color:#64748b;font-size:10px;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid rgba(255,255,255,.07)}
-.hist-table td{padding:7px 8px;border-bottom:1px solid rgba(255,255,255,.05);color:#cbd5e1}
-.hist-table tr:hover td{background:rgba(255,255,255,.03)}
-.hist-pct.g{color:#34d399}.hist-pct.y{color:#fbbf24}.hist-pct.r{color:#f87171}
-/* ── Pestañas ── */
+</style>
+<link rel="stylesheet" href="/src/client/maestro/bigModalsHistory.css">
+<style>/* ── Pestañas ── */
 .tab-bar{display:flex;gap:0;border-bottom:2px solid rgba(255,255,255,.08);margin-bottom:20px}
 .tab-btn{background:none;border:none;border-bottom:3px solid transparent;margin-bottom:-2px;padding:10px 22px;font-size:14px;font-weight:700;color:#64748b;cursor:pointer;transition:color .15s,border-color .15s;display:flex;align-items:center;gap:7px;white-space:nowrap}
 .tab-btn:hover{color:#a78bfa}
@@ -549,13 +499,9 @@ body.proj-mode .q-display{font-size:48px;letter-spacing:4px}
 
 /* ── Grilla de selección de tablas (usada por la pestaña Pruebas) ── */
 .em-tables-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:5px;margin-top:6px}
-.em-tbl-btn{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:3px;
-  padding:6px 3px;font-family:'Press Start 2P',monospace;font-size:8px;color:#374151;
-  cursor:pointer;text-align:center;transition:.15s}
-.em-tbl-btn.sel{background:rgba(251,191,36,.15);border-color:rgba(251,191,36,.5);color:#fbbf24;
-  text-shadow:0 0 6px rgba(251,191,36,.4)}
-.btn-live{background:rgba(0,229,255,.1);border:1px solid rgba(0,229,255,.25);border-radius:8px;
-  padding:7px 14px;color:#00e5ff;font-size:12px;font-weight:700;cursor:pointer;transition:.15s;text-decoration:none}
+.em-tbl-btn{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,</style>
+<link rel="stylesheet" href="/src/client/maestro/modalRetroOverrides.css">
+<style>ff;font-size:12px;font-weight:700;cursor:pointer;transition:.15s;text-decoration:none}
 .btn-live:hover{background:rgba(0,229,255,.2)}
 
 /* ── Pestaña Pruebas ── */
@@ -613,13 +559,9 @@ body.proj-mode .q-display{font-size:48px;letter-spacing:4px}
 .hist-chart-title{font-family:'Press Start 2P',monospace;font-size:7px;color:#445566;
   letter-spacing:.8px;margin-bottom:10px}
 
-/* Scrollbar retro */
-::-webkit-scrollbar{width:6px;height:6px}
-::-webkit-scrollbar-track{background:#07060f}
-::-webkit-scrollbar-thumb{background:#a78bfa;border-radius:2px}
-::-webkit-scrollbar-thumb:hover{background:#00e5ff}
-
-/* ── Drag & drop de alumnos ── */
+</style>
+<link rel="stylesheet" href="/src/client/maestro/scrollbarWebkit.css">
+<style>/* ── Drag & drop de alumnos ── */
 .sc-drag-handle{color:rgba(255,255,255,.2);cursor:grab;padding:0 3px;font-size:14px;
   flex-shrink:0;transition:color .15s;line-height:1;user-select:none}
 .sc-drag-handle:hover{color:rgba(167,139,250,.6)}

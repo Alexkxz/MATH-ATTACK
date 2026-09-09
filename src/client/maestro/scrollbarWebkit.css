@@ -1,0 +1,6 @@
+/* Scrollbar retro */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:#07060f}
+::-webkit-scrollbar-thumb{background:#a78bfa;border-radius:2px}
+::-webkit-scrollbar-thumb:hover{background:#00e5ff}
+

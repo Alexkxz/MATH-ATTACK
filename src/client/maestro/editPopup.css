@@ -1,0 +1,14 @@
+/* ── Popup de edición ── */
+.edit-overlay{display:none;position:fixed;inset:0;z-index:500}
+.edit-overlay.open{display:block}
+.edit-popup{position:fixed;z-index:600;background:#1a1730;border:1px solid rgba(167,139,250,.5);border-radius:14px;padding:16px;min-width:210px;box-shadow:0 12px 40px rgba(0,0,0,.6);animation:fadeIn .15s ease}
+@keyframes fadeIn{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
+.ep-title{font-size:13px;font-weight:700;color:#a78bfa;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.ep-input{width:100%;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);border-radius:8px;padding:8px 12px;color:#e2e8f0;font-size:16px;text-align:center;outline:none;transition:.15s}
+.ep-input:focus{border-color:#a78bfa}
+.ep-hint{font-size:10px;color:#4b5563;text-align:center;margin-top:5px}
+.ep-btns{display:flex;gap:7px;margin-top:12px}
+.ep-save{flex:1;background:linear-gradient(135deg,#7c3aed,#a855f7);border:none;border-radius:8px;padding:8px;color:#fff;font-weight:700;font-size:13px;cursor:pointer}
+.ep-cancel{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:8px 14px;color:#94a3b8;font-size:13px;cursor:pointer}
+.ep-cancel:hover{background:rgba(255,255,255,.12)}
+

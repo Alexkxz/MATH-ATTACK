@@ -1,0 +1,7 @@
+/* Modales retro */
+.big-modal{background:#0c0a1a;border-color:rgba(0,229,255,.35);border-radius:6px}
+.big-modal h2{color:#00e5ff;text-shadow:0 0 8px rgba(0,229,255,.4)}
+.asm-modal{background:#0c0a1a;border-color:rgba(167,139,250,.35);border-radius:6px}
+.asm-modal h2{color:#a78bfa}
+.edit-popup{background:#0c0a1a;border-color:rgba(0,229,255,.4);border-radius:4px}
+.ep-title{color:#00e5ff;text-shadow:0 0 6px rgba(0,229,255,.3)}
