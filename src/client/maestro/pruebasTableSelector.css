@@ -1,0 +1,7 @@
+/* ── Grilla de selección de tablas (usada por la pestaña Pruebas) ── */
+.em-tables-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:5px;margin-top:6px}
+.em-tbl-btn{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:3px;
+  padding:6px 3px;font-family:'Press Start 2P',monospace;font-size:8px;color:#374151;
+  cursor:pointer;text-align:center;transition:.15s}
+.em-tbl-btn.sel{background:rgba(251,191,36,.15);border-color:rgba(251,191,36,.5);color:#fbbf24;
+  text-shadow:0 0 6px rgba(251,191,36,.4)}

@@ -1,0 +1,64 @@
+.sessions-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px}
+.session-card{background:rgba(255,255,255,.04);border:2px solid rgba(255,255,255,.08);border-radius:14px;padding:16px;transition:border-color .2s}
+.session-card.playing{border-color:rgba(52,211,153,.4)}
+.session-card.paused{border-color:rgba(251,191,36,.4)}
+.session-card.finished{border-color:rgba(248,113,113,.3);opacity:.7}
+.s-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
+.s-name{font-size:16px;font-weight:700}
+.s-grade{font-size:11px;color:#94a3b8;background:rgba(255,255,255,.06);padding:2px 8px;border-radius:99px}
+.s-badge{font-size:10px;font-weight:700;padding:3px 8px;border-radius:99px}
+.badge-solo{background:rgba(167,139,250,.2);color:#a78bfa}
+.badge-duel{background:rgba(251,191,36,.2);color:#fbbf24}
+.badge-online{background:rgba(96,165,250,.2);color:#60a5fa}
+.badge-paused{background:rgba(251,191,36,.3);color:#fbbf24}
+.s-body{display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:12px;margin-bottom:12px}
+.s-item{background:rgba(255,255,255,.04);padding:6px 10px;border-radius:8px}
+.s-item .k{color:#94a3b8;font-size:10px;text-transform:uppercase;letter-spacing:.5px}
+.s-item .v{color:#e2e8f0;font-weight:700;font-size:14px;margin-top:2px}
+.progress-blocks{display:flex;gap:3px;margin-bottom:12px}
+.pb{flex:1;height:8px;border-radius:3px;background:rgba(255,255,255,.08);transition:background .3s}
+.pb.filled{background:linear-gradient(90deg,#a78bfa,#60a5fa)}
+.s-actions{display:flex;gap:8px}
+.btn{padding:7px 14px;border-radius:8px;border:none;cursor:pointer;font-size:12px;font-weight:700;transition:all .15s}
+.btn-pause{background:rgba(251,191,36,.15);color:#fbbf24;border:1px solid rgba(251,191,36,.3)}
+.btn-pause:hover{background:rgba(251,191,36,.3)}
+.btn-resume{background:rgba(52,211,153,.15);color:#34d399;border:1px solid rgba(52,211,153,.3)}
+.btn-resume:hover{background:rgba(52,211,153,.3)}
+.btn-end{background:rgba(248,113,113,.15);color:#f87171;border:1px solid rgba(248,113,113,.3)}
+.btn-end:hover{background:rgba(248,113,113,.3)}
+.empty{text-align:center;padding:60px;color:#4b5563}
+.empty span{font-size:48px;display:block;margin-bottom:12px}
+.conn-status{display:flex;align-items:center;gap:6px;font-size:12px;color:#94a3b8}
+.flash-correct{border-color:rgba(52,211,153,.85)!important;box-shadow:0 0 12px rgba(52,211,153,.25)!important;}
+.flash-wrong{border-color:rgba(248,113,113,.85)!important;box-shadow:0 0 12px rgba(248,113,113,.25)!important;}
+.q-display{text-align:center;background:rgba(167,139,250,.1);border:1px solid rgba(167,139,250,.2);border-radius:10px;padding:10px 8px;margin-bottom:8px;font-size:30px;font-weight:800;color:#e2e8f0;letter-spacing:1px;}
+.q-display.flash-c{background:rgba(52,211,153,.15);border-color:rgba(52,211,153,.4);color:#34d399;}
+.q-display.flash-w{background:rgba(248,113,113,.12);border-color:rgba(248,113,113,.4);color:#f87171;}
+.time-mini{height:4px;background:rgba(255,255,255,.08);border-radius:2px;margin-bottom:8px;overflow:hidden;}
+.time-mini-fill{height:100%;border-radius:2px;transition:width .4s linear;}
+.lives-row{font-size:15px;letter-spacing:2px;}
+.streak-badge{background:rgba(251,191,36,.15);border:1px solid rgba(251,191,36,.25);border-radius:6px;padding:2px 7px;font-size:11px;color:#fbbf24;font-weight:700;margin-left:4px;}
+
+/* ── Tarjeta "En Juego" — avatar + anillo de progreso ── */
+.sc2-top{display:flex;gap:12px;align-items:flex-start;margin-bottom:10px}
+.sc2-avatar-col{display:flex;flex-direction:column;align-items:center;gap:4px;flex-shrink:0}
+.sc2-avatar-wrap{position:relative;width:60px;height:60px;flex-shrink:0}
+.sc2-ring{position:absolute;inset:0}
+.sc2-ring-bg{fill:none;stroke:rgba(255,255,255,.08);stroke-width:4}
+.sc2-ring-fill{fill:none;stroke-width:4;stroke-linecap:round;transition:stroke-dasharray .5s ease,stroke .3s}
+.sc2-avatar-inner{position:absolute;inset:7px;border-radius:50%;overflow:hidden;background:#0d0820;display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,.08)}
+.sc2-avatar-inner svg{width:100%;height:100%}
+.sc2-status-dot{position:absolute;bottom:-2px;right:-2px;width:16px;height:16px;border-radius:50%;border:2px solid #0c0a1a;display:flex;align-items:center;justify-content:center;font-size:8px;background:#1a1730}
+.sc2-qprog{font-family:'Press Start 2P',monospace;font-size:8px;color:#64748b;letter-spacing:.5px}
+.sc2-info{flex:1;min-width:0}
+.sc2-name-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.sc2-badges{display:flex;gap:5px;flex-wrap:wrap;margin:5px 0 7px}
+.sc2-score{font-family:'Press Start 2P',monospace;font-size:19px;color:#fbbf24;text-shadow:0 0 10px rgba(251,191,36,.45);line-height:1}
+.sc2-score-lbl{font-size:9px;color:#94a3b8;margin-left:5px;text-shadow:none;font-family:inherit}
+.sc2-stats-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.sc2-stat{background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.07);border-radius:3px;padding:3px 7px;font-family:'Press Start 2P',monospace;font-size:9px;color:#cbd5e1;display:inline-flex;align-items:center;gap:4px}
+.sc2-stat.ok{color:#34d399}
+.sc2-stat.bad{color:#f87171}
+.sc2-stat.acc{color:#60a5fa}
+.sc2-meta{font-size:10px;color:#475569;margin-bottom:8px;display:flex;gap:10px;flex-wrap:wrap}
+.session-card.idle{opacity:.65;border-color:rgba(148,163,184,.25)}

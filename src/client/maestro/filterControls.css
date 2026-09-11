@@ -1,0 +1,8 @@
+.filter-bar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;align-items:center}
+.filter-lbl{font-size:11px;color:#64748b;text-transform:uppercase;letter-spacing:.6px;margin-right:2px}
+.fchip{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:99px;padding:4px 12px;font-size:11px;font-weight:600;cursor:pointer;color:#94a3b8;transition:.15s}
+.fchip:hover{background:rgba(167,139,250,.12);border-color:rgba(167,139,250,.3);color:#a78bfa}
+.fchip.active{background:rgba(167,139,250,.2);border-color:rgba(167,139,250,.5);color:#c4b5fd}
+.sort-row{display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.sort-sel{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:5px 10px;color:#94a3b8;font-size:12px;cursor:pointer;outline:none;color-scheme:dark}
+.sort-sel:focus{border-color:#a78bfa}

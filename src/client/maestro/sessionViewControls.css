@@ -1,0 +1,2 @@
+.session-viewbtn{border:1px solid rgba(167,139,250,.25);background:rgba(12,10,26,.75);color:#94a3b8;padding:8px 12px;border-radius:4px;cursor:pointer;font-family:'Press Start 2P',monospace;font-size:8px;display:inline-flex;align-items:center;gap:6px}
+.session-viewbtn.active{color:#00e5ff;border-color:rgba(0,229,255,.45);box-shadow:0 0 12px rgba(0,229,255,.08);text-shadow:0 0 8px rgba(0,229,255,.45)}

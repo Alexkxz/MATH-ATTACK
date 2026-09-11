@@ -34,143 +34,15 @@ header h1{font-family:'Press Start 2P',monospace;font-size:12px;color:#00e5ff;le
 .op-card.hi{border-color:rgba(52,211,153,.25)}
 .op-card.mid{border-color:rgba(251,191,36,.25)}
 .op-card.lo{border-color:rgba(248,113,113,.25)}
-.sessions-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px}
-.session-card{background:rgba(255,255,255,.04);border:2px solid rgba(255,255,255,.08);border-radius:14px;padding:16px;transition:border-color .2s}
-.session-card.playing{border-color:rgba(52,211,153,.4)}
-.session-card.paused{border-color:rgba(251,191,36,.4)}
-.session-card.finished{border-color:rgba(248,113,113,.3);opacity:.7}
-.s-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
-.s-name{font-size:16px;font-weight:700}
-.s-grade{font-size:11px;color:#94a3b8;background:rgba(255,255,255,.06);padding:2px 8px;border-radius:99px}
-.s-badge{font-size:10px;font-weight:700;padding:3px 8px;border-radius:99px}
-.badge-solo{background:rgba(167,139,250,.2);color:#a78bfa}
-.badge-duel{background:rgba(251,191,36,.2);color:#fbbf24}
-.badge-online{background:rgba(96,165,250,.2);color:#60a5fa}
-.badge-paused{background:rgba(251,191,36,.3);color:#fbbf24}
-.s-body{display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:12px;margin-bottom:12px}
-.s-item{background:rgba(255,255,255,.04);padding:6px 10px;border-radius:8px}
-.s-item .k{color:#94a3b8;font-size:10px;text-transform:uppercase;letter-spacing:.5px}
-.s-item .v{color:#e2e8f0;font-weight:700;font-size:14px;margin-top:2px}
-.progress-blocks{display:flex;gap:3px;margin-bottom:12px}
-.pb{flex:1;height:8px;border-radius:3px;background:rgba(255,255,255,.08);transition:background .3s}
-.pb.filled{background:linear-gradient(90deg,#a78bfa,#60a5fa)}
-.s-actions{display:flex;gap:8px}
-.btn{padding:7px 14px;border-radius:8px;border:none;cursor:pointer;font-size:12px;font-weight:700;transition:all .15s}
-.btn-pause{background:rgba(251,191,36,.15);color:#fbbf24;border:1px solid rgba(251,191,36,.3)}
-.btn-pause:hover{background:rgba(251,191,36,.3)}
-.btn-resume{background:rgba(52,211,153,.15);color:#34d399;border:1px solid rgba(52,211,153,.3)}
-.btn-resume:hover{background:rgba(52,211,153,.3)}
-.btn-end{background:rgba(248,113,113,.15);color:#f87171;border:1px solid rgba(248,113,113,.3)}
-.btn-end:hover{background:rgba(248,113,113,.3)}
-.empty{text-align:center;padding:60px;color:#4b5563}
-.empty span{font-size:48px;display:block;margin-bottom:12px}
-.conn-status{display:flex;align-items:center;gap:6px;font-size:12px;color:#94a3b8}
-.flash-correct{border-color:rgba(52,211,153,.85)!important;box-shadow:0 0 12px rgba(52,211,153,.25)!important;}
-.flash-wrong{border-color:rgba(248,113,113,.85)!important;box-shadow:0 0 12px rgba(248,113,113,.25)!important;}
-.q-display{text-align:center;background:rgba(167,139,250,.1);border:1px solid rgba(167,139,250,.2);border-radius:10px;padding:10px 8px;margin-bottom:8px;font-size:30px;font-weight:800;color:#e2e8f0;letter-spacing:1px;}
-.q-display.flash-c{background:rgba(52,211,153,.15);border-color:rgba(52,211,153,.4);color:#34d399;}
-.q-display.flash-w{background:rgba(248,113,113,.12);border-color:rgba(248,113,113,.4);color:#f87171;}
-.time-mini{height:4px;background:rgba(255,255,255,.08);border-radius:2px;margin-bottom:8px;overflow:hidden;}
-.time-mini-fill{height:100%;border-radius:2px;transition:width .4s linear;}
-.lives-row{font-size:15px;letter-spacing:2px;}
-.streak-badge{background:rgba(251,191,36,.15);border:1px solid rgba(251,191,36,.25);border-radius:6px;padding:2px 7px;font-size:11px;color:#fbbf24;font-weight:700;margin-left:4px;}
-
-/* ── Tarjeta "En Juego" — avatar + anillo de progreso ── */
-.sc2-top{display:flex;gap:12px;align-items:flex-start;margin-bottom:10px}
-.sc2-avatar-col{display:flex;flex-direction:column;align-items:center;gap:4px;flex-shrink:0}
-.sc2-avatar-wrap{position:relative;width:60px;height:60px;flex-shrink:0}
-.sc2-ring{position:absolute;inset:0}
-.sc2-ring-bg{fill:none;stroke:rgba(255,255,255,.08);stroke-width:4}
-.sc2-ring-fill{fill:none;stroke-width:4;stroke-linecap:round;transition:stroke-dasharray .5s ease,stroke .3s}
-.sc2-avatar-inner{position:absolute;inset:7px;border-radius:50%;overflow:hidden;background:#0d0820;display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,.08)}
-.sc2-avatar-inner svg{width:100%;height:100%}
-.sc2-status-dot{position:absolute;bottom:-2px;right:-2px;width:16px;height:16px;border-radius:50%;border:2px solid #0c0a1a;display:flex;align-items:center;justify-content:center;font-size:8px;background:#1a1730}
-.sc2-qprog{font-family:'Press Start 2P',monospace;font-size:8px;color:#64748b;letter-spacing:.5px}
-.sc2-info{flex:1;min-width:0}
-.sc2-name-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
-.sc2-badges{display:flex;gap:5px;flex-wrap:wrap;margin:5px 0 7px}
-.sc2-score{font-family:'Press Start 2P',monospace;font-size:19px;color:#fbbf24;text-shadow:0 0 10px rgba(251,191,36,.45);line-height:1}
-.sc2-score-lbl{font-size:9px;color:#94a3b8;margin-left:5px;text-shadow:none;font-family:inherit}
-.sc2-stats-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
-.sc2-stat{background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.07);border-radius:3px;padding:3px 7px;font-family:'Press Start 2P',monospace;font-size:9px;color:#cbd5e1;display:inline-flex;align-items:center;gap:4px}
-.sc2-stat.ok{color:#34d399}
-.sc2-stat.bad{color:#f87171}
-.sc2-stat.acc{color:#60a5fa}
-.sc2-meta{font-size:10px;color:#475569;margin-bottom:8px;display:flex;gap:10px;flex-wrap:wrap}
-.session-card.idle{opacity:.65;border-color:rgba(148,163,184,.25)}
-.session-viewbar{display:flex;gap:8px;flex-wrap:wrap;margin:4px 0 14px}
-.session-viewbtn{border:1px solid rgba(167,139,250,.25);background:rgba(12,10,26,.75);color:#94a3b8;padding:8px 12px;border-radius:4px;cursor:pointer;font-family:'Press Start 2P',monospace;font-size:8px;display:inline-flex;align-items:center;gap:6px}
-.session-viewbtn.active{color:#00e5ff;border-color:rgba(0,229,255,.45);box-shadow:0 0 12px rgba(0,229,255,.08);text-shadow:0 0 8px rgba(0,229,255,.45)}
-.session-pane{display:none}
-.session-pane.active{display:block}
-.mp-rooms{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:14px}
-.mp-room-card{background:radial-gradient(circle at top,rgba(20,28,58,.75),rgba(12,10,26,.98) 58%);border:1px solid rgba(96,165,250,.22);border-radius:16px;padding:16px;box-shadow:0 14px 28px rgba(2,8,23,.34),inset 0 1px 0 rgba(255,255,255,.03);position:relative;overflow:hidden}
-.mp-room-card::before{content:'';position:absolute;inset:-20% auto auto -10%;width:180px;height:180px;background:radial-gradient(circle,rgba(96,165,250,.16),transparent 68%);pointer-events:none}
-.mp-room-card::after{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,rgba(96,165,250,.55),transparent)}
-.mp-room-card.playing{border-color:rgba(52,211,153,.28)}
-.mp-room-card.playing::after{background:linear-gradient(90deg,transparent,rgba(52,211,153,.65),transparent)}
-.mp-room-card.lobby{border-color:rgba(251,191,36,.26)}
-.mp-room-card.lobby::after{background:linear-gradient(90deg,transparent,rgba(251,191,36,.6),transparent)}
-.mp-room-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:14px;position:relative;z-index:1}
-.mp-room-title{font-family:'Press Start 2P',monospace;font-size:9px;line-height:1.8;color:#dbeafe}
-.mp-room-meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
-.mp-pill{font-family:'Press Start 2P',monospace;font-size:7px;padding:4px 6px;border-radius:3px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.04);color:#93c5fd}
-.mp-pill.host{color:#fbbf24;border-color:rgba(251,191,36,.28);background:rgba(251,191,36,.09)}
-.mp-pill.mode{color:#60a5fa;border-color:rgba(96,165,250,.28);background:rgba(96,165,250,.09)}
-.mp-pill.state{color:#34d399;border-color:rgba(52,211,153,.28);background:rgba(52,211,153,.09)}
-.mp-pill.state.wait{color:#fbbf24;border-color:rgba(251,191,36,.28);background:rgba(251,191,36,.09)}
-.mp-room-count{font-family:'Press Start 2P',monospace;font-size:16px;color:#60a5fa;line-height:1.2;text-align:right;background:rgba(6,11,31,.62);border:1px solid rgba(96,165,250,.16);border-radius:12px;padding:10px 12px;min-width:92px}
-.mp-room-count small{display:block;font-size:7px;color:#94a3b8;margin-top:6px}
-.mp-room-duel{position:relative;z-index:1;display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center;background:linear-gradient(135deg,rgba(15,23,42,.95),rgba(22,12,44,.92));border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:12px 14px;margin-bottom:12px}
-.mp-duelist{display:flex;align-items:center;gap:10px;min-width:0}
-.mp-duelist.right{flex-direction:row-reverse;text-align:right}
-.mp-duel-avatar{width:72px;height:72px;border-radius:22px;background:linear-gradient(180deg,rgba(15,23,42,.96),rgba(2,6,23,.98));border:2px solid rgba(96,165,250,.3);box-shadow:0 12px 24px rgba(2,8,23,.35),inset 0 0 0 1px rgba(255,255,255,.04);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0}
-.mp-duel-avatar svg{width:100%;height:100%}
-.mp-duelist-info{min-width:0;display:flex;flex-direction:column;gap:5px}
-.mp-duelist-name{font-family:'Press Start 2P',monospace;font-size:8px;line-height:1.6;color:#f8fafc;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
-.mp-duelist.right .mp-duelist-name{justify-content:flex-end}
-.mp-duelist-meta{display:flex;gap:6px;flex-wrap:wrap}
-.mp-duelist.right .mp-duelist-meta{justify-content:flex-end}
-.mp-duelist-score{font-family:'Press Start 2P',monospace;font-size:14px;color:#fbbf24;text-shadow:0 0 10px rgba(251,191,36,.28)}
-.mp-duelist-progress{font-size:10px;color:#94a3b8}
-.mp-vs-badge{display:flex;flex-direction:column;align-items:center;gap:6px;min-width:70px}
-.mp-vs-text{font-family:'Press Start 2P',monospace;font-size:10px;color:#f472b6;text-shadow:0 0 10px rgba(244,114,182,.35)}
-.mp-vs-round{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle,rgba(244,114,182,.22),rgba(15,23,42,.2));border:1px solid rgba(244,114,182,.28);color:#fbcfe8;font-family:'Press Start 2P',monospace;font-size:9px}
-.mp-duel-note{font-size:9px;color:#64748b;text-transform:uppercase;letter-spacing:.9px}
-.mp-room-extra{position:relative;z-index:1;display:flex;justify-content:space-between;gap:8px;align-items:center;margin:-2px 0 12px;flex-wrap:wrap}
-.mp-room-extra-note{font-size:10px;color:#94a3b8}
-.mp-room-list{display:flex;flex-direction:column;gap:8px;position:relative;z-index:1}
-.mp-player-row{display:grid;grid-template-columns:auto auto 1fr auto;gap:10px;align-items:center;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:10px}
-.mp-player-row.top{background:linear-gradient(90deg,rgba(96,165,250,.12),rgba(255,255,255,.04));border-color:rgba(96,165,250,.18)}
-.mp-player-rank{font-family:'Press Start 2P',monospace;font-size:8px;color:#64748b;min-width:24px}
-.mp-player-avatar{width:42px;height:42px;border-radius:12px;background:#0f172a;border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0}
-.mp-player-avatar svg{width:100%;height:100%}
-.mp-player-main{min-width:0}
-.mp-player-name{font-family:'Press Start 2P',monospace;font-size:8px;line-height:1.6;color:#e2e8f0;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
-.mp-host-star{color:#fbbf24}
-.mp-disc{color:#94a3b8;font-size:10px}
-.mp-player-sub{display:flex;gap:8px;flex-wrap:wrap;font-size:10px;color:#64748b;margin-top:4px}
-.mp-player-score{font-family:'Press Start 2P',monospace;font-size:11px;color:#fbbf24;text-align:right}
-.mp-player-score small{display:block;font-size:7px;color:#64748b;margin-top:4px}
-@media (max-width:760px){
-  .mp-rooms{grid-template-columns:1fr}
-  .mp-room-card{padding:14px}
-  .mp-room-head{flex-direction:column}
-  .mp-room-count{width:100%;text-align:left}
-  .mp-room-duel{grid-template-columns:1fr;justify-items:stretch}
-  .mp-duelist,.mp-duelist.right{flex-direction:row;text-align:left}
-  .mp-duelist.right .mp-duelist-name,.mp-duelist.right .mp-duelist-meta{justify-content:flex-start}
-  .mp-vs-badge{flex-direction:row;justify-content:center}
-  .mp-player-row{grid-template-columns:auto 1fr auto;grid-template-areas:'rank main score' 'avatar main score';align-items:center}
-  .mp-player-rank{grid-area:rank}
-  .mp-player-avatar{grid-area:avatar}
-  .mp-player-main{grid-area:main}
-  .mp-player-score{grid-area:score}
-}
-body.proj-mode .mp-rooms{grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}
-
-/* ── Tarjetas de alumnos rediseñadas ── */
-.students-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px}
+</style>
+<link rel="stylesheet" href="/src/client/maestro/sessionCore.css">
+<style>.session-viewbar{display:flex;gap:8px;flex-wrap:wrap;margin:4px 0 14px}
+</style>
+<link rel="stylesheet" href="/src/client/maestro/sessionViewControls.css">
+<style>
+</style>
+<link rel="stylesheet" href="/src/client/maestro/multiplayerSessions.css">
+<style>.students-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px}
 .students-title{font-size:15px;font-weight:700;color:#a78bfa}
 .students-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .btn-reg{background:linear-gradient(135deg,#7c3aed,#a855f7);border:none;border-radius:8px;padding:7px 16px;color:#fff;font-size:13px;font-weight:700;cursor:pointer;transition:.15s}
@@ -196,15 +68,9 @@ body.proj-mode .mp-rooms{grid-template-columns:repeat(auto-fill,minmax(300px,1fr
 .btn-del{background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.25);border-radius:6px;padding:4px 9px;color:#f87171;font-size:11px;cursor:pointer;flex-shrink:0;transition:.15s}
 .btn-del:hover{background:rgba(248,113,113,.25)}
 .sca-powers-lbl{font-size:10px;color:#4b5563;text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px}
-.powers-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
-.ptile{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:8px;padding:5px 2px;text-align:center;cursor:pointer;transition:.15s;position:relative}
-.ptile:hover{border-color:rgba(167,139,250,.6);background:rgba(167,139,250,.12);transform:translateY(-1px)}
-.ptile.has-p{border-color:rgba(167,139,250,.4);background:rgba(167,139,250,.1)}
-.ptile-icon{font-size:15px;display:block;line-height:1.2}
-.ptile-qty{font-size:10px;font-weight:800;display:block;color:#64748b;margin-top:2px;line-height:1}
-.ptile.has-p .ptile-qty{color:#a78bfa}
-
-/* ── Popup de edición ── */
+</style>
+<link rel="stylesheet" href="/src/client/maestro/studentPowers.css">
+<style>/* ── Popup de edición ── */
 .edit-overlay{display:none;position:fixed;inset:0;z-index:500}
 .edit-overlay.open{display:block}
 .edit-popup{position:fixed;z-index:600;background:#1a1730;border:1px solid rgba(167,139,250,.5);border-radius:14px;padding:16px;min-width:210px;box-shadow:0 12px 40px rgba(0,0,0,.6);animation:fadeIn .15s ease}
@@ -214,9 +80,9 @@ body.proj-mode .mp-rooms{grid-template-columns:repeat(auto-fill,minmax(300px,1fr
 .ep-input:focus{border-color:#a78bfa}
 .ep-hint{font-size:10px;color:#4b5563;text-align:center;margin-top:5px}
 .ep-btns{display:flex;gap:7px;margin-top:12px}
-.ep-save{flex:1;background:linear-gradient(135deg,#7c3aed,#a855f7);border:none;border-radius:8px;pa</style>
+</style>
 <link rel="stylesheet" href="/src/client/maestro/editPopup.css">
-<style>pointer;transition:.15s;margin-top:4px}
+<style>.btn-save-aj{background:linear-gradient(135deg,#7c3aed,#a855f7);border:none;border-radius:8px;padding:9px 20px;color:#fff;font-size:13px;font-weight:700;cursor:pointer;transition:.15s;margin-top:4px}
 .btn-save-aj:hover{opacity:.85}
 .aj-msg{font-size:12px;min-height:18px;margin-top:10px}
 .aj-msg.ok{color:#34d399}
@@ -229,14 +95,9 @@ body.proj-mode .mp-rooms{grid-template-columns:repeat(auto-fill,minmax(300px,1fr
 <style>
 
 /* ── Filtros de grado ── */
-.filter-bar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;align-items:center}
-.filter-lbl{font-size:11px;color:#64748b;text-transform:uppercase;letter-spacing:.6px;margin-right:2px}
-.fchip{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:99px;padding:4px 12px;font-size:11px;font-weight:600;cursor:pointer;color:#94a3b8;transition:.15s}
-.fchip:hover{background:rgba(167,139,250,.12);border-color:rgba(167,139,250,.3);color:#a78bfa}
-.fchip.active{background:rgba(167,139,250,.2);border-color:rgba(167,139,250,.5);color:#c4b5fd}
-.sort-row{display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap}
-.sort-sel{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:5px 10px;color:#94a3b8;font-size:12px;cursor:pointer;outline:none;color-scheme:dark}
-.sort-sel:focus{border-color:#a78bfa}
+</style>
+<link rel="stylesheet" href="/src/client/maestro/filterControls.css">
+<style>
 .section-actions{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px;align-items:center}
 .btn-announce{background:linear-gradient(135deg,#7c3aed,#a855f7);border:none;border-radius:8px;padding:7px 14px;color:#fff;font-size:12px;font-weight:700;cursor:pointer;transition:.15s}
 .btn-announce:hover{opacity:.85}
@@ -271,16 +132,9 @@ body.proj-mode .mp-rooms{grid-template-columns:repeat(auto-fill,minmax(300px,1fr
 /* ── Proyector ── */
 body.proj-mode .container{max-width:100%;padding:12px}
 body.proj-mode .tab-bar{display:none}
-body.proj-mode .sessions-grid{grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}
-body.proj-mode .session-card{padding:20px 18px}
-body.proj-mode .s-name{font-size:22px}
-body.proj-mode .s-grade{font-size:13px}
-body.proj-mode .q-display{font-size:42px;padding:14px}
-body.proj-mode .s-body{display:none}
-body.proj-mode .s-actions{display:none}
-body.proj-mode .progress-blocks{height:10px}
-body.proj-mode .pb{height:10px}
-
+</style>
+<link rel="stylesheet" href="/src/client/maestro/sessionProjector.css">
+<style>
 /* ════════════════════════════════════════
    RETRO ARCADE OVERRIDES
    ════════════════════════════════════════ */
@@ -312,167 +166,26 @@ body.proj-mode .pb{height:10px}
   text-shadow:0 0 8px #00e5ff;background:rgba(0,229,255,.04)}
 .tab-badge{font-family:'Press Start 2P',monospace;font-size:8px;border-radius:2px;
   background:rgba(0,229,255,.12);color:#00e5ff;border:1px solid rgba(0,229,255,.25)}
-/* ── Pestaña Conexión ── */
-.cx-stats{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
-.cx-stat{background:#0c0a1a;border:1px solid rgba(0,229,255,.18);border-radius:4px;padding:10px 18px;display:flex;flex-direction:column;align-items:center;min-width:90px}
-.cx-stat .cv{font-family:'Press Start 2P',monospace;font-size:18px;color:#00e5ff;text-shadow:0 0 8px #00e5ff}
-.cx-stat .cl{font-size:8px;color:#445566;letter-spacing:1.2px;margin-top:4px;text-align:center}
-.cx-table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:18px}
-.cx-table th{padding:7px 8px;text-align:left;color:#445566;font-size:9px;text-transform:uppercase;letter-spacing:.8px;border-bottom:1px solid rgba(0,229,255,.15);font-family:'Press Start 2P',monospace}
-.cx-table td{padding:8px 8px;border-bottom:1px solid rgba(255,255,255,.04);color:#cbd5e1;vertical-align:middle}
-.cx-table tr:hover td{background:rgba(0,229,255,.03)}
-.cx-type-m{color:#a78bfa;font-size:16px}
-.cx-type-p{color:#00e5ff;font-size:16px}
-.cx-lat{font-family:'Press Start 2P',monospace;font-size:9px}
-.cx-lat.good{color:#34d399}.cx-lat.ok{color:#fbbf24}.cx-lat.bad{color:#f87171}.cx-lat.na{color:#334155}
-.cx-kick{background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);border-radius:3px;padding:3px 8px;color:#f87171;font-family:'Press Start 2P',monospace;font-size:7px;cursor:pointer;transition:background .15s}
-.cx-kick:hover{background:rgba(239,68,68,.3)}
-.cx-log-wrap{background:#080614;border:1px solid rgba(0,229,255,.12);border-radius:4px;padding:10px;height:220px;overflow-y:auto;font-family:monospace;font-size:12px}
-.cx-log-entry{padding:2px 0;border-bottom:1px solid rgba(255,255,255,.03);display:flex;gap:8px;align-items:baseline}
-.cx-log-ts{color:#334155;flex-shrink:0;font-size:10px}
-.cx-log-msg{color:#94a3b8}
-.cx-log-entry.connect .cx-log-msg{color:#34d399}
-.cx-log-entry.disconnect .cx-log-msg{color:#f87171}
-.cx-log-entry.kick .cx-log-msg{color:#fbbf24}
-.cx-log-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
-.cx-log-title{font-family:'Press Start 2P',monospace;font-size:8px;color:#445566;letter-spacing:1px}
-.cx-clear-btn{background:none;border:1px solid rgba(255,255,255,.08);border-radius:3px;padding:3px 8px;font-size:10px;color:#64748b;cursor:pointer}
-.cx-clear-btn:hover{color:#cbd5e1}
-.cx-section-title{font-family:'Press Start 2P',monospace;font-size:8px;color:#445566;letter-spacing:1px;margin-bottom:8px;text-transform:uppercase}
-.cx-activity-dot{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:4px;flex-shrink:0}
-.cx-activity-dot.active{background:#34d399;box-shadow:0 0 6px #34d399;animation:pulse 1s infinite}
-.cx-activity-dot.idle{background:#334155}
-/* Session cards */
-.session-card{background:#0c0a1a;border:1px solid rgba(167,139,250,.2);border-radius:4px;position:relative;overflow:hidden}
-.session-card::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;
-  background:linear-gradient(90deg,transparent,rgba(167,139,250,.35),transparent)}
-.session-card.playing{border-color:rgba(0,255,136,.35);
-  box-shadow:0 0 14px rgba(0,255,136,.06),0 0 2px rgba(0,255,136,.15)}
-.session-card.playing::after{background:linear-gradient(90deg,transparent,rgba(0,255,136,.5),transparent)}
-.session-card.paused{border-color:rgba(255,200,0,.35);
-  box-shadow:0 0 14px rgba(255,200,0,.06)}
-.session-card.paused::after{background:linear-gradient(90deg,transparent,rgba(255,200,0,.5),transparent)}
-.session-card.finished{border-color:rgba(255,50,100,.2);opacity:.6}
-.session-card.disconnected{border-color:rgba(148,163,184,.3);opacity:.55;filter:grayscale(.5)}
-.s-name{font-family:'Press Start 2P',monospace;font-size:10px;line-height:1.7;color:#d4c8ff}
-.s-grade{font-size:9px;border-radius:2px}
-.q-display{font-family:'Press Start 2P',monospace;font-size:26px;background:#060510;
-  border:1px solid rgba(167,139,250,.25);border-radius:4px;letter-spacing:2px;
-  text-shadow:0 0 12px rgba(196,181,253,.6)}
-.q-display.flash-c{text-shadow:0 0 16px #00ff88}
-.q-display.flash-w{text-shadow:0 0 16px #ff4466}
-/* Progress blocks pixel */
-.progress-blocks{gap:2px;margin-bottom:10px}
-.pb{height:10px;border-radius:0;background:rgba(0,229,255,.07)}
-.pb.filled{background:#00e5ff;box-shadow:0 0 4px rgba(0,229,255,.6)}
-/* Scoreboard items */
-.s-item{background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.05);border-radius:2px}
-.s-item .v{font-family:'Press Start 2P',monospace;font-size:11px}
-.streak-badge{border-radius:2px;font-family:'Press Start 2P',monospace;font-size:9px}
-/* Buttons retro */
-.btn-pause{border-radius:2px}
-.btn-resume{border-radius:2px}
-.btn-end{border-radius:2px;background:rgba(255,0,80,.12);color:#ff4466;border-color:rgba(255,0,80,.3)}
-.btn-end:hover{background:rgba(255,0,80,.25)}
-/* Students section */
-.students-title{font-family:'Press Start 2P',monospace;font-size:10px;color:#a78bfa;
-  text-shadow:0 0 8px rgba(167,139,250,.4)}
-
-/* ════ CARTA COLECCIONABLE ════ */
-.students-grid{grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
-
-.sc-card{position:relative;background:#08061a;border-radius:10px;overflow:hidden;
-  box-shadow:0 0 0 2px rgba(251,191,36,.45),0 0 16px rgba(251,191,36,.07),0 8px 20px rgba(0,0,0,.6);
-  transition:transform .2s,box-shadow .2s;display:flex;flex-direction:column}
-.sc-card:hover{transform:translateY(-4px) scale(1.02);
-  box-shadow:0 0 0 2px rgba(251,191,36,.85),0 0 28px rgba(251,191,36,.18),0 16px 32px rgba(0,0,0,.7)}
-.sc-card.is-online{box-shadow:0 0 0 2px rgba(52,211,153,.6),0 0 18px rgba(52,211,153,.12),0 8px 20px rgba(0,0,0,.6)}
-.sc-card.is-online:hover{box-shadow:0 0 0 2px rgba(52,211,153,.95),0 0 30px rgba(52,211,153,.2),0 16px 32px rgba(0,0,0,.7)}
-
-.sc-banner{background:linear-gradient(135deg,#14103a,#1c1850);padding:11px 10px 9px;
-  border-bottom:1px solid rgba(251,191,36,.18);display:flex;justify-content:space-between;align-items:center;gap:5px}
-.sc-banner-name{font-family:'Press Start 2P',monospace;font-size:10px;color:#e2e8f0;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-shadow:0 0 8px rgba(167,139,250,.5);line-height:1.8}
-.sc-grade-pill{font-family:'Press Start 2P',monospace;font-size:5.5px;color:#fbbf24;
-  border:1px solid rgba(251,191,36,.4);border-radius:2px;padding:2px 5px;
-  background:rgba(251,191,36,.08);white-space:nowrap;flex-shrink:0}
-
-.sc-av-section{display:flex;justify-content:center;padding:16px 0 12px;
-  background:radial-gradient(ellipse at 50% 0%,rgba(124,58,237,.14) 0%,transparent 70%)}
-.sc-av-big{width:62px;height:62px;border-radius:4px;position:relative;
-  display:flex;align-items:center;justify-content:center;
-  border:2px solid rgba(251,191,36,.55);
-  box-shadow:0 0 16px rgba(124,58,237,.45)}
-.sc-online-badge{position:absolute;top:-5px;right:-5px;width:11px;height:11px;
-  background:#34d399;border:2px solid #08061a;border-radius:0;
-  box-shadow:0 0 8px #34d399;animation:pulse 2s infinite}
-
-.sc-sep{height:1px;margin:0 10px 2px;opacity:.65;
-  background:linear-gradient(90deg,transparent,#fbbf24 25%,#a78bfa 50%,#00e5ff 75%,transparent)}
-
-.sc-hp-row{display:flex;align-items:center;gap:4px;padding:7px 10px 5px}
-.sc-hp-lbl{font-family:'Press Start 2P',monospace;font-size:5px;color:#374151;letter-spacing:1px;margin-right:2px}
-.sc-hp-val{flex:1;font-family:'Press Start 2P',monospace;font-size:12px;color:#fbbf24;
-  text-shadow:0 0 8px rgba(251,191,36,.5)}
-.sc-hp-btn{background:none;border:1px solid rgba(255,255,255,.07);border-radius:2px;
-  padding:5px 9px;font-size:13px;cursor:pointer;color:#374151;transition:.15s;line-height:1}
-.sc-hp-btn:hover{background:rgba(167,139,250,.1);border-color:rgba(167,139,250,.3);color:#a78bfa}
-
-.sc-powers-section{padding:5px 8px 6px;flex:1}
-.sc-powers-title{font-family:'Press Start 2P',monospace;font-size:5px;color:#2a2545;
-  letter-spacing:1.5px;margin-bottom:5px}
-.sc-card .powers-grid{grid-template-columns:repeat(6,1fr);gap:5px}
-.sc-card .ptile{padding:7px 3px;border-radius:4px}
-.sc-card .ptile-icon{font-size:17px}
-.sc-card .ptile-qty{font-size:10px}
-
-/* ── Toggle de poderes en tarjeta ── */
-.sc-card{cursor:pointer}
-.sc-powers-toggle{display:flex;align-items:center;gap:5px;padding:1px 0;user-select:none}
-.sc-powers-count{font-family:'Press Start 2P',monospace;font-size:6px;color:#2a2545;
-  background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.05);border-radius:2px;
-  padding:1px 5px;margin-left:auto;transition:.2s}
-.sc-powers-count.active{color:#a78bfa;border-color:rgba(167,139,250,.3);background:rgba(167,139,250,.08);
-  text-shadow:0 0 6px rgba(167,139,250,.5)}
-.sc-powers-arrow{font-size:9px;color:#2a2545;transition:transform .2s,color .2s;line-height:1;flex-shrink:0}
-.sc-card.powers-open .sc-powers-arrow{transform:rotate(180deg);color:#a78bfa}
-.sc-card.powers-open .sc-powers-title{color:#a78bfa;text-shadow:0 0 6px rgba(167,139,250,.4)}
-/* Iconos rápidos (colapso) */
-.sc-powers-quick{display:flex;flex-wrap:wrap;gap:3px;margin-top:4px;min-height:16px}
-.sc-card.powers-open .sc-powers-quick{display:none}
-.sc-pq-item{font-size:16px;line-height:1;padding:1px 3px;opacity:.75;
-  transition:opacity .15s}
-.sc-pq-item:hover{opacity:1}
-.sc-pq-empty{font-family:'Press Start 2P',monospace;font-size:5px;color:#1e1d30;letter-spacing:.5px}
-/* Grid expandible */
-.sc-powers-grid{display:none;margin-top:6px}
-.sc-card.powers-open .sc-powers-grid{display:block}
-
-.sc-footer{display:flex;gap:3px;padding:5px 7px;
-  background:rgba(0,0,0,.3);border-top:1px solid rgba(255,255,255,.05)}
-.sc-foot-btn{flex:1;background:none;border:1px solid rgba(255,255,255,.07);border-radius:2px;
-  padding:8px 4px;font-family:'Press Start 2P',monospace;font-size:7.5px;
-  cursor:pointer;color:#374151;transition:.15s;text-align:center;white-space:nowrap}
-.sc-foot-btn:hover{background:rgba(167,139,250,.1);border-color:rgba(167,139,250,.3);color:#a78bfa}
-.aureos-amt{font-family:'Press Start 2P',monospace;font-size:10px;
-  text-shadow:0 0 6px rgba(251,191,36,.5)}
-/* Header link */
+</style>
+<link rel="stylesheet" href="/src/client/maestro/connectionTransactions.css">
+<style></style>
+<link rel="stylesheet" href="/src/client/maestro/sessionRetro.css">
+<style></style>
+<link rel="stylesheet" href="/src/client/maestro/studentCardsInventory.css">
+<style>/* Header link */
 header a{font-family:'Press Start 2P',monospace;font-size:9px;color:#ff44aa;
   text-shadow:0 0 6px rgba(255,68,170,.4)}
 header a:hover{color:#ff88cc;text-shadow:0 0 10px rgba(255,68,170,.6)}
 /* Conn status */
 #connTxt{font-family:'Press Start 2P',monospace;font-size:9px;color:#445566}
 /* Modales retro */
-.big-modal{background:#0c0a1a;border-color:rgba(0,229,255,.35);border-radius:6px}
-.big-modal h2{color:#00e5ff;text-shadow:0 0 8px rgba(0,229,255,.4)}
-.asm-modal{background:#0c0a1a;border-color:rgba(167,139,250,.35);border-radius:6px}
-.asm-modal h2{color:#a78bfa}
-.edit-popup{background:#0c0a1a;border-color:rgba(0,229,255,.4);border-radius:4px}
-.ep-title{color:#00e5ff;text-shadow:0 0 6px rgba(0,229,255,.3)}
+</style>
+<link rel="stylesheet" href="/src/client/maestro/modalRetroOverrides.css">
+<style>
 /* Fchips retro */
-.fchip{border-radius:2px}
-.fchip.active{border-radius:2px;background:rgba(0,229,255,.15);border-color:rgba(0,229,255,.4);
-  color:#00e5ff;text-shadow:0 0 6px rgba(0,229,255,.4)}
+</style>
+<link rel="stylesheet" href="/src/client/maestro/filterControlsRetro.css">
+<style>
 /* Heatmap */
 .hcell{border-radius:2px}
 .hcell.hc-good{box-shadow:0 0 4px rgba(52,211,153,.2)}
@@ -482,76 +195,21 @@ body.proj-mode .s-name{font-size:16px}
 body.proj-mode .q-display{font-size:48px;letter-spacing:4px}
 
 /* ── Nivel y logros en tarjeta ── */
-.sc-level-row{padding:5px 10px 4px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
-.sc-level-badge{font-family:'Press Start 2P',monospace;font-size:6px;color:#60a5fa;
-  background:rgba(96,165,250,.1);border:1px solid rgba(96,165,250,.2);border-radius:2px;
-  padding:2px 6px;white-space:nowrap;flex-shrink:0}
-.sc-level-bar{flex:1;height:4px;background:rgba(255,255,255,.06);border-radius:2px;overflow:hidden;min-width:30px}
-.sc-level-bar-fill{height:100%;background:linear-gradient(90deg,#60a5fa,#a78bfa);border-radius:2px;transition:width .4s ease}
-.sc-ach-row{display:flex;gap:3px;flex-wrap:wrap;width:100%;margin-top:2px}
-.ach-badge{font-size:13px;opacity:.85;cursor:default;transition:.15s}
-.ach-badge:hover{opacity:1;transform:scale(1.2)}
-.sc-star-badge{font-family:'Press Start 2P',monospace;font-size:5px;color:#fbbf24;
-  background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.25);border-radius:2px;
-  padding:1px 4px;margin-left:2px;text-shadow:0 0 5px rgba(251,191,36,.4)}
-
-@keyframes examPulse{0%,100%{box-shadow:0 0 0 rgba(251,191,36,0)}50%{box-shadow:0 0 14px rgba(251,191,36,.2)}}
-
-/* ── Grilla de selección de tablas (usada por la pestaña Pruebas) ── */
-.em-tables-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:5px;margin-top:6px}
-.em-tbl-btn{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,</style>
-<link rel="stylesheet" href="/src/client/maestro/modalRetroOverrides.css">
-<style>ff;font-size:12px;font-weight:700;cursor:pointer;transition:.15s;text-decoration:none}
+</style>
+<link rel="stylesheet" href="/src/client/maestro/studentLevelsAchievements.css">
+<style></style>
+<link rel="stylesheet" href="/src/client/maestro/pruebasExamPulse.css">
+<style></style>
+<link rel="stylesheet" href="/src/client/maestro/pruebasTableSelector.css">
+<style>.btn-live{background:rgba(0,229,255,.1);border:1px solid rgba(0,229,255,.25);border-radius:8px;
+  padding:7px 14px;color:#00e5ff;font-size:12px;font-weight:700;cursor:pointer;transition:.15s;text-decoration:none}
 .btn-live:hover{background:rgba(0,229,255,.2)}
 
-/* ── Pestaña Pruebas ── */
-.pr-section-title{font-family:'Press Start 2P',monospace;font-size:9px;color:#34d399;letter-spacing:.8px;margin-bottom:18px;text-shadow:0 0 8px rgba(52,211,153,.3)}
-.pr-config-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:14px}
-.pr-field{margin-bottom:14px}
-.pr-field label{display:block;font-family:'Press Start 2P',monospace;font-size:7px;color:#445566;letter-spacing:.8px;margin-bottom:8px}
-.pr-field select,.pr-field input[type=number]{width:100%;background:rgba(0,0,0,.45);border:1px solid rgba(255,255,255,.15);border-radius:3px;padding:9px 12px;color:#e2e8f0;font-size:13px;outline:none;transition:.15s;color-scheme:dark}
-.pr-field select:focus,.pr-field input[type=number]:focus{border-color:rgba(52,211,153,.6)}
-.pr-ops-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px}
-.pr-op-chk{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:4px;padding:8px 10px;cursor:pointer;font-size:13px;color:#cbd5e1;transition:.15s;user-select:none}
-.pr-op-chk:hover{background:rgba(52,211,153,.08);border-color:rgba(52,211,153,.3);color:#e2e8f0}
-.pr-op-chk input[type=checkbox]{accent-color:#34d399;width:14px;height:14px;cursor:pointer;flex-shrink:0}
-.pr-tbl-mini-actions{display:flex;gap:6px;margin-top:6px}
-.pr-tbl-mini-btn{background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.08);border-radius:3px;padding:4px 10px;font-size:11px;color:#64748b;cursor:pointer;transition:.15s}
-.pr-tbl-mini-btn:hover{color:#e2e8f0;border-color:rgba(255,255,255,.2)}
-.pr-op-section{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:6px;padding:12px;margin-bottom:12px}
-.pr-op-section-title{font-family:'Press Start 2P',monospace;font-size:8px;color:#a78bfa;letter-spacing:.6px;margin-bottom:10px}
-.pr-op-qty-row{display:flex;align-items:center;gap:8px;margin-top:10px}
-.pr-op-qty-row label{font-size:7px;font-family:'Press Start 2P',monospace;color:#445566;letter-spacing:.6px}
-.pr-op-qty-row input[type=number]{width:80px;background:rgba(0,0,0,.45);border:1px solid rgba(255,255,255,.15);border-radius:3px;padding:7px 10px;color:#e2e8f0;font-size:13px;outline:none;color-scheme:dark}
-.pr-digits-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:5px;margin-top:6px}
-.pr-digits-btn{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:3px;padding:6px 0;font-size:12px;color:#cbd5e1;cursor:pointer;transition:.15s;text-align:center}
-.pr-digits-btn.sel{background:rgba(167,139,250,.15);border-color:rgba(167,139,250,.5);color:#a78bfa}
-.pr-mode-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px}
-.pr-mode-btn{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:4px;padding:8px 10px;font-size:12px;color:#cbd5e1;cursor:pointer;transition:.15s;text-align:center}
-.pr-mode-btn.sel{background:rgba(52,211,153,.14);border-color:rgba(52,211,153,.5);color:#34d399}
-.pr-subgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
-.pr-summary{background:rgba(0,0,0,.28);border:1px solid rgba(52,211,153,.18);border-radius:6px;padding:12px;margin:4px 0 12px;color:#94a3b8;font-size:12px;line-height:1.7}
-.pr-summary-title{font-family:'Press Start 2P',monospace;font-size:7px;color:#34d399;letter-spacing:.7px;margin-bottom:6px}
-.pr-summary strong{color:#e2e8f0}
-.pr-start-btn{background:linear-gradient(135deg,#059669,#34d399);border:none;border-radius:4px;padding:12px 28px;font-family:'Press Start 2P',monospace;font-size:9px;color:#fff;cursor:pointer;transition:.15s;margin-top:6px}
-.pr-start-btn:hover{opacity:.88}
-.pr-stop-btn{background:rgba(239,68,68,.18);border:1px solid rgba(239,68,68,.4);border-radius:3px;padding:6px 14px;font-family:'Press Start 2P',monospace;font-size:7px;color:#f87171;cursor:pointer;transition:.15s}
-.pr-stop-btn:hover{background:rgba(239,68,68,.3)}
-.pr-banner{display:none;background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.4);border-radius:8px;padding:10px 16px;margin-bottom:16px;align-items:center;justify-content:space-between;gap:10px;font-family:'Press Start 2P',monospace;font-size:8px;color:#34d399;animation:examPulse 2s ease-in-out infinite}
-.pr-banner.active{display:flex}
-.pr-results-hdr{display:flex;justify-content:space-between;align-items:center;font-family:'Press Start 2P',monospace;font-size:8px;color:#445566;letter-spacing:.6px;margin-bottom:10px}
-.pr-table{width:100%;border-collapse:collapse;font-size:13px}
-.pr-table th{padding:7px 10px;text-align:left;color:#445566;font-size:9px;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid rgba(255,255,255,.08);font-family:'Press Start 2P',monospace;white-space:nowrap}
-.pr-table td{padding:9px 10px;border-bottom:1px solid rgba(255,255,255,.04);color:#cbd5e1;white-space:nowrap}
-.pr-table tr:hover td{background:rgba(255,255,255,.025)}
-.pr-table tr.pr-done td{opacity:.65}
-.pr-op-summary{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;padding-top:14px;border-top:1px solid rgba(255,255,255,.06)}
-.pr-op-card{background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:12px 16px;text-align:center;min-width:110px;flex:1;transition:border-color .3s}
-
-/* ── Drag & drop de pestañas ── */
-.tab-btn[draggable]{cursor:grab}
-.tab-btn[draggable]:active{cursor:grabbing}
-.tab-btn.tab-drag-over{background:rgba(167,139,250,.12)!important;border-radius:4px 4px 0 0;outline:2px dashed rgba(167,139,250,.4);outline-offset:-2px}
+</style>
+<link rel="stylesheet" href="/src/client/maestro/pruebas.css">
+<style></style>
+<link rel="stylesheet" href="/src/client/maestro/tabDragDrop.css">
+<style>
 
 /* ── Gráfica de historial ── */
 .hist-chart-wrap{background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.07);
@@ -561,15 +219,9 @@ body.proj-mode .q-display{font-size:48px;letter-spacing:4px}
 
 </style>
 <link rel="stylesheet" href="/src/client/maestro/scrollbarWebkit.css">
-<style>/* ── Drag & drop de alumnos ── */
-.sc-drag-handle{color:rgba(255,255,255,.2);cursor:grab;padding:0 3px;font-size:14px;
-  flex-shrink:0;transition:color .15s;line-height:1;user-select:none}
-.sc-drag-handle:hover{color:rgba(167,139,250,.6)}
-.sc-drag-handle:active{cursor:grabbing}
-.sc-card.dragging{opacity:.3;transform:scale(.97)}
-.sc-card.drag-over{outline:2px solid rgba(167,139,250,.75)!important;
-  box-shadow:0 0 0 2px rgba(167,139,250,.35),0 0 18px rgba(167,139,250,.15)!important;
-  transform:translateY(-3px)}
+<style></style>
+<link rel="stylesheet" href="/src/client/maestro/studentDragDrop.css">
+<style>
 
 /* ════════════════════════════════════════
    PIXEL ART SPRITES & ANIMATIONS
@@ -638,24 +290,12 @@ body.proj-mode .q-display{font-size:48px;letter-spacing:4px}
 }
 
 /* ── Power tiles con poderes activos ── */
-.ptile.has-p .ptile-icon{animation:powerBob 1.8s ease-in-out infinite;display:block}
-.ptile.has-p{animation:powerGlow 2s ease-in-out infinite}
-@keyframes powerBob{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-2px) scale(1.15)}}
-@keyframes powerGlow{
-  0%,100%{border-color:rgba(167,139,250,.4);box-shadow:none}
-  50%{border-color:rgba(167,139,250,.8);box-shadow:0 0 6px rgba(167,139,250,.4)}}
-
-/* ── Session card glow pulse ── */
-.session-card{animation:cardGlowP 3s ease-in-out infinite}
-@keyframes cardGlowP{
-  0%,100%{box-shadow:0 0 0 1px rgba(167,139,250,.15),0 2px 8px rgba(0,0,0,.3)}
-  50%{box-shadow:0 0 0 1px rgba(167,139,250,.3),0 4px 16px rgba(167,139,250,.1)}}
-.session-card.playing{animation:cardGlowActive 2s ease-in-out infinite}
-@keyframes cardGlowActive{
-  0%,100%{box-shadow:0 0 0 1px rgba(52,211,153,.2),0 2px 8px rgba(0,0,0,.3)}
-  50%{box-shadow:0 0 0 1px rgba(52,211,153,.5),0 4px 20px rgba(52,211,153,.15)}}
-
-/* ── Shooting pixels across header ── */
+</style>
+<link rel="stylesheet" href="/src/client/maestro/powerAnimations.css">
+<style>/* ── Session card glow pulse ── */
+</style>
+<link rel="stylesheet" href="/src/client/maestro/sessionAnimations.css">
+<style>/* ── Shooting pixels across header ── */
 .hdr-star{position:absolute;width:2px;height:2px;background:#00e5ff;border-radius:0;
   box-shadow:-3px 0 0 rgba(0,229,255,.5),-6px 0 0 rgba(0,229,255,.2);
   animation:shoot var(--dur,5s) linear infinite var(--dl,0s);opacity:0}
@@ -679,20 +319,20 @@ body.proj-mode .q-display{font-size:48px;letter-spacing:4px}
 </head>
 <body>
 
-<!-- â”€â”€ Pantalla de login â”€â”€ -->
+<!-- ── Pantalla de login ── -->
 <div id="loginOverlay">
   <canvas id="loginCanvas"></canvas>
   <div class="lg-grid"></div>
   <div class="lg-horizon"></div>
   <div class="lg-scan"></div>
-  <span class="login-inv" style="top:11%;left:7%;--d:4.6s;--dl:0s">ðŸ‘¾</span>
-  <span class="login-inv" style="top:18%;right:8%;--d:5.4s;--dl:.8s">ðŸ‘¾</span>
-  <span class="login-inv" style="top:66%;left:9%;--d:4.1s;--dl:1.5s">ðŸ›¸</span>
-  <span class="login-inv" style="top:73%;right:6%;--d:6.2s;--dl:.4s">â­</span>
-  <span class="login-inv" style="top:40%;left:3%;--d:5.1s;--dl:2s">ðŸ’«</span>
-  <span class="login-inv" style="top:53%;right:4%;--d:4.9s;--dl:1.2s">ðŸŒŸ</span>
-  <span class="login-inv" style="top:30%;left:14%;--d:6s;--dl:.6s;font-size:11px">âœ¦</span>
-  <span class="login-inv" style="top:80%;left:22%;--d:5.7s;--dl:3s;font-size:11px">âœ¦</span>
+  <span class="login-inv" style="top:11%;left:7%;--d:4.6s;--dl:0s">👾</span>
+  <span class="login-inv" style="top:18%;right:8%;--d:5.4s;--dl:.8s">👾</span>
+  <span class="login-inv" style="top:66%;left:9%;--d:4.1s;--dl:1.5s">🛸</span>
+  <span class="login-inv" style="top:73%;right:6%;--d:6.2s;--dl:.4s">⭐</span>
+  <span class="login-inv" style="top:40%;left:3%;--d:5.1s;--dl:2s">💫</span>
+  <span class="login-inv" style="top:53%;right:4%;--d:4.9s;--dl:1.2s">🌟</span>
+  <span class="login-inv" style="top:30%;left:14%;--d:6s;--dl:.6s;font-size:11px">✦</span>
+  <span class="login-inv" style="top:80%;left:22%;--d:5.7s;--dl:3s;font-size:11px">✦</span>
   <div class="login-box">
     <span class="login-corner tl"></span>
     <span class="login-corner tr"></span>
@@ -703,7 +343,7 @@ body.proj-mode .q-display{font-size:48px;letter-spacing:4px}
     <div class="login-score-row">
       <div class="login-score-item">
         <span class="ls-lbl">Top Score</span>
-        <span class="ls-val" id="loginTopScore">â”€â”€â”€â”€â”€â”€</span>
+        <span class="ls-val" id="loginTopScore">──────</span>
       </div>
       <div class="login-score-item">
         <span class="ls-lbl">Stage</span>
@@ -711,20 +351,20 @@ body.proj-mode .q-display{font-size:48px;letter-spacing:4px}
       </div>
       <div class="login-score-item">
         <span class="ls-lbl">Alumnos</span>
-        <span class="ls-val" id="loginAlumnos">â”€â”€</span>
+        <span class="ls-val" id="loginAlumnos">──</span>
       </div>
     </div>
     <div class="login-field">
-      <label for="loginUser">â–¶ Usuario</label>
+      <label for="loginUser">▶ Usuario</label>
       <input type="text" id="loginUser" placeholder="admin" autocomplete="username">
     </div>
     <div class="login-field">
-      <label for="loginPass">â–¶ ContraseÃ±a</label>
-      <input type="password" id="loginPass" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" autocomplete="current-password">
+      <label for="loginPass">▶ Contraseña</label>
+      <input type="password" id="loginPass" placeholder="••••••••" autocomplete="current-password">
     </div>
     <button class="login-btn" onclick="doLogin()">[ ENTRAR ]</button>
     <div id="loginErr" class="login-err"></div>
-    <div class="login-insert">â€” PRESS START â€”</div>
+    <div class="login-insert">— PRESS START —</div>
   </div>
 </div>
 
@@ -734,101 +374,101 @@ body.proj-mode .q-display{font-size:48px;letter-spacing:4px}
   <span class="hdr-star" style="--dur:5s;--dl:3s;--y:80%"></span>
   <div style="display:flex;flex-direction:column;gap:4px;position:relative;z-index:1">
     <div style="display:flex;align-items:center;gap:12px">
-      <span class="hdr-inv" style="--d:3.2s;--dl:0s">ðŸ‘¾</span>
-      <span class="hdr-inv" style="--d:3.8s;--dl:.6s">ðŸ‘¾</span>
-      <h1>â—ˆ MATH ATTACK â—ˆ</h1>
-      <span class="hdr-inv" style="--d:2.9s;--dl:1.1s">ðŸ‘¾</span>
-      <span class="hdr-inv" style="--d:3.5s;--dl:.3s">ðŸ‘¾</span>
+      <span class="hdr-inv" style="--d:3.2s;--dl:0s">👾</span>
+      <span class="hdr-inv" style="--d:3.8s;--dl:.6s">👾</span>
+      <h1>◈ MATH ATTACK ◈</h1>
+      <span class="hdr-inv" style="--d:2.9s;--dl:1.1s">👾</span>
+      <span class="hdr-inv" style="--d:3.5s;--dl:.3s">👾</span>
     </div>
     <div style="font-family:'Press Start 2P',monospace;font-size:7px;color:#445566;letter-spacing:2px">PANEL DEL MAESTRO</div>
   </div>
   <div style="display:flex;align-items:center;gap:20px;position:relative;z-index:1">
-    <a href="/ranking" style="text-decoration:none">ðŸ† RANKING</a>
+    <a href="/ranking" style="text-decoration:none">🏆 RANKING</a>
     <div class="conn-status"><span class="status-dot" id="dot"></span><span id="connTxt">Conectando...</span></div>
   </div>
 </header>
 <div class="container">
   <div class="stats-row">
-    <div class="stat-card"><span class="stat-icon" style="--d:0s">ðŸ‘¥</span><div class="val" id="statTotal">0</div><div class="lbl">Jugadores activos</div></div>
-    <div class="stat-card"><span class="stat-icon" style="--d:.4s">âš¡</span><div class="val" id="statPlaying">0</div><div class="lbl">Jugando</div></div>
-    <div class="stat-card"><span class="stat-icon" style="--d:.8s">â¸</span><div class="val" id="statPaused">0</div><div class="lbl">En pausa</div></div>
-    <div class="stat-card"><span class="stat-icon" style="--d:1.2s">ðŸ†</span><div class="val" id="statAvgScore">0</div><div class="lbl">Puntaje promedio</div></div>
+    <div class="stat-card"><span class="stat-icon" style="--d:0s">👥</span><div class="val" id="statTotal">0</div><div class="lbl">Jugadores activos</div></div>
+    <div class="stat-card"><span class="stat-icon" style="--d:.4s">⚡</span><div class="val" id="statPlaying">0</div><div class="lbl">Jugando</div></div>
+    <div class="stat-card"><span class="stat-icon" style="--d:.8s">⏸</span><div class="val" id="statPaused">0</div><div class="lbl">En pausa</div></div>
+    <div class="stat-card"><span class="stat-icon" style="--d:1.2s">🏆</span><div class="val" id="statAvgScore">0</div><div class="lbl">Puntaje promedio</div></div>
   </div>
 
-  <!-- EstadÃ­sticas generales por operaciÃ³n -->
+  <!-- Estadísticas generales por operación -->
   <div class="op-stats-row">
     <div class="op-card" id="opCard-mult">
-      <span class="op-sym">Ã—</span>
-      <div class="op-name">MultiplicaciÃ³n</div>
-      <div class="op-pct" id="opPct-mult">â€”</div>
+      <span class="op-sym">×</span>
+      <div class="op-name">Multiplicación</div>
+      <div class="op-pct" id="opPct-mult">—</div>
       <div class="op-bar"><div class="op-bar-fill" id="opBar-mult" style="width:0%;background:#34d399"></div></div>
       <div class="op-games" id="opGames-mult">0 partidas</div>
     </div>
     <div class="op-card" id="opCard-add">
       <span class="op-sym">+</span>
       <div class="op-name">Suma</div>
-      <div class="op-pct" id="opPct-add">â€”</div>
+      <div class="op-pct" id="opPct-add">—</div>
       <div class="op-bar"><div class="op-bar-fill" id="opBar-add" style="width:0%;background:#60a5fa"></div></div>
       <div class="op-games" id="opGames-add">0 partidas</div>
     </div>
     <div class="op-card" id="opCard-sub">
-      <span class="op-sym">âˆ’</span>
+      <span class="op-sym">−</span>
       <div class="op-name">Resta</div>
-      <div class="op-pct" id="opPct-sub">â€”</div>
+      <div class="op-pct" id="opPct-sub">—</div>
       <div class="op-bar"><div class="op-bar-fill" id="opBar-sub" style="width:0%;background:#fb923c"></div></div>
       <div class="op-games" id="opGames-sub">0 partidas</div>
     </div>
     <div class="op-card" id="opCard-div">
-      <span class="op-sym">Ã·</span>
-      <div class="op-name">DivisiÃ³n</div>
-      <div class="op-pct" id="opPct-div">â€”</div>
+      <span class="op-sym">÷</span>
+      <div class="op-name">División</div>
+      <div class="op-pct" id="opPct-div">—</div>
       <div class="op-bar"><div class="op-bar-fill" id="opBar-div" style="width:0%;background:#f472b6"></div></div>
       <div class="op-games" id="opGames-div">0 partidas</div>
     </div>
   </div>
 
-  <!-- Barra de pestaÃ±as -->
+  <!-- Barra de pestañas -->
   <div class="tab-bar">
-    <button class="tab-btn active" id="tab-alumnos" draggable="true" onclick="switchTab('alumnos')">ðŸ‘¥ Alumnos <span class="tab-badge" id="tabBadgeAlumnos">0</span></button>
-    <button class="tab-btn" id="tab-sesiones" draggable="true" onclick="switchTab('sesiones')">ðŸŽ® En Juego <span class="tab-badge" id="tabBadgeSesiones">0</span></button>
-    <button class="tab-btn" id="tab-pruebas" draggable="true" onclick="switchTab('pruebas')">ðŸ“Š Pruebas</button>
-    <button class="tab-btn" id="tab-ajustes" draggable="true" onclick="switchTab('ajustes')">âš™ï¸ Ajustes</button>
-    <button class="tab-btn" id="tab-conexion" draggable="true" onclick="switchTab('conexion')">ðŸ”Œ ConexiÃ³n <span class="tab-badge" id="tabBadgeConexion">0</span></button>
-    <button class="tab-btn" id="tab-transacciones" draggable="true" onclick="switchTab('transacciones')">ðŸ’° Transacciones</button>
+    <button class="tab-btn active" id="tab-alumnos" draggable="true" onclick="switchTab('alumnos')">👥 Alumnos <span class="tab-badge" id="tabBadgeAlumnos">0</span></button>
+    <button class="tab-btn" id="tab-sesiones" draggable="true" onclick="switchTab('sesiones')">🎮 En Juego <span class="tab-badge" id="tabBadgeSesiones">0</span></button>
+    <button class="tab-btn" id="tab-pruebas" draggable="true" onclick="switchTab('pruebas')">📊 Pruebas</button>
+    <button class="tab-btn" id="tab-ajustes" draggable="true" onclick="switchTab('ajustes')">⚙️ Ajustes</button>
+    <button class="tab-btn" id="tab-conexion" draggable="true" onclick="switchTab('conexion')">🔌 Conexión <span class="tab-badge" id="tabBadgeConexion">0</span></button>
+    <button class="tab-btn" id="tab-transacciones" draggable="true" onclick="switchTab('transacciones')">💰 Transacciones</button>
   </div>
 
-  <!-- PestaÃ±a: Sesiones activas -->
+  <!-- Pestaña: Sesiones activas -->
   <div class="tab-panel" id="panel-sesiones">
     <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:12px">
       <div class="sort-row">
         <span class="filter-lbl">Ordenar:</span>
         <select class="sort-sel" id="sessionSort" onchange="renderFromState()">
           <option value="name">Nombre</option>
-          <option value="score">Puntaje â†“</option>
+          <option value="score">Puntaje ↓</option>
           <option value="grade">Grado</option>
           <option value="status">Estado</option>
         </select>
         <span class="filter-lbl" style="margin-left:8px">Grado:</span>
         <button class="fchip active" onclick="setSessionFilter('',this)">Todos</button>
-        <button class="fchip" onclick="setSessionFilter('1Â° Grado',this)">1Â°</button>
-        <button class="fchip" onclick="setSessionFilter('2Â° Grado',this)">2Â°</button>
-        <button class="fchip" onclick="setSessionFilter('3Â° Grado',this)">3Â°</button>
-        <button class="fchip" onclick="setSessionFilter('4Â° Grado',this)">4Â°</button>
-        <button class="fchip" onclick="setSessionFilter('5Â° Grado',this)">5Â°</button>
-        <button class="fchip" onclick="setSessionFilter('6Â° Grado',this)">6Â°</button>
+        <button class="fchip" onclick="setSessionFilter('1° Grado',this)">1°</button>
+        <button class="fchip" onclick="setSessionFilter('2° Grado',this)">2°</button>
+        <button class="fchip" onclick="setSessionFilter('3° Grado',this)">3°</button>
+        <button class="fchip" onclick="setSessionFilter('4° Grado',this)">4°</button>
+        <button class="fchip" onclick="setSessionFilter('5° Grado',this)">5°</button>
+        <button class="fchip" onclick="setSessionFilter('6° Grado',this)">6°</button>
       </div>
     <div style="display:flex;gap:7px;flex-wrap:wrap">
-        <button class="btn-announce" onclick="openAnnounce()">ðŸ“¢ Anuncio</button>
-        <button class="btn-grp" onclick="cmdAll('pause')">â¸ Pausar todos</button>
-        <button class="btn-grp" onclick="cmdAll('resume')">â–¶ Reanudar todos</button>
-        <button class="btn-grp" onclick="cmdAll('end')">ðŸ›‘ Terminar todos</button>
-        <button class="btn-proj" id="btnProj" onclick="toggleProjector()">ðŸ“½ Proyector</button>
-        <a class="btn-live" href="/ranking-live" target="_blank">ðŸ† Ranking Vivo</a>
+        <button class="btn-announce" onclick="openAnnounce()">📢 Anuncio</button>
+        <button class="btn-grp" onclick="cmdAll('pause')">⏸ Pausar todos</button>
+        <button class="btn-grp" onclick="cmdAll('resume')">▶ Reanudar todos</button>
+        <button class="btn-grp" onclick="cmdAll('end')">🛑 Terminar todos</button>
+        <button class="btn-proj" id="btnProj" onclick="toggleProjector()">📽 Proyector</button>
+        <a class="btn-live" href="/ranking-live" target="_blank">🏆 Ranking Vivo</a>
       </div>
     </div>
     <div class="session-viewbar">
-      <button class="session-viewbtn active" id="sessionView-individual" onclick="setSessionView('individual')">ðŸ§‘ Individual <span class="tab-badge" id="sessionViewCountIndividual">0</span></button>
-      <button class="session-viewbtn" id="sessionView-multiplayer" onclick="setSessionView('multiplayer')">ðŸŒ Multijugador <span class="tab-badge" id="sessionViewCountMultiplayer">0</span></button>
+      <button class="session-viewbtn active" id="sessionView-individual" onclick="setSessionView('individual')">🧑 Individual <span class="tab-badge" id="sessionViewCountIndividual">0</span></button>
+      <button class="session-viewbtn" id="sessionView-multiplayer" onclick="setSessionView('multiplayer')">🌐 Multijugador <span class="tab-badge" id="sessionViewCountMultiplayer">0</span></button>
     </div>
     <div class="session-pane active" id="sessionPane-individual">
       <div class="sessions-grid" id="grid"><div class="empty"><div class="invader-float"><div class="invader-wrap"><div class="px-f fc"></div><div class="px-f fp"></div></div><div class="invader-lbl">ESPERANDO JUGADORES...</div></div></div></div>
@@ -838,70 +478,70 @@ body.proj-mode .q-display{font-size:48px;letter-spacing:4px}
     </div>
   </div>
 
-  <!-- PestaÃ±a: Alumnos registrados -->
+  <!-- Pestaña: Alumnos registrados -->
   <div class="tab-panel active" id="panel-alumnos">
     <div class="students-header">
-      <div class="students-title">ðŸ‘¥ Alumnos Registrados <span id="studentsCount" style="font-size:12px;font-weight:400;color:#64748b;margin-left:6px"></span></div>
+      <div class="students-title">👥 Alumnos Registrados <span id="studentsCount" style="font-size:12px;font-weight:400;color:#64748b;margin-left:6px"></span></div>
       <div class="students-actions">
-        <button onclick="openAddStudent()" class="btn-reg">âž• Agregar alumno</button>
-        <button onclick="openBulkAureos()" class="btn-bulk">ðŸŽ Dar Ãureos</button>
-        <button onclick="exportCSV()" class="btn-bulk" title="Exportar CSV">ðŸ“Š CSV</button>
-        <button onclick="loadStudents()" class="btn-icon">ðŸ”„</button>
-        <button onclick="resetStudentOrder()" class="btn-icon" title="Restablecer orden original">â†• Orden</button>
+        <button onclick="openAddStudent()" class="btn-reg">➕ Agregar alumno</button>
+        <button onclick="openBulkAureos()" class="btn-bulk">🎁 Dar Áureos</button>
+        <button onclick="exportCSV()" class="btn-bulk" title="Exportar CSV">📊 CSV</button>
+        <button onclick="loadStudents()" class="btn-icon">🔄</button>
+        <button onclick="resetStudentOrder()" class="btn-icon" title="Restablecer orden original">↕ Orden</button>
       </div>
     </div>
     <div class="filter-bar" id="studentFilterBar">
       <span class="filter-lbl">Grado:</span>
       <button class="fchip active" onclick="setStudentFilter('',this)">Todos</button>
-      <button class="fchip" onclick="setStudentFilter('1Â° Grado',this)">1Â°</button>
-      <button class="fchip" onclick="setStudentFilter('2Â° Grado',this)">2Â°</button>
-      <button class="fchip" onclick="setStudentFilter('3Â° Grado',this)">3Â°</button>
-      <button class="fchip" onclick="setStudentFilter('4Â° Grado',this)">4Â°</button>
-      <button class="fchip" onclick="setStudentFilter('5Â° Grado',this)">5Â°</button>
-      <button class="fchip" onclick="setStudentFilter('6Â° Grado',this)">6Â°</button>
+      <button class="fchip" onclick="setStudentFilter('1° Grado',this)">1°</button>
+      <button class="fchip" onclick="setStudentFilter('2° Grado',this)">2°</button>
+      <button class="fchip" onclick="setStudentFilter('3° Grado',this)">3°</button>
+      <button class="fchip" onclick="setStudentFilter('4° Grado',this)">4°</button>
+      <button class="fchip" onclick="setStudentFilter('5° Grado',this)">5°</button>
+      <button class="fchip" onclick="setStudentFilter('6° Grado',this)">6°</button>
     </div>
     <div id="regMsg" class="reg-msg"></div>
     <div id="studentsList" class="students-grid"></div>
   </div>
 
-  <!-- PestaÃ±a: Ajustes -->
+  <!-- Pestaña: Ajustes -->
   <div class="tab-panel" id="panel-ajustes">
 
     <!-- Cambiar credenciales -->
     <div class="ajustes-section">
-      <h3>ðŸ” Credenciales de Acceso</h3>
-      <p class="aj-current" style="margin-bottom:16px">Usuario actual: <span id="ajCurrentUser">â€”</span></p>
+      <h3>🔐 Credenciales de Acceso</h3>
+      <p class="aj-current" style="margin-bottom:16px">Usuario actual: <span id="ajCurrentUser">—</span></p>
 
       <div class="aj-field">
-        <label>ContraseÃ±a actual</label>
-        <input type="password" id="ajCurPass" placeholder="ContraseÃ±a actual">
+        <label>Contraseña actual</label>
+        <input type="password" id="ajCurPass" placeholder="Contraseña actual">
       </div>
       <div class="aj-field">
-        <label>Nuevo usuario (dejar vacÃ­o para no cambiar)</label>
+        <label>Nuevo usuario (dejar vacío para no cambiar)</label>
         <input type="text" id="ajNewUser" placeholder="Nuevo usuario" autocomplete="off">
       </div>
       <div class="aj-field">
-        <label>Nueva contraseÃ±a (dejar vacÃ­o para no cambiar)</label>
-        <input type="password" id="ajNewPass" placeholder="Nueva contraseÃ±a" autocomplete="new-password">
+        <label>Nueva contraseña (dejar vacío para no cambiar)</label>
+        <input type="password" id="ajNewPass" placeholder="Nueva contraseña" autocomplete="new-password">
       </div>
       <div class="aj-field">
-        <label>Confirmar nueva contraseÃ±a</label>
-        <input type="password" id="ajNewPass2" placeholder="Repetir nueva contraseÃ±a" autocomplete="new-password">
+        <label>Confirmar nueva contraseña</label>
+        <input type="password" id="ajNewPass2" placeholder="Repetir nueva contraseña" autocomplete="new-password">
       </div>
       <button class="btn-save-aj" onclick="saveAjustes()">Guardar cambios</button>
       <div id="ajMsg" class="aj-msg"></div>
     </div>
 
-    <!-- Cerrar sesiÃ³n -->
+    <!-- Cerrar sesión -->
     <div class="ajustes-section">
-      <h3>ðŸšª SesiÃ³n</h3>
-      <p style="font-size:13px;color:#64748b;margin-bottom:16px">Cierra la sesiÃ³n actual. NecesitarÃ¡s ingresar las credenciales de nuevo.</p>
-      <button class="btn-logout" onclick="logout()">Cerrar sesiÃ³n</button>
+      <h3>🚪 Sesión</h3>
+      <p style="font-size:13px;color:#64748b;margin-bottom:16px">Cierra la sesión actual. Necesitarás ingresar las credenciales de nuevo.</p>
+      <button class="btn-logout" onclick="logout()">Cerrar sesión</button>
     </div>
 
   </div>
 
-  <!-- PestaÃ±a: ConexiÃ³n -->
+  <!-- Pestaña: Conexión -->
   <div class="tab-panel" id="panel-conexion">
 
     <!-- Stats row -->
@@ -909,8 +549,8 @@ body.proj-mode .q-display{font-size:48px;letter-spacing:4px}
       <div class="cx-stat"><span class="cv" id="cxTotal">0</span><span class="cl">TOTAL</span></div>
       <div class="cx-stat"><span class="cv" id="cxMaestro">0</span><span class="cl">MAESTRO</span></div>
       <div class="cx-stat"><span class="cv" id="cxPlayers">0</span><span class="cl">JUGADORES</span></div>
-      <div class="cx-stat"><span class="cv" id="cxMsgRate">â€”</span><span class="cl">MSGS/S â†“</span></div>
-      <div class="cx-stat"><span class="cv" id="cxMsgRateOut">â€”</span><span class="cl">MSGS/S â†‘</span></div>
+      <div class="cx-stat"><span class="cv" id="cxMsgRate">—</span><span class="cl">MSGS/S ↓</span></div>
+      <div class="cx-stat"><span class="cv" id="cxMsgRateOut">—</span><span class="cl">MSGS/S ↑</span></div>
     </div>
 
     <!-- Tabla de conexiones -->
@@ -919,7 +559,7 @@ body.proj-mode .q-display{font-size:48px;letter-spacing:4px}
       <table class="cx-table">
         <thead><tr>
           <th>Tipo</th><th>Nombre</th><th>Grado</th><th>IP</th>
-          <th>Tiempo</th><th>Msgs â†“</th><th>Msgs â†‘</th><th>Latencia</th><th>AcciÃ³n</th>
+          <th>Tiempo</th><th>Msgs ↓</th><th>Msgs ↑</th><th>Latencia</th><th>Acción</th>
         </tr></thead>
         <tbody id="cxTableBody"></tbody>
       </table>
@@ -927,35 +567,35 @@ body.proj-mode .q-display{font-size:48px;letter-spacing:4px}
 
     <!-- Log de actividad -->
     <div class="cx-log-hdr">
-      <span class="cx-log-title">ðŸ“‹ Registro de actividad</span>
-      <button class="cx-clear-btn" onclick="clearCxLog()">ðŸ—‘ Limpiar</button>
+      <span class="cx-log-title">📋 Registro de actividad</span>
+      <button class="cx-clear-btn" onclick="clearCxLog()">🗑 Limpiar</button>
     </div>
     <div class="cx-log-wrap" id="cxLog"></div>
 
   </div>
 
 
-  <!-- PestaÃ±a: Pruebas -->
+  <!-- Pestaña: Pruebas -->
   <div class="tab-panel" id="panel-pruebas">
 
     <!-- Banner prueba activa -->
     <div class="pr-banner" id="prBanner">
-      <span>ðŸ“Š PRUEBA EN CURSO</span>
+      <span>📊 PRUEBA EN CURSO</span>
       <span id="prBannerInfo" style="color:#94a3b8;font-size:7px"></span>
-      <button class="pr-stop-btn" onclick="stopPrueba()">â¹ DETENER</button>
+      <button class="pr-stop-btn" onclick="stopPrueba()">⏹ DETENER</button>
     </div>
 
-    <!-- ConfiguraciÃ³n -->
+    <!-- Configuración -->
     <div id="prConfig">
-      <div class="pr-section-title">ðŸ“Š CONFIGURAR SESIÃ“N DE PRUEBA</div>
+      <div class="pr-section-title">📊 CONFIGURAR SESIÓN DE PRUEBA</div>
       <div class="pr-config-grid">
         <div class="pr-field">
           <label>GRADO / GRUPO</label>
           <select id="prGrade">
-            <option value="">â€” Todos los grados â€”</option>
-            <option>1Â° Grado</option><option>2Â° Grado</option>
-            <option>3Â° Grado</option><option>4Â° Grado</option>
-            <option>5Â° Grado</option><option>6Â° Grado</option>
+            <option value="">— Todos los grados —</option>
+            <option>1° Grado</option><option>2° Grado</option>
+            <option>3° Grado</option><option>4° Grado</option>
+            <option>5° Grado</option><option>6° Grado</option>
           </select>
         </div>
         <div class="pr-field">
@@ -966,27 +606,27 @@ body.proj-mode .q-display{font-size:48px;letter-spacing:4px}
       <div class="pr-field">
         <label>OPERACIONES A EVALUAR</label>
         <div class="pr-ops-grid">
-          <label class="pr-op-chk"><input type="checkbox" id="prOpMult" onchange="prToggleOpSection('mult',this.checked);prUpdateSummary()" checked> âœ–ï¸ MultiplicaciÃ³n</label>
-          <label class="pr-op-chk"><input type="checkbox" id="prOpAdd" onchange="prToggleOpSection('add',this.checked);prUpdateSummary()"> âž• Suma</label>
-          <label class="pr-op-chk"><input type="checkbox" id="prOpSub" onchange="prToggleOpSection('sub',this.checked);prUpdateSummary()"> âž– Resta</label>
-          <label class="pr-op-chk"><input type="checkbox" id="prOpDiv" onchange="prToggleOpSection('div',this.checked);prUpdateSummary()"> âž— DivisiÃ³n</label>
+          <label class="pr-op-chk"><input type="checkbox" id="prOpMult" onchange="prToggleOpSection('mult',this.checked);prUpdateSummary()" checked> ✖️ Multiplicación</label>
+          <label class="pr-op-chk"><input type="checkbox" id="prOpAdd" onchange="prToggleOpSection('add',this.checked);prUpdateSummary()"> ➕ Suma</label>
+          <label class="pr-op-chk"><input type="checkbox" id="prOpSub" onchange="prToggleOpSection('sub',this.checked);prUpdateSummary()"> ➖ Resta</label>
+          <label class="pr-op-chk"><input type="checkbox" id="prOpDiv" onchange="prToggleOpSection('div',this.checked);prUpdateSummary()"> ➗ División</label>
         </div>
       </div>
       <div id="prOpSections"></div>
       <div class="pr-summary" id="prSummary"></div>
-      <button class="pr-start-btn" onclick="startPrueba(this)">â–¶ INICIAR PRUEBA</button>
+      <button class="pr-start-btn" onclick="startPrueba(this)">▶ INICIAR PRUEBA</button>
     </div>
 
     <!-- Resultados en tiempo real -->
     <div id="prResultados" style="display:none">
       <div class="pr-results-hdr">
-        <span>ðŸ“‹ RESULTADOS EN TIEMPO REAL</span>
+        <span>📋 RESULTADOS EN TIEMPO REAL</span>
         <span id="prParticipantes" style="color:#34d399;font-size:10px"></span>
       </div>
       <div style="overflow-x:auto">
         <table class="pr-table">
           <thead id="prThead">
-            <tr><th>Alumno</th><th>Grado</th><th>Progreso</th><th>PrecisiÃ³n</th></tr>
+            <tr><th>Alumno</th><th>Grado</th><th>Progreso</th><th>Precisión</th></tr>
           </thead>
           <tbody id="prTbody"></tbody>
         </table>
@@ -995,12 +635,12 @@ body.proj-mode .q-display{font-size:48px;letter-spacing:4px}
       <!-- Alumnos que ya terminaron la prueba -->
       <div id="prFinishedWrap" style="display:none;margin-top:18px">
         <div class="pr-results-hdr" style="margin-bottom:8px">
-          <span>âœ… TERMINARON LA PRUEBA</span>
+          <span>✅ TERMINARON LA PRUEBA</span>
           <span id="prFinishedCount" style="color:#34d399;font-size:10px"></span>
         </div>
         <div style="overflow-x:auto">
           <table class="pr-table">
-            <thead><tr><th>Alumno</th><th>Grado</th><th>Tiempo</th><th>Puntaje</th><th>PrecisiÃ³n</th><th>Correctas</th><th>Estado</th></tr></thead>
+            <thead><tr><th>Alumno</th><th>Grado</th><th>Tiempo</th><th>Puntaje</th><th>Precisión</th><th>Correctas</th><th>Estado</th></tr></thead>
             <tbody id="prFinishedBody"></tbody>
           </table>
         </div>
@@ -1012,13 +652,13 @@ body.proj-mode .q-display{font-size:48px;letter-spacing:4px}
   <!-- Modal: agregar nuevo alumno -->
   <div class="asm-overlay" id="asmOverlay" onclick="closeAddStudent()"></div>
   <div class="asm-modal" id="asmModal">
-    <h2>âž• Agregar nuevo alumno</h2>
-    <div class="asm-field"><label>Nombre completo</label><input id="asmName" type="text" placeholder="Ej. Juan PÃ©rez" autocomplete="off"></div>
-    <div class="asm-field"><label>Grado escolar</label><select id="asmGrade"><option value="">â€” Selecciona grado â€”</option><option>1Â° Grado</option><option>2Â° Grado</option><option>3Â° Grado</option><option>4Â° Grado</option><option>5Â° Grado</option><option>6Â° Grado</option></select></div>
-    <div class="asm-field"><label>ContraseÃ±a (4 dÃ­gitos)</label><input id="asmPin" type="number" placeholder="0000" min="0" max="9999"></div>
+    <h2>➕ Agregar nuevo alumno</h2>
+    <div class="asm-field"><label>Nombre completo</label><input id="asmName" type="text" placeholder="Ej. Juan Pérez" autocomplete="off"></div>
+    <div class="asm-field"><label>Grado escolar</label><select id="asmGrade"><option value="">— Selecciona grado —</option><option>1° Grado</option><option>2° Grado</option><option>3° Grado</option><option>4° Grado</option><option>5° Grado</option><option>6° Grado</option></select></div>
+    <div class="asm-field"><label>Contraseña (4 dígitos)</label><input id="asmPin" type="number" placeholder="0000" min="0" max="9999"></div>
     <div class="asm-msg" id="asmMsg"></div>
     <div class="asm-actions">
-      <button class="btn-reg" style="flex:1" onclick="registerStudent()">âœ… Registrar</button>
+      <button class="btn-reg" style="flex:1" onclick="registerStudent()">✅ Registrar</button>
       <button class="btn-icon" onclick="closeAddStudent()">Cancelar</button>
     </div>
   </div>
@@ -1026,34 +666,34 @@ body.proj-mode .q-display{font-size:48px;letter-spacing:4px}
   <!-- Modal: Anuncio al grupo -->
   <div class="big-overlay" id="announceOverlay" onclick="closeAnnounce()"></div>
   <div class="big-modal" id="announceModal" style="display:none">
-    <h2>ðŸ“¢ Enviar anuncio a todos</h2>
+    <h2>📢 Enviar anuncio a todos</h2>
     <div class="bm-field">
-      <label>Mensaje (mÃ¡x. 200 caracteres)</label>
-      <textarea id="annText" rows="3" maxlength="200" placeholder="Ej. Â¡PrepÃ¡rense para la siguiente ronda!"></textarea>
+      <label>Mensaje (máx. 200 caracteres)</label>
+      <textarea id="annText" rows="3" maxlength="200" placeholder="Ej. ¡Prepárense para la siguiente ronda!"></textarea>
     </div>
     <div class="bm-field">
-      <label>Emojis rÃ¡pidos</label>
+      <label>Emojis rápidos</label>
       <div class="bm-emoji-row">
-        <span class="bm-emoji" onclick="addEmoji('ðŸŽ‰')">ðŸŽ‰</span>
-        <span class="bm-emoji" onclick="addEmoji('â±ï¸')">â±ï¸</span>
-        <span class="bm-emoji" onclick="addEmoji('ðŸš¨')">ðŸš¨</span>
-        <span class="bm-emoji" onclick="addEmoji('ðŸ†')">ðŸ†</span>
-        <span class="bm-emoji" onclick="addEmoji('ðŸ’ª')">ðŸ’ª</span>
-        <span class="bm-emoji" onclick="addEmoji('ðŸ“–')">ðŸ“–</span>
-        <span class="bm-emoji" onclick="addEmoji('ðŸ¤«')">ðŸ¤«</span>
-        <span class="bm-emoji" onclick="addEmoji('ðŸ‘')">ðŸ‘</span>
+        <span class="bm-emoji" onclick="addEmoji('🎉')">🎉</span>
+        <span class="bm-emoji" onclick="addEmoji('⏱️')">⏱️</span>
+        <span class="bm-emoji" onclick="addEmoji('🚨')">🚨</span>
+        <span class="bm-emoji" onclick="addEmoji('🏆')">🏆</span>
+        <span class="bm-emoji" onclick="addEmoji('💪')">💪</span>
+        <span class="bm-emoji" onclick="addEmoji('📖')">📖</span>
+        <span class="bm-emoji" onclick="addEmoji('🤫')">🤫</span>
+        <span class="bm-emoji" onclick="addEmoji('👏')">👏</span>
       </div>
     </div>
     <div class="bm-actions">
       <button class="bm-cancel" onclick="closeAnnounce()">Cancelar</button>
-      <button class="bm-save" onclick="sendAnnouncement()">ðŸ“¤ Enviar</button>
+      <button class="bm-save" onclick="sendAnnouncement()">📤 Enviar</button>
     </div>
   </div>
 
-  <!-- Modal: Dar Ãureos masivos -->
+  <!-- Modal: Dar Áureos masivos -->
   <div class="big-overlay" id="bulkOverlay" onclick="closeBulkAureos()"></div>
   <div class="big-modal" id="bulkModal" style="display:none">
-    <h2>ðŸŽ Dar Ãureos masivos</h2>
+    <h2>🎁 Dar Áureos masivos</h2>
     <div class="bm-field">
       <label>Cantidad a dar</label>
       <input id="bulkAmount" type="number" min="1" max="9999" value="50" placeholder="50">
@@ -1062,40 +702,40 @@ body.proj-mode .q-display{font-size:48px;letter-spacing:4px}
       <label>Destinatarios</label>
       <select id="bulkGrade">
         <option value="">Todos los alumnos</option>
-        <option>1Â° Grado</option><option>2Â° Grado</option><option>3Â° Grado</option>
-        <option>4Â° Grado</option><option>5Â° Grado</option><option>6Â° Grado</option>
+        <option>1° Grado</option><option>2° Grado</option><option>3° Grado</option>
+        <option>4° Grado</option><option>5° Grado</option><option>6° Grado</option>
       </select>
     </div>
     <div id="bulkMsg" style="font-size:12px;min-height:16px;margin-top:2px"></div>
     <div class="bm-actions">
       <button class="bm-cancel" onclick="closeBulkAureos()">Cancelar</button>
-      <button class="bm-save" onclick="saveBulkAureos()">ðŸŽ Dar Ãureos</button>
+      <button class="bm-save" onclick="saveBulkAureos()">🎁 Dar Áureos</button>
     </div>
   </div>
 
-  <!-- PestaÃ±a: Transacciones -->
+  <!-- Pestaña: Transacciones -->
   <div class="tab-panel" id="panel-transacciones">
     <div class="students-header">
-      <div class="students-title">ðŸ’° Historial de Ãureos</div>
+      <div class="students-title">💰 Historial de Áureos</div>
       <div class="students-actions">
         <select id="txStudentFilter" onchange="setTxStudent(this.value)" style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);border-radius:6px;padding:5px 10px;color:#e2e8f0;font-size:12px;outline:none">
-          <option value="">â€” Todos los alumnos â€”</option>
+          <option value="">— Todos los alumnos —</option>
         </select>
-        <input type="date" id="txDateFilter" onchange="loadTransactions()" title="Filtrar por dÃ­a"
+        <input type="date" id="txDateFilter" onchange="loadTransactions()" title="Filtrar por día"
           style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);border-radius:6px;padding:5px 8px;color:#e2e8f0;font-size:12px;outline:none;color-scheme:dark">
-        <button onclick="loadTransactions()" class="btn-icon" title="Actualizar">ðŸ”„</button>
-        <button onclick="clearTransactions()" class="cx-clear-btn" style="border-color:rgba(248,113,113,.3);color:#f87171" title="Borrar registros visibles">ðŸ—‘ Borrar</button>
+        <button onclick="loadTransactions()" class="btn-icon" title="Actualizar">🔄</button>
+        <button onclick="clearTransactions()" class="cx-clear-btn" style="border-color:rgba(248,113,113,.3);color:#f87171" title="Borrar registros visibles">🗑 Borrar</button>
       </div>
     </div>
     <div class="filter-bar" id="txGradeBar">
       <span class="filter-lbl">Grado:</span>
       <button class="fchip active" onclick="setTxGrade('',this)">Todos</button>
-      <button class="fchip" onclick="setTxGrade('1Â° Grado',this)">1Â°</button>
-      <button class="fchip" onclick="setTxGrade('2Â° Grado',this)">2Â°</button>
-      <button class="fchip" onclick="setTxGrade('3Â° Grado',this)">3Â°</button>
-      <button class="fchip" onclick="setTxGrade('4Â° Grado',this)">4Â°</button>
-      <button class="fchip" onclick="setTxGrade('5Â° Grado',this)">5Â°</button>
-      <button class="fchip" onclick="setTxGrade('6Â° Grado',this)">6Â°</button>
+      <button class="fchip" onclick="setTxGrade('1° Grado',this)">1°</button>
+      <button class="fchip" onclick="setTxGrade('2° Grado',this)">2°</button>
+      <button class="fchip" onclick="setTxGrade('3° Grado',this)">3°</button>
+      <button class="fchip" onclick="setTxGrade('4° Grado',this)">4°</button>
+      <button class="fchip" onclick="setTxGrade('5° Grado',this)">5°</button>
+      <button class="fchip" onclick="setTxGrade('6° Grado',this)">6°</button>
     </div>
     <div style="overflow-x:auto;margin-top:4px">
       <table class="cx-table">
@@ -1103,7 +743,7 @@ body.proj-mode .q-display{font-size:48px;letter-spacing:4px}
           <th>Fecha / Hora</th><th>Alumno</th><th>Motivo</th><th>Monto</th><th>Saldo</th>
         </tr></thead>
         <tbody id="txTableBody">
-          <tr><td colspan="5" style="text-align:center;color:#64748b;padding:20px">Selecciona esta pestaÃ±a para cargar.</td></tr>
+          <tr><td colspan="5" style="text-align:center;color:#64748b;padding:20px">Selecciona esta pestaña para cargar.</td></tr>
         </tbody>
       </table>
     </div>
@@ -1112,19 +752,19 @@ body.proj-mode .q-display{font-size:48px;letter-spacing:4px}
   <!-- Modal: Historial de alumno -->
   <div class="big-overlay" id="histOverlay" onclick="closeHistory()"></div>
   <div class="big-modal" id="histModal" style="display:none">
-    <h2>ðŸ“Š <span id="histTitle">Historial</span></h2>
+    <h2>📊 <span id="histTitle">Historial</span></h2>
     <div id="histContent"><div style="text-align:center;padding:24px;color:#64748b">Cargando...</div></div>
   </div>
 
-  <!-- Overlay + popup de ediciÃ³n -->
+  <!-- Overlay + popup de edición -->
   <div class="edit-overlay" id="editOverlay" onclick="closePopup()"></div>
   <div class="edit-popup" id="editPopup" style="display:none">
     <div class="ep-title" id="epTitle">Editar</div>
     <input class="ep-input" type="number" id="epInput" min="0" max="9999">
     <select class="ep-input" id="epSelect" style="display:none;cursor:pointer;background:#1e1b4b;color:#e2e8f0;color-scheme:dark">
-      <option value="">â€” Sin grado â€”</option>
-      <option>1Â° Grado</option><option>2Â° Grado</option><option>3Â° Grado</option>
-      <option>4Â° Grado</option><option>5Â° Grado</option><option>6Â° Grado</option>
+      <option value="">— Sin grado —</option>
+      <option>1° Grado</option><option>2° Grado</option><option>3° Grado</option>
+      <option>4° Grado</option><option>5° Grado</option><option>6° Grado</option>
     </select>
     <div class="ep-hint" id="epHint"></div>
     <div class="ep-btns">
@@ -1205,12 +845,12 @@ let _dragSrcId=null;
 let _isDragging=false;
 // Logros (espejo exacto de server.js ACHIEVEMENTS_DEF)
 const ACHIEVEMENTS_DEF=[
-  {id:'perfect',    icon:'ðŸ’¯', name:'PerfecciÃ³n',    desc:'100% precisiÃ³n en una partida'},
-  {id:'streak20',   icon:'ðŸ”¥', name:'Racha Ã—20',     desc:'20 respuestas seguidas correctas'},
-  {id:'master_mult',icon:'âœ–ï¸', name:'Maestro Ã—',     desc:'90%+ acumulado en MultiplicaciÃ³n (mÃ­n. 10 resp.)'},
-  {id:'master_add', icon:'âž•', name:'Maestro +',     desc:'90%+ acumulado en Suma (mÃ­n. 10 resp.)'},
-  {id:'master_sub', icon:'âž–', name:'Maestro âˆ’',     desc:'90%+ acumulado en Resta (mÃ­n. 10 resp.)'},
-  {id:'master_div', icon:'âž—', name:'Maestro Ã·',     desc:'90%+ acumulado en DivisiÃ³n (mÃ­n. 10 resp.)'},
+  {id:'perfect',    icon:'💯', name:'Perfección',    desc:'100% precisión en una partida'},
+  {id:'streak20',   icon:'🔥', name:'Racha ×20',     desc:'20 respuestas seguidas correctas'},
+  {id:'master_mult',icon:'✖️', name:'Maestro ×',     desc:'90%+ acumulado en Multiplicación (mín. 10 resp.)'},
+  {id:'master_add', icon:'➕', name:'Maestro +',     desc:'90%+ acumulado en Suma (mín. 10 resp.)'},
+  {id:'master_sub', icon:'➖', name:'Maestro −',     desc:'90%+ acumulado en Resta (mín. 10 resp.)'},
+  {id:'master_div', icon:'➗', name:'Maestro ÷',     desc:'90%+ acumulado en División (mín. 10 resp.)'},
 ];
 
 // Sesiones activas
@@ -1255,7 +895,7 @@ function updateOpStats(opStats){
     const barEl=document.getElementById('opBar-'+op);
     const gamesEl=document.getElementById('opGames-'+op);
     if(!card) return;
-    if(pct===null){ pctEl.textContent='â€”'; barEl.style.width='0%'; }
+    if(pct===null){ pctEl.textContent='—'; barEl.style.width='0%'; }
     else{
       pctEl.textContent=pct+'%';
       pctEl.style.color=pct>=80?'#34d399':pct>=50?'#fbbf24':'#f87171';
@@ -1277,11 +917,11 @@ function switchTab(name){
   if(name==='transacciones') initTxTab(); else stopTxTab();
 }
 async function cmd(id,action){
-  if(action==='end'&&!confirm('Â¿Terminar la partida de este jugador?'))return;
+  if(action==='end'&&!confirm('¿Terminar la partida de este jugador?'))return;
   try{
     const r=await fetch('/api/cmd/'+action,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(withAdminPassword({action,playerId:id}))});
-    if(!r.ok) showMsg('âŒ No se pudo enviar el comando',false);
-  }catch(e){ showMsg('âŒ Error de red',false); }
+    if(!r.ok) showMsg('❌ No se pudo enviar el comando',false);
+  }catch(e){ showMsg('❌ Error de red',false); }
 }
 
 // ── Alumnos registrados ──
@@ -1337,12 +977,12 @@ document.addEventListener('keydown',e=>{
 async function cmdAll(action){
   const grade=sessionGradeFilter||'';
   const who=grade||'todos';
-  if(action==='end'&&!confirm(`Â¿Terminar la partida de ${who}?`)) return;
+  if(action==='end'&&!confirm(`¿Terminar la partida de ${who}?`)) return;
   try{
     const r=await fetch('/api/cmd/all',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(withAdminPassword({action,grade}))});
     const d=await r.json();
-    if(!r.ok||!d.ok) showMsg('âŒ No se pudo enviar el comando',false);
-  }catch(e){ showMsg('âŒ Error de red',false); }
+    if(!r.ok||!d.ok) showMsg('❌ No se pudo enviar el comando',false);
+  }catch(e){ showMsg('❌ Error de red',false); }
 }
 
 // ── Heatmap de tablas ──
@@ -1369,10 +1009,10 @@ function renderHeatmap(cont, tblStats){
   const cells=Array.from({length:12},(_,i)=>{
     const t=String(i+1);
     const st=tblStats[t];
-    if(!st||st.c+st.w===0) return `<div class="hcell hc-none" title="Tabla ${t}: sin datos"><span class="hn">${t}</span>â€”</div>`;
+    if(!st||st.c+st.w===0) return `<div class="hcell hc-none" title="Tabla ${t}: sin datos"><span class="hn">${t}</span>—</div>`;
     const pct=Math.round(st.c/(st.c+st.w)*100);
     const cls=pct>=80?'hc-good':pct>=50?'hc-ok':'hc-bad';
-    return `<div class="hcell ${cls}" title="Tabla ${t}: ${pct}% (${st.c}âœ… ${st.w}âŒ)"><span class="hn">${t}</span>${pct}%</div>`;
+    return `<div class="hcell ${cls}" title="Tabla ${t}: ${pct}% (${st.c}✅ ${st.w}❌)"><span class="hn">${t}</span>${pct}%</div>`;
   }).join('');
   cont.innerHTML=`<div class="heat-grid">${cells}</div>`;
 }
@@ -1393,7 +1033,7 @@ async function doLogin(){
   const pass=document.getElementById('loginPass').value;
   const errEl=document.getElementById('loginErr');
   errEl.textContent='';
-  if(!username||!pass){ errEl.textContent='Ingresa usuario y contraseÃ±a'; return; }
+  if(!username||!pass){ errEl.textContent='Ingresa usuario y contraseña'; return; }
   try{
     const res=await fetch('/api/maestro/auth',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username,password:pass})});
     const data=await res.json();
@@ -1404,11 +1044,11 @@ async function doLogin(){
       document.getElementById('loginOverlay').classList.add('hidden');
       initPanel();
     } else {
-      errEl.textContent='Usuario o contraseÃ±a incorrectos';
+      errEl.textContent='Usuario o contraseña incorrectos';
       document.getElementById('loginPass').value='';
       document.getElementById('loginUser').focus();
     }
-  }catch(e){ errEl.textContent='Error de conexiÃ³n'; }
+  }catch(e){ errEl.textContent='Error de conexión'; }
 }
 
 document.getElementById('loginUser').addEventListener('keydown',e=>{ if(e.key==='Enter') document.getElementById('loginPass').focus(); });
@@ -1419,7 +1059,7 @@ async function loadAjustes(){
   try{
     const res=await fetch('/api/maestro/config');
     const data=await res.json();
-    document.getElementById('ajCurrentUser').textContent=data.username||'â€”';
+    document.getElementById('ajCurrentUser').textContent=data.username||'—';
   }catch(e){}
 }
 
@@ -1440,13 +1080,13 @@ function updateExamBanner(examMode){
 
 // ── Pruebas ──
 let _pruebaConfig=JSON.parse(sessionStorage.getItem('pruebaConfig')||'null'); // persiste entre refreshes
-const _PR_OP_SYM={mult:'Ã—',add:'+',sub:'âˆ’',div:'Ã·'};
-const _PR_OP_NAME={mult:'MultiplicaciÃ³n',add:'Suma',sub:'Resta',div:'DivisiÃ³n'};
-const _PR_OP_ICON={mult:'âœ–ï¸',add:'âž•',sub:'âž–',div:'âž—'};
+const _PR_OP_SYM={mult:'×',add:'+',sub:'−',div:'÷'};
+const _PR_OP_NAME={mult:'Multiplicación',add:'Suma',sub:'Resta',div:'División'};
+const _PR_OP_ICON={mult:'✖️',add:'➕',sub:'➖',div:'➗'};
 
 // ── Configuración por operación (Feature 1 + 2) ──
 const _PR_OP_LIST=['mult','add','sub','div'];
-const _PR_OP_TITLE={mult:'âœ–ï¸ MultiplicaciÃ³n â€” tablas y preguntas por tabla',add:'âž• Suma â€” cantidad de preguntas y cifras',sub:'âž– Resta â€” cantidad de preguntas y cifras',div:'âž— DivisiÃ³n â€” tablas y preguntas por tabla'};
+const _PR_OP_TITLE={mult:'✖️ Multiplicación — tablas y preguntas por tabla',add:'➕ Suma — cantidad de preguntas y cifras',sub:'➖ Resta — cantidad de preguntas y cifras',div:'➗ División — tablas y preguntas por tabla'};
 const _PR_HAS_TABLES={mult:true,div:true,add:false,sub:false};
 const _PR_QTY_LABEL={mult:'PREG. POR TABLA',div:'PREG. POR TABLA',add:'TOTAL PREGUNTAS',sub:'TOTAL PREGUNTAS'};
 const _PR_QTY_DEFAULT={mult:4,div:3,add:10,sub:10};
@@ -1594,7 +1234,7 @@ function prUpdateSummary(){
   const grade=document.getElementById('prGrade')?.value||'Todos los grados';
   const time=Number(document.getElementById('prTime')?.value)||0;
   const details=ops.map(o=>prDescribeOp(o,cfg[o])).join('<br>');
-  el.innerHTML=`<div class="pr-summary-title">RESUMEN ANTES DE INICIAR</div><strong>${grade}</strong> Â· <strong>${total}</strong> preguntas Â· <strong>${time?time+' seg por pregunta':'tiempo libre'}</strong><br>${details}`;
+  el.innerHTML=`<div class="pr-summary-title">RESUMEN ANTES DE INICIAR</div><strong>${grade}</strong> · <strong>${total}</strong> preguntas · <strong>${time?time+' seg por pregunta':'tiempo libre'}</strong><br>${details}`;
 }
 function prFmtDuration(ms){
   const totalSec=Math.max(0,Math.round((Number(ms)||0)/1000));
@@ -1606,10 +1246,10 @@ async function startPrueba(btn){
   const grade=document.getElementById('prGrade').value;
   const ops=_PR_OP_LIST.filter(o=>document.getElementById('prOp'+o.charAt(0).toUpperCase()+o.slice(1))?.checked);
   const timeLimit=Number(document.getElementById('prTime').value)||0;
-  if(!ops.length){ showMsg('âŒ Selecciona al menos una operaciÃ³n'); return; }
+  if(!ops.length){ showMsg('❌ Selecciona al menos una operación'); return; }
   const opsConfig=_prCollectOpsConfig(ops);
   for(const op of ops){
-    if(_PR_HAS_TABLES[op]&&!opsConfig[op].tables.length){ showMsg(`âŒ Selecciona al menos una tabla para ${_PR_OP_NAME[op]}`); return; }
+    if(_PR_HAS_TABLES[op]&&!opsConfig[op].tables.length){ showMsg(`❌ Selecciona al menos una tabla para ${_PR_OP_NAME[op]}`); return; }
   }
   const total=_prCalcTotal(opsConfig)||20;
   // Compatibilidad: tables/op planos = de la primera operación con tablas (o vacío)
@@ -1625,16 +1265,16 @@ async function startPrueba(btn){
       _pruebaConfig={grade,ops,tables,opsConfig,total,timeLimit};
       sessionStorage.setItem('pruebaConfig',JSON.stringify(_pruebaConfig));
       _updatePruebasUI();
-      showMsg('ðŸ“Š Prueba iniciada');
-    } else showMsg('âŒ '+(d.error||'Error al iniciar'));
-  }catch(e){ showMsg('âŒ Error de red'); }
+      showMsg('📊 Prueba iniciada');
+    } else showMsg('❌ '+(d.error||'Error al iniciar'));
+  }catch(e){ showMsg('❌ Error de red'); }
   finally{ if(btn) btn.disabled=false; }
 }
 async function stopPrueba(){
   try{
     await fetch('/api/exam/stop',{method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({password:_adminPass})});
-    showMsg('ðŸ›‘ Prueba detenida');
+    showMsg('🛑 Prueba detenida');
   }catch(e){}
   _pruebaConfig=null;
   sessionStorage.removeItem('pruebaConfig');
@@ -1647,8 +1287,8 @@ function _updatePruebasUI(){
   document.getElementById('prResultados').style.display=active?'block':'none';
   if(active){
     const gradeStr=_pruebaConfig.grade||'Todos';
-    const opsStr=_pruebaConfig.ops.map(o=>_PR_OP_NAME[o]).join(' Â· ');
-    document.getElementById('prBannerInfo').textContent=`${gradeStr} Â· ${opsStr} Â· ${_pruebaConfig.total} preg.`;
+    const opsStr=_pruebaConfig.ops.map(o=>_PR_OP_NAME[o]).join(' · ');
+    document.getElementById('prBannerInfo').textContent=`${gradeStr} · ${opsStr} · ${_pruebaConfig.total} preg.`;
     _renderPruebasThead();
   }
 }
@@ -1668,15 +1308,15 @@ function _notifyLateExamFinishers(list){
     _examFinishedSeen.add(key);
     if(!_pruebaConfig){
       // Ya no hay vista en vivo de esta prueba — avisar por toast para que no se pierda de vista
-      const label=f.finished===false?'no terminÃ³ (se saliÃ³ antes)':'entregÃ³ la prueba (despuÃ©s de detenerla)';
-      showMsg(`ðŸ“Š ${f.name} ${label}: ${f.pct||0}% Â· ${f.score||0} pts`);
+      const label=f.finished===false?'no terminó (se salió antes)':'entregó la prueba (después de detenerla)';
+      showMsg(`📊 ${f.name} ${label}: ${f.pct||0}% · ${f.score||0} pts`);
     }
   });
 }
 function _renderPruebasThead(){
   if(!_pruebaConfig?.ops?.length) return;
   const opCols=_pruebaConfig.ops.map(o=>`<th>${_PR_OP_ICON[o]} ${_PR_OP_NAME[o]}</th>`).join('');
-  document.getElementById('prThead').innerHTML=`<tr><th>Alumno</th><th>Grado</th><th>Progreso</th><th>PrecisiÃ³n</th>${opCols}</tr>`;
+  document.getElementById('prThead').innerHTML=`<tr><th>Alumno</th><th>Grado</th><th>Progreso</th><th>Precisión</th>${opCols}</tr>`;
 }
 function renderPruebas(){
   if(!_pruebaConfig) return;
@@ -1702,21 +1342,21 @@ function renderPruebas(){
       const pct=s.totalQ>0?Math.round(s.qIndex/s.totalQ*100):0;
       const acc=s.correct+s.wrong>0?Math.round(s.correct/(s.correct+s.wrong)*100):null;
       const accColor=acc===null?'#64748b':acc>=80?'#34d399':acc>=60?'#fbbf24':'#f87171';
-      const progStr=s.status==='finished'?'âœ… TerminÃ³':s.paused?`â¸ ${s.qIndex}/${s.totalQ}`:`${s.qIndex}/${s.totalQ} (${pct}%)`;
+      const progStr=s.status==='finished'?'✅ Terminó':s.paused?`⏸ ${s.qIndex}/${s.totalQ}`:`${s.qIndex}/${s.totalQ} (${pct}%)`;
       const opCols=_pruebaConfig.ops.map(o=>{
         const sym=_PR_OP_SYM[o];
         const od=s.tblResults&&s.tblResults[sym];
         const tot=(od?(od.c||od.correct||0)+(od.w||od.wrong||0):0);
-        if(!tot) return '<td style="color:#334155">â€”</td>';
+        if(!tot) return '<td style="color:#334155">—</td>';
         const opAcc=Math.round((od.c||od.correct||0)/tot*100);
         const opColor=opAcc>=80?'#34d399':opAcc>=60?'#fbbf24':'#f87171';
         return `<td style="color:${opColor};font-weight:700">${opAcc}%<span style="font-size:10px;color:#64748b;margin-left:4px">(${tot})</span></td>`;
       }).join('');
       return `<tr class="${s.status==='finished'?'pr-done':''}">
         <td>${esc(s.name)}</td>
-        <td style="color:#64748b">${s.grade||'â€”'}</td>
+        <td style="color:#64748b">${s.grade||'—'}</td>
         <td>${progStr}</td>
-        <td style="color:${accColor}">${acc!==null?acc+'%':'â€”'}</td>
+        <td style="color:${accColor}">${acc!==null?acc+'%':'—'}</td>
         ${opCols}
       </tr>`;
     }).join('');
@@ -1729,9 +1369,9 @@ function renderPruebas(){
     const color=avg===null?'#64748b':avg>=80?'#34d399':avg>=60?'#fbbf24':'#f87171';
     return `<div class="pr-op-card" style="border-color:${avg===null?'rgba(255,255,255,.08)':color+'44'}">
       <div style="font-size:22px;margin-bottom:4px">${_PR_OP_ICON[o]}</div>
-      <div style="color:${color};font-size:22px;font-weight:700;margin-bottom:2px">${avg!==null?avg+'%':'â€”'}</div>
+      <div style="color:${color};font-size:22px;font-weight:700;margin-bottom:2px">${avg!==null?avg+'%':'—'}</div>
       <div style="font-size:10px;color:#94a3b8;margin-bottom:4px">${_PR_OP_NAME[o]}</div>
-      <div style="font-size:10px;color:#64748b">${t.c} âœ“ &nbsp; ${t.w} âœ—</div>
+      <div style="font-size:10px;color:#64748b">${t.c} ✓ &nbsp; ${t.w} ✗</div>
     </div>`;
   }).join('');
   // Alumnos que ya enviaron save_result durante el examen
@@ -1747,12 +1387,12 @@ function renderPruebas(){
       .map(f=>{
         const pctColor=f.pct>=80?'#34d399':f.pct>=60?'#fbbf24':'#f87171';
         const statusCell=f.finished===false
-          ? '<td style="color:#f87171;font-size:11px">âš ï¸ No terminÃ³</td>'
-          : '<td style="color:#34d399;font-size:11px">âœ… TerminÃ³</td>';
+          ? '<td style="color:#f87171;font-size:11px">⚠️ No terminó</td>'
+          : '<td style="color:#34d399;font-size:11px">✅ Terminó</td>';
         return `<tr class="pr-done">
           <td>${esc(f.name)}</td>
-          <td style="color:#64748b">${f.grade||'â€”'}</td>
-          <td style="color:#94a3b8">${f.durationMs!=null?prFmtDuration(f.durationMs):'â€”'}</td>
+          <td style="color:#64748b">${f.grade||'—'}</td>
+          <td style="color:#94a3b8">${f.durationMs!=null?prFmtDuration(f.durationMs):'—'}</td>
           <td style="font-weight:700">${(f.score||0).toLocaleString()}</td>
           <td style="color:${pctColor};font-weight:700">${f.pct||0}%</td>
           <td>${f.correct||0}/${f.total||0}</td>
@@ -1768,14 +1408,14 @@ function renderPruebas(){
 async function exportCSV(){
   try{
     const res=await fetch(adminUrl('/api/players/export'));
-    if(!res.ok){ showMsg('âŒ Error al exportar'); return; }
+    if(!res.ok){ showMsg('❌ Error al exportar'); return; }
     const blob=await res.blob();
     const url=URL.createObjectURL(blob);
     const a=document.createElement('a');
     a.href=url; a.download='alumnos_math_attack.csv'; a.click();
     URL.revokeObjectURL(url);
-    showMsg('ðŸ“Š CSV descargado');
-  }catch(e){ showMsg('âŒ Error de red'); }
+    showMsg('📊 CSV descargado');
+  }catch(e){ showMsg('❌ Error de red'); }
 }
 
 if(sessionStorage.getItem('maestroAuth')==='1'){
@@ -1848,18 +1488,18 @@ function renderCxTable(conns){
   const now=Date.now();
   tbody.innerHTML=conns.map(c=>{
     const isMaestro=c.type==='maestro';
-    const typeIcon=isMaestro?'<span class="cx-type-m" title="Panel Maestro">ðŸ–¥</span>':'<span class="cx-type-p" title="Jugador">ðŸŽ®</span>';
-    const latency=c.latency==null?'<span class="cx-lat na">â€”</span>'
+    const typeIcon=isMaestro?'<span class="cx-type-m" title="Panel Maestro">🖥</span>':'<span class="cx-type-p" title="Jugador">🎮</span>';
+    const latency=c.latency==null?'<span class="cx-lat na">—</span>'
       :`<span class="cx-lat ${c.latency<30?'good':c.latency<80?'ok':'bad'}">${c.latency}ms</span>`;
     const tiempo=fmtMs(c.connectedMs||0);
     const nombre=esc(c.name);
     const kickBtn=!isMaestro&&c.playerId
-      ?`<button class="cx-kick" onclick="kickPlayer('${esc(c.playerId)}','${esc(c.name)}')">âš¡ Kick</button>`
-      :'<span style="color:#334155;font-size:10px">â€”</span>';
+      ?`<button class="cx-kick" onclick="kickPlayer('${esc(c.playerId)}','${esc(c.name)}')">⚡ Kick</button>`
+      :'<span style="color:#334155;font-size:10px">—</span>';
     return `<tr>
       <td style="text-align:center">${typeIcon}</td>
       <td>${nombre}</td>
-      <td style="color:#64748b;font-size:11px">${esc(c.grade)||'â€”'}</td>
+      <td style="color:#64748b;font-size:11px">${esc(c.grade)||'—'}</td>
       <td style="font-family:monospace;font-size:11px;color:#64748b">${esc(c.ip)}</td>
       <td style="font-family:'Press Start 2P',monospace;font-size:9px;color:#a78bfa">${tiempo}</td>
       <td style="text-align:right;font-family:monospace;color:#34d399">${c.msgIn||0}</td>
@@ -1871,10 +1511,10 @@ function renderCxTable(conns){
 }
 
 function kickPlayer(playerId, name){
-  if(!confirm('Â¿Desconectar a '+name+'? Se reconectarÃ¡ automÃ¡ticamente si el juego sigue abierto.')) return;
-  if(!ws||ws.readyState!==WebSocket.OPEN){ showMsg('âŒ Sin conexiÃ³n â€” no se pudo desconectar a '+name,false); return; }
+  if(!confirm('¿Desconectar a '+name+'? Se reconectará automáticamente si el juego sigue abierto.')) return;
+  if(!ws||ws.readyState!==WebSocket.OPEN){ showMsg('❌ Sin conexión — no se pudo desconectar a '+name,false); return; }
   ws.send(JSON.stringify({type:'kick_player',playerId,password:_adminPass}));
-  appendCxLog({ts:Date.now(),evType:'kick',msg:'âš¡ Solicitud de desconexiÃ³n: '+name});
+  appendCxLog({ts:Date.now(),evType:'kick',msg:'⚡ Solicitud de desconexión: '+name});
 }
 
 function appendCxLog(entry){

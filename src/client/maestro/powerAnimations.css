@@ -1,0 +1,6 @@
+.ptile.has-p .ptile-icon{animation:powerBob 1.8s ease-in-out infinite;display:block}
+.ptile.has-p{animation:powerGlow 2s ease-in-out infinite}
+@keyframes powerBob{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-2px) scale(1.15)}}
+@keyframes powerGlow{
+  0%,100%{border-color:rgba(167,139,250,.4);box-shadow:none}
+  50%{border-color:rgba(167,139,250,.8);box-shadow:0 0 6px rgba(167,139,250,.4)}}

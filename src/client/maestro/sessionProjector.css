@@ -1,0 +1,9 @@
+body.proj-mode .sessions-grid{grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}
+body.proj-mode .session-card{padding:20px 18px}
+body.proj-mode .s-name{font-size:22px}
+body.proj-mode .s-grade{font-size:13px}
+body.proj-mode .q-display{font-size:42px;padding:14px}
+body.proj-mode .s-body{display:none}
+body.proj-mode .s-actions{display:none}
+body.proj-mode .progress-blocks{height:10px}
+body.proj-mode .pb{height:10px}

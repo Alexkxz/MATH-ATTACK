@@ -1,0 +1,69 @@
+.session-pane{display:none}
+.session-pane.active{display:block}
+.mp-rooms{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:14px}
+.mp-room-card{background:radial-gradient(circle at top,rgba(20,28,58,.75),rgba(12,10,26,.98) 58%);border:1px solid rgba(96,165,250,.22);border-radius:16px;padding:16px;box-shadow:0 14px 28px rgba(2,8,23,.34),inset 0 1px 0 rgba(255,255,255,.03);position:relative;overflow:hidden}
+.mp-room-card::before{content:'';position:absolute;inset:-20% auto auto -10%;width:180px;height:180px;background:radial-gradient(circle,rgba(96,165,250,.16),transparent 68%);pointer-events:none}
+.mp-room-card::after{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,rgba(96,165,250,.55),transparent)}
+.mp-room-card.playing{border-color:rgba(52,211,153,.28)}
+.mp-room-card.playing::after{background:linear-gradient(90deg,transparent,rgba(52,211,153,.65),transparent)}
+.mp-room-card.lobby{border-color:rgba(251,191,36,.26)}
+.mp-room-card.lobby::after{background:linear-gradient(90deg,transparent,rgba(251,191,36,.6),transparent)}
+.mp-room-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:14px;position:relative;z-index:1}
+.mp-room-title{font-family:'Press Start 2P',monospace;font-size:9px;line-height:1.8;color:#dbeafe}
+.mp-room-meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.mp-pill{font-family:'Press Start 2P',monospace;font-size:7px;padding:4px 6px;border-radius:3px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.04);color:#93c5fd}
+.mp-pill.host{color:#fbbf24;border-color:rgba(251,191,36,.28);background:rgba(251,191,36,.09)}
+.mp-pill.mode{color:#60a5fa;border-color:rgba(96,165,250,.28);background:rgba(96,165,250,.09)}
+.mp-pill.state{color:#34d399;border-color:rgba(52,211,153,.28);background:rgba(52,211,153,.09)}
+.mp-pill.state.wait{color:#fbbf24;border-color:rgba(251,191,36,.28);background:rgba(251,191,36,.09)}
+.mp-room-count{font-family:'Press Start 2P',monospace;font-size:16px;color:#60a5fa;line-height:1.2;text-align:right;background:rgba(6,11,31,.62);border:1px solid rgba(96,165,250,.16);border-radius:12px;padding:10px 12px;min-width:92px}
+.mp-room-count small{display:block;font-size:7px;color:#94a3b8;margin-top:6px}
+.mp-room-duel{position:relative;z-index:1;display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center;background:linear-gradient(135deg,rgba(15,23,42,.95),rgba(22,12,44,.92));border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:12px 14px;margin-bottom:12px}
+.mp-duelist{display:flex;align-items:center;gap:10px;min-width:0}
+.mp-duelist.right{flex-direction:row-reverse;text-align:right}
+.mp-duel-avatar{width:72px;height:72px;border-radius:22px;background:linear-gradient(180deg,rgba(15,23,42,.96),rgba(2,6,23,.98));border:2px solid rgba(96,165,250,.3);box-shadow:0 12px 24px rgba(2,8,23,.35),inset 0 0 0 1px rgba(255,255,255,.04);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0}
+.mp-duel-avatar svg{width:100%;height:100%}
+.mp-duelist-info{min-width:0;display:flex;flex-direction:column;gap:5px}
+.mp-duelist-name{font-family:'Press Start 2P',monospace;font-size:8px;line-height:1.6;color:#f8fafc;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.mp-duelist.right .mp-duelist-name{justify-content:flex-end}
+.mp-duelist-meta{display:flex;gap:6px;flex-wrap:wrap}
+.mp-duelist.right .mp-duelist-meta{justify-content:flex-end}
+.mp-duelist-score{font-family:'Press Start 2P',monospace;font-size:14px;color:#fbbf24;text-shadow:0 0 10px rgba(251,191,36,.28)}
+.mp-duelist-progress{font-size:10px;color:#94a3b8}
+.mp-vs-badge{display:flex;flex-direction:column;align-items:center;gap:6px;min-width:70px}
+.mp-vs-text{font-family:'Press Start 2P',monospace;font-size:10px;color:#f472b6;text-shadow:0 0 10px rgba(244,114,182,.35)}
+.mp-vs-round{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle,rgba(244,114,182,.22),rgba(15,23,42,.2));border:1px solid rgba(244,114,182,.28);color:#fbcfe8;font-family:'Press Start 2P',monospace;font-size:9px}
+.mp-duel-note{font-size:9px;color:#64748b;text-transform:uppercase;letter-spacing:.9px}
+.mp-room-extra{position:relative;z-index:1;display:flex;justify-content:space-between;gap:8px;align-items:center;margin:-2px 0 12px;flex-wrap:wrap}
+.mp-room-extra-note{font-size:10px;color:#94a3b8}
+.mp-room-list{display:flex;flex-direction:column;gap:8px;position:relative;z-index:1}
+.mp-player-row{display:grid;grid-template-columns:auto auto 1fr auto;gap:10px;align-items:center;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:10px}
+.mp-player-row.top{background:linear-gradient(90deg,rgba(96,165,250,.12),rgba(255,255,255,.04));border-color:rgba(96,165,250,.18)}
+.mp-player-rank{font-family:'Press Start 2P',monospace;font-size:8px;color:#64748b;min-width:24px}
+.mp-player-avatar{width:42px;height:42px;border-radius:12px;background:#0f172a;border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0}
+.mp-player-avatar svg{width:100%;height:100%}
+.mp-player-main{min-width:0}
+.mp-player-name{font-family:'Press Start 2P',monospace;font-size:8px;line-height:1.6;color:#e2e8f0;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.mp-host-star{color:#fbbf24}
+.mp-disc{color:#94a3b8;font-size:10px}
+.mp-player-sub{display:flex;gap:8px;flex-wrap:wrap;font-size:10px;color:#64748b;margin-top:4px}
+.mp-player-score{font-family:'Press Start 2P',monospace;font-size:11px;color:#fbbf24;text-align:right}
+.mp-player-score small{display:block;font-size:7px;color:#64748b;margin-top:4px}
+@media (max-width:760px){
+  .mp-rooms{grid-template-columns:1fr}
+  .mp-room-card{padding:14px}
+  .mp-room-head{flex-direction:column}
+  .mp-room-count{width:100%;text-align:left}
+  .mp-room-duel{grid-template-columns:1fr;justify-items:stretch}
+  .mp-duelist,.mp-duelist.right{flex-direction:row;text-align:left}
+  .mp-duelist.right .mp-duelist-name,.mp-duelist.right .mp-duelist-meta{justify-content:flex-start}
+  .mp-vs-badge{flex-direction:row;justify-content:center}
+  .mp-player-row{grid-template-columns:auto 1fr auto;grid-template-areas:'rank main score' 'avatar main score';align-items:center}
+  .mp-player-rank{grid-area:rank}
+  .mp-player-avatar{grid-area:avatar}
+  .mp-player-main{grid-area:main}
+  .mp-player-score{grid-area:score}
+}
+body.proj-mode .mp-rooms{grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}
+
+/* ── Tarjetas de alumnos rediseñadas ── */

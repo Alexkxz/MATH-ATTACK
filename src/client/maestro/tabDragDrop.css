@@ -1,0 +1,4 @@
+/* ── Drag & drop de pestañas ── */
+.tab-btn[draggable]{cursor:grab}
+.tab-btn[draggable]:active{cursor:grabbing}
+.tab-btn.tab-drag-over{background:rgba(167,139,250,.12)!important;border-radius:4px 4px 0 0;outline:2px dashed rgba(167,139,250,.4);outline-offset:-2px}

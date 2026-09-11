@@ -1,0 +1,12 @@
+.sc-level-row{padding:5px 10px 4px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.sc-level-badge{font-family:'Press Start 2P',monospace;font-size:6px;color:#60a5fa;
+  background:rgba(96,165,250,.1);border:1px solid rgba(96,165,250,.2);border-radius:2px;
+  padding:2px 6px;white-space:nowrap;flex-shrink:0}
+.sc-level-bar{flex:1;height:4px;background:rgba(255,255,255,.06);border-radius:2px;overflow:hidden;min-width:30px}
+.sc-level-bar-fill{height:100%;background:linear-gradient(90deg,#60a5fa,#a78bfa);border-radius:2px;transition:width .4s ease}
+.sc-ach-row{display:flex;gap:3px;flex-wrap:wrap;width:100%;margin-top:2px}
+.ach-badge{font-size:13px;opacity:.85;cursor:default;transition:.15s}
+.ach-badge:hover{opacity:1;transform:scale(1.2)}
+.sc-star-badge{font-family:'Press Start 2P',monospace;font-size:5px;color:#fbbf24;
+  background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.25);border-radius:2px;
+  padding:1px 4px;margin-left:2px;text-shadow:0 0 5px rgba(251,191,36,.4)}

@@ -1,0 +1,9 @@
+/* ── Drag & drop de alumnos ── */
+.sc-drag-handle{color:rgba(255,255,255,.2);cursor:grab;padding:0 3px;font-size:14px;
+  flex-shrink:0;transition:color .15s;line-height:1;user-select:none}
+.sc-drag-handle:hover{color:rgba(167,139,250,.6)}
+.sc-drag-handle:active{cursor:grabbing}
+.sc-card.dragging{opacity:.3;transform:scale(.97)}
+.sc-card.drag-over{outline:2px solid rgba(167,139,250,.75)!important;
+  box-shadow:0 0 0 2px rgba(167,139,250,.35),0 0 18px rgba(167,139,250,.15)!important;
+  transform:translateY(-3px)}

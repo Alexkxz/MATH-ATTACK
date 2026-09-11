@@ -1,0 +1,32 @@
+/* Session cards */
+.session-card{background:#0c0a1a;border:1px solid rgba(167,139,250,.2);border-radius:4px;position:relative;overflow:hidden}
+.session-card::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,rgba(167,139,250,.35),transparent)}
+.session-card.playing{border-color:rgba(0,255,136,.35);
+  box-shadow:0 0 14px rgba(0,255,136,.06),0 0 2px rgba(0,255,136,.15)}
+.session-card.playing::after{background:linear-gradient(90deg,transparent,rgba(0,255,136,.5),transparent)}
+.session-card.paused{border-color:rgba(255,200,0,.35);
+  box-shadow:0 0 14px rgba(255,200,0,.06)}
+.session-card.paused::after{background:linear-gradient(90deg,transparent,rgba(255,200,0,.5),transparent)}
+.session-card.finished{border-color:rgba(255,50,100,.2);opacity:.6}
+.session-card.disconnected{border-color:rgba(148,163,184,.3);opacity:.55;filter:grayscale(.5)}
+.s-name{font-family:'Press Start 2P',monospace;font-size:10px;line-height:1.7;color:#d4c8ff}
+.s-grade{font-size:9px;border-radius:2px}
+.q-display{font-family:'Press Start 2P',monospace;font-size:26px;background:#060510;
+  border:1px solid rgba(167,139,250,.25);border-radius:4px;letter-spacing:2px;
+  text-shadow:0 0 12px rgba(196,181,253,.6)}
+.q-display.flash-c{text-shadow:0 0 16px #00ff88}
+.q-display.flash-w{text-shadow:0 0 16px #ff4466}
+/* Progress blocks pixel */
+.progress-blocks{gap:2px;margin-bottom:10px}
+.pb{height:10px;border-radius:0;background:rgba(0,229,255,.07)}
+.pb.filled{background:#00e5ff;box-shadow:0 0 4px rgba(0,229,255,.6)}
+/* Scoreboard items */
+.s-item{background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.05);border-radius:2px}
+.s-item .v{font-family:'Press Start 2P',monospace;font-size:11px}
+.streak-badge{border-radius:2px;font-family:'Press Start 2P',monospace;font-size:9px}
+/* Buttons retro */
+.btn-pause{border-radius:2px}
+.btn-resume{border-radius:2px}
+.btn-end{border-radius:2px;background:rgba(255,0,80,.12);color:#ff4466;border-color:rgba(255,0,80,.3)}
+.btn-end:hover{background:rgba(255,0,80,.25)}

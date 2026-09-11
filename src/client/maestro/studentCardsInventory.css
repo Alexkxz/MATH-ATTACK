@@ -1,0 +1,82 @@
+/* Students section */
+.students-title{font-family:'Press Start 2P',monospace;font-size:10px;color:#a78bfa;
+  text-shadow:0 0 8px rgba(167,139,250,.4)}
+
+/* ════ CARTA COLECCIONABLE ════ */
+.students-grid{grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+
+.sc-card{position:relative;background:#08061a;border-radius:10px;overflow:hidden;
+  box-shadow:0 0 0 2px rgba(251,191,36,.45),0 0 16px rgba(251,191,36,.07),0 8px 20px rgba(0,0,0,.6);
+  transition:transform .2s,box-shadow .2s;display:flex;flex-direction:column}
+.sc-card:hover{transform:translateY(-4px) scale(1.02);
+  box-shadow:0 0 0 2px rgba(251,191,36,.85),0 0 28px rgba(251,191,36,.18),0 16px 32px rgba(0,0,0,.7)}
+.sc-card.is-online{box-shadow:0 0 0 2px rgba(52,211,153,.6),0 0 18px rgba(52,211,153,.12),0 8px 20px rgba(0,0,0,.6)}
+.sc-card.is-online:hover{box-shadow:0 0 0 2px rgba(52,211,153,.95),0 0 30px rgba(52,211,153,.2),0 16px 32px rgba(0,0,0,.7)}
+
+.sc-banner{background:linear-gradient(135deg,#14103a,#1c1850);padding:11px 10px 9px;
+  border-bottom:1px solid rgba(251,191,36,.18);display:flex;justify-content:space-between;align-items:center;gap:5px}
+.sc-banner-name{font-family:'Press Start 2P',monospace;font-size:10px;color:#e2e8f0;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-shadow:0 0 8px rgba(167,139,250,.5);line-height:1.8}
+.sc-grade-pill{font-family:'Press Start 2P',monospace;font-size:5.5px;color:#fbbf24;
+  border:1px solid rgba(251,191,36,.4);border-radius:2px;padding:2px 5px;
+  background:rgba(251,191,36,.08);white-space:nowrap;flex-shrink:0}
+
+.sc-av-section{display:flex;justify-content:center;padding:16px 0 12px;
+  background:radial-gradient(ellipse at 50% 0%,rgba(124,58,237,.14) 0%,transparent 70%)}
+.sc-av-big{width:62px;height:62px;border-radius:4px;position:relative;
+  display:flex;align-items:center;justify-content:center;
+  border:2px solid rgba(251,191,36,.55);
+  box-shadow:0 0 16px rgba(124,58,237,.45)}
+.sc-online-badge{position:absolute;top:-5px;right:-5px;width:11px;height:11px;
+  background:#34d399;border:2px solid #08061a;border-radius:0;
+  box-shadow:0 0 8px #34d399;animation:pulse 2s infinite}
+
+.sc-sep{height:1px;margin:0 10px 2px;opacity:.65;
+  background:linear-gradient(90deg,transparent,#fbbf24 25%,#a78bfa 50%,#00e5ff 75%,transparent)}
+
+.sc-hp-row{display:flex;align-items:center;gap:4px;padding:7px 10px 5px}
+.sc-hp-lbl{font-family:'Press Start 2P',monospace;font-size:5px;color:#374151;letter-spacing:1px;margin-right:2px}
+.sc-hp-val{flex:1;font-family:'Press Start 2P',monospace;font-size:12px;color:#fbbf24;
+  text-shadow:0 0 8px rgba(251,191,36,.5)}
+.sc-hp-btn{background:none;border:1px solid rgba(255,255,255,.07);border-radius:2px;
+  padding:5px 9px;font-size:13px;cursor:pointer;color:#374151;transition:.15s;line-height:1}
+.sc-hp-btn:hover{background:rgba(167,139,250,.1);border-color:rgba(167,139,250,.3);color:#a78bfa}
+
+.sc-powers-section{padding:5px 8px 6px;flex:1}
+.sc-powers-title{font-family:'Press Start 2P',monospace;font-size:5px;color:#2a2545;
+  letter-spacing:1.5px;margin-bottom:5px}
+.sc-card .powers-grid{grid-template-columns:repeat(6,1fr);gap:5px}
+.sc-card .ptile{padding:7px 3px;border-radius:4px}
+.sc-card .ptile-icon{font-size:17px}
+.sc-card .ptile-qty{font-size:10px}
+
+/* ── Toggle de poderes en tarjeta ── */
+.sc-card{cursor:pointer}
+.sc-powers-toggle{display:flex;align-items:center;gap:5px;padding:1px 0;user-select:none}
+.sc-powers-count{font-family:'Press Start 2P',monospace;font-size:6px;color:#2a2545;
+  background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.05);border-radius:2px;
+  padding:1px 5px;margin-left:auto;transition:.2s}
+.sc-powers-count.active{color:#a78bfa;border-color:rgba(167,139,250,.3);background:rgba(167,139,250,.08);
+  text-shadow:0 0 6px rgba(167,139,250,.5)}
+.sc-powers-arrow{font-size:9px;color:#2a2545;transition:transform .2s,color .2s;line-height:1;flex-shrink:0}
+.sc-card.powers-open .sc-powers-arrow{transform:rotate(180deg);color:#a78bfa}
+.sc-card.powers-open .sc-powers-title{color:#a78bfa;text-shadow:0 0 6px rgba(167,139,250,.4)}
+/* Iconos rápidos (colapso) */
+.sc-powers-quick{display:flex;flex-wrap:wrap;gap:3px;margin-top:4px;min-height:16px}
+.sc-card.powers-open .sc-powers-quick{display:none}
+.sc-pq-item{font-size:16px;line-height:1;padding:1px 3px;opacity:.75;
+  transition:opacity .15s}
+.sc-pq-item:hover{opacity:1}
+.sc-pq-empty{font-family:'Press Start 2P',monospace;font-size:5px;color:#1e1d30;letter-spacing:.5px}
+/* Grid expandible */
+.sc-powers-grid{display:none;margin-top:6px}
+.sc-card.powers-open .sc-powers-grid{display:block}
+
+.sc-footer{display:flex;gap:3px;padding:5px 7px;
+  background:rgba(0,0,0,.3);border-top:1px solid rgba(255,255,255,.05)}
+.sc-foot-btn{flex:1;background:none;border:1px solid rgba(255,255,255,.07);border-radius:2px;
+  padding:8px 4px;font-family:'Press Start 2P',monospace;font-size:7.5px;
+  cursor:pointer;color:#374151;transition:.15s;text-align:center;white-space:nowrap}
+.sc-foot-btn:hover{background:rgba(167,139,250,.1);border-color:rgba(167,139,250,.3);color:#a78bfa}
+.aureos-amt{font-family:'Press Start 2P',monospace;font-size:10px;
+  text-shadow:0 0 6px rgba(251,191,36,.5)}

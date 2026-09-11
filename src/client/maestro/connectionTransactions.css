@@ -1,0 +1,30 @@
+/* ── Pestaña Conexión ── */
+.cx-stats{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+.cx-stat{background:#0c0a1a;border:1px solid rgba(0,229,255,.18);border-radius:4px;padding:10px 18px;display:flex;flex-direction:column;align-items:center;min-width:90px}
+.cx-stat .cv{font-family:'Press Start 2P',monospace;font-size:18px;color:#00e5ff;text-shadow:0 0 8px #00e5ff}
+.cx-stat .cl{font-size:8px;color:#445566;letter-spacing:1.2px;margin-top:4px;text-align:center}
+.cx-table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:18px}
+.cx-table th{padding:7px 8px;text-align:left;color:#445566;font-size:9px;text-transform:uppercase;letter-spacing:.8px;border-bottom:1px solid rgba(0,229,255,.15);font-family:'Press Start 2P',monospace}
+.cx-table td{padding:8px 8px;border-bottom:1px solid rgba(255,255,255,.04);color:#cbd5e1;vertical-align:middle}
+.cx-table tr:hover td{background:rgba(0,229,255,.03)}
+.cx-type-m{color:#a78bfa;font-size:16px}
+.cx-type-p{color:#00e5ff;font-size:16px}
+.cx-lat{font-family:'Press Start 2P',monospace;font-size:9px}
+.cx-lat.good{color:#34d399}.cx-lat.ok{color:#fbbf24}.cx-lat.bad{color:#f87171}.cx-lat.na{color:#334155}
+.cx-kick{background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);border-radius:3px;padding:3px 8px;color:#f87171;font-family:'Press Start 2P',monospace;font-size:7px;cursor:pointer;transition:background .15s}
+.cx-kick:hover{background:rgba(239,68,68,.3)}
+.cx-log-wrap{background:#080614;border:1px solid rgba(0,229,255,.12);border-radius:4px;padding:10px;height:220px;overflow-y:auto;font-family:monospace;font-size:12px}
+.cx-log-entry{padding:2px 0;border-bottom:1px solid rgba(255,255,255,.03);display:flex;gap:8px;align-items:baseline}
+.cx-log-ts{color:#334155;flex-shrink:0;font-size:10px}
+.cx-log-msg{color:#94a3b8}
+.cx-log-entry.connect .cx-log-msg{color:#34d399}
+.cx-log-entry.disconnect .cx-log-msg{color:#f87171}
+.cx-log-entry.kick .cx-log-msg{color:#fbbf24}
+.cx-log-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.cx-log-title{font-family:'Press Start 2P',monospace;font-size:8px;color:#445566;letter-spacing:1px}
+.cx-clear-btn{background:none;border:1px solid rgba(255,255,255,.08);border-radius:3px;padding:3px 8px;font-size:10px;color:#64748b;cursor:pointer}
+.cx-clear-btn:hover{color:#cbd5e1}
+.cx-section-title{font-family:'Press Start 2P',monospace;font-size:8px;color:#445566;letter-spacing:1px;margin-bottom:8px;text-transform:uppercase}
+.cx-activity-dot{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:4px;flex-shrink:0}
+.cx-activity-dot.active{background:#34d399;box-shadow:0 0 6px #34d399;animation:pulse 1s infinite}
+.cx-activity-dot.idle{background:#334155}
