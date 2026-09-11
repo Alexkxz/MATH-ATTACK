@@ -1,0 +1,13 @@
+'use strict';
+const {assertUuid}=require('./testValidation');
+const states=new Set(['pending','started','in_progress','disconnected','reconnected','finished','incomplete','restarted','reopened','deleted']);const sorts=new Set(['updatedAt','progress','effectiveTime','status']);
+function createTestSupervisionService({root}={}){
+ if(!root)throw Error('root obligatorio');const attempts=()=>Array.isArray(root.attempts)?root.attempts:[];
+ function minimizeAttemptForSupervision(a){const cp=(root.checkpoints||[]).filter(c=>c.attemptId===a.attemptId).sort((x,y)=>(y.revision||0)-(x.revision||0))[0],snap=a.progress?.studentSnapshot||{};return Object.freeze({attemptId:a.attemptId,testId:a.testId,name:snap.name||'',grade:snap.grade||'',groupId:snap.grade||'',status:a.status,index:cp?.index??0,progress:a.progress?.progress||{},totalQuestions:a.progress?.totalQuestions||0,correct:cp?.correct??0,incorrect:cp?.incorrect??0,effectiveTime:cp?.effectiveTime??0,updatedAt:a.updatedAt,startedAt:a.startedAt,connectionState:a.status==='disconnected'?'disconnected':a.status==='reconnected'?'reconnected':'unknown',checkpointRestored:!!cp});}
+ function filterTestAttempts(rows,{status,groupId,accountPlayerId,connectionState}={}){if(status&&!states.has(status))throw Error('status invalido');if(connectionState&&!['disconnected','reconnected','unknown'].includes(connectionState))throw Error('connectionState invalido');return rows.filter(a=>(!status||a.status===status)&&(!groupId||a.groupId===groupId)&&(!accountPlayerId||a.accountPlayerId===accountPlayerId)&&(!connectionState||a.connectionState===connectionState));}
+ function sortTestAttempts(rows,{sort='updatedAt',direction='desc'}={}){if(!sorts.has(sort)||!['asc','desc'].includes(direction))throw Error('orden invalido');return [...rows].sort((a,b)=>{const v=String(a[sort]).localeCompare(String(b[sort]));return direction==='asc'?v:-v;});}
+ function listTestAttempts(testId,filters={}){assertUuid(testId,'testId');if(!(root.tests||[]).some(t=>t.testId===testId))throw Error('prueba no encontrada');const limit=Math.min(Math.max(Number(filters.limit)||50,1),100);return sortTestAttempts(filterTestAttempts(attempts().filter(a=>a.testId===testId).map(minimizeAttemptForSupervision),filters),filters).slice(0,limit);}
+ function getTestAttempt(testId,attemptId){assertUuid(attemptId,'attemptId');const item=listTestAttempts(testId,{limit:100}).find(a=>a.attemptId===attemptId);if(!item)throw Error('intento no encontrado');return item;}
+ return {listTestAttempts,getTestAttempt,filterTestAttempts,sortTestAttempts,minimizeAttemptForSupervision};
+}
+module.exports={createTestSupervisionService};

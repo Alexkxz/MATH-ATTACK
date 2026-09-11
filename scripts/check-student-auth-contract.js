@@ -1,0 +1,14 @@
+'use strict';
+const assert=require('assert');const {STUDENT_SESSION_TTL_MS,authorizeStudentSession,assessExistingWsIdentity}=require('../src/server/exams/studentAuthContract');
+const account='11111111-1111-4111-8111-111111111111',other='22222222-2222-4222-8222-222222222222',now=1000000;
+const session={kind:'student-authenticated',accountPlayerId:account,expiresAt:now+STUDENT_SESSION_TTL_MS,connectionIds:['conn-a']};
+assert.equal(authorizeStudentSession(session,{now,accountPlayerId:account,connectionId:'conn-a'}).ok,true);
+assert.equal(authorizeStudentSession(null,{now,accountPlayerId:account}).code,'STUDENT_AUTH_REQUIRED');
+assert.equal(authorizeStudentSession(session,{now,accountPlayerId:other}).code,'STUDENT_IDENTITY_MISMATCH');
+assert.equal(authorizeStudentSession({...session,expiresAt:now},{now,accountPlayerId:account}).code,'STUDENT_SESSION_EXPIRED');
+assert.equal(authorizeStudentSession({...session,revokedAt:now},{now,accountPlayerId:account}).code,'STUDENT_SESSION_REVOKED');
+assert.equal(authorizeStudentSession(session,{now,accountPlayerId:account,connectionId:'conn-b'}).code,'STUDENT_CONNECTION_UNBOUND');
+assert.equal(assessExistingWsIdentity({accountPlayerId:account,sessionId:'legacy',connectionId:'c'}).reason,'WS_ACCOUNT_NOT_AUTHENTICATED');
+assert.equal(assessExistingWsIdentity({accountPlayerId:other,authenticatedAccountPlayerId:account,sessionId:'s',connectionId:'c'}).reason,'WS_ACCOUNT_MISMATCH');
+assert.equal(assessExistingWsIdentity({accountPlayerId:account,authenticatedAccountPlayerId:account,sessionId:'s',connectionId:'c'}).ok,true);
+console.log('OK: contrato rechaza identidad libre, sesiones expiradas y WebSocket no autenticado.');

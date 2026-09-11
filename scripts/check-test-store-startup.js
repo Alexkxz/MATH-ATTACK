@@ -1,0 +1,16 @@
+'use strict';
+const assert=require('assert'),fs=require('fs'),os=require('os'),path=require('path'),net=require('net'),crypto=require('crypto');
+const {spawn}=require('child_process');const {createTestStore}=require('../src/server/exams/testStore');const {createTest,createRoot}=require('../src/server/exams/testModel');
+const port=()=>new Promise((resolve,reject)=>{const s=net.createServer();s.listen(0,'127.0.0.1',()=>{const p=s.address().port;s.close(e=>e?reject(e):resolve(p));});});const wait=ms=>new Promise(r=>setTimeout(r,ms));
+const hash=file=>crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex');
+async function start(env){const p=await port();const child=spawn(process.execPath,['server.js'],{cwd:process.cwd(),env:{...process.env,...env,PORT:String(p)},stdio:['ignore','pipe','pipe'],windowsHide:true});let out='';child.stdout.on('data',x=>out+=x);child.stderr.on('data',x=>out+=x);for(let i=0;i<30;i++){try{if((await fetch(`http://127.0.0.1:${p}/api/exam/status`)).ok)return {child,out:()=>out};}catch(_){}await wait(100);}child.kill('SIGINT');throw Error('servidor no inició '+out);}
+(async()=>{const dir=fs.mkdtempSync(path.join(os.tmpdir(),'math-attack-startup-'));const protectedFiles=['players.json','ranking.json','aureosLog.json','devices.json'].map(x=>path.join(process.cwd(),x));const before=protectedFiles.map(hash);try{const file=path.join(dir,'pruebas.json');let store=createTestStore({baseDir:dir,logger:{error(){}}});assert.equal(store.initialize().status,'new');assert.equal(fs.existsSync(file),false);
+  const server=await start({MATH_ATTACK_TESTS_PATH:file});assert.match(server.out(),/nuevo\/no persistido/);server.child.kill('SIGINT');
+  const root=createRoot();root.tests.push(createTest({title:'Inicio',creator:'11111111-1111-4111-8111-111111111111'}));store.save(root);assert.equal(store.initialize().status,'loaded');assert.ok(fs.existsSync(file));
+  const saved=fs.readFileSync(file);fs.unlinkSync(file);fs.writeFileSync(file+'.recover.tmp',saved);assert.equal(store.initialize().status,'loaded');
+  fs.writeFileSync(file,JSON.stringify({tests:[]}));assert.equal(store.initialize().status,'migrated');
+  const oversize=createRoot();oversize.checkpoints.push({checkpointId:'11111111-1111-4111-8111-111111111111',attemptId:'22222222-2222-4222-8222-222222222222',index:0,answers:['x'.repeat(300000)],progress:{},effectiveTime:0,version:1,savedAt:new Date().toISOString()});fs.writeFileSync(file,JSON.stringify(oversize));assert.equal(store.initialize().status,'invalid');
+  fs.writeFileSync(file,'{');assert.equal(store.initialize().status,'invalid');assert.equal(fs.readFileSync(file,'utf8'),'{');
+  const fallbackFile=path.join(dir,'fallback.json');const fallback=createTestStore({baseDir:dir,fileName:'fallback.json',forceCopyFallback:true,logger:{error(){}}});fallback.save(root);assert.ok(fs.existsSync(fallbackFile));assert.equal(fallback.load().tests.length,1);
+  assert.deepEqual(protectedFiles.map(hash),before);console.log('OK: inicio aislado, carga, migración, temporal, escritura atómica/fallback, límite, corrupción y aislamiento.');
+}finally{fs.rmSync(dir,{recursive:true,force:true});}})().catch(e=>{console.error(e);process.exit(1)});

@@ -1,0 +1,8 @@
+'use strict';
+const {createAttempt,transitionAttempt}=require('./testModel');const {assertUuid}=require('./testValidation');
+function createAttemptActionService({root}={}){if(!root)throw Error('root obligatorio');
+ function mutate({testId,attemptId,actor,revision,eventId,reason,to}={}){assertUuid(testId,'testId');assertUuid(attemptId,'attemptId');assertUuid(eventId,'eventId');if(actor!=='admin')throw Error('actor no autorizado');if(!reason)throw Error('motivo obligatorio');const a=root.attempts.find(x=>x.attemptId===attemptId);if(!a)throw Error('intento no encontrado');if(a.testId!==testId)throw Error('testId inconsistente');if(root.events.some(e=>e.eventId===eventId))return {attempt:a,duplicate:true};if(!Number.isInteger(revision)||revision<=a.revision)throw Error('revision antigua');transitionAttempt(a,to);a.revision=revision;root.events.push({eventId,testId,attemptId,actor,action:to,reason,revision,occurredAt:new Date().toISOString()});return {attempt:a,duplicate:false};}
+ const wrap=to=>p=>mutate({...p,to});
+ function restartAttempt(p){const old=mutate({...p,to:'restarted'}).attempt;const fresh=createAttempt({testId:old.testId,accountPlayerId:old.accountPlayerId,parentAttemptId:old.attemptId,origin:'restart'});root.attempts.push(fresh);return {attempt:old,newAttempt:fresh};}
+ return {pauseAttempt:wrap('paused'),resumeAttempt:wrap('in_progress'),allowReentry:wrap('reconnected'),closeAttempt:wrap('finished'),reopenAttempt:wrap('reopened'),restartAttempt,markAttemptIncomplete:wrap('incomplete'),deleteAttemptLogically:wrap('deleted')};}
+module.exports={createAttemptActionService};

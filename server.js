@@ -18,6 +18,12 @@ const os   = require('os');
 const fs   = require('fs');
 const path = require('path');
 const { createJsonStore } = require('./src/data/jsonStore');
+const { createTestStore } = require('./src/server/exams/testStore');
+const { createTestService } = require('./src/server/exams/testService');
+const { createStudentHttpSessionStore } = require('./src/server/exams/studentHttpSession');
+const { createAttemptCheckpointService } = require('./src/server/exams/attemptCheckpointService');
+const { createTestSupervisionService } = require('./src/server/exams/testSupervisionService');
+const { buildLegacyIdentityMap,resolveAccountPlayerId } = require('./src/server/exams/legacyIdentityAdapter');
 const { createHtmlPages } = require('./src/server/htmlPages');
 const { createHttpAdminRoutes } = require('./src/server/http/adminRoutes');
 const {
@@ -144,6 +150,19 @@ const L={
   rank: (...a)=>log(C.green, '\u{1F3C5} RANK  ',...a),
   err:  (...a)=>log(C.red,   '\u274C ERROR ',...a),
 };
+// El modelo de pruebas se prepara en modo solo lectura. Aún no participa en rutas,
+// WebSockets ni en examMode; MATH_ATTACK_TESTS_PATH permite aislarlo en pruebas.
+const TESTS_STORE_PATH=process.env.MATH_ATTACK_TESTS_PATH||path.join(__dirname,'pruebas.json');
+const testStore=createTestStore({baseDir:path.dirname(TESTS_STORE_PATH),fileName:path.basename(TESTS_STORE_PATH),logger:{error:(...args)=>L.err(...args)}});
+const testStoreStartup=testStore.initialize();
+if(testStoreStartup.status==='loaded') L.game('Almacén de pruebas cargado');
+else if(testStoreStartup.status==='migrated') L.game('Almacén de pruebas migrado en memoria; pendiente de guardar');
+else if(testStoreStartup.status==='invalid') L.err('Almacén de pruebas inválido; se usa memoria vacía');
+else L.game('Almacén de pruebas nuevo/no persistido');
+const testService=createTestService({store:testStore});
+const attemptCheckpointService=createAttemptCheckpointService({store:testStore});
+const testSupervisionService=createTestSupervisionService({root:testStore.load()});
+const studentHttpSessions=createStudentHttpSessionStore();
 const dataStore = createJsonStore({ baseDir: __dirname, logger: L });
 const htmlPages = createHtmlPages({ baseDir: __dirname, logger: L });
 const {
@@ -167,6 +186,14 @@ function saveConfig(){
 function sendJson(res,status,obj){
   res.writeHead(status,{'Content-Type':'application/json'});
   res.end(JSON.stringify(obj));
+}
+function getStudentSessionToken(req){
+  const cookie=String(req.headers.cookie||'').split(';').map(v=>v.trim()).find(v=>v.startsWith('math_attack_student_session='));
+  return cookie?decodeURIComponent(cookie.slice('math_attack_student_session='.length)):'';
+}
+function studentSessionCookie(token,req,maxAge=900){
+  const secure=req.socket.encrypted||String(req.headers['x-forwarded-proto']||'').toLowerCase()==='https';
+  return `math_attack_student_session=${encodeURIComponent(token)}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${maxAge}${secure?'; Secure':''}`;
 }
 function getAdminPasswordFromRequest(req, bodyData=null){
   if(bodyData&&typeof bodyData==='object'){
@@ -400,9 +427,84 @@ const server=http.createServer((req,res)=>{
     return;
   }
 
+  // ── Sesion HTTP temporal de alumno; no participa aun en WebSocket ──
+  if(req.method==='POST'&&url==='/api/student/auth'){
+    return readBody(req,res,body=>{
+      let data;try{data=JSON.parse(body);}catch(_){return sendJson(res,400,{ok:false,error:'Solicitud invalida'});}
+      if(!data||typeof data.name!=='string'||(typeof data.pin!=='string'&&typeof data.pin!=='number'))return sendJson(res,400,{ok:false,error:'Solicitud invalida'});
+      const player=authenticatePlayer(loadPlayers(),data.name,data.pin);
+      if(!player)return sendJson(res,401,{ok:false,error:'Credenciales invalidas'});
+      let accountPlayerId;try{accountPlayerId=resolveAccountPlayerId(player,buildLegacyIdentityMap(loadPlayers()));}catch(_){return sendJson(res,401,{ok:false,error:'Credenciales invalidas'});}
+      const issued=studentHttpSessions.createStudentSession(accountPlayerId);
+      res.writeHead(200,{'Content-Type':'application/json','Set-Cookie':studentSessionCookie(issued.token,req)});
+      res.end(JSON.stringify({ok:true,student:{name:player.name},expiresAt:issued.session.expiresAt}));
+    });
+  }
+  // ── Intentos de alumno: identidad exclusivamente derivada de la cookie de sesion ──
+  const studentAttemptMatch=url.match(/^\/api\/student\/tests\/([0-9a-f-]+)\/attempts(?:\/([0-9a-f-]+)\/start)?$/i);
+  if(studentAttemptMatch){
+    const auth=studentHttpSessions.validateStudentSession(getStudentSessionToken(req));
+    if(!auth.ok)return sendJson(res,401,{ok:false,error:'Sesion no valida'});
+    const player=findPlayerById(loadPlayers(),auth.session.accountPlayerId)||loadPlayers().find(p=>{try{return resolveAccountPlayerId(p,buildLegacyIdentityMap(loadPlayers()))===auth.session.accountPlayerId;}catch(_){return false;}});
+    if(!player)return sendJson(res,401,{ok:false,error:'Sesion no valida'});
+    try{if(req.method==='POST'&&!studentAttemptMatch[2]){const attempt=testService.createStudentAttempt({testId:studentAttemptMatch[1],accountPlayerId:auth.session.accountPlayerId,groupId:player.grade||'',studentSnapshot:{name:player.name,grade:player.grade||''}});return sendJson(res,201,{ok:true,attempt});}if(req.method==='POST'&&studentAttemptMatch[2])return sendJson(res,200,{ok:true,attempt:testService.startStudentAttempt(studentAttemptMatch[2],auth.session.accountPlayerId)});}catch(e){const msg=e.message||'Solicitud invalida';return sendJson(res,/no encontrado/.test(msg)?404:/no asignado/.test(msg)?403:/ya existe/.test(msg)?409:422,{ok:false,error:msg});}
+    return sendJson(res,404,{ok:false,error:'Ruta no encontrada'});
+  }
+  const checkpointMatch=url.match(/^\/api\/student\/tests\/([0-9a-f-]+)\/attempts\/([0-9a-f-]+)\/checkpoint(?:\/(\d+))?$/i);
+  if(checkpointMatch){
+    const auth=studentHttpSessions.validateStudentSession(getStudentSessionToken(req));
+    if(!auth.ok)return sendJson(res,401,{ok:false,error:'Sesion no valida'});
+    const input={testId:checkpointMatch[1],attemptId:checkpointMatch[2],accountPlayerId:auth.session.accountPlayerId};
+    try{
+      if(req.method==='POST')return readBody(req,res,body=>{let data;try{data=JSON.parse(body);}catch(_){return sendJson(res,400,{ok:false,error:'Solicitud invalida'});}try{const result=attemptCheckpointService.saveAttemptCheckpoint({...data,...input});return sendJson(res,result.duplicate?200:201,{ok:true,checkpoint:result.checkpoint,duplicate:result.duplicate});}catch(e){return sendJson(res,/antigua/.test(e.message)?409:/propietario/.test(e.message)?403:422,{ok:false,error:e.message});}});
+      if(req.method==='GET'){const checkpoint=checkpointMatch[3]?attemptCheckpointService.getAttemptCheckpointByRevision({...input,revision:Number(checkpointMatch[3])}):attemptCheckpointService.getLatestAttemptCheckpoint(input);return checkpoint?sendJson(res,200,{ok:true,checkpoint}):sendJson(res,404,{ok:false,error:'Checkpoint no encontrado'});}
+    }catch(e){return sendJson(res,/propietario/.test(e.message)?403:404,{ok:false,error:'Checkpoint no encontrado'});}
+    return sendJson(res,404,{ok:false,error:'Ruta no encontrada'});
+  }
+  const supervisionMatch=url.match(/^\/api\/maestro\/tests\/([0-9a-f-]+)\/attempts(?:\/([0-9a-f-]+))?$/i);
+  if(supervisionMatch&&req.method==='GET'){
+    if(!requireAdmin(req,res))return;
+    const raw=new URL('http://x'+req.url).searchParams,allowed=['status','groupId','accountPlayerId','connectionState','sort','order','limit','pwd','password'];for(const key of raw.keys())if(!allowed.includes(key))return sendJson(res,400,{ok:false,error:'Parametro invalido'});const filters={};for(const key of ['status','groupId','accountPlayerId','connectionState','sort','limit'])if(raw.has(key))filters[key]=raw.get(key);if(raw.has('order'))filters.direction=raw.get('order');
+    try{const value=supervisionMatch[2]?testSupervisionService.getTestAttempt(supervisionMatch[1],supervisionMatch[2]):testSupervisionService.listTestAttempts(supervisionMatch[1],filters);return sendJson(res,200,supervisionMatch[2]?{ok:true,attempt:value}:{ok:true,attempts:value});}catch(e){return sendJson(res,/no encontrada|no encontrado/.test(e.message)?404:422,{ok:false,error:e.message});}
+  }
+  if(req.method==='POST'&&url==='/api/student/logout'){
+    const token=getStudentSessionToken(req);studentHttpSessions.revokeStudentSession(token);
+    res.writeHead(200,{'Content-Type':'application/json','Set-Cookie':studentSessionCookie('',req,0)});res.end(JSON.stringify({ok:true}));return;
+  }
+  if(req.method==='POST'&&url==='/api/student/session/refresh'){
+    const rotated=studentHttpSessions.rotateStudentSession(getStudentSessionToken(req));
+    if(!rotated.ok)return sendJson(res,401,{ok:false,error:'Sesion no valida'});
+    res.writeHead(200,{'Content-Type':'application/json','Set-Cookie':studentSessionCookie(rotated.token,req)});
+    res.end(JSON.stringify({ok:true,expiresAt:rotated.session.expiresAt}));return;
+  }
+
   if(adminRoutes.matches(req)){
     adminRoutes.handle(req,res);
     return;
+  }
+
+  // ── API administrativa de pruebas versionadas ──
+  const examApiMatch=url.match(/^\/api\/exams(?:\/([0-9a-f-]+)(?:\/assignments)?)?$/i);
+  if(examApiMatch){
+    const testId=examApiMatch[1]||null;
+    const assignments=url.endsWith('/assignments');
+    const respondError=(status,error)=>sendJson(res,status,{ok:false,error});
+    const run=(body,action)=>{
+      try{ if(!requireAdmin(req,res,body)) return; action(body||{}); }
+      catch(e){ const msg=e.message||'Solicitud inválida'; respondError(/no encontrada/.test(msg)?404:/revisión antigua|no editable/.test(msg)?409:422,msg); }
+    };
+    if(req.method==='GET'&&!testId){
+      if(!requireAdmin(req,res)) return;
+      try{ return sendJson(res,200,{ok:true,tests:testService.list({status:new URL('http://x'+req.url).searchParams.get('status')||''})}); }catch(e){ return respondError(422,e.message); }
+    }
+    if(req.method==='GET'&&testId&&!assignments){
+      if(!requireAdmin(req,res)) return;
+      try{return sendJson(res,200,{ok:true,test:testService.get(testId)});}catch(e){return respondError(/no encontrada/.test(e.message)?404:422,e.message);}
+    }
+    if(req.method==='POST'&&!testId){return readBody(req,res,body=>{let data;try{data=JSON.parse(body);}catch(_){return respondError(400,'JSON inválido');}run(data,d=>sendJson(res,201,{ok:true,test:testService.create(d)}));});}
+    if(req.method==='PATCH'&&testId&&!assignments){return readBody(req,res,body=>{let data;try{data=JSON.parse(body);}catch(_){return respondError(400,'JSON inválido');}if(data.revision==null)return respondError(400,'revision obligatoria');run(data,d=>sendJson(res,200,{ok:true,test:testService.update(testId,d.revision,d)}));});}
+    if(req.method==='PUT'&&testId&&assignments){return readBody(req,res,body=>{let data;try{data=JSON.parse(body);}catch(_){return respondError(400,'JSON inválido');}if(!Array.isArray(data.assignments))return respondError(400,'assignments obligatorias');run(data,d=>sendJson(res,200,{ok:true,assignments:testService.replaceAssignments(testId,d.assignments)}));});}
+    return respondError(404,'Ruta de pruebas no encontrada');
   }
 
   // ── Modo Examen: activar ──

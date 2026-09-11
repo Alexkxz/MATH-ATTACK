@@ -37,7 +37,22 @@
     "check:responsive": "node scripts/check-responsive.js",
     "check:powers-ui": "node scripts/check-multiplayer-powers-ui.js",
     "check:admin-auth": "node scripts/check-admin-auth.js",
-    "check": "npm run check:syntax && npm run check:encoding && npm run check:ordered && npm run check:json-store && npm run check:player-levels && npm run check:players && npm run check:identity && npm run check:session-store && npm run check:panel-state && npm run check:ws-context && npm run check:player-identity && npm run check:game-checkpoint && npm run check:checkpoint-save-result && npm run check:result-idempotency && npm run check:economy-context && npm run check:pot-deduct && npm run check:pot-award && npm run check:pot-draw && npm run check:mp-winner-bonus && npm run check:economic-idempotency && npm run check:steal-power && npm run check:maestro-announcement && npm run check:kick-player && npm run check:websocket-integration && npm run check:achievements && npm run check:daily-streak && npm run check:game-rewards && npm run check:ranking && npm run check:checkpoints && npm run check:statistics && npm run check:server && npm run check:admin-auth && npm run check:ui && npm run check:responsive && npm run check:powers-ui"
+    "check:test-model": "node scripts/check-test-model.js",
+    "check:test-store": "node scripts/check-test-store.js && node scripts/check-test-store-startup.js && node scripts/check-test-endpoints.js",
+    "check:test-store-startup": "node scripts/check-test-store-startup.js",
+    "check:test-endpoints": "node scripts/check-test-endpoints.js",
+    "check:test-drafts": "node scripts/check-test-drafts.js",
+    "check:test-scheduling": "node scripts/check-test-scheduling.js",
+    "check:student-auth-contract": "node scripts/check-student-auth-contract.js",
+    "check:student-http-session": "node scripts/check-student-http-session.js",
+    "check:legacy-identity-adapter": "node scripts/check-legacy-identity-adapter.js",
+    "check:test-attempts": "node scripts/check-test-attempts.js",
+    "check:test-attempts-regression": "node scripts/check-test-attempts-regression.js",
+    "check:test-checkpoints-service": "node scripts/check-test-checkpoints-service.js",
+    "check:test-state-machine-paused": "node scripts/check-test-state-machine-paused.js",
+    "check:test-attempt-actions": "node scripts/check-test-attempt-actions.js",
+    "check:test-attempt-actions-regression": "node scripts/check-test-attempt-actions-regression.js",
+    "check": "npm run check:syntax && npm run check:encoding && npm run check:ordered && npm run check:json-store && npm run check:player-levels && npm run check:players && npm run check:identity && npm run check:session-store && npm run check:panel-state && npm run check:ws-context && npm run check:player-identity && npm run check:game-checkpoint && npm run check:checkpoint-save-result && npm run check:result-idempotency && npm run check:economy-context && npm run check:pot-deduct && npm run check:pot-award && npm run check:pot-draw && npm run check:mp-winner-bonus && npm run check:economic-idempotency && npm run check:steal-power && npm run check:maestro-announcement && npm run check:kick-player && npm run check:websocket-integration && npm run check:achievements && npm run check:daily-streak && npm run check:game-rewards && npm run check:ranking && npm run check:checkpoints && npm run check:statistics && npm run check:test-model && npm run check:test-store && npm run check:test-drafts && npm run check:test-scheduling && npm run check:student-auth-contract && npm run check:student-http-session && npm run check:legacy-identity-adapter && npm run check:test-attempts && npm run check:test-attempts-regression && npm run check:server && npm run check:admin-auth && npm run check:ui && npm run check:responsive && npm run check:powers-ui"
   },
   "dependencies": {
     "ws": "^8.21.0"

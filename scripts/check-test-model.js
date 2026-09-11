@@ -1,0 +1,12 @@
+'use strict';
+const assert=require('assert');
+const {createRoot,createTest,createAttempt,createCheckpoint,createResult,createEvent,appendEvent,applyRevision,transitionAttempt,transitionTest,markOfficial}=require('../src/server/exams/testModel');
+const {isUuid,MAX_METADATA}=require('../src/server/exams/testValidation');
+const account='11111111-1111-4111-8111-111111111111';
+const test=createTest({title:'Diagnóstico',creator:account});assert.ok(isUuid(test.testId));assert.throws(()=>createTest({title:'',creator:account}));
+transitionTest(test,'scheduled');transitionTest(test,'active');transitionTest(test,'paused');transitionTest(test,'active');assert.throws(()=>transitionTest(test,'draft'));
+const root=createRoot();root.tests.push(test);const attempt=createAttempt({testId:test.testId,accountPlayerId:account});root.attempts.push(attempt);transitionAttempt(attempt,'started');transitionAttempt(attempt,'in_progress');transitionAttempt(attempt,'finished');transitionAttempt(attempt,'reopened');transitionAttempt(attempt,'in_progress');transitionAttempt(attempt,'finished');markOfficial(root,attempt.attemptId);assert.strictEqual(attempt.official,true);
+const restarted=createAttempt({testId:test.testId,accountPlayerId:account,parentAttemptId:attempt.attemptId,origin:'restart'});root.attempts.push(restarted);assert.throws(()=>markOfficial(root,restarted.attemptId));transitionAttempt(restarted,'deleted');assert.throws(()=>markOfficial(root,restarted.attemptId));
+const checkpoint=createCheckpoint({attemptId:attempt.attemptId,index:1,answers:[1],progress:{q:1}});assert.ok(isUuid(checkpoint.checkpointId));const event=createEvent({testId:test.testId,attemptId:attempt.attemptId,action:'reopened'});assert.strictEqual(appendEvent(root,event),true);assert.strictEqual(appendEvent(root,event),false);assert.throws(()=>createEvent({testId:test.testId,action:'x',metadata:{x:'a'.repeat(MAX_METADATA)}}));
+const result=createResult({attemptId:attempt.attemptId,testId:test.testId,accountPlayerId:account,score:10});assert.ok(isUuid(result.resultId));assert.throws(()=>applyRevision(attempt,attempt.revision,{}));applyRevision(attempt,attempt.revision+1,{progress:{q:2}});
+console.log('OK: modelo de pruebas valida UUID, estados, transiciones, reanudación, reinicio, oficialidad, checkpoints y eventos.');

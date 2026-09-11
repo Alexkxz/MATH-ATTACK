@@ -1,0 +1,5 @@
+'use strict';
+const assert=require('assert'),fs=require('fs'),os=require('os'),path=require('path');
+const {createTestStore}=require('../src/server/exams/testStore');const {createTest}=require('../src/server/exams/testModel');
+const dir=fs.mkdtempSync(path.join(os.tmpdir(),'math-attack-tests-'));
+try{const store=createTestStore({baseDir:dir,logger:{error(){}}});const root=store.load();assert.equal(root.tests.length,0);root.tests.push(createTest({title:'Persistente',creator:'11111111-1111-4111-8111-111111111111'}));store.save(root);assert.equal(store.load().tests.length,1);const file=store.file;const backup=fs.readFileSync(file);fs.unlinkSync(file);fs.writeFileSync(file+'.recover.tmp',backup);assert.equal(store.load().tests.length,1);fs.writeFileSync(file,JSON.stringify({tests:[]}));assert.equal(store.load().schemaVersion,1);assert.throws(()=>store.save({schemaVersion:1,tests:{}}));assert.equal(fs.existsSync(file),true);console.log('OK: testStore usa temporal, recuperación, migración segura y rechaza datos inválidos.');}finally{fs.rmSync(dir,{recursive:true,force:true});}
