@@ -578,16 +578,48 @@ body.proj-mode .q-display{font-size:48px;letter-spacing:4px}
   <!-- Pestaña: Pruebas -->
   <div class="tab-panel" id="panel-pruebas">
 
+    <header class="pr-page-header">
+      <div class="pr-page-heading">
+        <span class="pr-eyebrow">CENTRO DE EVALUACION</span>
+        <h2>Pruebas</h2>
+        <p>Crea, configura, aplica y supervisa evaluaciones para tus alumnos.</p>
+      </div>
+      <div class="pr-page-status" aria-live="polite">
+        <span class="pr-status-dot"></span>
+        <span>LISTA PARA CONFIGURAR</span>
+      </div>
+    </header>
+
+    <nav class="pr-test-nav" aria-label="Secciones de la prueba" role="tablist">
+      <button type="button" class="pr-test-nav-btn active" role="tab" aria-selected="true" data-pr-section-target="summary">Resumen</button>
+      <button type="button" class="pr-test-nav-btn" role="tab" aria-selected="false" data-pr-section-target="programming">Programación</button>
+      <button type="button" class="pr-test-nav-btn" role="tab" aria-selected="false" data-pr-section-target="assignments">Asignaciones</button>
+      <button type="button" class="pr-test-nav-btn" role="tab" aria-selected="false" data-pr-section-target="supervision">Supervisión</button>
+      <button type="button" class="pr-test-nav-btn" role="tab" aria-selected="false" data-pr-section-target="results">Resultados</button>
+      <button type="button" class="pr-test-nav-btn" role="tab" aria-selected="false" data-pr-section-target="ranking">Ranking</button>
+      <button type="button" class="pr-test-nav-btn" role="tab" aria-selected="false" data-pr-section-target="rewards">Recompensas</button>
+    </nav>
+    <p id="prTestSectionStatus" class="pr-test-section-status" aria-live="polite">Resumen de la prueba seleccionada.</p>
+
     <!-- Banner prueba activa -->
     <div class="pr-banner" id="prBanner">
-      <span>📊 PRUEBA EN CURSO</span>
-      <span id="prBannerInfo" style="color:#94a3b8;font-size:7px"></span>
+      <div class="pr-banner-copy">
+        <span class="pr-banner-kicker">● EN VIVO</span>
+        <span>📊 PRUEBA EN CURSO</span>
+        <span id="prBannerInfo" class="pr-banner-info"></span>
+      </div>
       <button class="pr-stop-btn" onclick="stopPrueba()">⏹ DETENER</button>
     </div>
 
     <!-- Configuración -->
-    <div id="prConfig">
-      <div class="pr-section-title">📊 CONFIGURAR SESIÓN DE PRUEBA</div>
+    <div id="prConfig" data-pr-section="programming">
+      <div class="pr-config-intro">
+        <div>
+          <div class="pr-section-title">01 · CONFIGURAR SESIÓN</div>
+          <p>Define el grupo, ritmo y contenido antes de iniciar.</p>
+        </div>
+        <span class="pr-config-note">Los cambios se aplican a la próxima prueba.</span>
+      </div>
       <div class="pr-config-grid">
         <div class="pr-field">
           <label>GRADO / GRUPO</label>
@@ -614,13 +646,17 @@ body.proj-mode .q-display{font-size:48px;letter-spacing:4px}
       </div>
       <div id="prOpSections"></div>
       <div class="pr-summary" id="prSummary"></div>
-      <button class="pr-start-btn" onclick="startPrueba(this)">▶ INICIAR PRUEBA</button>
+      <div class="pr-action-row">
+        <button class="pr-start-btn" onclick="startPrueba(this)">▶ INICIAR PRUEBA</button>
+        <span class="pr-action-help">El seguimiento en vivo aparecerá aquí al comenzar.</span>
+      </div>
+      <p class="pr-ranking-note">Para el análisis histórico profundo, consulta el <a href="/ranking">Ranking</a>.</p>
     </div>
 
     <!-- Resultados en tiempo real -->
-    <div id="prResultados" style="display:none">
+    <div id="prResultados" data-pr-section="results" style="display:none">
       <div class="pr-results-hdr">
-        <span>📋 RESULTADOS EN TIEMPO REAL</span>
+        <span>02 · RESULTADOS EN TIEMPO REAL</span>
         <span id="prParticipantes" style="color:#34d399;font-size:10px"></span>
       </div>
       <div style="overflow-x:auto">
@@ -646,6 +682,39 @@ body.proj-mode .q-display{font-size:48px;letter-spacing:4px}
         </div>
       </div>
     </div>
+
+    <section class="pr-test-library" data-pr-section="summary programming assignments" aria-labelledby="prTestLibraryTitle">
+      <div class="pr-results-hdr">
+        <span id="prTestLibraryTitle">03 · BIBLIOTECA DE PRUEBAS</span>
+        <span id="prTestLibraryStatus" class="pr-attempts-status" aria-live="polite"></span>
+      </div>
+      <div id="prTestLibraryFilters" class="pr-test-library-filters">
+        <button class="pr-test-create" type="button">＋ Nueva prueba</button>
+        <input id="prTestSearch" type="search" placeholder="Buscar por nombre o testId" autocomplete="off">
+        <select id="prTestStatus" aria-label="Filtrar por estado"><option value="">Todos los estados</option><option value="draft">Borrador</option><option value="scheduled">Programada</option><option value="active">Activa</option><option value="paused">Pausada</option><option value="closed">Cerrada</option><option value="finished">Finalizada</option><option value="cancelled">Cancelada</option></select>
+        <input id="prTestGroup" type="search" placeholder="Grupo" autocomplete="off">
+        <label>Desde <input id="prTestFrom" type="date"></label>
+        <label>Hasta <input id="prTestTo" type="date"></label>
+        <button class="pr-tbl-mini-btn" type="button" onclick="prLoadTestLibrary()">↻ Actualizar biblioteca</button>
+      </div>
+      <div id="prSelectedTest" class="pr-selected-test" aria-live="polite"><span>Ninguna prueba seleccionada.</span></div>
+      <div id="prTestLibraryList" class="pr-test-library-list"><p class="pr-attempts-empty">Cargando biblioteca de pruebas…</p></div>
+    </section>
+
+    <section class="pr-attempts" data-pr-section="supervision ranking rewards" aria-labelledby="prAttemptsTitle">
+      <div class="pr-results-hdr">
+        <span id="prAttemptsTitle">03 · SUPERVISIÓN DE INTENTOS</span>
+        <span id="prAttemptsStatus" class="pr-attempts-status" aria-live="polite"></span>
+      </div>
+      <div class="pr-attempts-toolbar">
+        <label for="prAttemptTestId">ID DE PRUEBA</label>
+        <input id="prAttemptTestId" type="text" maxlength="64" placeholder="UUID de la prueba" autocomplete="off">
+        <button class="pr-tbl-mini-btn" type="button" onclick="prLoadAttempts()">↻ Cargar intentos</button>
+      </div>
+      <div id="prAttemptsList" class="pr-attempts-list">
+        <p class="pr-attempts-empty">Indica el ID de una prueba para consultar sus intentos.</p>
+      </div>
+    </section>
 
   </div>
 
@@ -792,6 +861,8 @@ body.proj-mode .q-display{font-size:48px;letter-spacing:4px}
 <script src="/src/client/maestro/panelSocket.js"></script>
 <script src="/src/client/maestro/announcementControls.js"></script>
 <script src="/src/client/maestro/transactionViews.js"></script>
+<script src="/src/client/maestro/testLibrary.js"></script>
+<script src="/src/client/maestro/attemptActions.js"></script>
 <script>
 // ── Definición de poderes (espejo del cliente) ──
 const POWERS_DEF=[
@@ -1226,7 +1297,7 @@ function prUpdateSummary(){
   if(!el) return;
   const ops=_PR_OP_LIST.filter(o=>document.getElementById('prOp'+o.charAt(0).toUpperCase()+o.slice(1))?.checked);
   if(!ops.length){
-    el.innerHTML='<div class="pr-summary-title">RESUMEN ANTES DE INICIAR</div>Selecciona al menos una operacion.';
+    el.innerHTML='<div class="pr-summary-head"><div class="pr-summary-title">RESUMEN ANTES DE INICIAR</div><span class="pr-summary-state warn">CONFIGURACIÓN INCOMPLETA</span></div><p class="pr-summary-warning">Selecciona al menos una operación para poder iniciar la prueba.</p>';
     return;
   }
   const cfg=_prCollectOpsConfig(ops);
@@ -1234,7 +1305,9 @@ function prUpdateSummary(){
   const grade=document.getElementById('prGrade')?.value||'Todos los grados';
   const time=Number(document.getElementById('prTime')?.value)||0;
   const details=ops.map(o=>prDescribeOp(o,cfg[o])).join('<br>');
-  el.innerHTML=`<div class="pr-summary-title">RESUMEN ANTES DE INICIAR</div><strong>${grade}</strong> · <strong>${total}</strong> preguntas · <strong>${time?time+' seg por pregunta':'tiempo libre'}</strong><br>${details}`;
+  const missingTables=ops.some(o=>_PR_HAS_TABLES[o]&&!cfg[o].tables.length);
+  const state=missingTables?'FALTAN TABLAS':'LISTA PARA INICIAR';
+  el.innerHTML=`<div class="pr-summary-head"><div class="pr-summary-title">RESUMEN ANTES DE INICIAR</div><span class="pr-summary-state${missingTables?' warn':''}">${state}</span></div><div class="pr-summary-metrics"><span><b>GRUPO</b>${grade}</span><span><b>REACTIVOS</b>${total}</span><span><b>RITMO</b>${time?time+' seg/pregunta':'Tiempo libre'}</span></div><div class="pr-summary-details">${details}</div>${missingTables?'<p class="pr-summary-warning">Selecciona al menos una tabla en cada operación que la requiera.</p>':''}`;
 }
 function prFmtDuration(ms){
   const totalSec=Math.max(0,Math.round((Number(ms)||0)/1000));
@@ -1283,6 +1356,8 @@ async function stopPrueba(){
 function _updatePruebasUI(){
   const active=!!_pruebaConfig;
   document.getElementById('prBanner').classList.toggle('active',active);
+  const status=document.querySelector('.pr-page-status');
+  if(status){ status.classList.toggle('active',active); status.lastElementChild.textContent=active?'PRUEBA ACTIVA':'LISTA PARA CONFIGURAR'; }
   document.getElementById('prConfig').style.display=active?'none':'block';
   document.getElementById('prResultados').style.display=active?'block':'none';
   if(active){

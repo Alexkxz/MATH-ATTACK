@@ -492,6 +492,12 @@ tr:hover td{background:rgba(255,255,255,.03)}
 }
 </style>
 <script src="/chart.umd.min.js"></script>
+<style>
+  .exam-controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:0 0 14px;padding:10px;border:1px solid rgba(167,139,250,.18);border-radius:8px;background:rgba(167,139,250,.05)}
+  .exam-controls input,.exam-controls select{min-width:140px;flex:1;background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.12);border-radius:5px;padding:8px 9px;color:#e2e8f0;font-size:12px}
+  .exam-identifiers{min-width:260px;display:grid;gap:3px;white-space:normal;font-size:10px}.exam-identifiers strong{color:#e2e8f0;font-size:12px}.exam-identifiers code{color:#67e8f9;font:10px monospace;overflow-wrap:anywhere}.exam-identifiers a{color:#67e8f9;text-decoration:none}.exam-copy-id{padding:2px 5px;border:1px solid rgba(103,232,249,.35);border-radius:3px;background:rgba(103,232,249,.08);color:#a5f3fc;font-size:9px;cursor:pointer}.exam-indicator{display:inline-block;margin:1px 2px 1px 0;padding:2px 4px;border-radius:3px;background:rgba(167,139,250,.12);color:#c4b5fd}
+  @media(max-width:700px){.exam-controls{align-items:stretch}.exam-controls input,.exam-controls select{width:100%;min-width:100%}.exam-identifiers{min-width:220px}}
+</style>
 </head>
 <body>
 <header>
@@ -574,6 +580,17 @@ tr:hover td{background:rgba(255,255,255,.03)}
     </div>
   </div>
   <div class="bulk-actions" id="bulkActions"></div>
+
+  <div class="exam-controls" id="examControls" style="display:none" aria-label="Filtros de pruebas oficiales">
+    <input type="text" id="examStudentFilter" placeholder="Alumno" oninput="renderAll()">
+    <input type="text" id="examGroupFilter" placeholder="Grupo" oninput="renderAll()">
+    <input type="text" id="examNameFilter" placeholder="Nombre de prueba" oninput="renderAll()">
+    <input type="text" id="examTestIdFilter" placeholder="testId" oninput="renderAll()">
+    <select id="examStatusFilter" onchange="renderAll()"><option value="">Todos los estados</option><option value="official">Oficiales</option><option value="legacy">Legados</option><option value="incomplete">Datos incompletos</option></select>
+    <select id="examPublicationFilter" onchange="renderAll()"><option value="">Publicadas y no publicadas</option><option value="published">Publicadas</option><option value="unpublished">No publicadas</option></select>
+    <select id="examRewardFilter" onchange="renderAll()"><option value="">Con y sin recompensas</option><option value="settled">Recompensas aplicadas</option><option value="pending">Recompensas pendientes</option></select>
+    <select id="examSortBy" onchange="renderAll()"><option value="date">Ordenar por fecha</option><option value="title">Ordenar por prueba</option><option value="student">Ordenar por alumno</option><option value="score">Ordenar por resultado</option><option value="status">Ordenar por estado</option></select>
+  </div>
 
   <div id="mainContent"></div>
 </div>
@@ -851,6 +868,7 @@ function setTab(tab){
   document.getElementById('gameTypeFilter').style.display=(tab==='partidas'||tab==='modo-operaciones')?'':'none';
   document.getElementById('mpModeFilter').style.display=tab==='multijugador'?'':'none';
   document.getElementById('viewToggle').style.display=(tab==='partidas'||tab==='multijugador')?'flex':'none';
+  document.getElementById('examControls').style.display=tab==='pruebas'?'flex':'none';
   renderAll();
 }
 
@@ -1349,6 +1367,52 @@ function renderAll(){
   else renderGraficas();
   renderBulkActions();
   syncBulkCheckboxes();
+}
+
+function examDateKey(value){
+  if(!value) return 0;
+  const m=String(value).match(/^(\d{1,2})[\/-](\d{1,2})[\/-](\d{4})/);
+  if(m) return Date.UTC(Number(m[3]),Number(m[2])-1,Number(m[1]));
+  const parsed=Date.parse(value);
+  return Number.isNaN(parsed)?0:parsed;
+}
+function getFilteredExamResults(){
+  const student=(document.getElementById('examStudentFilter')?.value||'').trim().toLowerCase();
+  const group=(document.getElementById('examGroupFilter')?.value||'').trim().toLowerCase();
+  const title=(document.getElementById('examNameFilter')?.value||'').trim().toLowerCase();
+  const testId=(document.getElementById('examTestIdFilter')?.value||'').trim().toLowerCase();
+  const status=document.getElementById('examStatusFilter')?.value||'';
+  const publication=document.getElementById('examPublicationFilter')?.value||'';
+  const reward=document.getElementById('examRewardFilter')?.value||'';
+  const sort=document.getElementById('examSortBy')?.value||'date';
+  const rows=data.filter(d=>{ if(!d.isExam) return false;
+    const dGroup=String(d.groupId||d.group||d.grade||'').toLowerCase();
+    const dTitle=String(d.testTitle||d.testName||d.title||'').toLowerCase();
+    const hasOfficial=!!d.officialAttemptId;
+    const hasTestId=!!d.testId;
+    const isPublished=!!d.rankingPublicationId;
+    const rewardStatus=d.rewardSettlement?.status||d.rewardStatus|| (d.rewardSettlementId?'completed':'');
+    if(student&&!String(d.name||'').toLowerCase().includes(student)) return false;
+    if(group&&!dGroup.includes(group)) return false;
+    if(title&&!dTitle.includes(title)) return false;
+    if(testId&&!String(d.testId||'').toLowerCase().includes(testId)) return false;
+    if(status==='official'&&!hasOfficial) return false;
+    if(status==='legacy'&&(hasTestId||hasOfficial)) return false;
+    if(status==='incomplete'&&(hasTestId&&hasOfficial)) return false;
+    if(publication==='published'&&!isPublished) return false;
+    if(publication==='unpublished'&&isPublished) return false;
+    if(reward==='settled'&&!['completed','applied'].includes(rewardStatus)) return false;
+    if(reward==='pending'&&rewardStatus!=='pending') return false;
+    return true;
+  });
+  const compare=(a,b)=>{
+    if(sort==='title') return String(a.testTitle||a.testName||a.title||'').localeCompare(String(b.testTitle||b.testName||b.title||''),'es');
+    if(sort==='student') return String(a.name||'').localeCompare(String(b.name||''),'es');
+    if(sort==='score') return (Number(b.score)||0)-(Number(a.score)||0);
+    if(sort==='status') return String(a.status||'').localeCompare(String(b.status||''),'es');
+    return examDateKey(b.date||b.createdAt)-examDateKey(a.date||a.createdAt);
+  };
+  return rows.sort(compare);
 }
 
 // ── Top 3 ─────────────────────────────────────────────────
@@ -3244,7 +3308,7 @@ function renderPruebas(){
   document.getElementById('topCards').innerHTML='';
   document.getElementById('countInfo').textContent='';
 
-  const examData=data.filter(d=>d.isExam);
+  const examData=getFilteredExamResults();
   currentDetailRows=examData;
   renderTabSummary('Pruebas','Resultados de evaluaciones por sesion para comparar desempeno, precision y comportamiento entre distintos cortes.',[
     {value:examData.length,label:'Resultados',tone:'purple'},
@@ -3355,14 +3419,24 @@ function buildExamTable(rows, ops){
       ?`<td><button onclick="toggleExamDetail('${rowId}')" style="background:rgba(167,139,250,.15);border:1px solid rgba(167,139,250,.3);color:#a78bfa;border-radius:6px;padding:2px 7px;font-size:11px;cursor:pointer;white-space:nowrap">📊 Tablas</button></td>`
       :`<td></td>`;
     const detailRowHtml=hasTblDetail
-      ?`<tr id="${rowId}" style="display:none"><td colspan="${5+ops.length+2}" style="padding:12px 16px;background:rgba(167,139,250,.04);border-bottom:1px solid rgba(255,255,255,.06)">${buildTableDetailHtml(d.tableDetail)}</td></tr>`
+      ?`<tr id="${rowId}" style="display:none"><td colspan="${6+ops.length+3}" style="padding:12px 16px;background:rgba(167,139,250,.04);border-bottom:1px solid rgba(255,255,255,.06)">${buildTableDetailHtml(d.tableDetail)}</td></tr>`
       :'';
     const rowCls=i===0?'table-row-top1':i===1?'table-row-top2':i===2?'table-row-top3':'';
+    const unavailable='<span style="color:#64748b">No disponible</span>';
+    const testTitle=esc(d.testTitle||d.testName||d.title||'No disponible');
+    const testId=d.testId?`<code>${esc(d.testId)}</code> <button class="exam-copy-id no-print" type="button" onclick="copyExamTestId('${esc(d.testId)}')" title="Copiar testId">Copiar</button>`:unavailable;
+    const attemptId=d.attemptId?esc(d.attemptId):unavailable;
+    const officialId=d.officialAttemptId?esc(d.officialAttemptId):unavailable;
+    const publicationId=d.rankingPublicationId?esc(d.rankingPublicationId):unavailable;
+    const rewardStatus=d.rewardSettlement?.status||d.rewardStatus||(d.rewardSettlementId?'completed':'');
+    const rewardLabel=rewardStatus==='completed'||rewardStatus==='applied'?'Recompensas aplicadas':rewardStatus==='pending'?'Recompensas pendientes':'Recompensas no disponible';
+    const indicators=[d.officialAttemptId?'Oficial':'Resultado histórico',d.rankingPublicationId?'Publicado':'No publicado',rewardLabel,d.complete===false?'Datos incompletos':''].filter(Boolean).map(label=>`<span class="exam-indicator">${esc(label)}</span>`).join(' ');
     return `<tr class="${rowCls}">
       ${buildBulkRowCheckbox(d.id)}
       <td class="rn rank-cell">${rank}</td>
       <td class="name" style="cursor:pointer" onclick="showStudent('${esc(d.name)}')">${esc(d.name)}</td>
       <td>${d.grade?'<span class="grade-badge">'+esc(d.grade)+'</span>':'—'}</td>
+      <td class="exam-identifiers"><strong>${testTitle}</strong><span>testId: ${testId}</span><span>attemptId: ${attemptId}</span><span>officialAttemptId: ${officialId}</span><span>rankingPublicationId: ${publicationId}</span><span>${indicators}</span>${d.testId?`<a class="no-print" href="/maestro?testId=${encodeURIComponent(d.testId)}">Ver prueba</a>`:''}</td>
       <td><div class="score-stack"><span class="score-main">${(d.score||0).toLocaleString()}</span><span class="score-sub">puntaje</span></div></td>
       <td><div class="pct-stack"><span class="${pctClass(d.pct)}">${d.pct}%</span>${pctBar(d.pct)}<span style="font-size:11px;color:#64748b"> (${d.correct}/${d.total})</span></div></td>
       ${opCells}
@@ -3371,7 +3445,7 @@ function buildExamTable(rows, ops){
     </tr>${detailRowHtml}`;
   }).join('');
   return `<div class="table-shell"><table class="data-table"><thead><tr>
-    ${buildBulkHeaderCheckbox(rowIds)}<th>#</th><th>Alumno</th><th>Grado</th><th>Puntaje</th><th>% Total</th>
+    ${buildBulkHeaderCheckbox(rowIds)}<th>#</th><th>Alumno</th><th>Grado</th><th>Prueba e identificadores</th><th>Puntaje</th><th>% Total</th>
     ${opHeaders}<th>Hora</th><th></th>
   </tr></thead><tbody>${opRows}</tbody></table></div>`;
 }
@@ -3380,6 +3454,11 @@ function toggleExamDetail(id){
   const row=document.getElementById(id);
   if(!row) return;
   row.style.display=row.style.display==='none'?'':'none';
+}
+async function copyExamTestId(testId){
+  if(!testId) return;
+  try{ await navigator.clipboard.writeText(testId); }
+  catch(_){ const input=document.createElement('input'); input.value=testId; input.setAttribute('readonly',''); input.style.position='fixed'; input.style.opacity='0'; document.body.appendChild(input); input.select(); document.execCommand('copy'); input.remove(); }
 }
 
 // ── Init ──────────────────────────────────────────────────

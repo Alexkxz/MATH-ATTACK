@@ -22,7 +22,11 @@ const { createTestStore } = require('./src/server/exams/testStore');
 const { createTestService } = require('./src/server/exams/testService');
 const { createStudentHttpSessionStore } = require('./src/server/exams/studentHttpSession');
 const { createAttemptCheckpointService } = require('./src/server/exams/attemptCheckpointService');
+const { createAttemptActionService } = require('./src/server/exams/attemptActionService');
+const { createOfficialAttemptService } = require('./src/server/exams/officialAttemptService');
+const { createOfficialRewardService } = require('./src/server/exams/officialRewardService');
 const { createTestSupervisionService } = require('./src/server/exams/testSupervisionService');
+const { createTestLibraryService } = require('./src/server/exams/testLibraryService');
 const { buildLegacyIdentityMap,resolveAccountPlayerId } = require('./src/server/exams/legacyIdentityAdapter');
 const { createHtmlPages } = require('./src/server/htmlPages');
 const { createHttpAdminRoutes } = require('./src/server/http/adminRoutes');
@@ -161,9 +165,13 @@ else if(testStoreStartup.status==='invalid') L.err('Almacén de pruebas inválid
 else L.game('Almacén de pruebas nuevo/no persistido');
 const testService=createTestService({store:testStore});
 const attemptCheckpointService=createAttemptCheckpointService({store:testStore});
+const attemptActionRoot=testStore.load();
+const attemptActionService=createAttemptActionService({root:attemptActionRoot,persist:()=>testStore.save(attemptActionRoot)});
 const testSupervisionService=createTestSupervisionService({root:testStore.load()});
+const testLibraryService=createTestLibraryService({loadRoot:()=>testStore.load()});
 const studentHttpSessions=createStudentHttpSessionStore();
-const dataStore = createJsonStore({ baseDir: __dirname, logger: L });
+const DATA_STORE_PATH=process.env.MATH_ATTACK_DATA_PATH||__dirname;
+const dataStore = createJsonStore({ baseDir: DATA_STORE_PATH, logger: L });
 const htmlPages = createHtmlPages({ baseDir: __dirname, logger: L });
 const {
   loadRanking,
@@ -176,6 +184,19 @@ const {
 } = dataStore;
 const operationStatsCache=createOperationStatsCache(loadRanking);
 const saveRanking=operationStatsCache.wrapSave(saveRankingData);
+const officialAttemptService=createOfficialAttemptService({root:attemptActionRoot,loadRanking,saveRanking,persist:()=>testStore.save(attemptActionRoot)});
+const officialRewardService=createOfficialRewardService({
+  root:attemptActionRoot,
+  loadPlayers,
+  savePlayers,
+  loadRanking,
+  persist:()=>testStore.save(attemptActionRoot),
+  logAureosTx,
+  calculateGameRewards,
+  calculateDailyStreak,
+  checkNewAchievements,
+  achievementsDef:ACHIEVEMENTS_DEF,
+});
 const _config = dataStore.loadConfig();
 let ADMIN_USERNAME = _config.adminUsername || 'admin';
 let ADMIN_PASSWORD = _config.adminPassword || 'admin';
@@ -462,10 +483,102 @@ const server=http.createServer((req,res)=>{
     return sendJson(res,404,{ok:false,error:'Ruta no encontrada'});
   }
   const supervisionMatch=url.match(/^\/api\/maestro\/tests\/([0-9a-f-]+)\/attempts(?:\/([0-9a-f-]+))?$/i);
+  if(req.method==='GET'&&url.split('?')[0]==='/api/maestro/tests'){
+    if(!requireAdmin(req,res))return;
+    const query=new URL('http://x'+req.url).searchParams;
+    const allowed=new Set(['status','groupId','from','to','sort','order','limit','pwd','password']);
+    for(const key of query.keys())if(!allowed.has(key))return sendJson(res,400,{ok:false,error:'Parametro invalido'});
+    try{
+      const tests=testLibraryService.list({status:query.get('status')||'',groupId:query.get('groupId')||'',from:query.get('from')||'',to:query.get('to')||'',sort:query.get('sort')||'createdAt',direction:query.get('order')||'desc',limit:query.has('limit')?query.get('limit'):50});
+      return sendJson(res,200,{ok:true,tests});
+    }catch(e){return sendJson(res,422,{ok:false,error:e.message||'Solicitud invalida'});}
+  }
   if(supervisionMatch&&req.method==='GET'){
     if(!requireAdmin(req,res))return;
     const raw=new URL('http://x'+req.url).searchParams,allowed=['status','groupId','accountPlayerId','connectionState','sort','order','limit','pwd','password'];for(const key of raw.keys())if(!allowed.includes(key))return sendJson(res,400,{ok:false,error:'Parametro invalido'});const filters={};for(const key of ['status','groupId','accountPlayerId','connectionState','sort','limit'])if(raw.has(key))filters[key]=raw.get(key);if(raw.has('order'))filters.direction=raw.get('order');
     try{const value=supervisionMatch[2]?testSupervisionService.getTestAttempt(supervisionMatch[1],supervisionMatch[2]):testSupervisionService.listTestAttempts(supervisionMatch[1],filters);return sendJson(res,200,supervisionMatch[2]?{ok:true,attempt:value}:{ok:true,attempts:value});}catch(e){return sendJson(res,/no encontrada|no encontrado/.test(e.message)?404:422,{ok:false,error:e.message});}
+  }
+  const attemptActionMatch=url.match(/^\/api\/maestro\/tests\/([0-9a-f-]+)\/attempts\/([0-9a-f-]+)\/actions$/i);
+  if(attemptActionMatch){
+    if(req.method!=='POST')return sendJson(res,405,{ok:false,error:'Metodo no permitido'});
+    return readBody(req,res,body=>{
+      let data;try{data=JSON.parse(body||'{}');}catch(_){return sendJson(res,400,{ok:false,error:'JSON invalido'});}
+      if(!data||typeof data!=='object'||Array.isArray(data))return sendJson(res,400,{ok:false,error:'Solicitud invalida'});
+      if(!requireAdmin(req,res,data))return;
+      const [testId,attemptId]=attemptActionMatch.slice(1);
+      const actions={pause:'pauseAttempt',resume:'resumeAttempt',close:'closeAttempt',reopen:'reopenAttempt',allowReentry:'allowReentry',restart:'restartAttempt',markIncomplete:'markAttemptIncomplete',delete:'deleteAttemptLogically'};
+      const action=data.action;
+      if(typeof action!=='string'||!Object.prototype.hasOwnProperty.call(actions,action))return sendJson(res,400,{ok:false,error:'Accion invalida'});
+      if(data.testId!==undefined&&data.testId!==testId||data.attemptId!==undefined&&data.attemptId!==attemptId)return sendJson(res,400,{ok:false,error:'Identificador inconsistente'});
+      if(!Number.isInteger(data.revision)||data.revision<1)return sendJson(res,400,{ok:false,error:'revision invalida'});
+      if(typeof data.eventId!=='string'||data.eventId.length>100)return sendJson(res,400,{ok:false,error:'eventId invalido'});
+      if(typeof data.reason!=='string'||!data.reason.trim()||data.reason.length>500)return sendJson(res,400,{ok:false,error:'motivo obligatorio'});
+      if(!attemptActionRoot.tests.some(t=>t.testId===testId))return sendJson(res,404,{ok:false,error:'Prueba no encontrada'});
+      const input={testId,attemptId,actor:'admin',revision:data.revision,eventId:data.eventId,reason:data.reason.trim()};
+      try{
+        const result=attemptActionService[actions[action]](input);
+        const safe=a=>a?{attemptId:a.attemptId,testId:a.testId,accountPlayerId:a.accountPlayerId,parentAttemptId:a.parentAttemptId,status:a.status,revision:a.revision,origin:a.origin,official:a.official,startedAt:a.startedAt,updatedAt:a.updatedAt,finishedAt:a.finishedAt,deletedAt:a.deletedAt}:null;
+        return sendJson(res,200,{ok:true,action,duplicate:!!result.duplicate,attempt:safe(result.attempt),newAttempt:safe(result.newAttempt)});
+      }catch(e){const msg=e.message||'Solicitud invalida';return sendJson(res,/no encontrado|no disponible/.test(msg)?404:/inconsistente/.test(msg)?409:/Transici/.test(msg)?409:/revision antigua/.test(msg)?409:/autorizado/.test(msg)?403:422,{ok:false,error:msg});}
+    });
+  }
+  const officialListMatch=url.match(/^\/api\/maestro\/tests\/([0-9a-f-]+)\/official-attempts$/i);
+  const officialAttemptMatch=url.match(/^\/api\/maestro\/tests\/([0-9a-f-]+)\/attempts\/([0-9a-f-]+)\/official$/i);
+  const publicationMatch=url.match(/^\/api\/maestro\/tests\/([0-9a-f-]+)\/attempts\/([0-9a-f-]+)\/ranking-publication$/i);
+  if(officialListMatch||officialAttemptMatch||publicationMatch){
+    if(req.method==='GET'){
+      if(!requireAdmin(req,res))return;
+      try{if(officialListMatch)return sendJson(res,200,{ok:true,officialAttempts:officialAttemptService.listOfficialAttempts(officialListMatch[1])});if(officialAttemptMatch)return sendJson(res,200,{ok:true,officialAttempt:officialAttemptService.getOfficialAttempt({testId:officialAttemptMatch[1],attemptId:officialAttemptMatch[2]})});return sendJson(res,200,{ok:true,publication:officialAttemptService.getPublication({testId:publicationMatch[1],attemptId:publicationMatch[2]})});}
+      catch(e){return sendJson(res,/no encontrada|no encontrado/.test(e.message)?404:422,{ok:false,error:e.message});}
+    }
+    if(req.method!=='POST')return sendJson(res,405,{ok:false,error:'Metodo no permitido'});
+    return readBody(req,res,body=>{
+      let data;try{data=JSON.parse(body||'{}');}catch(_){return sendJson(res,400,{ok:false,error:'JSON invalido'});}
+      if(!data||typeof data!=='object'||Array.isArray(data))return sendJson(res,400,{ok:false,error:'Solicitud invalida'});
+      if(!requireAdmin(req,res,data))return;
+      const testId=(officialAttemptMatch||publicationMatch)[1],attemptId=(officialAttemptMatch||publicationMatch)[2];
+      if(data.testId!==undefined&&data.testId!==testId||data.attemptId!==undefined&&data.attemptId!==attemptId)return sendJson(res,400,{ok:false,error:'Identificador inconsistente'});
+      const expectedAction=officialAttemptMatch?'officialize':'publish';if(data.action!==undefined&&data.action!==expectedAction)return sendJson(res,400,{ok:false,error:'Operacion invalida'});
+      const input={testId,attemptId,accountPlayerId:data.accountPlayerId,actor:'admin',eventId:data.eventId,reason:data.reason};
+      try{
+        if(officialAttemptMatch){const result=officialAttemptService.officialize({...input});return sendJson(res,200,{ok:true,officialAttempt:result.officialAttempt,duplicate:!!result.duplicate});}
+        const result=officialAttemptService.publish({...input});return sendJson(res,200,{ok:true,publication:result.publication?{rankingPublicationId:result.publication.rankingPublicationId,testId:result.publication.testId,attemptId:result.publication.attemptId,officialAttemptId:result.publication.officialAttemptId,publishedAt:result.publication.publishedAt,actor:result.publication.actor}:null,duplicate:!!result.duplicate});
+      }catch(e){const msg=e.message||'Solicitud invalida';return sendJson(res,/no encontrada|no encontrado/.test(msg)?404:/autorizado/.test(msg)?403:/ya existe|contradictorio|inconsistente/.test(msg)?409:/no oficializable|no publicable|resultado invalido|motivo obligatorio/.test(msg)?422:400,{ok:false,error:msg});}
+    });
+  }
+  const rewardSettlementMatch=url.match(/^\/api\/maestro\/tests\/([0-9a-f-]+)\/attempts\/([0-9a-f-]+)\/rewards$/i);
+  if(rewardSettlementMatch){
+    if(!requireAdmin(req,res))return;
+    const [testId,attemptId]=rewardSettlementMatch.slice(1);
+    if(req.method==='GET'){
+      try{
+        const query=new URL('http://x'+req.url).searchParams;
+        const settlement=officialRewardService.getSettlement({
+          testId,attemptId,officialAttemptId:query.get('officialAttemptId'),rankingPublicationId:query.get('rankingPublicationId'),
+        });
+        return settlement?sendJson(res,200,{ok:true,settlement}):sendJson(res,404,{ok:false,error:'Liquidacion no encontrada'});
+      }catch(e){return sendJson(res,422,{ok:false,error:e.message});}
+    }
+    if(req.method!=='POST')return sendJson(res,405,{ok:false,error:'Metodo no permitido'});
+    return readBody(req,res,body=>{
+      let data;try{data=JSON.parse(body||'{}');}catch(_){return sendJson(res,400,{ok:false,error:'JSON invalido'});}
+      if(!data||typeof data!=='object'||Array.isArray(data))return sendJson(res,400,{ok:false,error:'Solicitud invalida'});
+      if(!requireAdmin(req,res,data))return;
+      if(data.testId!==undefined&&data.testId!==testId||data.attemptId!==undefined&&data.attemptId!==attemptId)return sendJson(res,400,{ok:false,error:'Identificador inconsistente'});
+      if(data.action!==undefined&&data.action!=='settle')return sendJson(res,400,{ok:false,error:'Operacion invalida'});
+      const input={
+        testId,attemptId,officialAttemptId:data.officialAttemptId,
+        rankingPublicationId:data.rankingPublicationId,accountPlayerId:data.accountPlayerId,
+        actor:'admin',eventId:data.eventId,reason:data.reason,
+      };
+      try{
+        const result=officialRewardService.settle(input);
+        return sendJson(res,result.duplicate?200:201,{ok:true,settlement:result.settlement,duplicate:!!result.duplicate});
+      }catch(e){
+        const msg=e.message||'Solicitud invalida';
+        return sendJson(res,/no encontrado|no liquidable/.test(msg)?404:/autorizado/.test(msg)?403:/ya existe|contradictorio|inconsistente|pertenece/.test(msg)?409:/motivo|invalido/.test(msg)?422:400,{ok:false,error:msg});
+      }
+    });
   }
   if(req.method==='POST'&&url==='/api/student/logout'){
     const token=getStudentSessionToken(req);studentHttpSessions.revokeStudentSession(token);
@@ -484,6 +597,21 @@ const server=http.createServer((req,res)=>{
   }
 
   // ── API administrativa de pruebas versionadas ──
+  const testStateApiMatch=url.match(/^\/api\/exams\/([0-9a-f-]+)\/(schedule|state)$/i);
+  if(testStateApiMatch&&req.method==='POST'){
+    return readBody(req,res,body=>{
+      let data;try{data=JSON.parse(body);}catch(_){return sendJson(res,400,{ok:false,error:'JSON invalido'});}
+      if(!requireAdmin(req,res,data))return;
+      const testId=testStateApiMatch[1],kind=testStateApiMatch[2].toLowerCase();
+      try{
+        if(!Number.isInteger(data.revision)||data.revision<1)return sendJson(res,400,{ok:false,error:'revision invalida'});
+        let test;
+        if(kind==='schedule') test=testService.schedule(testId,data.revision,{startsAt:data.startsAt,closesAt:data.closesAt,entryToleranceMinutes:data.entryToleranceMinutes||0});
+        else { const actions={start:'start',pause:'pause',resume:'resume',close:'close',finish:'finish',cancel:'cancel'}; const method=actions[data.action]; if(!method)return sendJson(res,400,{ok:false,error:'accion de estado invalida'}); test=method==='start'?testService.start(testId,data.revision,{now:data.now||new Date().toISOString(),force:data.force===true}):testService[method](testId,data.revision); }
+        return sendJson(res,200,{ok:true,test});
+      }catch(e){const msg=e.message||'Solicitud invalida';return sendJson(res,/no encontrada/.test(msg)?404:/stale|no editable|Transici/.test(msg)?409:422,{ok:false,error:msg});}
+    });
+  }
   const examApiMatch=url.match(/^\/api\/exams(?:\/([0-9a-f-]+)(?:\/assignments)?)?$/i);
   if(examApiMatch){
     const testId=examApiMatch[1]||null;
@@ -496,6 +624,10 @@ const server=http.createServer((req,res)=>{
     if(req.method==='GET'&&!testId){
       if(!requireAdmin(req,res)) return;
       try{ return sendJson(res,200,{ok:true,tests:testService.list({status:new URL('http://x'+req.url).searchParams.get('status')||''})}); }catch(e){ return respondError(422,e.message); }
+    }
+    if(req.method==='GET'&&testId&&assignments){
+      if(!requireAdmin(req,res))return;
+      try{return sendJson(res,200,{ok:true,assignments:testService.listAssignments(testId).map(item=>({assignmentId:item.assignmentId,testId:item.testId,targetType:item.targetType,groupId:item.groupId||null,accountPlayerId:item.accountPlayerId||null,startsAt:item.startsAt||null,closesAt:item.closesAt||null,createdAt:item.createdAt,revision:item.revision}))});}catch(e){return respondError(/no encontrada/.test(e.message)?404:422,e.message);}
     }
     if(req.method==='GET'&&testId&&!assignments){
       if(!requireAdmin(req,res)) return;
