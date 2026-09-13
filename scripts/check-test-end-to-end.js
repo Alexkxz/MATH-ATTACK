@@ -67,6 +67,9 @@ async function main() {
     let root = store.load();
     let tests = createTestService({ store });
     const test = tests.create({ testId: ids.test, title: 'Prueba integral', creator: ids.creator, configuration: { grade: '5A', total: 5 } });
+    // Este escenario valida compatibilidad con una prueba legacy: sin bloque rewards
+    // conserva deliberadamente la liquidacion historica de cuatro efectos.
+    delete test.configuration.rewards;
     assert.equal(test.status, 'draft');
     tests.update(ids.test, 2, { title: 'Prueba integral editada', configuration: test.configuration });
     assert.equal(tests.schedule(ids.test, 3, { startsAt: '2030-01-01T10:00:00.000Z' }).status, 'scheduled');

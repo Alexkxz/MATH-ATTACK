@@ -1,0 +1,31 @@
+'use strict';
+const assert=require('assert');
+const {randomUUID}=require('crypto');
+const {createOfficialRewardService}=require('../src/server/exams/officialRewardService');
+const {createTest,createAttempt}=require('../src/server/exams/testModel');
+const {validateTestConfiguration}=require('../src/server/exams/testValidation');
+
+const id=()=>randomUUID();
+const testId=id(),attemptId=id(),studentId=id(),officialId=id(),publicationId=id(),eventId=id();
+const config={version:1,multiplier:5,rewards:{aureos:10,experience:15,streak:{enabled:true,bonus:5},achievements:{perfect:{enabled:true,bonus:50}}}};
+const test=createTest({testId,title:'Contrato',creator:id(),status:'active',configuration:config});
+const attempt=createAttempt({attemptId,testId,accountPlayerId:studentId,status:'finished',configurationSnapshot:JSON.parse(JSON.stringify(config))});
+const result={resultId:id(),testId,attemptId,accountPlayerId:studentId,name:'Ana',grade:'5A',score:100,correct:10,incorrect:0,wrong:0,total:10,pct:100,complete:true};
+const root={schemaVersion:1,tests:[test],assignments:[],attempts:[attempt],checkpoints:[],results:[result],events:[],officialAttempts:[{officialAttemptId:officialId,testId,attemptId,accountPlayerId:studentId,resultId:result.resultId,resultSnapshot:result}],rankingPublications:[{rankingPublicationId:publicationId,testId,attemptId,officialAttemptId:officialId,accountPlayerId:studentId,record:{...result,id:publicationId,rankingPublicationId:publicationId}}]};
+const player={id:studentId,name:'Ana',aureos:0,experiencia:0,dailyStreak:{current:0,best:0,lastDate:'01/01/2000'},achievements:[],gamesPlayed:3};
+let players=[player],normalCalls=0;
+const service=createOfficialRewardService({root,loadPlayers:()=>players,savePlayers:value=>{players=value;},loadRanking:()=>[],persist:()=>{},logAureosTx:()=>{},calculateGameRewards:()=>{normalCalls+=1;return {earnedAureos:999,earnedExperience:999};},calculateDailyStreak:state=>({dailyStreak:{...state,current:state.current+1},bonus:999}),checkNewAchievements:()=>['perfect'],achievementsDef:[{id:'perfect',bonus:999}]});
+
+validateTestConfiguration(config);
+for(const invalid of [{...config,multiplier:0},{...config,multiplier:1.5},{...config,rewards:{aureos:-1}},{...config,rewards:{unknown:1}},{...config,rewards:{streak:{enabled:true,extra:1}}}])assert.throws(()=>validateTestConfiguration(invalid));
+const calculated=service.calculateRewards(player,result,[],config.rewards);
+assert.deepEqual({aureos:calculated.aureos,experience:calculated.experience,streakBonus:calculated.streak.bonus,achievementBonus:calculated.achievements[0].bonus},{aureos:10,experience:15,streakBonus:5,achievementBonus:50});
+assert.equal(calculated.multiplier,undefined,'el multiplicador no debe entrar al cálculo de recompensas');
+const before=JSON.stringify(player),settled=service.settle({testId,attemptId,officialAttemptId:officialId,rankingPublicationId:publicationId,eventId,actor:'admin',reason:'publicar'});
+assert.equal(settled.settlement.rewards.aureos,10);assert.equal(settled.settlement.rewards.experience,15);assert.equal(player.aureos,65);assert.equal(player.experiencia,15);assert.equal(player.gamesPlayed,3);assert(normalCalls>0);
+const balance=player.aureos,xp=player.experiencia,repeat=service.settle({testId,attemptId,officialAttemptId:officialId,rankingPublicationId:publicationId,eventId,actor:'admin',reason:'publicar'});
+assert.equal(repeat.duplicate,true);assert.equal(repeat.settlement.rewardSettlementId,settled.settlement.rewardSettlementId);assert.equal(player.aureos,balance);assert.equal(player.experiencia,xp);assert.notEqual(JSON.stringify(player),before);
+const disabled=JSON.parse(JSON.stringify(root));disabled.rewardSettlements=[];disabled.events=[];disabled.attempts[0].configurationSnapshot={version:1,multiplier:5,rewards:{}};let disabledPlayer={...player,aureos:0,experiencia:0,dailyStreak:{current:0,best:0,lastDate:'01/01/2000'},achievements:[],officialRewardLedger:[]};const disabledService=createOfficialRewardService({...arguments[0],root:disabled,loadPlayers:()=>[disabledPlayer],savePlayers:value=>{disabledPlayer=value;},persist:()=>{},calculateGameRewards:()=>({earnedAureos:999,earnedExperience:999}),calculateDailyStreak:state=>({dailyStreak:state,bonus:999}),checkNewAchievements:()=>['perfect'],achievementsDef:[{id:'perfect',bonus:999}]});
+const disabledResult=disabledService.calculateRewards(disabledPlayer,result,[],{});assert.deepEqual(disabledResult,{aureos:0,experience:0,streak:null,achievements:[]});
+assert.equal(JSON.stringify(attempt.configurationSnapshot),JSON.stringify(config));
+console.log('OK contrato recompensas oficiales: configuracion, multiplicador aislado, defaults, deshabilitadas, congelamiento, idempotencia y partidas normales');

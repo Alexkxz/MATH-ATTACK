@@ -1,7 +1,7 @@
 'use strict';
 
 const { randomUUID, createHash } = require('crypto');
-const { assertUuid } = require('./testValidation');
+const { assertUuid, validateTestRewards } = require('./testValidation');
 const { ensurePlayerExperience } = require('../../game/playerLevels');
 
 const clone = value => JSON.parse(JSON.stringify(value));
@@ -125,20 +125,25 @@ function createOfficialRewardService({
     playerLedger(player).push({ key, amount, recordedAt: timestamp() });
   }
 
-  function pureRewards(player, result, ranking) {
+  function pureRewards(player, result, ranking, configuredRewards) {
     // Política oficial: reutiliza únicamente el cálculo matemático puro del juego;
     // no aplica historial de tablas, partidas jugadas ni efectos multijugador.
+    const legacyRewards = configuredRewards === undefined;
+    const rewardsConfig = legacyRewards ? {} : clone(configuredRewards);
+    validateTestRewards(rewardsConfig);
     const game = calculateGameRewards(result, { hasPlayer: false });
-    const streak = calculateDailyStreak(clone(player.dailyStreak));
+    const streakRule = rewardsConfig.streak || {};
+    const streak = legacyRewards || streakRule.enabled === true ? calculateDailyStreak(clone(player.dailyStreak)) : null;
     const achievementProbe = clone(player);
-    const achievements = checkNewAchievements(achievementProbe, { ...result }, ranking);
+    const detectedAchievements = legacyRewards || Object.keys(rewardsConfig.achievements || {}).length ? checkNewAchievements(achievementProbe, { ...result }, ranking) : [];
+    const enabledAchievements = new Set(Object.entries(rewardsConfig.achievements || {}).filter(([, rule]) => rule.enabled === true).map(([id]) => id));
     return {
-      aureos: Math.max(0, Number(game.earnedAureos) || 0),
-      experience: Math.max(0, Number(game.earnedExperience) || 0),
-      streak: streak ? clone(streak) : null,
-      achievements: achievements.map(id => ({
+      aureos: rewardsConfig.aureos === undefined ? (legacyRewards ? Math.max(0, Number(game.earnedAureos) || 0) : 0) : rewardsConfig.aureos,
+      experience: rewardsConfig.experience === undefined ? (legacyRewards ? Math.max(0, Number(game.earnedExperience) || 0) : 0) : rewardsConfig.experience,
+      streak: streak ? { ...clone(streak), bonus: legacyRewards ? (Number(streak.bonus) || 0) : (streakRule.bonus === undefined ? 0 : streakRule.bonus) } : null,
+      achievements: (legacyRewards ? detectedAchievements : detectedAchievements.filter(id => enabledAchievements.has(id))).map(id => ({
         id,
-        bonus: Number(definitionById.get(id)?.bonus) || 0,
+        bonus: legacyRewards ? (Number(definitionById.get(id)?.bonus) || 0) : (Number(rewardsConfig.achievements[id].bonus ?? definitionById.get(id)?.bonus) || 0),
       })),
     };
   }
@@ -242,7 +247,8 @@ function createOfficialRewardService({
     const players = loadPlayers();
     const player = players.find(item => item.id === target.official.accountPlayerId);
     if (!player) throw Error('alumno no encontrado');
-    const rewards = pureRewards(player, target.result, loadRanking());
+    const frozenRewards = target.attempt.configurationSnapshot?.rewards;
+    const rewards = pureRewards(player, target.result, loadRanking(), frozenRewards);
     const settlement = {
       rewardSettlementId: randomUUID(), settlementKey: key,
       testId: input.testId, attemptId: input.attemptId,
@@ -252,7 +258,7 @@ function createOfficialRewardService({
       status: 'pending', eventId: input.eventId, actor,
       reason: input.reason.trim(), rewards, applied: {}, createdAt: timestamp(),
       rewardCalculationVersion: input.rewardCalculationVersion || REWARD_CALCULATION_VERSION,
-      rewardConfig: clone(input.rewardConfig || {}), requestFingerprint,
+      rewardConfig: clone(frozenRewards || {}), requestFingerprint,
     };
     root.rewardSettlements.push(settlement);
     audit(settlement, 'official_rewards_settled', input.eventId, { phase: 'started' });
@@ -298,7 +304,7 @@ function createOfficialRewardService({
     return safeSettlement(item);
   }
 
-  return { calculateRewards: pureRewards, settle, getSettlement };
+  return { calculateRewards: (player, result, ranking, configuredRewards) => pureRewards(player, result, ranking, configuredRewards), settle, getSettlement };
 }
 
 module.exports = { createOfficialRewardService };
