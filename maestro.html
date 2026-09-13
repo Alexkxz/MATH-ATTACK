@@ -699,6 +699,14 @@ body.proj-mode .q-display{font-size:48px;letter-spacing:4px}
         <button class="pr-tbl-mini-btn" type="button" onclick="prLoadTestLibrary()">↻ Actualizar biblioteca</button>
       </div>
       <div id="prSelectedTest" class="pr-selected-test" aria-live="polite"><span>Ninguna prueba seleccionada.</span></div>
+      <section id="prGroupsPanel" class="pr-groups-panel" aria-label="Grupos y asignaciones">
+        <div class="pr-results-hdr"><span>GRUPOS Y ASIGNACIONES</span><span id="prGroupsStatus" class="pr-attempts-status" aria-live="polite"></span></div>
+        <div class="pr-group-create"><input id="prGroupName" placeholder="Nombre del grupo" autocomplete="off"><input id="prGroupGrade" placeholder="Grado" autocomplete="off"><input id="prGroupYear" placeholder="Ciclo escolar" autocomplete="off"><button id="prGroupCreate" type="button" class="pr-tbl-mini-btn">Crear grupo</button></div>
+        <div id="prGroupsList" class="pr-groups-list"><p class="pr-attempts-empty">No hay grupos disponibles.</p></div>
+        <div id="prSelectedGroup" class="pr-selected-test"><span>Ningún grupo seleccionado.</span></div>
+        <div class="pr-group-members"><input id="prGroupAccountPlayerId" placeholder="accountPlayerId del alumno" autocomplete="off"><button id="prGroupAddMember" type="button" class="pr-tbl-mini-btn">Agregar alumno</button><button id="prGroupRemoveMember" type="button" class="pr-tbl-mini-btn">Retirar alumno</button><button id="prGroupAssign" type="button" class="pr-tbl-mini-btn">Asignar grupo a prueba</button></div>
+        <div id="prGroupMembersList" class="pr-groups-list"><p class="pr-attempts-empty">Selecciona un grupo para ver sus miembros.</p></div>
+      </section>
       <div id="prTestLibraryList" class="pr-test-library-list"><p class="pr-attempts-empty">Cargando biblioteca de pruebas…</p></div>
     </section>
 

@@ -3,10 +3,12 @@
 function createHttpAdminRoutes(context) {
   const { readBody, sendJson, requireAdmin, send, WebSocket, wss, maestroClients, connLog, getSessionId, getExternalPlayerId, getConnectionId, findActiveSession, gameSessions, loadRanking, saveRanking, buildRankingCsv, importRankingRows, removePlayerResults, removeRankingResult, persistCheckpoint, L, loadPlayers, savePlayers, calculatePlayerAverages, buildPlayerProfile, findPlayerById, findPlayerIndexById, findPlayerByName, preparePlayerRegistration, authenticatePlayer, REGISTRATION_REQUIRED_ERROR, getPlayerExperience, getPlayerLevel, ensurePlayerExperience, addPlayerInventoryItem, setPlayerInventoryQuantity, consumePlayerInventoryItem, normalizeAdminPin, updatePlayerPin, updatePlayerGrade, updatePlayerThemeColor, updatePlayerAvatar, ensurePlayerCosmetics, unlockPlayerCosmetic, calculateDirectGameReward, logAureosTx, resolveAccountPlayer, loadAureosLog, saveAureosLog, buildStudentHistory } = context;
   const adminState = context.adminState;
+  const groupService = context.groupService;
   const saveAdminConfig = context.saveAdminConfig;
 
   function matches(req) {
     const url = req.url.split('?')[0];
+    if (/^\/api\/maestro\/groups(?:\/[0-9a-f-]+(?:\/members(?:\/[0-9a-f-]+)?)?)?$/i.test(url)) return true;
     if (req.method === 'GET' && (url === '/api/ranking' || url === '/api/ranking/export' ||
       url === '/api/maestro/config' || url === '/api/players' ||
       url.startsWith('/api/players/get-pin') || url === '/api/players/export' ||
@@ -29,6 +31,27 @@ function createHttpAdminRoutes(context) {
 
   function handle(req, res) {
     const url = req.url.split('?')[0];
+  // ── Registro central de grupos ───────────────────────────
+  const groupMatch=url.match(/^\/api\/maestro\/groups(?:\/([0-9a-f-]+)(?:\/members(?:\/([0-9a-f-]+))?)?)?$/i);
+  if(groupMatch){
+    if(!['GET','POST','PATCH','DELETE'].includes(req.method))return sendJson(res,405,{ok:false,error:'Metodo no permitido'});
+    if(!requireAdmin(req,res))return;
+    if(!groupService)return sendJson(res,503,{ok:false,error:'Grupos no disponibles'});
+    if(req.method==='GET'){
+      try{return groupMatch[1]?sendJson(res,200,{ok:true,group:groupService.get(groupMatch[1])}):sendJson(res,200,{ok:true,groups:groupService.list()});}
+      catch(e){return sendJson(res,/no encontrado/.test(e.message)?404:422,{ok:false,error:e.message});}
+    }
+    return readBody(req,res,body=>{
+      let data={};try{data=body?JSON.parse(body):{};}catch(_){return sendJson(res,400,{ok:false,error:'JSON invalido'});}
+      try{
+        if(req.method==='POST'&&!groupMatch[1])return sendJson(res,201,{ok:true,...groupService.create({...data,actor:'admin'})});
+        if(req.method==='PATCH'&&groupMatch[1])return sendJson(res,200,{ok:true,...groupService.update({...data,groupId:groupMatch[1],actor:'admin'})});
+        if(req.method==='POST'&&groupMatch[1]&&!groupMatch[2])return sendJson(res,200,{ok:true,...groupService.addMember({...data,groupId:groupMatch[1],actor:'admin'})});
+        if(req.method==='DELETE'&&groupMatch[1]&&groupMatch[2])return sendJson(res,200,{ok:true,...groupService.removeMember({...data,groupId:groupMatch[1],accountPlayerId:groupMatch[2],actor:'admin'})});
+        return sendJson(res,405,{ok:false,error:'Metodo no permitido'});
+      }catch(e){const msg=e.message||'Solicitud invalida';return sendJson(res,/no encontrado|no pertenece/.test(msg)?404:/no autorizado/.test(msg)?403:/duplicado|ya pertenece|contradictorio/.test(msg)?409:/revision antigua|invalido|obligatorio/.test(msg)?422:400,{ok:false,error:msg});}
+    });
+  }
   // ── Ranking data API ──
   // ── Export CSV ──
   if(req.method==='GET'&&url==='/api/ranking/export'){

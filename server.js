@@ -27,6 +27,8 @@ const { createOfficialAttemptService } = require('./src/server/exams/officialAtt
 const { createOfficialRewardService } = require('./src/server/exams/officialRewardService');
 const { createTestSupervisionService } = require('./src/server/exams/testSupervisionService');
 const { createTestLibraryService } = require('./src/server/exams/testLibraryService');
+const { createGroupStore } = require('./src/server/groups/groupStore');
+const { createGroupService } = require('./src/server/groups/groupService');
 const { buildLegacyIdentityMap,resolveAccountPlayerId } = require('./src/server/exams/legacyIdentityAdapter');
 const { createHtmlPages } = require('./src/server/htmlPages');
 const { createHttpAdminRoutes } = require('./src/server/http/adminRoutes');
@@ -163,12 +165,20 @@ if(testStoreStartup.status==='loaded') L.game('Almacén de pruebas cargado');
 else if(testStoreStartup.status==='migrated') L.game('Almacén de pruebas migrado en memoria; pendiente de guardar');
 else if(testStoreStartup.status==='invalid') L.err('Almacén de pruebas inválido; se usa memoria vacía');
 else L.game('Almacén de pruebas nuevo/no persistido');
-const testService=createTestService({store:testStore});
+const testService=createTestService({store:testStore,groupResolver:groupId=>{
+  try{return groupService.members(groupId);}catch(error){if(/grupo no encontrado/.test(error.message))return undefined;throw error;}
+}});
 const attemptCheckpointService=createAttemptCheckpointService({store:testStore});
 const attemptActionRoot=testStore.load();
 const attemptActionService=createAttemptActionService({root:attemptActionRoot,persist:()=>testStore.save(attemptActionRoot)});
 const testSupervisionService=createTestSupervisionService({root:testStore.load()});
 const testLibraryService=createTestLibraryService({loadRoot:()=>testStore.load()});
+const GROUPS_STORE_PATH=process.env.MATH_ATTACK_GROUPS_PATH||path.join(__dirname,'groups.json');
+const groupStore=createGroupStore({baseDir:path.dirname(GROUPS_STORE_PATH),fileName:path.basename(GROUPS_STORE_PATH),logger:{error:(...args)=>L.err(...args)}});
+const groupService=createGroupService({store:groupStore,resolveAccountPlayer:accountPlayerId=>{
+  const players=loadPlayers();
+  try{return buildLegacyIdentityMap(players).byAccountId.has(accountPlayerId);}catch(_){return false;}
+}});
 const studentHttpSessions=createStudentHttpSessionStore();
 const DATA_STORE_PATH=process.env.MATH_ATTACK_DATA_PATH||__dirname;
 const dataStore = createJsonStore({ baseDir: DATA_STORE_PATH, logger: L });
@@ -759,6 +769,7 @@ const adminRoutes = createHttpAdminRoutes({
   updatePlayerPin, updatePlayerGrade, updatePlayerThemeColor, updatePlayerAvatar,
   ensurePlayerCosmetics, unlockPlayerCosmetic, calculateDirectGameReward, logAureosTx,
   resolveAccountPlayer, loadAureosLog, saveAureosLog, buildStudentHistory,
+  groupService,
   adminState: { get username(){ return ADMIN_USERNAME; }, set username(value){ ADMIN_USERNAME=value; },
     get password(){ return ADMIN_PASSWORD; }, set password(value){ ADMIN_PASSWORD=value; } },
   saveAdminConfig: saveConfig,
@@ -901,7 +912,8 @@ const wsContext = createWsContext({
     getExternalPlayerId,
     getConnectionId,
     findActiveSession,
-    resolveAccountPlayer,
+  resolveAccountPlayer,
+  groupService,
   },
   panelState: {
     build: buildPanelState,

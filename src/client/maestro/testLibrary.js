@@ -4,6 +4,7 @@
   let tests = [];
   let selectedTestId = sessionStorage.getItem('maestroSelectedTestId') || '';
   const configurations = new Map();
+  let groups = []; let selectedGroupId = '';
   const busy = new Set();
   const esc = value => String(value ?? '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
   const statusLabels = { draft: 'Borrador', scheduled: 'Programada', active: 'Activa', paused: 'Pausada', closed: 'Cerrada', finished: 'Finalizada', cancelled: 'Cancelada', unknown: 'Estado desconocido' };
@@ -11,6 +12,17 @@
   const get = id => document.getElementById(id);
 
   function statusLabel(status) { return statusLabels[status] || statusLabels.unknown; }
+  const groupStatus = message => { const node = get('prGroupsStatus'); if (node) node.textContent = message || ''; };
+  function renderGroups() {
+    const list = get('prGroupsList'); if (list) list.innerHTML = groups.length ? groups.map(group => `<div class="pr-group-card${group.groupId === selectedGroupId ? ' selected' : ''}" data-group-id="${esc(group.groupId)}"><button type="button" class="pr-group-select">${esc(group.name)} · ${esc(group.groupId)}</button><span>${group.memberAccountPlayerIds.length} miembro(s)</span></div>`).join('') : '<p class="pr-attempts-empty">No hay grupos disponibles.</p>';
+    const group = groups.find(item => item.groupId === selectedGroupId); const selected = get('prSelectedGroup'); if (selected) selected.innerHTML = group ? `<strong>Grupo seleccionado: ${esc(group.name)}</strong><span>groupId: <code>${esc(group.groupId)}</code> · revision: ${group.revision}</span>` : '<span>Ningún grupo seleccionado.</span>';
+    const members = get('prGroupMembersList'); if (members) members.innerHTML = group?.memberAccountPlayerIds?.length ? group.memberAccountPlayerIds.map(id => `<span class="pr-group-card">${esc(id)}</span>`).join('') : '<p class="pr-attempts-empty">Grupo sin alumnos.</p>';
+  }
+  async function loadGroups() { try { const response = await fetch(adminUrl('/api/maestro/groups'), { headers: { 'X-Admin-Password': _adminPass } }); const data = await response.json(); if (!response.ok) throw Error(data.error || 'No se pudieron cargar grupos'); groups = Array.isArray(data.groups) ? data.groups : []; renderGroups(); } catch (error) { groupStatus(error.message); } }
+  async function groupRequest(url, method, body) { const response = await fetch(url, { method, headers: { 'Content-Type': 'application/json', 'X-Admin-Password': _adminPass }, body: JSON.stringify(body) }); const data = await response.json(); if (!response.ok) throw Error(data.error || 'Operación de grupo rechazada'); return data; }
+  async function createGroup() { const name = get('prGroupName')?.value.trim(); const grade = get('prGroupGrade')?.value.trim(); const schoolYear = get('prGroupYear')?.value.trim(); if (!name || !grade || !schoolYear) throw Error('Datos de grupo obligatorios'); const data = await groupRequest('/api/maestro/groups', 'POST', { name, grade, schoolYear, eventId: crypto.randomUUID() }); selectedGroupId = data.group.groupId; await loadGroups(); }
+  async function mutateMember(add) { const group = groups.find(item => item.groupId === selectedGroupId); const accountPlayerId = get('prGroupAccountPlayerId')?.value.trim(); if (!group || !accountPlayerId) throw Error('Grupo y accountPlayerId obligatorios'); const url = `/api/maestro/groups/${group.groupId}/members${add ? '' : `/${accountPlayerId}`}`; await groupRequest(url, add ? 'POST' : 'DELETE', { accountPlayerId, revision: group.revision + 1, eventId: crypto.randomUUID() }); await loadGroups(); }
+  async function assignGroup() { const group = groups.find(item => item.groupId === selectedGroupId); if (!group || !selectedTestId) throw Error('Selecciona grupo y prueba'); const currentResponse = await fetch(adminUrl(`/api/exams/${encodeURIComponent(selectedTestId)}/assignments`), { headers: { 'X-Admin-Password': _adminPass } }); const currentData = await currentResponse.json(); if (!currentResponse.ok) throw Error(currentData.error || 'No se pudieron consultar asignaciones'); const assignments = [...(currentData.assignments || []).map(item => ({ targetType: item.targetType, groupId: item.groupId, accountPlayerId: item.accountPlayerId })), { targetType: 'group', groupId: group.groupId, expandGroup: true }]; await groupRequest(`/api/exams/${encodeURIComponent(selectedTestId)}/assignments`, 'PUT', { assignments }); await load(); }
   const sectionLabels = { summary: 'Resumen de la prueba seleccionada.', programming: 'Programación y activación.', assignments: 'Alumnos y grupos asignados.', supervision: 'Supervisión de intentos.', results: 'Resultados seguros de la prueba.', ranking: 'Oficialización y publicación al Ranking.', rewards: 'Liquidación de recompensas oficiales.' };
   function setSection(section) {
     const target = sectionLabels[section] ? section : 'summary';
@@ -147,6 +159,11 @@
   window.prSetTestSection = setSection;
   window.prSelectTest = select;
   window.prRenderTestLibrary = render;
+  window.prLoadGroups = loadGroups;
+  document.addEventListener('click', event => {
+    const groupButton = event.target.closest('.pr-group-select'); if (groupButton) { selectedGroupId = groupButton.closest('[data-group-id]').dataset.groupId; renderGroups(); }
+    const action = event.target.id; if (action === 'prGroupCreate') createGroup().catch(error => groupStatus(error.message)); if (action === 'prGroupAddMember') mutateMember(true).catch(error => groupStatus(error.message)); if (action === 'prGroupRemoveMember') mutateMember(false).catch(error => groupStatus(error.message)); if (action === 'prGroupAssign') assignGroup().catch(error => groupStatus(error.message));
+  });
   window.addEventListener('load', () => { if (typeof window.prLoadTestLibrary === 'function') window.prLoadTestLibrary(); });
   setSection('summary');
 })();
