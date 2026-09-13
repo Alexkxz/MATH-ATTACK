@@ -87,7 +87,7 @@
       const response = await fetch(adminUrl(`/api/exams/${encodeURIComponent(testId)}`), { headers: { 'X-Admin-Password': _adminPass } });
       const data = await response.json();
       if (!response.ok) throw Error(data.error || 'No se pudo cargar la configuración');
-      configurations.set(testId, data.test?.configuration || {});
+      configurations.set(testId, { ...(data.test?.configuration || {}), title: data.test?.title || '', description: data.test?.description || '' });
       const test = tests.find(item => item.testId === testId);
       if (test) test.configuration = configurations.get(testId);
       if (selectedTestId === testId && typeof window.prLoadTestConfiguration === 'function') window.prLoadTestConfiguration(configurations.get(testId));
@@ -110,8 +110,16 @@
     const test = tests.find(item => item.testId === testId); if (!test) return;
     const title = window.prompt('Nuevo título:', test.title); if (title === null || !title.trim()) return;
     const configuration = typeof window.prGetTestConfiguration === 'function' ? window.prGetTestConfiguration(configurations.get(testId) || test.configuration || {}) : (configurations.get(testId) || test.configuration || {});
-    const response = await fetch(`/api/exams/${encodeURIComponent(testId)}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json', 'X-Admin-Password': _adminPass }, body: JSON.stringify({ title: title.trim(), revision: test.revision + 1, configuration }) });
+    const response = await fetch(`/api/exams/${encodeURIComponent(testId)}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json', 'X-Admin-Password': _adminPass }, body: JSON.stringify({ title: (configuration.title || title.trim()), description: configuration.description || test.description || '', revision: test.revision + 1, configuration }) });
     const data = await response.json(); if (!response.ok) throw Error(data.error || 'No se pudo editar la prueba'); await load(); select(testId);
+  }
+  async function saveDraft(testId) {
+    const test = tests.find(item => item.testId === testId); if (!test) throw Error('Prueba no encontrada');
+    if (test.status !== 'draft') throw Error('La configuracion solo se puede editar en borrador');
+    const configuration = typeof window.prGetTestConfiguration === 'function' ? window.prGetTestConfiguration(configurations.get(testId) || test.configuration || {}) : (configurations.get(testId) || test.configuration || {});
+    const title = String(configuration.title || '').trim(); if (!title) throw Error('El titulo es obligatorio');
+    if (busy.has(`save:${testId}`)) return; busy.add(`save:${testId}`);
+    try { const response = await fetch(`/api/exams/${encodeURIComponent(testId)}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json', 'X-Admin-Password': _adminPass }, body: JSON.stringify({ title, description: configuration.description || '', revision: test.revision + 1, configuration }) }); const data = await response.json(); if (!response.ok) throw Error(data.error || 'No se pudo guardar la configuracion'); await load(); select(testId); const status = get('prTestLibraryStatus'); if (status) status.textContent = 'Configuracion guardada'; } finally { busy.delete(`save:${testId}`); }
   }
   async function scheduleTest(testId) {
     const test = tests.find(item => item.testId === testId); if (!test) return;
@@ -159,6 +167,7 @@
   window.prSetTestSection = setSection;
   window.prSelectTest = select;
   window.prRenderTestLibrary = render;
+  window.prSaveSelectedTest = () => selectedTestId ? saveDraft(selectedTestId).catch(error => { const status = get('prTestLibraryStatus'); if (status) status.textContent = error.message; }) : Promise.reject(Error('Selecciona una prueba borrador'));
   window.prLoadGroups = loadGroups;
   document.addEventListener('click', event => {
     const groupButton = event.target.closest('.pr-group-select'); if (groupButton) { selectedGroupId = groupButton.closest('[data-group-id]').dataset.groupId; renderGroups(); }

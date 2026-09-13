@@ -621,6 +621,12 @@ body.proj-mode .q-display{font-size:48px;letter-spacing:4px}
         </div>
         <span class="pr-config-note">Los cambios se aplican a la próxima prueba.</span>
       </div>
+      <div class="pr-config-grid pr-builder-fields">
+        <div class="pr-field"><label for="prTestTitle">TITULO</label><input id="prTestTitle" type="text" maxlength="200" placeholder="Ej. Tablas del 1 al 10"></div>
+        <div class="pr-field"><label for="prTestDescription">DESCRIPCION</label><textarea id="prTestDescription" maxlength="2000" rows="2" placeholder="Objetivo o instrucciones de la prueba"></textarea></div>
+        <div class="pr-field"><label for="prMultiplier">MULTIPLICADOR DE PUNTAJE</label><input id="prMultiplier" type="number" min="1" max="5" step="1" value="1"><small class="pr-config-note">Solo afecta el puntaje; no aumenta Aureos, XP, rachas ni logros.</small></div>
+        <div class="pr-field"><label>RECOMPENSAS OFICIALES</label><div class="pr-reward-grid"><label>Aureos<input id="prRewardAureos" type="number" min="0" max="100000" step="1" value="0"></label><label>XP<input id="prRewardExperience" type="number" min="0" max="100000" step="1" value="0"></label></div><label class="pr-range-repeat"><input id="prRewardStreak" type="checkbox"> Activar racha</label><label class="pr-range-repeat"><input id="prRewardAchievements" type="checkbox"> Activar logro perfecto</label><small class="pr-config-note">0 significa sin recompensa. Se liquidan solo tras oficializar y publicar.</small></div>
+      </div>
       <div class="pr-config-grid">
         <div class="pr-field">
           <label>GRADO / GRUPO</label>
@@ -648,6 +654,7 @@ body.proj-mode .q-display{font-size:48px;letter-spacing:4px}
       <div id="prOpSections"></div>
       <div class="pr-summary" id="prSummary"></div>
       <div class="pr-action-row">
+        <button class="pr-tbl-mini-btn" id="prSaveConfig" type="button" onclick="window.prSaveSelectedTest?.()">Guardar configuracion</button>
         <button class="pr-start-btn" onclick="startPrueba(this)">▶ INICIAR PRUEBA</button>
         <span class="pr-action-help">El seguimiento en vivo aparecerá aquí al comenzar.</span>
       </div>
@@ -1365,6 +1372,14 @@ function prEditRange(index){
   _prCustomRanges.mult.splice(index,1); prRenderRanges(); prUpdateSummary();
 }
 function prLoadTestConfiguration(configuration){
+  const title=document.getElementById('prTestTitle'); if(title) title.value=configuration?.title||'';
+  const description=document.getElementById('prTestDescription'); if(description) description.value=configuration?.description||'';
+  const multiplier=document.getElementById('prMultiplier'); if(multiplier) multiplier.value=Number.isInteger(configuration?.multiplier)?configuration.multiplier:1;
+  const rewards=configuration?.rewards||{};
+  const aureos=document.getElementById('prRewardAureos'); if(aureos) aureos.value=Number.isInteger(rewards.aureos)?rewards.aureos:0;
+  const experience=document.getElementById('prRewardExperience'); if(experience) experience.value=Number.isInteger(rewards.experience)?rewards.experience:0;
+  const streak=document.getElementById('prRewardStreak'); if(streak) streak.checked=rewards.streak?.enabled===true;
+  const achievements=document.getElementById('prRewardAchievements'); if(achievements) achievements.checked=rewards.achievements?.perfect?.enabled===true;
   const mult=configuration?.opsConfig?.mult;
   _prCustomRanges.mult=Array.isArray(mult?.ranges)?mult.ranges.map(range=>({...range})):[];
   const repeat=document.getElementById('prRangeRepeat_mult'); if(repeat) repeat.checked=mult?.repeat===true;
@@ -1372,6 +1387,20 @@ function prLoadTestConfiguration(configuration){
 }
 function prGetTestConfiguration(existing={}){
   const next=JSON.parse(JSON.stringify(existing||{}));
+  next.version=1;
+  const multiplierInput=document.getElementById('prMultiplier');
+  const multiplier=multiplierInput?Number(multiplierInput.value):(Number.isInteger(next.multiplier)?next.multiplier:1);
+  if(!Number.isInteger(multiplier)||multiplier<1||multiplier>5) throw Error('El multiplicador debe ser un entero entre 1 y 5');
+  next.multiplier=multiplier;
+  const titleInput=document.getElementById('prTestTitle'); if(titleInput) next.title=titleInput.value.trim();
+  const descriptionInput=document.getElementById('prTestDescription'); if(descriptionInput) next.description=descriptionInput.value.trim();
+  const aureosInput=document.getElementById('prRewardAureos'), experienceInput=document.getElementById('prRewardExperience');
+  if(aureosInput&&experienceInput){
+    const aureos=Number(aureosInput.value||0), experience=Number(experienceInput.value||0);
+    if(!Number.isInteger(aureos)||aureos<0||aureos>100000||!Number.isInteger(experience)||experience<0||experience>100000) throw Error('Aureos y XP deben ser enteros entre 0 y 100000');
+    next.rewards={aureos,experience,streak:{enabled:!!document.getElementById('prRewardStreak')?.checked,bonus:0},achievements:{}};
+    if(document.getElementById('prRewardAchievements')?.checked) next.rewards.achievements.perfect={enabled:true,bonus:0};
+  }
   const opsConfig={...(next.opsConfig||{})};
   const mult={...(opsConfig.mult||{})};
   if(_prCustomRanges.mult.length){
