@@ -3,6 +3,7 @@
 (() => {
   let tests = [];
   let selectedTestId = sessionStorage.getItem('maestroSelectedTestId') || '';
+  const configurations = new Map();
   const busy = new Set();
   const esc = value => String(value ?? '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
   const statusLabels = { draft: 'Borrador', scheduled: 'Programada', active: 'Activa', paused: 'Pausada', closed: 'Cerrada', finished: 'Finalizada', cancelled: 'Cancelada', unknown: 'Estado desconocido' };
@@ -50,6 +51,7 @@
       if (!response.ok) throw Error(data.error || 'No se pudo cargar la biblioteca');
       tests = Array.isArray(data.tests) ? data.tests : [];
       render();
+      if (selectedTestId) loadConfiguration(selectedTestId);
       if (status) status.textContent = `${tests.length} prueba(s) disponibles`;
     } catch (error) {
       tests = [];
@@ -62,10 +64,24 @@
     if (!test) return;
     selectedTestId = testId;
     sessionStorage.setItem('maestroSelectedTestId', testId);
+    loadConfiguration(testId);
     const input = get('prAttemptTestId');
     if (input) input.value = testId;
     render();
     if (typeof window.prLoadAttempts === 'function') window.prLoadAttempts();
+  }
+  async function loadConfiguration(testId) {
+    try {
+      const response = await fetch(adminUrl(`/api/exams/${encodeURIComponent(testId)}`), { headers: { 'X-Admin-Password': _adminPass } });
+      const data = await response.json();
+      if (!response.ok) throw Error(data.error || 'No se pudo cargar la configuración');
+      configurations.set(testId, data.test?.configuration || {});
+      const test = tests.find(item => item.testId === testId);
+      if (test) test.configuration = configurations.get(testId);
+      if (selectedTestId === testId && typeof window.prLoadTestConfiguration === 'function') window.prLoadTestConfiguration(configurations.get(testId));
+    } catch (error) {
+      if (selectedTestId === testId) { const status = get('prTestLibraryStatus'); if (status) status.textContent = error.message; }
+    }
   }
   async function copy(testId) {
     try { await navigator.clipboard.writeText(testId); const status = get('prTestLibraryStatus'); if (status) status.textContent = 'testId copiado'; } catch (_) { const input = get('prAttemptTestId'); if (input) { input.focus(); input.select(); } }
@@ -81,7 +97,8 @@
   async function editDraft(testId) {
     const test = tests.find(item => item.testId === testId); if (!test) return;
     const title = window.prompt('Nuevo título:', test.title); if (title === null || !title.trim()) return;
-    const response = await fetch(`/api/exams/${encodeURIComponent(testId)}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json', 'X-Admin-Password': _adminPass }, body: JSON.stringify({ title: title.trim(), revision: test.revision }) });
+    const configuration = typeof window.prGetTestConfiguration === 'function' ? window.prGetTestConfiguration(configurations.get(testId) || test.configuration || {}) : (configurations.get(testId) || test.configuration || {});
+    const response = await fetch(`/api/exams/${encodeURIComponent(testId)}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json', 'X-Admin-Password': _adminPass }, body: JSON.stringify({ title: title.trim(), revision: test.revision + 1, configuration }) });
     const data = await response.json(); if (!response.ok) throw Error(data.error || 'No se pudo editar la prueba'); await load(); select(testId);
   }
   async function scheduleTest(testId) {

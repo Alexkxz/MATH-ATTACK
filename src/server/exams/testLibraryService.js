@@ -52,6 +52,7 @@ function createTestLibraryService({ loadRoot } = {}) {
         testId: test.testId,
         title: test.title,
         status: TEST_STATES.includes(test.status) ? test.status : 'unknown',
+        revision: test.revision,
         createdAt: test.createdAt,
         scheduledAt: test.scheduledAt || null,
         startsAt: test.startsAt || null,

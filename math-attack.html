@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Math Attack</title>
+<script src="/src/client/maestro/tableRanges.js"></script>
 <link rel="preload" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&family=Quicksand:wght@600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&family=Quicksand:wght@600;700&display=swap"></noscript>
 <script>
@@ -8879,7 +8880,11 @@ function buildQForOpConfig(opSym,cfg){
     const pool=(cfg.tables&&cfg.tables.length?cfg.tables:[...getAllowedTablePool(opSym)]).filter(t=>opSym==='÷'?getAllowedTablePool(opSym).includes(t):t>0);
     const qty=Math.max(1,cfg.qty||1);
     for(const tbl of pool){
-      for(let i=0;i<qty;i++){
+      const customMultipliers=opSym==='×'&&window.MathAttackTableRanges&&Array.isArray(cfg.ranges)
+        ? window.MathAttackTableRanges.multipliersForTable(cfg,tbl)
+        : null;
+      const multipliers=customMultipliers||Array.from({length:qty},(_,i)=>null);
+      for(let i=0;i<multipliers.length;i++){
         if(opSym===_PR_OPMAP_REV.div&&cfg.digits){
           qs.push(makeDivisionQuestion(tbl,cfg.digits));
           continue;
@@ -8889,7 +8894,7 @@ function buildQForOpConfig(opSym,cfg){
           qs.push(makeDivisionQuestion(tbl,cfg.digits||selectedCifras||2));
           continue;
         }else{
-          b=(opSym===_PR_OPMAP_REV.mult&&cfg.manner==='ordered')?orderedRangeValue(i,opSym):randInt(opSym===_PR_OPMAP_REV.div?Math.max(1,multMin):multMin,multMax);
+          b=customMultipliers?multipliers[i]:(opSym===_PR_OPMAP_REV.mult&&cfg.manner==='ordered')?orderedRangeValue(i,opSym):randInt(opSym===_PR_OPMAP_REV.div?Math.max(1,multMin):multMin,multMax);
         }
         if(opSym==='×') qs.push({table:tbl,a:tbl,op:opSym,b,answer:tbl*b});
         else qs.push({table:tbl,a:tbl,op:opSym,b,answer:b,_divA:tbl*b});
