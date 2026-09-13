@@ -167,6 +167,17 @@ body.exam-active .po-actions{display:none!important}
 body.game-active #shopFloatGroup{display:none!important;}
 .exam-apply-btn{background:linear-gradient(135deg,#059669,#34d399);border:none;border-radius:12px;padding:12px;font-family:'Baloo 2',cursive;font-size:16px;color:#fff;cursor:pointer;transition:all .2s;box-shadow:0 8px 28px rgba(52,211,153,.4);font-weight:700}
 .exam-apply-btn:hover{transform:translateY(-2px);opacity:.9}
+/* Flujo HTTP aislado de pruebas configuradas; no comparte el juego normal ni su WebSocket. */
+#studentTestEntry,#studentTestScreen{display:none}
+#studentTestEntry{gap:8px;background:rgba(96,165,250,.1);border:2px solid rgba(96,165,250,.3);border-radius:12px;padding:14px;margin-bottom:14px}
+#studentTestEntry.visible{display:flex;flex-direction:column}
+#studentTestStatus{font-size:12px;color:var(--muted);min-height:18px}
+#studentTestScreen{flex-direction:column;overflow-y:auto}
+#studentTestScreen.active{display:flex}
+.student-test-card{width:min(100%,540px);background:rgba(15,23,42,.94);border:2px solid rgba(96,165,250,.35);border-radius:20px;padding:24px;box-shadow:0 18px 50px rgba(0,0,0,.35)}
+.student-test-question{font-size:clamp(30px,8vw,56px);font-weight:800;text-align:center;color:#f8fafc;margin:28px 0}
+.student-test-meta{display:flex;justify-content:space-between;gap:10px;color:var(--muted);font-size:13px}
+.student-test-answer{display:flex;gap:8px}.student-test-answer input{flex:1;min-width:0}
 
 /* ── MP status bar ── */
 .mp-bar{background:rgba(255,255,255,.05);border:2px solid rgba(255,255,255,.1);border-radius:12px;
@@ -1208,6 +1219,18 @@ button:disabled .wave-letter{animation:none;}
 }
 .login-input::placeholder{color:var(--muted);}
 .login-input-pin{letter-spacing:6px;font-size:18px;font-family:'Baloo 2',cursive;text-align:center;}
+.login-pin-digits{display:flex;flex:1;justify-content:center;gap:9px;}
+.login-pin-digit{width:42px;height:42px;box-sizing:border-box;background:rgba(255,255,255,.04);
+  border:2px solid rgba(167,139,250,.3);border-radius:10px;outline:none;
+  font-family:'Baloo 2',cursive;font-size:23px;font-weight:700;color:var(--text);
+  text-align:center;caret-color:var(--accent2);transition:border-color .2s,background .2s,transform .2s;}
+.login-pin-digit:focus{border-color:var(--accent2);background:rgba(167,139,250,.12);transform:translateY(-1px);}
+.login-pin-digit:not(:placeholder-shown){border-color:rgba(167,139,250,.65);}
+.login-pin-digit::placeholder{color:rgba(167,139,250,.45);}
+@media (max-width:430px){
+  .login-pin-digits{gap:7px;}
+  .login-pin-digit{width:38px;height:40px;}
+}
 .login-err{
   font-size:11px;color:var(--wrong);font-weight:700;min-height:16px;
   text-align:center;padding:0 4px;
@@ -1744,7 +1767,13 @@ body.frozen-cursor *{cursor:not-allowed!important;}
     </div>
     <div class="login-field" id="loginPinWrap" style="display:none;">
       <span class="login-field-icon">🔑</span>
-      <input class="login-input login-input-pin" id="loginPinInput" type="password" inputmode="numeric" maxlength="4" placeholder="PIN (4 dígitos)"/>
+      <div class="login-pin-digits" id="loginPinDigits" aria-label="PIN de 4 dígitos">
+        <input class="login-pin-digit" type="password" inputmode="numeric" maxlength="1" placeholder="•" aria-label="Primer dígito del PIN" autocomplete="off">
+        <input class="login-pin-digit" type="password" inputmode="numeric" maxlength="1" placeholder="•" aria-label="Segundo dígito del PIN" autocomplete="off">
+        <input class="login-pin-digit" type="password" inputmode="numeric" maxlength="1" placeholder="•" aria-label="Tercer dígito del PIN" autocomplete="off">
+        <input class="login-pin-digit" type="password" inputmode="numeric" maxlength="1" placeholder="•" aria-label="Cuarto dígito del PIN" autocomplete="off">
+      </div>
+      <input id="loginPinInput" type="hidden" autocomplete="off">
     </div>
     <div class="login-err" id="loginErr"></div>
     <button class="login-btn-main" onclick="doLogin()">
@@ -1814,6 +1843,13 @@ body.frozen-cursor *{cursor:not-allowed!important;}
     <button class="exam-apply-btn" onclick="applyPrueba()">▶ Aplicar Prueba</button>
   </div>
 
+  <div id="studentTestEntry">
+    <div style="font-weight:800;color:#60a5fa">&#128221; Prueba configurada</div>
+    <div style="font-size:12px;color:#94a3b8">Ingresa el testId proporcionado por tu maestro.</div>
+    <div style="display:flex;gap:8px"><input class="name-input" id="studentTestIdInput" placeholder="testId" autocomplete="off"/><button class="exam-apply-btn" type="button" onclick="openStudentConfiguredTest()">Entrar</button></div>
+    <div id="studentTestStatus" role="status"></div>
+  </div>
+
   <span class="section-label">🎮 Modo de juego</span>
   <div class="duel-toggle">
     <button class="sel-btn selected" data-mode="solo"   onclick="selGameMode(this)"><span class="si"><svg width="30" height="30" viewBox="0 0 34 34" fill="none" style="display:block;margin:0 auto"><style>@keyframes _k1{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}._si1{animation:_k1 2.4s ease-in-out infinite}</style><g class="_si1"><circle cx="17" cy="10" r="6.5" fill="#a78bfa"/><path d="M6 31c0-8.5 5-11.5 11-11.5s11 3 11 11.5z" fill="#a78bfa"/><path d="M6 23.5L2 30" stroke="#a78bfa" stroke-width="3" stroke-linecap="round"/><path d="M28 23.5L32 29" stroke="#a78bfa" stroke-width="3" stroke-linecap="round"/></g></svg></span><span class="sn">Individual</span><span class="sd">Un alumno</span></button>
@@ -1827,6 +1863,16 @@ body.frozen-cursor *{cursor:not-allowed!important;}
   </div>
   <button class="reg-link" onclick="askPIN()">📋 Ver registro de alumnos</button>
 </div>
+</div>
+
+<div class="screen" id="studentTestScreen">
+  <div class="student-test-card">
+    <div class="card-header"><div class="card-header-logo">&#128221;</div><div><div class="card-header-title" id="studentTestTitle">Prueba</div><div class="card-header-sub" id="studentTestDescription"></div></div></div>
+    <div class="student-test-meta"><span id="studentTestProgress">0 / 0</span><span id="studentTestConnection">Conectado</span><span id="studentTestTimer">Tiempo: --</span></div>
+    <div class="student-test-question" id="studentTestQuestion">Cargando...</div>
+    <div class="student-test-answer"><input class="name-input" id="studentTestAnswer" inputmode="numeric" autocomplete="off" placeholder="Respuesta"/><button class="btn-pri" type="button" onclick="submitStudentTestAnswer()">Responder</button></div>
+    <div id="studentTestFeedback" role="status" style="min-height:24px;text-align:center;margin-top:12px"></div>
+  </div>
 </div>
 
 <!-- Step 2 -->
@@ -2530,6 +2576,7 @@ body.frozen-cursor *{cursor:not-allowed!important;}
     <div class="timer-track" id="timerTrack"><div class="timer-bar" id="timerBar"></div></div>
     <div class="timer-row"><span id="timerLbl">—</span><span id="tableLbl">Tabla del 1</span></div>
   </div>
+
   <div class="question-card" id="questionCard">
     <div class="table-ind" id="tableInd">Tabla del 1 · Pregunta 1</div>
     <div class="question-text" id="questionText">1 × 1</div>
@@ -4454,6 +4501,38 @@ function updateBotBtnAvailability(){
 
 // ── Login con PIN ──────────────────────────────────────
 // ── Login inicial (primera pantalla) ──────────────────
+const loginPinDigits=[...document.querySelectorAll('#loginPinDigits .login-pin-digit')];
+function syncLoginPin(){
+  $('loginPinInput').value=loginPinDigits.map(input=>input.value).join('');
+}
+function focusLoginPin(){
+  const empty=loginPinDigits.find(input=>!input.value);
+  (empty||loginPinDigits[loginPinDigits.length-1])?.focus();
+}
+function setLoginPin(value){
+  const digits=String(value||'').replace(/\D/g,'').slice(0,4).split('');
+  loginPinDigits.forEach((input,index)=>{ input.value=digits[index]||''; });
+  syncLoginPin();
+}
+loginPinDigits.forEach((input,index)=>{
+  input.addEventListener('input',()=>{
+    input.value=input.value.replace(/\D/g,'').slice(-1);
+    syncLoginPin();
+    if(input.value&&index<loginPinDigits.length-1) loginPinDigits[index+1].focus();
+  });
+  input.addEventListener('keydown',event=>{
+    if(event.key==='Backspace'&&!input.value&&index>0){
+      loginPinDigits[index-1].value='';
+      loginPinDigits[index-1].focus();
+      syncLoginPin();
+    } else if(event.key==='Enter') doLogin();
+  });
+  input.addEventListener('paste',event=>{
+    event.preventDefault();
+    setLoginPin(event.clipboardData?.getData('text')||'');
+    focusLoginPin();
+  });
+});
 async function doLogin(){
   const name=($('loginNameInput').value||'').trim();
   const rawPin=String($('loginPinInput').value||'');
@@ -4468,6 +4547,7 @@ async function doLogin(){
       const data=await res.json();
       if(data.ok){
         currentPlayer={...data.player};
+        try{ await fetch('/api/student/auth',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,pin:rawPin})}); }catch(_){ /* El juego normal conserva su flujo si la sesion de prueba no esta disponible. */ }
         const localAureos=getLocalAureos(name);
         if(localAureos>currentPlayer.aureos) await syncAureos(localAureos);
         localStorage.setItem(PLAYER_KEY,JSON.stringify(currentPlayer));
@@ -4537,7 +4617,7 @@ async function doRegister(){
         closeRegPanel();
         $('loginNameInput').value=name;
         $('loginPinWrap').style.display='';
-        $('loginPinInput').focus();
+        focusLoginPin();
       },1200);
     } else { errEl.textContent='❌ '+(data.error||'Error al registrar'); }
   }catch(e){ errEl.textContent='Error de conexión'; }
@@ -4559,6 +4639,8 @@ function _entrarAlJuego(name){
   if(grp) grp.style.display='flex';
   $('loginScreen').classList.remove('active');
   $('step1Screen').classList.add('active');
+  const testEntry=$('studentTestEntry');
+  if(testEntry)testEntry.classList.toggle('visible',Boolean(serverAvailable&&currentPlayer));
 }
 
 function showPinAccountOverlay(){
@@ -4722,6 +4804,7 @@ function floatCerrarSesion(){
   if(grp) grp.style.display='none';
   $('loginNameInput').value='';
   $('loginPinInput').value='';
+  setLoginPin('');
   $('loginErr').textContent='';
   $('loginScreen').classList.add('active');
 }
@@ -13394,5 +13477,45 @@ function restoreQuestionMarkFallbacks(){
 <style>
 @keyframes annIn{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
 </style>
+<script>
+// Prueba configurada del alumno: HTTP, independiente del WebSocket de partidas normales.
+let studentTestState=null, studentTestTimerId=null;
+const studentTestStorageKey=testId=>`math-attack-test-${testId}`;
+function studentTestMessage(text,color){const el=document.getElementById('studentTestStatus');if(el){el.textContent=text;el.style.color=color||'var(--muted)';}}
+async function studentTestRequest(url,options={}){const response=await fetch(url,{credentials:'same-origin',...options,headers:{'Content-Type':'application/json',...(options.headers||{})}});let body={};try{body=await response.json();}catch(_){}if(!response.ok)throw Error(body.error||'No se pudo conectar con la prueba');return body;}
+function renderStudentTest(){
+  const state=studentTestState, attempt=state.attempt, progress=attempt.progress||{}, questions=progress.questions||[];
+  document.getElementById('studentTestTitle').textContent=attempt.test?.title||'Prueba configurada';
+  document.getElementById('studentTestDescription').textContent=attempt.test?.description||'';
+  document.getElementById('studentTestProgress').textContent=`${Math.min(progress.currentIndex||0,questions.length)} / ${questions.length}`;
+  document.getElementById('studentTestConnection').textContent=navigator.onLine?'Conectado':'Sin conexion';
+  const question=questions[progress.currentIndex||0];
+  document.getElementById('studentTestQuestion').textContent=question?question.text:'Prueba finalizada';
+  document.getElementById('studentTestAnswer').disabled=!question;
+  if(!question)document.querySelector('#studentTestScreen .student-test-answer').style.display='none';
+}
+function startStudentTestClock(){clearInterval(studentTestTimerId);const limit=Number(studentTestState?.attempt?.configurationSnapshot?.timeLimit)||0;if(!limit){document.getElementById('studentTestTimer').textContent='Tiempo: libre';return;}const started=Date.parse(studentTestState.attempt.startedAt||new Date().toISOString());const tick=()=>{const left=Math.max(0,limit-Math.floor((Date.now()-started)/1000));document.getElementById('studentTestTimer').textContent=`Tiempo: ${left}s`;if(left===0)clearInterval(studentTestTimerId);};tick();studentTestTimerId=setInterval(tick,1000);}
+async function openStudentConfiguredTest(){
+  const testId=(document.getElementById('studentTestIdInput').value||'').trim();
+  if(!testId){studentTestMessage('Escribe un testId valido.','#f87171');return;}
+  try{
+    let attemptId=localStorage.getItem(studentTestStorageKey(testId)), body;
+    if(attemptId){try{body=await studentTestRequest(`/api/student/tests/${testId}/attempts/${attemptId}`);}catch(_){localStorage.removeItem(studentTestStorageKey(testId));attemptId=null;}}
+    if(!body){body=await studentTestRequest(`/api/student/tests/${testId}/attempts`,{method:'POST',body:'{}'});attemptId=body.attempt.attemptId;localStorage.setItem(studentTestStorageKey(testId),attemptId);}
+    if(body.attempt.status==='pending')body=await studentTestRequest(`/api/student/tests/${testId}/attempts/${attemptId}/start`,{method:'POST',body:'{}'});
+    studentTestState={testId,attemptId,attempt:body.attempt};
+    document.querySelectorAll('.screen').forEach(screen=>screen.classList.remove('active'));document.getElementById('studentTestScreen').classList.add('active');
+    renderStudentTest();startStudentTestClock();
+  }catch(error){studentTestMessage(error.message,'#f87171');}
+}
+async function submitStudentTestAnswer(){
+  if(!studentTestState)return;const input=document.getElementById('studentTestAnswer'),question=studentTestState.attempt.progress.questions[studentTestState.attempt.progress.currentIndex||0];if(!question)return;
+  const eventId=crypto.randomUUID();
+  try{const body=await studentTestRequest(`/api/student/tests/${studentTestState.testId}/attempts/${studentTestState.attemptId}/answer`,{method:'POST',body:JSON.stringify({questionId:question.questionId,answer:input.value,eventId})});studentTestState.attempt=body.attempt;document.getElementById('studentTestFeedback').textContent=body.correct?'Correcto':'Incorrecto';input.value='';await studentTestRequest(`/api/student/tests/${studentTestState.testId}/attempts/${studentTestState.attemptId}/checkpoint`,{method:'POST',body:JSON.stringify({index:studentTestState.attempt.progress.currentIndex,answers:studentTestState.attempt.progress.answers,progress:studentTestState.attempt.progress,effectiveTime:0,revision:studentTestState.attempt.revision,eventId:crypto.randomUUID()})});renderStudentTest();if(!studentTestState.attempt.progress.questions[studentTestState.attempt.progress.currentIndex]){const finished=await studentTestRequest(`/api/student/tests/${studentTestState.testId}/attempts/${studentTestState.attemptId}/finish`,{method:'POST',body:JSON.stringify({eventId:crypto.randomUUID()})});studentTestState.attempt=finished.attempt;document.getElementById('studentTestFeedback').textContent=`Prueba finalizada: ${finished.result.score} puntos`;renderStudentTest();}}
+  catch(error){document.getElementById('studentTestFeedback').textContent=error.message;document.getElementById('studentTestConnection').textContent=navigator.onLine?'Error de comunicacion':'Sin conexion';}
+}
+window.addEventListener('online',()=>{if(studentTestState){document.getElementById('studentTestConnection').textContent='Conectado';renderStudentTest();}});
+window.addEventListener('offline',()=>{if(studentTestState)document.getElementById('studentTestConnection').textContent='Sin conexion';});
+</script>
 </body>
 </html>

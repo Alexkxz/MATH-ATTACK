@@ -20,6 +20,7 @@ const path = require('path');
 const { createJsonStore } = require('./src/data/jsonStore');
 const { createTestStore } = require('./src/server/exams/testStore');
 const { createTestService } = require('./src/server/exams/testService');
+const { publicQuestion } = require('./src/server/exams/studentTestFlowService');
 const { createStudentHttpSessionStore } = require('./src/server/exams/studentHttpSession');
 const { createAttemptCheckpointService } = require('./src/server/exams/attemptCheckpointService');
 const { createAttemptActionService } = require('./src/server/exams/attemptActionService');
@@ -217,6 +218,12 @@ function saveConfig(){
 function sendJson(res,status,obj){
   res.writeHead(status,{'Content-Type':'application/json'});
   res.end(JSON.stringify(obj));
+}
+function studentAttemptView(attempt,test){
+  const view={...attempt,configurationSnapshot:attempt.configurationSnapshot?{...attempt.configurationSnapshot,rewards:undefined}:null,progress:{...(attempt.progress||{})}};
+  if(view.configurationSnapshot)delete view.configurationSnapshot.rewards;
+  view.progress.questions=Array.isArray(attempt.progress?.questions)?attempt.progress.questions.map(publicQuestion):[];
+  return { ...view, test:{testId:test.testId,title:test.title,description:test.description,status:test.status} };
 }
 function getStudentSessionToken(req){
   const cookie=String(req.headers.cookie||'').split(';').map(v=>v.trim()).find(v=>v.startsWith('math_attack_student_session='));
@@ -472,14 +479,25 @@ const server=http.createServer((req,res)=>{
     });
   }
   // ── Intentos de alumno: identidad exclusivamente derivada de la cookie de sesion ──
-  const studentAttemptMatch=url.match(/^\/api\/student\/tests\/([0-9a-f-]+)\/attempts(?:\/([0-9a-f-]+)\/start)?$/i);
+  const studentAttemptMatch=url.match(/^\/api\/student\/tests\/([0-9a-f-]+)\/attempts(?:\/([0-9a-f-]+)(?:\/start)?)?$/i);
   if(studentAttemptMatch){
     const auth=studentHttpSessions.validateStudentSession(getStudentSessionToken(req));
     if(!auth.ok)return sendJson(res,401,{ok:false,error:'Sesion no valida'});
     const player=findPlayerById(loadPlayers(),auth.session.accountPlayerId)||loadPlayers().find(p=>{try{return resolveAccountPlayerId(p,buildLegacyIdentityMap(loadPlayers()))===auth.session.accountPlayerId;}catch(_){return false;}});
     if(!player)return sendJson(res,401,{ok:false,error:'Sesion no valida'});
-    try{if(req.method==='POST'&&!studentAttemptMatch[2]){const attempt=testService.createStudentAttempt({testId:studentAttemptMatch[1],accountPlayerId:auth.session.accountPlayerId,groupId:player.grade||'',studentSnapshot:{name:player.name,grade:player.grade||''}});return sendJson(res,201,{ok:true,attempt});}if(req.method==='POST'&&studentAttemptMatch[2])return sendJson(res,200,{ok:true,attempt:testService.startStudentAttempt(studentAttemptMatch[2],auth.session.accountPlayerId)});}catch(e){const msg=e.message||'Solicitud invalida';return sendJson(res,/no encontrado/.test(msg)?404:/no asignado/.test(msg)?403:/ya existe/.test(msg)?409:422,{ok:false,error:msg});}
+    try{if(req.method==='GET'&&studentAttemptMatch[2]){const attempt=testService.getStudentAttempt(studentAttemptMatch[1],studentAttemptMatch[2],auth.session.accountPlayerId);return sendJson(res,200,{ok:true,attempt:studentAttemptView(attempt,testService.get(studentAttemptMatch[1]))});}if(req.method==='POST'&&!studentAttemptMatch[2]){const attempt=testService.createStudentAttempt({testId:studentAttemptMatch[1],accountPlayerId:auth.session.accountPlayerId,groupId:player.grade||'',studentSnapshot:{name:player.name,grade:player.grade||''}});return sendJson(res,201,{ok:true,attempt:studentAttemptView(attempt,testService.get(studentAttemptMatch[1]))});}if(req.method==='POST'&&studentAttemptMatch[2]){const attempt=testService.startStudentAttempt(studentAttemptMatch[2],auth.session.accountPlayerId);return sendJson(res,200,{ok:true,attempt:studentAttemptView(attempt,testService.get(studentAttemptMatch[1]))});}}catch(e){const msg=e.message||'Solicitud invalida';return sendJson(res,/no encontrado/.test(msg)?404:/no asignado/.test(msg)?403:/ya existe/.test(msg)?409:422,{ok:false,error:msg});}
     return sendJson(res,404,{ok:false,error:'Ruta no encontrada'});
+  }
+  const studentFlowMatch=url.match(/^\/api\/student\/tests\/([0-9a-f-]+)\/attempts\/([0-9a-f-]+)\/(answer|disconnect|reconnect|finish)$/i);
+  if(studentFlowMatch){
+    const auth=studentHttpSessions.validateStudentSession(getStudentSessionToken(req));
+    if(!auth.ok)return sendJson(res,401,{ok:false,error:'Sesion no valida'});
+    const input={testId:studentFlowMatch[1],attemptId:studentFlowMatch[2],accountPlayerId:auth.session.accountPlayerId};
+    const action=studentFlowMatch[3].toLowerCase();
+    const run=data=>{try{let result;if(action==='answer')result=testService.answerStudentQuestion({...input,...data});else if(action==='disconnect')result={attempt:testService.disconnectStudentAttempt(input),duplicate:false};else if(action==='reconnect')result={attempt:testService.reconnectStudentAttempt(input),duplicate:false};else result=testService.finishStudentAttempt({...input,...data});const test=testService.get(input.testId);return sendJson(res,200,{ok:true,duplicate:result.duplicate===true,correct:result.correct,attempt:studentAttemptView(result.attempt,test),result:result.result||null});}catch(e){const msg=e.message||'Solicitud invalida';return sendJson(res,/no encontrado/.test(msg)?404:/contradictorio|ya respondida/.test(msg)?409:/no activo|no finalizable|invalida/.test(msg)?422:422,{ok:false,error:msg});}};
+    if(req.method!=='POST')return sendJson(res,405,{ok:false,error:'Metodo no permitido'});
+    if(action==='disconnect'||action==='reconnect')return run({});
+    return readBody(req,res,body=>{let data;try{data=JSON.parse(body||'{}');}catch(_){return sendJson(res,400,{ok:false,error:'Solicitud invalida'});}return run(data);});
   }
   const checkpointMatch=url.match(/^\/api\/student\/tests\/([0-9a-f-]+)\/attempts\/([0-9a-f-]+)\/checkpoint(?:\/(\d+))?$/i);
   if(checkpointMatch){

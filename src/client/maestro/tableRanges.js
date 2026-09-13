@@ -37,7 +37,24 @@
   }
   function validateOpsConfig(opsConfig) {
     if (!opsConfig || typeof opsConfig !== 'object' || Array.isArray(opsConfig)) fail('invalid opsConfig');
-    if (opsConfig.mult && opsConfig.mult.ranges !== undefined) validateMultiplierConfig(opsConfig.mult);
+    for (const operation of ['mult', 'div']) {
+      const config = opsConfig[operation];
+      if (!config) continue;
+      if (config.ranges !== undefined) validateMultiplierConfig(config);
+      if (config.digits !== undefined) {
+        integer(config.digits, `${operation}.digits`);
+        if (config.digits < (operation === 'div' ? 2 : 1) || config.digits > (operation === 'div' ? 5 : 4)) fail(`invalid ${operation} digits`);
+      }
+    }
+    for (const operation of ['add', 'sub']) {
+      const config = opsConfig[operation];
+      if (!config) continue;
+      if (config.digits !== undefined) {
+        integer(config.digits, `${operation}.digits`);
+        if (config.digits < 1 || config.digits > 4) fail(`invalid ${operation} digits`);
+      }
+      if (config.carryMode !== undefined && !['direct', 'carry', 'both'].includes(config.carryMode)) fail(`invalid ${operation} carry mode`);
+    }
     return true;
   }
   function values(range) { const result = []; for (let value = range.from; value <= range.to; value += 1) result.push(value); return result; }

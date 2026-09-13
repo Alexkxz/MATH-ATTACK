@@ -1177,7 +1177,7 @@ const _PR_OP_TITLE={mult:'✖️ Multiplicación — tablas y preguntas por tabl
 const _PR_HAS_TABLES={mult:true,div:true,add:false,sub:false};
 const _PR_QTY_LABEL={mult:'PREG. POR TABLA',div:'PREG. POR TABLA',add:'TOTAL PREGUNTAS',sub:'TOTAL PREGUNTAS'};
 const _PR_QTY_DEFAULT={mult:4,div:3,add:10,sub:10};
-const _prCustomRanges={mult:[]};
+const _prCustomRanges={mult:[],div:[]};
 
 function _prOpSectionHTML(op){
   if(_PR_HAS_TABLES[op]){
@@ -1205,6 +1205,11 @@ function _prOpSectionHTML(op){
         <label>CIFRAS DEL DIVIDENDO</label>
         <div class="pr-digits-grid" id="prDigitsGrid_${op}" style="grid-template-columns:repeat(4,1fr)">${[2,3,4,5].map(n=>`<button class="pr-digits-btn${n===2?' sel':''}" data-d="${n}" onclick="prSelDigits('${op}',this)">${n}</button>`).join('')}</div>
       </div>`:'';
+    const divRangeExtra=op==='div'?`<div class="pr-field" style="margin-top:10px;margin-bottom:0">
+        <label>RANGOS DE DIVISION (opcional)</label>
+        <div class="pr-range-editor"><select id="prRangeTable_div" aria-label="Divisor"><option value="">Divisor</option>${Array.from({length:12},(_,i)=>`<option value="${i+1}">${i+1}</option>`).join('')}</select><input id="prRangeFrom_div" type="number" min="1" max="12" step="1" placeholder="Desde" aria-label="Desde"><input id="prRangeTo_div" type="number" min="1" max="12" step="1" placeholder="Hasta" aria-label="Hasta"><button type="button" class="pr-tbl-mini-btn" onclick="prAddRange('div')">Agregar divisor</button></div>
+        <div id="prRangesList_div" class="pr-ranges-list" aria-live="polite"></div><div id="prRangesPreview_div" class="pr-range-preview"></div>
+      </div>`:'';
     return `<div class="pr-op-section" id="prOpSection_${op}">
       <div class="pr-op-section-title">${_PR_OP_TITLE[op]}</div>
       <div class="em-tables-grid" id="prTablesGrid_${op}">${tblBtns}</div>
@@ -1216,10 +1221,10 @@ function _prOpSectionHTML(op){
         <label>${_PR_QTY_LABEL[op]}</label>
         <input type="number" id="prQty_${op}" value="${_PR_QTY_DEFAULT[op]}" min="1" max="20" step="1">
       </div>
-      ${multExtra}${divExtra}
+      ${multExtra}${divExtra}${divRangeExtra}
     </div>`;
   }
-  const digitsBtns=[1,2,3,4,5,6].map(n=>`<button class="pr-digits-btn${n===1?' sel':''}" data-d="${n}" onclick="prSelDigits('${op}',this)">${n}</button>`).join('');
+  const digitsBtns=[1,2,3,4].map(n=>`<button class="pr-digits-btn${n===1?' sel':''}" data-d="${n}" onclick="prSelDigits('${op}',this)">${n}</button>`).join('');
   const directText=op==='sub'?'Sin prestar':'Sin llevar';
   const carryText=op==='sub'?'Con prestar':'Con llevar';
   return `<div class="pr-op-section" id="prOpSection_${op}">
@@ -1237,6 +1242,7 @@ function _prOpSectionHTML(op){
       <div class="pr-mode-grid" id="prCarryGrid_${op}">
         <button class="pr-mode-btn sel" data-mode="direct" onclick="prSelCarryMode('${op}',this)">${directText}</button>
         <button class="pr-mode-btn" data-mode="carry" onclick="prSelCarryMode('${op}',this)">${carryText}</button>
+        <button class="pr-mode-btn" data-mode="both" onclick="prSelCarryMode('${op}',this)">Ambas</button>
       </div>
     </div>
   </div>`;
@@ -1296,6 +1302,10 @@ function _prCollectOpsConfig(ops){
       if(op==='div'){
         const digitsBtn=document.querySelector('#prDigitsGrid_'+op+' .pr-digits-btn.sel');
         opsConfig[op].digits=digitsBtn?Number(digitsBtn.dataset.d):2;
+        if(_prCustomRanges.div.length){
+          opsConfig[op].ranges=_prCustomRanges.div.map(range=>({...range}));
+          opsConfig[op].tables=opsConfig[op].ranges.map(range=>range.table);
+        }
       }
     } else {
       const digitsBtn=document.querySelector('#prDigitsGrid_'+op+' .pr-digits-btn.sel');
@@ -1308,7 +1318,7 @@ function _prCollectOpsConfig(ops){
 }
 function _prCalcTotal(opsConfig){
   return Object.entries(opsConfig).reduce((sum,[op,c])=>{
-    if(_PR_HAS_TABLES[op]) return sum+(op==='mult'&&Array.isArray(c.ranges)?MathAttackTableRanges.count(c):c.qty*(c.tables?.length||0));
+    if(_PR_HAS_TABLES[op]) return sum+((op==='mult'||op==='div')&&Array.isArray(c.ranges)?MathAttackTableRanges.count(c):c.qty*(c.tables?.length||0));
     return sum+c.qty;
   },0);
 }
@@ -1346,30 +1356,30 @@ function prUpdateSummary(){
   el.innerHTML=`<div class="pr-summary-head"><div class="pr-summary-title">RESUMEN ANTES DE INICIAR</div><span class="pr-summary-state${missingTables?' warn':''}">${state}</span></div><div class="pr-summary-metrics"><span><b>GRUPO</b>${grade}</span><span><b>REACTIVOS</b>${total}</span><span><b>RITMO</b>${time?time+' seg/pregunta':'Tiempo libre'}</span></div><div class="pr-summary-details">${details}</div>${missingTables?'<p class="pr-summary-warning">Selecciona al menos una tabla en cada operación que la requiera.</p>':''}`;
 }
 function prRangeError(message){ if(typeof showMsg==='function') showMsg('❌ '+message); }
-function prRenderRanges(){
-  const list=document.getElementById('prRangesList_mult'); const preview=document.getElementById('prRangesPreview_mult');
+function prRenderRanges(op='mult'){
+  const list=document.getElementById('prRangesList_'+op); const preview=document.getElementById('prRangesPreview_'+op);
   if(!list) return;
-  list.innerHTML=_prCustomRanges.mult.map((range,index)=>`<span class="pr-range-chip">Tabla ${range.table}: ${range.from}–${range.to} <button type="button" aria-label="Editar tabla ${range.table}" onclick="prEditRange(${index})">Editar</button><button type="button" aria-label="Eliminar tabla ${range.table}" onclick="prRemoveRange(${index})">×</button></span>`).join('');
-  if(preview) preview.textContent=_prCustomRanges.mult.length?_prCustomRanges.mult.map(range=>`Tabla ${range.table}: ${range.to-range.from+1} ejercicios (${range.from}–${range.to})`).join(' · '):'Sin rangos personalizados; se usa el rango general.';
+  list.innerHTML=_prCustomRanges[op].map((range,index)=>`<span class="pr-range-chip">${op==='div'?'Divisor':'Tabla'} ${range.table}: ${range.from}–${range.to} <button type="button" aria-label="Editar ${op==='div'?'divisor':'tabla'} ${range.table}" onclick="prEditRange(${index},'${op}')">Editar</button><button type="button" aria-label="Eliminar ${op==='div'?'divisor':'tabla'} ${range.table}" onclick="prRemoveRange(${index},'${op}')">×</button></span>`).join('');
+  if(preview) preview.textContent=_prCustomRanges[op].length?_prCustomRanges[op].map(range=>`${op==='div'?'Divisor':'Tabla'} ${range.table}: ${range.to-range.from+1} ejercicios (${range.from}–${range.to})`).join(' · '):'Sin rangos personalizados; se usa el rango general.';
 }
-function prAddRange(op){
-  if(op!=='mult') return;
-  const table=Number(document.getElementById('prRangeTable_mult')?.value), from=Number(document.getElementById('prRangeFrom_mult')?.value), to=Number(document.getElementById('prRangeTo_mult')?.value);
+function prAddRange(op='mult'){
+  if(!['mult','div'].includes(op)) return;
+  const table=Number(document.getElementById('prRangeTable_'+op)?.value), from=Number(document.getElementById('prRangeFrom_'+op)?.value), to=Number(document.getElementById('prRangeTo_'+op)?.value);
   try{
     const range=window.MathAttackTableRanges.validateRange({table,from,to});
-    if(_prCustomRanges.mult.some(item=>item.table===range.table)) throw Error('La tabla ya está configurada');
-    _prCustomRanges.mult.push(range); _prCustomRanges.mult.sort((a,b)=>a.table-b.table);
-    document.getElementById('prRangeTable_mult').value=''; document.getElementById('prRangeFrom_mult').value=''; document.getElementById('prRangeTo_mult').value='';
-    prRenderRanges(); prUpdateSummary();
+    if(_prCustomRanges[op].some(item=>item.table===range.table)) throw Error('La tabla ya está configurada');
+    _prCustomRanges[op].push(range); _prCustomRanges[op].sort((a,b)=>a.table-b.table);
+    document.getElementById('prRangeTable_'+op).value=''; document.getElementById('prRangeFrom_'+op).value=''; document.getElementById('prRangeTo_'+op).value='';
+    prRenderRanges(op); prUpdateSummary();
   }catch(error){ prRangeError(error.message); }
 }
-function prRemoveRange(index){ _prCustomRanges.mult.splice(index,1); prRenderRanges(); prUpdateSummary(); }
-function prEditRange(index){
-  const range=_prCustomRanges.mult[index]; if(!range) return;
-  document.getElementById('prRangeTable_mult').value=String(range.table);
-  document.getElementById('prRangeFrom_mult').value=String(range.from);
-  document.getElementById('prRangeTo_mult').value=String(range.to);
-  _prCustomRanges.mult.splice(index,1); prRenderRanges(); prUpdateSummary();
+function prRemoveRange(index,op='mult'){ _prCustomRanges[op].splice(index,1); prRenderRanges(op); prUpdateSummary(); }
+function prEditRange(index,op='mult'){
+  const range=_prCustomRanges[op][index]; if(!range) return;
+  document.getElementById('prRangeTable_'+op).value=String(range.table);
+  document.getElementById('prRangeFrom_'+op).value=String(range.from);
+  document.getElementById('prRangeTo_'+op).value=String(range.to);
+  _prCustomRanges[op].splice(index,1); prRenderRanges(op); prUpdateSummary();
 }
 function prLoadTestConfiguration(configuration){
   const title=document.getElementById('prTestTitle'); if(title) title.value=configuration?.title||'';
@@ -1381,9 +1391,11 @@ function prLoadTestConfiguration(configuration){
   const streak=document.getElementById('prRewardStreak'); if(streak) streak.checked=rewards.streak?.enabled===true;
   const achievements=document.getElementById('prRewardAchievements'); if(achievements) achievements.checked=rewards.achievements?.perfect?.enabled===true;
   const mult=configuration?.opsConfig?.mult;
+  const div=configuration?.opsConfig?.div;
   _prCustomRanges.mult=Array.isArray(mult?.ranges)?mult.ranges.map(range=>({...range})):[];
+  _prCustomRanges.div=Array.isArray(div?.ranges)?div.ranges.map(range=>({...range})):[];
   const repeat=document.getElementById('prRangeRepeat_mult'); if(repeat) repeat.checked=mult?.repeat===true;
-  prRenderRanges(); prUpdateSummary();
+  prRenderRanges('mult'); prRenderRanges('div'); prUpdateSummary();
 }
 function prGetTestConfiguration(existing={}){
   const next=JSON.parse(JSON.stringify(existing||{}));
@@ -1409,6 +1421,10 @@ function prGetTestConfiguration(existing={}){
     mult.repeat=!!document.getElementById('prRangeRepeat_mult')?.checked;
   } else { delete mult.ranges; delete mult.repeat; }
   if(Object.keys(mult).length) opsConfig.mult=mult; else delete opsConfig.mult;
+  const div={...(opsConfig.div||{})};
+  if(_prCustomRanges.div.length){ div.ranges=_prCustomRanges.div.map(range=>({...range})); div.tables=div.ranges.map(range=>range.table); }
+  else delete div.ranges;
+  if(Object.keys(div).length) opsConfig.div=div; else delete opsConfig.div;
   if(Object.keys(opsConfig).length) next.opsConfig=opsConfig; else delete next.opsConfig;
   return next;
 }
