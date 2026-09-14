@@ -89,6 +89,9 @@
   function renderSelected(test) {
     const target = get('prSelectedTest');
     if (!target) return;
+    const configId = get('prConfigTestId'); if (configId) configId.textContent = test ? `testId: ${test.testId}` : 'testId: sin seleccionar';
+    const duplicate = get('prDuplicateFromConfig'); if (duplicate) duplicate.disabled = !test;
+    const configCopy = get('prCopyConfigTestId'); if (configCopy) configCopy.disabled = !test;
     target.innerHTML = test ? `<strong>Prueba seleccionada: ${esc(test.title)}</strong><span>Estado: ${esc(statusLabel(test.status))} · testId: <code>${esc(test.testId)}</code> · ${test.attemptCount} intento(s)</span>` : '<span>Ninguna prueba seleccionada.</span>';
   }
   function render() {
@@ -151,6 +154,13 @@
     if (!response.ok) throw Error(data.error || 'No se pudo crear la prueba');
     selectedTestId = data.test.testId; sessionStorage.setItem('maestroSelectedTestId', selectedTestId); await load(); select(selectedTestId);
   }
+  async function duplicateTest(testId) {
+    const source = tests.find(item => item.testId === testId); if (!source) throw Error('Selecciona una prueba para duplicar');
+    const configuration = configurations.get(testId) || source.configuration || {};
+    const response = await fetch('/api/exams', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Admin-Password': _adminPass }, body: JSON.stringify({ title: `${source.title || 'Prueba'} (copia)`, description: source.description || configuration.description || '', creator: configuration.creator, configuration: JSON.parse(JSON.stringify(configuration)) }) });
+    const data = await response.json(); if (!response.ok) throw Error(data.error || 'No se pudo duplicar la prueba');
+    selectedTestId = data.test.testId; sessionStorage.setItem('maestroSelectedTestId', selectedTestId); await load(); select(selectedTestId);
+  }
   async function editDraft(testId) {
     const test = tests.find(item => item.testId === testId); if (!test) return;
     const title = window.prompt('Nuevo título:', test.title); if (title === null || !title.trim()) return;
@@ -210,6 +220,9 @@
     const assignButton = event.target.closest('.pr-test-assign');
     if (assignButton) return assignTest(assignButton.dataset.testId).catch(error => { const status = get('prTestLibraryStatus'); if (status) status.textContent = error.message; });
     if (event.target.closest('.pr-test-create')) return createDraft().catch(error => { const status = get('prTestLibraryStatus'); if (status) status.textContent = error.message; });
+    if (event.target.id === 'prCreateFromConfig') return createDraft().catch(error => { const status = get('prTestLibraryStatus'); if (status) status.textContent = error.message; });
+    if (event.target.id === 'prDuplicateFromConfig') return duplicateTest(selectedTestId).catch(error => { const status = get('prTestLibraryStatus'); if (status) status.textContent = error.message; });
+    if (event.target.id === 'prCopyConfigTestId') return copy(selectedTestId);
   });
   document.addEventListener('keydown', event => { if (event.key === 'Escape') closeSummaryModal(); const card = event.target.closest('.pr-summary-card'); if (card && (event.key === 'Enter' || event.key === ' ')) { event.preventDefault(); openSummaryModal(card.dataset.summaryTestId); } });
   window.prCloseTestSummaryModal = closeSummaryModal;

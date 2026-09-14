@@ -50,7 +50,8 @@ function generateConfiguredQuestions(configuration = {}, random = Math.random) {
       // (factor) permitido para construir `dividendo ÷ divisor`. Estos rangos
       // no son límites arbitrarios del dividendo ni del divisor.
       for (const table of tables) {
-        const values = (op === '×' || op === '÷') && Array.isArray(config.ranges) ? multipliersForTable(config, table, random) : null;
+        const matrixValues = Array.isArray(config.matrix) ? config.matrix.map(value => String(value).split('x').map(Number)).filter(([row, col]) => col === table && row > 0).map(([row]) => row) : null;
+        const values = matrixValues !== null ? matrixValues : ((op === '×' || op === '÷') && Array.isArray(config.ranges) ? multipliersForTable(config, table, random) : null);
         const factors = values || Array.from({ length: qty }, () => randomInt(random, 1, 12));
         for (const factor of factors) {
           const a = op === '÷' ? table * factor : table;

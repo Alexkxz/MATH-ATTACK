@@ -517,7 +517,7 @@ const server=http.createServer((req,res)=>{
     const allowed=new Set(['status','groupId','from','to','sort','order','limit','pwd','password']);
     for(const key of query.keys())if(!allowed.has(key))return sendJson(res,400,{ok:false,error:'Parametro invalido'});
     try{
-      const tests=testLibraryService.list({status:query.get('status')||'',groupId:query.get('groupId')||'',from:query.get('from')||'',to:query.get('to')||'',sort:query.get('sort')||'createdAt',direction:query.get('order')||'desc',limit:query.has('limit')?query.get('limit'):50});
+      const tests=testLibraryService.list({status:query.get('status')||'',groupId:query.get('groupId')||'',from:query.get('from')||'',to:query.get('to')||'',sort:query.get('sort')||'updatedAt',direction:query.get('order')||'desc',limit:query.has('limit')?query.get('limit'):50});
       return sendJson(res,200,{ok:true,tests});
     }catch(e){return sendJson(res,422,{ok:false,error:e.message||'Solicitud invalida'});}
   }
@@ -661,7 +661,7 @@ const server=http.createServer((req,res)=>{
       if(!requireAdmin(req,res)) return;
       try{return sendJson(res,200,{ok:true,test:testService.get(testId)});}catch(e){return respondError(/no encontrada/.test(e.message)?404:422,e.message);}
     }
-    if(req.method==='POST'&&!testId){return readBody(req,res,body=>{let data;try{data=JSON.parse(body);}catch(_){return respondError(400,'JSON inválido');}run(data,d=>sendJson(res,201,{ok:true,test:testService.create(d)}));});}
+    if(req.method==='POST'&&!testId){return readBody(req,res,body=>{let data;try{data=JSON.parse(body);}catch(_){return respondError(400,'JSON inválido');}const {testId: _ignoredTestId, ...createData}=data;run(createData,d=>sendJson(res,201,{ok:true,test:testService.create(d)}));});}
     if(req.method==='PATCH'&&testId&&!assignments){return readBody(req,res,body=>{let data;try{data=JSON.parse(body);}catch(_){return respondError(400,'JSON inválido');}if(data.revision==null)return respondError(400,'revision obligatoria');run(data,d=>sendJson(res,200,{ok:true,test:testService.update(testId,d.revision,d)}));});}
     if(req.method==='PUT'&&testId&&assignments){return readBody(req,res,body=>{let data;try{data=JSON.parse(body);}catch(_){return respondError(400,'JSON inválido');}if(!Array.isArray(data.assignments))return respondError(400,'assignments obligatorias');run(data,d=>sendJson(res,200,{ok:true,assignments:testService.replaceAssignments(testId,d.assignments)}));});}
     return respondError(404,'Ruta de pruebas no encontrada');

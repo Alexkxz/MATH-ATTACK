@@ -593,7 +593,7 @@ body.proj-mode .q-display{font-size:48px;letter-spacing:4px}
 
     <nav class="pr-test-nav" aria-label="Secciones de la prueba" role="tablist">
       <button type="button" class="pr-test-nav-btn active" role="tab" aria-selected="true" data-pr-section-target="summary">Resumen</button>
-      <button type="button" class="pr-test-nav-btn" role="tab" aria-selected="false" data-pr-section-target="programming">Programación</button>
+      <button type="button" class="pr-test-nav-btn" role="tab" aria-selected="false" data-pr-section-target="programming">Configuración</button>
       <button type="button" class="pr-test-nav-btn" role="tab" aria-selected="false" data-pr-section-target="assignments">Asignaciones</button>
       <button type="button" class="pr-test-nav-btn" role="tab" aria-selected="false" data-pr-section-target="supervision">Supervisión</button>
       <button type="button" class="pr-test-nav-btn" role="tab" aria-selected="false" data-pr-section-target="results">Resultados</button>
@@ -601,6 +601,22 @@ body.proj-mode .q-display{font-size:48px;letter-spacing:4px}
       <button type="button" class="pr-test-nav-btn" role="tab" aria-selected="false" data-pr-section-target="rewards">Recompensas</button>
     </nav>
     <p id="prTestSectionStatus" class="pr-test-section-status" aria-live="polite">Resumen de la prueba seleccionada.</p>
+
+    <section id="prTestSummary" class="pr-test-summary" data-pr-section="summary" aria-labelledby="prTestSummaryTitle">
+      <div class="pr-results-hdr">
+        <span id="prTestSummaryTitle">HISTORIAL RECIENTE DE PRUEBAS</span>
+        <span id="prTestSummaryStatus" class="pr-attempts-status" aria-live="polite"></span>
+      </div>
+      <p class="pr-summary-intro">Las cinco pruebas más recientes. Selecciona una tarjeta para consultar sus detalles.</p>
+      <div id="prTestSummaryList" class="pr-test-summary-list"><p class="pr-attempts-empty">Cargando historial…</p></div>
+    </section>
+
+    <div id="prTestSummaryModal" class="pr-summary-modal" role="dialog" aria-modal="true" aria-labelledby="prSummaryModalTitle" aria-hidden="true">
+      <div class="pr-summary-modal-card" role="document">
+        <div class="pr-summary-modal-header"><div><span class="pr-eyebrow">VISTA INFORMATIVA</span><h3 id="prSummaryModalTitle">Detalle de la prueba</h3></div><button id="prSummaryModalClose" class="pr-summary-modal-close" type="button" aria-label="Cerrar detalles">×</button></div>
+        <div id="prSummaryModalContent" class="pr-summary-modal-content"><p class="pr-attempts-empty">Selecciona una prueba para ver sus detalles.</p></div>
+      </div>
+    </div>
 
     <!-- Banner prueba activa -->
     <div class="pr-banner" id="prBanner">
@@ -616,17 +632,20 @@ body.proj-mode .q-display{font-size:48px;letter-spacing:4px}
     <div id="prConfig" data-pr-section="programming">
       <div class="pr-config-intro">
         <div>
-          <div class="pr-section-title">01 · CONFIGURAR SESIÓN</div>
-          <p>Define el grupo, ritmo y contenido antes de iniciar.</p>
+          <div class="pr-section-title">01 · CONFIGURAR PRUEBA</div>
+          <p>Asistente para crear, editar o duplicar una prueba.</p>
         </div>
-        <span class="pr-config-note">Los cambios se aplican a la próxima prueba.</span>
+        <div class="pr-config-tools"><span id="prConfigTestId" class="pr-config-note">testId: sin seleccionar</span><button type="button" class="pr-tbl-mini-btn" id="prCopyConfigTestId" disabled>Copiar testId</button><button type="button" class="pr-tbl-mini-btn" id="prCreateFromConfig">Crear nueva</button><button type="button" class="pr-tbl-mini-btn" id="prDuplicateFromConfig" disabled>Duplicar prueba</button></div>
       </div>
+      <nav class="pr-builder-steps" aria-label="Pasos de configuración"><button type="button" class="pr-builder-step active" data-pr-builder-step="1">1. Información</button><button type="button" class="pr-builder-step" data-pr-builder-step="2">2. Operaciones</button><button type="button" class="pr-builder-step" data-pr-builder-step="3">3. Detalle</button><button type="button" class="pr-builder-step" data-pr-builder-step="4">4. Tiempos y recompensas</button><button type="button" class="pr-builder-step" data-pr-builder-step="5">5. Vista previa</button></nav>
+      <div class="pr-builder-panel" data-pr-builder-panel="1">
       <div class="pr-config-grid pr-builder-fields">
         <div class="pr-field"><label for="prTestTitle">TITULO</label><input id="prTestTitle" type="text" maxlength="200" placeholder="Ej. Tablas del 1 al 10"></div>
         <div class="pr-field"><label for="prTestDescription">DESCRIPCION</label><textarea id="prTestDescription" maxlength="2000" rows="2" placeholder="Objetivo o instrucciones de la prueba"></textarea></div>
-        <div class="pr-field"><label for="prMultiplier">MULTIPLICADOR DE PUNTAJE</label><input id="prMultiplier" type="number" min="1" max="5" step="1" value="1"><small class="pr-config-note">Solo afecta el puntaje; no aumenta Aureos, XP, rachas ni logros.</small></div>
-        <div class="pr-field"><label>RECOMPENSAS OFICIALES</label><div class="pr-reward-grid"><label>Aureos<input id="prRewardAureos" type="number" min="0" max="100000" step="1" value="0"></label><label>XP<input id="prRewardExperience" type="number" min="0" max="100000" step="1" value="0"></label></div><label class="pr-range-repeat"><input id="prRewardStreak" type="checkbox"> Activar racha</label><label class="pr-range-repeat"><input id="prRewardAchievements" type="checkbox"> Activar logro perfecto</label><small class="pr-config-note">0 significa sin recompensa. Se liquidan solo tras oficializar y publicar.</small></div>
+        <div class="pr-field"><label for="prMultiplier">MULTIPLICADOR DE PUNTAJE</label><input id="prMultiplier" type="number" min="1" max="5" step="1" value="1"><small class="pr-config-note">Solo afecta el puntaje; no aumenta Áureos, XP, rachas ni logros.</small></div>
       </div>
+      </div>
+      <div class="pr-builder-panel" data-pr-builder-panel="2">
       <div class="pr-config-grid">
         <div class="pr-field">
           <label>GRADO / GRUPO</label>
@@ -636,10 +655,6 @@ body.proj-mode .q-display{font-size:48px;letter-spacing:4px}
             <option>3° Grado</option><option>4° Grado</option>
             <option>5° Grado</option><option>6° Grado</option>
           </select>
-        </div>
-        <div class="pr-field">
-          <label>TIEMPO POR PREGUNTA (seg, 0=libre)</label>
-          <input type="number" id="prTime" value="30" min="0" max="300" step="5">
         </div>
       </div>
       <div class="pr-field">
@@ -651,11 +666,27 @@ body.proj-mode .q-display{font-size:48px;letter-spacing:4px}
           <label class="pr-op-chk"><input type="checkbox" id="prOpDiv" onchange="prToggleOpSection('div',this.checked);prUpdateSummary()"> ➗ División</label>
         </div>
       </div>
+      </div>
+      <div class="pr-builder-panel" data-pr-builder-panel="3">
       <div id="prOpSections"></div>
+      </div>
+      <div class="pr-builder-panel" data-pr-builder-panel="4">
+      <div class="pr-config-grid">
+        <div class="pr-field"><label for="prTimePerQuestion">TIEMPO POR PREGUNTA</label><select id="prTimePerQuestion"><option value="0">Sin límite</option><option value="10">10 segundos</option><option value="15">15 segundos</option><option value="30" selected>30 segundos</option><option value="60">60 segundos</option><option value="120">120 segundos</option></select></div>
+        <div class="pr-field"><label for="prTime">TIEMPO GLOBAL</label><select id="prTime"><option value="0">Sin límite</option><option value="60">1 minuto</option><option value="300">5 minutos</option><option value="600">10 minutos</option><option value="1200">20 minutos</option><option value="3600">60 minutos</option></select><small class="pr-config-note">Debe cubrir la cantidad configurada cuando existe límite por pregunta.</small></div>
+      </div>
+      <div class="pr-field"><label>RECOMPENSAS OFICIALES</label><div class="pr-reward-grid"><label>Áureos base<input id="prRewardAureos" type="number" min="0" max="100000" step="1" value="0"></label><label>XP<input id="prRewardExperience" type="number" min="0" max="100000" step="1" value="0"></label></div><label class="pr-range-repeat"><input id="prRewardStreak" type="checkbox"> Activar racha</label><label class="pr-range-repeat"><input id="prRewardAchievements" type="checkbox"> Activar logro perfecto</label><small class="pr-config-note">XP, rachas y logros conservan su contrato actual. La liquidación es siempre explícita.</small></div>
+      <div class="pr-field"><label>TRAMOS DE ÁUREOS POR ACIERTO</label><p class="pr-config-note pr-reward-tier-help">Se aplica una sola vez al porcentaje final. La pérdida nunca deja el saldo por debajo de cero.</p><div id="prRewardTiers" class="pr-reward-tiers"></div><button type="button" class="pr-tbl-mini-btn" id="prAddRewardTier">Agregar tramo</button></div>
+      </div>
+      <div class="pr-builder-panel" data-pr-builder-panel="5">
       <div class="pr-summary" id="prSummary"></div>
+      </div>
       <div class="pr-action-row">
-        <button class="pr-tbl-mini-btn" id="prSaveConfig" type="button" onclick="window.prSaveSelectedTest?.()">Guardar configuracion</button>
-        <button class="pr-start-btn" onclick="startPrueba(this)">▶ INICIAR PRUEBA</button>
+        <button class="pr-tbl-mini-btn" id="prBuilderPrevious" type="button">Regresar</button>
+        <button class="pr-tbl-mini-btn" id="prBuilderNext" type="button">Continuar</button>
+        <button class="pr-tbl-mini-btn" id="prSaveConfig" type="button" onclick="window.prSaveSelectedTest?.()">Guardar y ver resumen</button>
+        <button class="pr-tbl-mini-btn" id="prBuilderCancel" type="button">Cancelar</button>
+        <button class="pr-start-btn" id="prStartConfiguredTest" onclick="startPrueba(this)">▶ INICIAR PRUEBA</button>
         <span class="pr-action-help">El seguimiento en vivo aparecerá aquí al comenzar.</span>
       </div>
       <p class="pr-ranking-note">Para el análisis histórico profundo, consulta el <a href="/ranking">Ranking</a>.</p>
@@ -691,7 +722,7 @@ body.proj-mode .q-display{font-size:48px;letter-spacing:4px}
       </div>
     </div>
 
-    <section class="pr-test-library" data-pr-section="summary programming assignments" aria-labelledby="prTestLibraryTitle">
+    <section class="pr-test-library" data-pr-section="programming assignments" aria-labelledby="prTestLibraryTitle">
       <div class="pr-results-hdr">
         <span id="prTestLibraryTitle">03 · BIBLIOTECA DE PRUEBAS</span>
         <span id="prTestLibraryStatus" class="pr-attempts-status" aria-live="polite"></span>
@@ -723,8 +754,8 @@ body.proj-mode .q-display{font-size:48px;letter-spacing:4px}
         <span id="prAttemptsStatus" class="pr-attempts-status" aria-live="polite"></span>
       </div>
       <div class="pr-attempts-toolbar">
-        <label for="prAttemptTestId">ID DE PRUEBA</label>
-        <input id="prAttemptTestId" type="text" maxlength="64" placeholder="UUID de la prueba" autocomplete="off">
+        <label for="prAttemptTestId">ID DE PRUEBA (RESPALDO TÉCNICO LEGACY)</label>
+        <input id="prAttemptTestId" class="legacy-test-id-fallback" type="text" maxlength="64" placeholder="Se completa desde la prueba seleccionada" autocomplete="off" readonly aria-readonly="true">
         <button class="pr-tbl-mini-btn" type="button" onclick="prLoadAttempts()">↻ Cargar intentos</button>
       </div>
       <div id="prAttemptsList" class="pr-attempts-list">
@@ -1178,10 +1209,41 @@ const _PR_HAS_TABLES={mult:true,div:true,add:false,sub:false};
 const _PR_QTY_LABEL={mult:'PREG. POR TABLA',div:'PREG. POR TABLA',add:'TOTAL PREGUNTAS',sub:'TOTAL PREGUNTAS'};
 const _PR_QTY_DEFAULT={mult:4,div:3,add:10,sub:10};
 const _prCustomRanges={mult:[],div:[]};
+const _prMatrixTouched={mult:false,div:false};
+let _prBuilderStep=1;
+function prSetBuilderStep(step){
+  _prBuilderStep=Math.min(5,Math.max(1,Number(step)||1));
+  document.querySelectorAll('[data-pr-builder-panel]').forEach(panel=>panel.classList.toggle('active',Number(panel.dataset.prBuilderPanel)===_prBuilderStep));
+  document.querySelectorAll('[data-pr-builder-step]').forEach(button=>{const active=Number(button.dataset.prBuilderStep)===_prBuilderStep;button.classList.toggle('active',active);button.setAttribute('aria-current',active?'step':'false');});
+  const previous=document.getElementById('prBuilderPrevious'); if(previous){previous.hidden=_prBuilderStep===1;previous.disabled=_prBuilderStep===1;}
+  const next=document.getElementById('prBuilderNext'); if(next) next.hidden=_prBuilderStep===5;
+  const save=document.getElementById('prSaveConfig'); if(save) save.hidden=_prBuilderStep!==5;
+  const start=document.getElementById('prStartConfiguredTest'); if(start) start.hidden=_prBuilderStep!==5;
+}
+function prRewardTierHTML(tier={},index){return `<div class="pr-reward-tier" data-reward-tier="${index}"><label>Mínimo %<input type="number" min="0" max="100" step="1" data-tier-field="minPercent" value="${Number.isInteger(tier.minPercent)?tier.minPercent:''}"></label><label>Máximo %<input type="number" min="0" max="100" step="1" data-tier-field="maxPercent" value="${Number.isInteger(tier.maxPercent)?tier.maxPercent:''}"></label><label>Gana<input type="number" min="0" max="100000" step="1" data-tier-field="earned" value="${Number.isInteger(tier.earned)?tier.earned:0}"></label><label>Pierde<input type="number" min="0" max="100000" step="1" data-tier-field="lost" value="${Number.isInteger(tier.lost)?tier.lost:0}"></label><button type="button" class="pr-tbl-mini-btn" data-remove-reward-tier>Quitar</button></div>`;}
+function prRenderRewardTiers(tiers=[]){const target=document.getElementById('prRewardTiers');if(target) target.innerHTML=tiers.length?tiers.map(prRewardTierHTML).join(''):'<p class="pr-attempts-empty">Sin tramos: se usará Áureos base.</p>';}
+function prCollectRewardTiers(){
+  const target=document.getElementById('prRewardTiers'); if(!target) return [];
+  return [...target.querySelectorAll('[data-reward-tier]')].map(row=>Object.fromEntries(['minPercent','maxPercent','earned','lost'].map(field=>[field,Number(row.querySelector(`[data-tier-field="${field}"]`)?.value)])));
+}
+function prValidateRewardTiers(tiers){
+  const valid=tiers.filter(t=>Object.values(t).some(Number.isFinite));
+  valid.forEach(t=>{if(!Number.isInteger(t.minPercent)||!Number.isInteger(t.maxPercent)||t.minPercent<0||t.maxPercent>100||t.minPercent>t.maxPercent||!Number.isInteger(t.earned)||t.earned<0||t.earned>100000||!Number.isInteger(t.lost)||t.lost<0||t.lost>100000) throw Error('Cada tramo debe tener porcentajes de 0 a 100 y cantidades enteras válidas');});
+  for(let i=0;i<valid.length;i++) for(let j=i+1;j<valid.length;j++) if(valid[i].minPercent<=valid[j].maxPercent&&valid[j].minPercent<=valid[i].maxPercent) throw Error('Los tramos de Áureos no deben solaparse');
+  return valid;
+}
+document.addEventListener('click',event=>{
+  const step=event.target.closest('[data-pr-builder-step]'); if(step) return prSetBuilderStep(step.dataset.prBuilderStep);
+  if(event.target.id==='prBuilderPrevious') return prSetBuilderStep(_prBuilderStep-1);
+  if(event.target.id==='prBuilderNext') return prSetBuilderStep(_prBuilderStep+1);
+  if(event.target.id==='prAddRewardTier'){const target=document.getElementById('prRewardTiers');if(target){const tiers=prCollectRewardTiers();target.innerHTML=(tiers.length?tiers:[]).concat({minPercent:85,maxPercent:100,earned:100,lost:0}).map(prRewardTierHTML).join('');}return;}
+  const remove=event.target.closest('[data-remove-reward-tier]'); if(remove){remove.closest('[data-reward-tier]')?.remove(); if(!document.querySelector('#prRewardTiers [data-reward-tier]')) prRenderRewardTiers([]);}
+});
+prSetBuilderStep(1);
 
 function _prOpSectionHTML(op){
   if(_PR_HAS_TABLES[op]){
-    const tblBtns=Array.from({length:12},(_,i)=>i+1).map(t=>`<button class="em-tbl-btn sel" data-t="${t}" onclick="this.classList.toggle('sel')">${t}</button>`).join('');
+    const matrixCells=Array.from({length:13},(_,row)=>Array.from({length:13},(_,col)=>`<button type="button" class="em-tbl-btn${row>0&&col>0?' sel':''}" data-row="${row}" data-col="${col}" data-t="${col}" aria-label="${op==='div'?'Divisor':'Tabla'} ${col}, factor ${row}" aria-pressed="${row>0&&col>0?'true':'false'}" onclick="_prMatrixTouched['${op}']=true;this.classList.toggle('sel');this.setAttribute('aria-pressed',this.classList.contains('sel'));prUpdateSummary()">${row}×${col}</button>`).join('')).join('');
     const multExtra=op==='mult'?`<div class="pr-field pr-range-config" style="margin-top:10px;margin-bottom:0">
         <label>RANGOS PERSONALIZADOS (opcional)</label>
         <div class="pr-range-editor">
@@ -1207,15 +1269,17 @@ function _prOpSectionHTML(op){
       </div>`:'';
     const divRangeExtra=op==='div'?`<div class="pr-field" style="margin-top:10px;margin-bottom:0">
         <label>RANGOS DE DIVISION (opcional)</label>
+        <small class="pr-config-note">Representan los valores permitidos del cociente/factor según la generación actual; no son límites arbitrarios del dividendo ni del divisor.</small>
         <div class="pr-range-editor"><select id="prRangeTable_div" aria-label="Divisor"><option value="">Divisor</option>${Array.from({length:12},(_,i)=>`<option value="${i+1}">${i+1}</option>`).join('')}</select><input id="prRangeFrom_div" type="number" min="1" max="12" step="1" placeholder="Desde" aria-label="Desde"><input id="prRangeTo_div" type="number" min="1" max="12" step="1" placeholder="Hasta" aria-label="Hasta"><button type="button" class="pr-tbl-mini-btn" onclick="prAddRange('div')">Agregar divisor</button></div>
         <div id="prRangesList_div" class="pr-ranges-list" aria-live="polite"></div><div id="prRangesPreview_div" class="pr-range-preview"></div>
       </div>`:'';
     return `<div class="pr-op-section" id="prOpSection_${op}">
       <div class="pr-op-section-title">${_PR_OP_TITLE[op]}</div>
-      <div class="em-tables-grid" id="prTablesGrid_${op}">${tblBtns}</div>
+      <div class="pr-matrix-legend"><span><i class="pr-matrix-swatch included"></i> Verde: se generará</span><span><i class="pr-matrix-swatch excluded"></i> Rojo: se excluirá</span></div>
+      <div class="pr-matrix-wrap"><div class="pr-matrix" id="prTablesGrid_${op}" role="grid" aria-label="Matriz de ${op==='div'?'divisores':'tablas'} y factores">${matrixCells}</div></div>
       <div class="pr-tbl-mini-actions">
-        <button class="pr-tbl-mini-btn" onclick="prSelectTbls('${op}',true)">Todas</button>
-        <button class="pr-tbl-mini-btn" onclick="prSelectTbls('${op}',false)">Ninguna</button>
+        <button class="pr-tbl-mini-btn" onclick="prSelectTbls('${op}',true)">Seleccionar todo</button>
+        <button class="pr-tbl-mini-btn" onclick="prSelectTbls('${op}',false)">Limpiar todo</button>
       </div>
       <div class="pr-op-qty-row">
         <label>${_PR_QTY_LABEL[op]}</label>
@@ -1259,7 +1323,7 @@ function prToggleOpSection(op,checked){
   }
 }
 function prSelectTbls(op,sel){
-  document.querySelectorAll('#prTablesGrid_'+op+' .em-tbl-btn').forEach(b=>b.classList.toggle('sel',sel));
+  prMatrixSet(op,sel);
 }
 function prSelDigits(op,btn){
   document.querySelectorAll('#prDigitsGrid_'+op+' .pr-digits-btn').forEach(b=>b.classList.remove('sel'));
@@ -1272,6 +1336,39 @@ function prSelCarryMode(op,btn){
 function prSelManner(op,btn){
   document.querySelectorAll('#prMannerGrid_'+op+' .pr-mode-btn').forEach(b=>b.classList.remove('sel'));
   btn.classList.add('sel');
+}
+function prMatrixCells(op){
+  const grid=document.getElementById('prTablesGrid_'+op); return grid?[...grid.querySelectorAll('.em-tbl-btn')]:[];
+}
+function prMatrixSet(op,selected){
+  _prMatrixTouched[op]=true;
+  prMatrixCells(op).forEach(cell=>{cell.classList.toggle('sel',selected);cell.setAttribute('aria-pressed',String(selected));});
+  prUpdateSummary();
+}
+function prMatrixKey(row,col){ return `${row}x${col}`; }
+function prMatrixSelection(op){
+  return prMatrixCells(op).filter(cell=>cell.classList.contains('sel')).map(cell=>prMatrixKey(Number(cell.dataset.row),Number(cell.dataset.col)));
+}
+function prMatrixFromRanges(ranges,tables){
+  const selected=new Set();
+  if(Array.isArray(ranges)) ranges.forEach(range=>{for(let row=range.from;row<=range.to;row++) selected.add(prMatrixKey(row,range.table));});
+  else (tables||[]).forEach(col=>{for(let row=1;row<=12;row++) selected.add(prMatrixKey(row,col));});
+  return [...selected];
+}
+function prMatrixRanges(op){
+  const ranges=[];
+  for(let col=1;col<=12;col++){
+    const rows=prMatrixCells(op).filter(cell=>Number(cell.dataset.col)===col&&Number(cell.dataset.row)>0&&cell.classList.contains('sel')).map(cell=>Number(cell.dataset.row)).sort((a,b)=>a-b);
+    let start=null,previous=null;
+    rows.forEach(row=>{if(start===null){start=previous=row;return}if(row!==previous+1){ranges.push({table:col,from:start,to:previous});start=row}previous=row});
+    if(start!==null) ranges.push({table:col,from:start,to:previous});
+  }
+  return ranges;
+}
+function prRenderMatrix(op,matrix){
+  const selected=new Set(Array.isArray(matrix)?matrix:[]);
+  prMatrixCells(op).forEach(cell=>{const key=prMatrixKey(Number(cell.dataset.row),Number(cell.dataset.col));const active=selected.size?selected.has(key):Number(cell.dataset.row)>0&&Number(cell.dataset.col)>0;cell.classList.toggle('sel',active);cell.setAttribute('aria-pressed',String(active));});
+  _prMatrixTouched[op]=false;
 }
 // Inicializa la seccion de Multiplicacion (unica marcada por defecto al cargar la pagina).
 // Este bloque JS esta al final de <body>, asi que #prOpMult ya existe en el DOM en este punto.
@@ -1288,8 +1385,9 @@ function _prCollectOpsConfig(ops){
   ops.forEach(op=>{
     const qty=Number(document.getElementById('prQty_'+op)?.value)||_PR_QTY_DEFAULT[op];
     if(_PR_HAS_TABLES[op]){
-      const tables=[...document.querySelectorAll('#prTablesGrid_'+op+' .em-tbl-btn.sel')].map(b=>Number(b.dataset.t));
-      opsConfig[op]={tables,qty};
+      const matrix=prMatrixSelection(op);
+      const tables=[...new Set(prMatrixCells(op).filter(b=>b.classList.contains('sel')&&Number(b.dataset.col)>0).map(b=>Number(b.dataset.col)))].sort((a,b)=>a-b);
+      opsConfig[op]={tables,qty,matrix};
       if(op==='mult'){
         const mannerBtn=document.querySelector('#prMannerGrid_'+op+' .pr-mode-btn.sel');
         opsConfig[op].manner=mannerBtn?.dataset.manner||'ordered';
@@ -1390,11 +1488,16 @@ function prLoadTestConfiguration(configuration){
   const experience=document.getElementById('prRewardExperience'); if(experience) experience.value=Number.isInteger(rewards.experience)?rewards.experience:0;
   const streak=document.getElementById('prRewardStreak'); if(streak) streak.checked=rewards.streak?.enabled===true;
   const achievements=document.getElementById('prRewardAchievements'); if(achievements) achievements.checked=rewards.achievements?.perfect?.enabled===true;
+  const time=document.getElementById('prTime'); if(time) time.value=String(Number.isFinite(Number(configuration.timeLimit))?Number(configuration.timeLimit):0);
+  const perQuestion=document.getElementById('prTimePerQuestion'); if(perQuestion) perQuestion.value=String(Number.isFinite(Number(configuration.timePerQuestion))?Number(configuration.timePerQuestion):30);
+  prRenderRewardTiers(Array.isArray(rewards.aureosTiers)?rewards.aureosTiers:[]);
   const mult=configuration?.opsConfig?.mult;
   const div=configuration?.opsConfig?.div;
   _prCustomRanges.mult=Array.isArray(mult?.ranges)?mult.ranges.map(range=>({...range})):[];
   _prCustomRanges.div=Array.isArray(div?.ranges)?div.ranges.map(range=>({...range})):[];
   const repeat=document.getElementById('prRangeRepeat_mult'); if(repeat) repeat.checked=mult?.repeat===true;
+  const ops=configuration?.opsConfig&&typeof configuration.opsConfig==='object'?configuration.opsConfig:{};
+   if(Object.keys(ops).length)_PR_OP_LIST.forEach(op=>{const checkbox=document.getElementById('prOp'+op.charAt(0).toUpperCase()+op.slice(1));if(!checkbox)return;checkbox.checked=!!ops[op];prToggleOpSection(op,checkbox.checked);const cfg=ops[op]||{};const qty=document.getElementById('prQty_'+op);if(qty&&Number.isInteger(cfg.qty))qty.value=String(cfg.qty);const digits=document.querySelector(`#prDigitsGrid_${op} .pr-digits-btn[data-d="${cfg.digits}"]`);if(digits)prSelDigits(op,digits);const mode=document.querySelector(`#prCarryGrid_${op} .pr-mode-btn[data-mode="${cfg.carryMode}"]`);if(mode)prSelCarryMode(op,mode);const manner=document.querySelector(`#prMannerGrid_${op} .pr-mode-btn[data-manner="${cfg.manner}"]`);if(manner)prSelManner(op,manner);if(cfg.matrix)prRenderMatrix(op,cfg.matrix);else if(cfg.ranges)prRenderMatrix(op,prMatrixFromRanges(cfg.ranges,cfg.tables));else if(cfg.tables)prRenderMatrix(op,prMatrixFromRanges(null,cfg.tables));});
   prRenderRanges('mult'); prRenderRanges('div'); prUpdateSummary();
 }
 function prGetTestConfiguration(existing={}){
@@ -1411,21 +1514,36 @@ function prGetTestConfiguration(existing={}){
     const aureos=Number(aureosInput.value||0), experience=Number(experienceInput.value||0);
     if(!Number.isInteger(aureos)||aureos<0||aureos>100000||!Number.isInteger(experience)||experience<0||experience>100000) throw Error('Aureos y XP deben ser enteros entre 0 y 100000');
     next.rewards={aureos,experience,streak:{enabled:!!document.getElementById('prRewardStreak')?.checked,bonus:0},achievements:{}};
+    const tiers=prValidateRewardTiers(prCollectRewardTiers()); if(tiers.length) next.rewards.aureosTiers=tiers; else delete next.rewards.aureosTiers;
     if(document.getElementById('prRewardAchievements')?.checked) next.rewards.achievements.perfect={enabled:true,bonus:0};
   }
-  const opsConfig={...(next.opsConfig||{})};
+  const activeOps=_PR_OP_LIST.filter(o=>document.getElementById('prOp'+o.charAt(0).toUpperCase()+o.slice(1))?.checked);
+  const opsConfig={...(next.opsConfig||{}),..._prCollectOpsConfig(activeOps)};
+  _PR_OP_LIST.filter(o=>!activeOps.includes(o)).forEach(o=>delete opsConfig[o]);
   const mult={...(opsConfig.mult||{})};
-  if(_prCustomRanges.mult.length){
+  if(_prMatrixTouched.mult) mult.matrix=prMatrixSelection('mult'); else delete mult.matrix;
+  const multRanges=prMatrixRanges('mult');
+  if(_prMatrixTouched.mult){
+    delete mult.ranges;
+    mult.tables=[...new Set(multRanges.map(range=>range.table))];
+    delete mult.repeat;
+  } else if(_prCustomRanges.mult.length){
     mult.ranges=_prCustomRanges.mult.map(range=>({...range}));
     mult.tables=mult.ranges.map(range=>range.table);
     mult.repeat=!!document.getElementById('prRangeRepeat_mult')?.checked;
   } else { delete mult.ranges; delete mult.repeat; }
   if(Object.keys(mult).length) opsConfig.mult=mult; else delete opsConfig.mult;
   const div={...(opsConfig.div||{})};
-  if(_prCustomRanges.div.length){ div.ranges=_prCustomRanges.div.map(range=>({...range})); div.tables=div.ranges.map(range=>range.table); }
+  if(_prMatrixTouched.div) div.matrix=prMatrixSelection('div'); else delete div.matrix;
+  const divRanges=prMatrixRanges('div');
+  if(_prMatrixTouched.div){ delete div.ranges; div.tables=[...new Set(divRanges.map(range=>range.table))]; }
+  else if(_prCustomRanges.div.length){ div.ranges=_prCustomRanges.div.map(range=>({...range})); div.tables=div.ranges.map(range=>range.table); }
   else delete div.ranges;
   if(Object.keys(div).length) opsConfig.div=div; else delete opsConfig.div;
   if(Object.keys(opsConfig).length) next.opsConfig=opsConfig; else delete next.opsConfig;
+  const timeLimit=Number(document.getElementById('prTime')?.value)||0; const timePerQuestion=Number(document.getElementById('prTimePerQuestion')?.value)||0; const total=_prCalcTotal(opsConfig);
+  if(timeLimit&&timePerQuestion&&timeLimit<total*timePerQuestion) throw Error('El tiempo global debe cubrir todas las preguntas');
+  next.timeLimit=timeLimit; next.timePerQuestion=timePerQuestion;
   return next;
 }
 function prFmtDuration(ms){

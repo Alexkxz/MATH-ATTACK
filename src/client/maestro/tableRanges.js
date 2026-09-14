@@ -33,7 +33,24 @@
     if (config.qty !== undefined && (!Number.isInteger(config.qty) || config.qty < 1 || config.qty > 100)) fail('invalid qty');
     if (config.manner !== undefined && !['ordered', 'random'].includes(config.manner)) fail('invalid order');
     if (config.repeat !== undefined && typeof config.repeat !== 'boolean') fail('invalid repeat');
+    if (config.matrix !== undefined) {
+      if (!Array.isArray(config.matrix) || config.matrix.length > 169) fail('invalid matrix');
+      const seen = new Set();
+      config.matrix.forEach(value => {
+        if (typeof value !== 'string' || !/^([0-9]|1[0-2])x([0-9]|1[0-2])$/.test(value) || seen.has(value)) fail('invalid matrix cell');
+        seen.add(value);
+      });
+    }
     return ranges;
+  }
+  function validateMatrix(matrix) {
+    if (!Array.isArray(matrix) || matrix.length > 169) fail('invalid matrix');
+    const seen = new Set();
+    matrix.forEach(value => {
+      if (typeof value !== 'string' || !/^([0-9]|1[0-2])x([0-9]|1[0-2])$/.test(value) || seen.has(value)) fail('invalid matrix cell');
+      seen.add(value);
+    });
+    return true;
   }
   function validateOpsConfig(opsConfig) {
     if (!opsConfig || typeof opsConfig !== 'object' || Array.isArray(opsConfig)) fail('invalid opsConfig');
@@ -41,6 +58,7 @@
       const config = opsConfig[operation];
       if (!config) continue;
       if (config.ranges !== undefined) validateMultiplierConfig(config);
+      if (config.matrix !== undefined) validateMatrix(config.matrix);
       if (config.digits !== undefined) {
         integer(config.digits, `${operation}.digits`);
         if (config.digits < (operation === 'div' ? 2 : 1) || config.digits > (operation === 'div' ? 5 : 4)) fail(`invalid ${operation} digits`);
@@ -78,5 +96,5 @@
     if (config.repeat === true && Number.isInteger(config.qty)) return ranges.length * config.qty;
     return ranges.reduce((sum, range) => sum + range.to - range.from + 1, 0);
   }
-  return { MIN_TABLE, MAX_TABLE, validateRange, validateMultiplierConfig, validateOpsConfig, multipliersForTable, count };
+  return { MIN_TABLE, MAX_TABLE, validateRange, validateMultiplierConfig, validateOpsConfig, validateMatrix, multipliersForTable, count };
 }));

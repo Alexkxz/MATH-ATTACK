@@ -137,8 +137,11 @@ function createOfficialRewardService({
     const achievementProbe = clone(player);
     const detectedAchievements = legacyRewards || Object.keys(rewardsConfig.achievements || {}).length ? checkNewAchievements(achievementProbe, { ...result }, ranking) : [];
     const enabledAchievements = new Set(Object.entries(rewardsConfig.achievements || {}).filter(([, rule]) => rule.enabled === true).map(([id]) => id));
+    const percentage = (Number(result.correct) + Number(result.wrong ?? result.incorrect)) > 0 ? (Number(result.correct) / (Number(result.correct) + Number(result.wrong ?? result.incorrect))) * 100 : 0;
+    const tier = Array.isArray(rewardsConfig.aureosTiers) ? rewardsConfig.aureosTiers.find(item => percentage >= item.minPercent && percentage <= item.maxPercent) : null;
+    const tierAmount = tier ? Number(tier.earned || 0) - Number(tier.lost || 0) : null;
     return {
-      aureos: rewardsConfig.aureos === undefined ? (legacyRewards ? Math.max(0, Number(game.earnedAureos) || 0) : 0) : rewardsConfig.aureos,
+      aureos: tierAmount === null ? (rewardsConfig.aureos === undefined ? (legacyRewards ? Math.max(0, Number(game.earnedAureos) || 0) : 0) : rewardsConfig.aureos) : tierAmount,
       experience: rewardsConfig.experience === undefined ? (legacyRewards ? Math.max(0, Number(game.earnedExperience) || 0) : 0) : rewardsConfig.experience,
       streak: streak ? { ...clone(streak), bonus: legacyRewards ? (Number(streak.bonus) || 0) : (streakRule.bonus === undefined ? 0 : streakRule.bonus) } : null,
       achievements: (legacyRewards ? detectedAchievements : detectedAchievements.filter(id => enabledAchievements.has(id))).map(id => ({
@@ -271,7 +274,7 @@ function createOfficialRewardService({
     const player = players.find(item => item.id === settlement.accountPlayerId);
     if (!player) throw Error('alumno no encontrado');
     ensurePlayerExperience(player);
-    const addAureos = amount => { player.aureos = (Number(player.aureos) || 0) + amount; };
+    const addAureos = amount => { player.aureos = Math.max(0, (Number(player.aureos) || 0) + (Number(amount) || 0)); };
     applyType(settlement, 'aureos', player, players, () => {
       addAureos(settlement.rewards.aureos);
       if (settlement.rewards.aureos) logAureosTx(player, settlement.rewards.aureos, 'prueba_oficial');
