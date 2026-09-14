@@ -12,6 +12,50 @@
   const get = id => document.getElementById(id);
 
   function statusLabel(status) { return statusLabels[status] || statusLabels.unknown; }
+  const summaryOrder = ['draft', 'scheduled', 'active', 'paused', 'closed', 'finished', 'cancelled'];
+  const summaryGroupLabels = { draft: 'Borradores', scheduled: 'Programadas', active: 'Activas', paused: 'Pausadas', closed: 'Cerradas', finished: 'Finalizadas', cancelled: 'Canceladas' };
+  const formatDateTime = value => value ? new Date(value).toLocaleString('es-MX', { dateStyle: 'medium', timeStyle: 'short' }) : '—';
+  const formatList = values => values.length ? values.join(', ') : '—';
+  function summaryTests() { return tests.slice().sort((a, b) => (Date.parse(b.lastModifiedAt || b.updatedAt || b.createdAt) || 0) - (Date.parse(a.lastModifiedAt || a.updatedAt || a.createdAt) || 0) || a.testId.localeCompare(b.testId)).slice(0, 5); }
+  function renderSummary() {
+    const target = get('prTestSummaryList'); if (!target) return;
+    const recent = summaryTests();
+    if (!recent.length) { target.innerHTML = '<p class="pr-attempts-empty">No hay pruebas registradas.</p>'; return; }
+    const groups = new Map(summaryOrder.map(status => [status, []]));
+    recent.forEach(test => { const status = groups.has(test.status) ? test.status : 'finished'; groups.get(status).push(test); });
+    target.innerHTML = summaryOrder.filter(status => groups.get(status).length).map(status => `<section class="pr-summary-status-group" data-summary-status="${status}"><h3>${summaryGroupLabels[status]}</h3><div class="pr-summary-cards">${groups.get(status).map(test => `<article class="pr-summary-card" data-summary-test-id="${esc(test.testId)}" tabindex="0" role="button" aria-label="Ver detalles de ${esc(test.title || 'prueba')}"><div class="pr-summary-card-head"><strong>${esc(test.title || 'Prueba sin título')}</strong><span class="pr-summary-status pr-summary-status-${status}">${esc(statusLabel(status))}</span></div><code>${esc(test.testId)}</code><span>Actualizada: ${esc(formatDateTime(test.lastModifiedAt || test.updatedAt || test.createdAt))}</span><span>${test.groups.length ? `Grupo: ${esc(test.groups.join(', '))}` : test.assignmentCount ? `Asignaciones: ${test.assignmentCount}` : 'Sin asignación'}</span><span>${Number(test.questionCount) || 0} preguntas · ${esc((test.operations || []).join(', ') || 'Sin operaciones')}</span></article>`).join('')}</div></section>`).join('');
+    const status = get('prTestSummaryStatus'); if (status) status.textContent = `${recent.length} de ${tests.length} pruebas recientes`;
+  }
+  function operationDetails(configuration = {}) {
+    const ops = configuration.opsConfig && typeof configuration.opsConfig === 'object' ? configuration.opsConfig : {};
+    const names = { mult: 'Multiplicación', div: 'División', add: 'Suma', sub: 'Resta' };
+    const rows = Object.entries(ops).map(([op, value]) => {
+      const cfg = value && typeof value === 'object' ? value : {};
+      const ranges = Array.isArray(cfg.ranges) && cfg.ranges.length ? ` · rangos: ${cfg.ranges.map(range => `${range.table}: ${range.from}–${range.to}`).join(', ')}` : '';
+      const tables = Array.isArray(cfg.tables) && cfg.tables.length ? ` · tablas/divisores: ${cfg.tables.join(', ')}` : '';
+      const arithmetic = ['add', 'sub'].includes(op) ? ` · ${cfg.digits || 1} cifras · ${cfg.carryMode === 'carry' ? (op === 'sub' ? 'con préstamos' : 'con llevadas') : cfg.carryMode === 'both' ? 'ambas modalidades' : (op === 'sub' ? 'sin préstamos' : 'sin llevadas')}` : '';
+      return `<li><b>${names[op] || op}</b>: ${Number(cfg.qty) || 0} preguntas${tables}${ranges}${arithmetic}</li>`;
+    });
+    return rows.length ? `<ul>${rows.join('')}</ul>` : '<p>No hay operaciones configuradas.</p>';
+  }
+  function detailMarkup(test, configuration, assignments, officials) {
+    const rewards = configuration.rewards || {};
+    const officialIds = officials.map(item => item.officialAttemptId).filter(Boolean);
+    const history = Array.isArray(test.stateHistory) && test.stateHistory.length ? test.stateHistory.map(item => `${statusLabel(String(item.action || '').replace(/^test_/, '').replace('started', 'active').replace('resumed', 'active'))} · ${formatDateTime(item.occurredAt)}`).join('<br>') : 'Sin historial disponible';
+    return `<div class="pr-detail-grid"><div><b>Descripción</b><p>${esc(test.description || 'Sin descripción')}</p></div><div><b>Operaciones</b>${operationDetails(configuration)}</div><div><b>Preguntas</b><p>${Number(configuration.total) || 'Configuradas por operación'}</p></div><div><b>Multiplicador</b><p>${Number(configuration.multiplier) || 1}× (solo puntaje)</p></div><div><b>Recompensas</b><p>Áureos: ${Number(rewards.aureos) || 0} · XP: ${Number(rewards.experience) || 0} · Racha: ${rewards.streak?.enabled ? 'activa' : 'inactiva'} · Logro perfecto: ${rewards.achievements?.perfect?.enabled ? 'activo' : 'inactivo'}</p></div><div><b>Fechas</b><p>Creada: ${esc(formatDateTime(test.createdAt))}<br>Actualizada: ${esc(formatDateTime(test.updatedAt || test.createdAt))}<br>Programada: ${esc(formatDateTime(test.startsAt || test.scheduledAt))}<br>Cierre: ${esc(formatDateTime(test.closesAt))}</p></div><div><b>Historial de estados</b><p>${history}</p></div><div><b>Asignaciones</b><ul>${assignments.length ? assignments.map(item => `<li>${esc(item.targetType === 'group' ? `Grupo ${item.groupId || '—'}` : `Alumno ${item.accountPlayerId || '—'}`)}</li>`).join('') : '<li>Sin asignaciones</li>'}</ul></div><div><b>Intentos</b><p>${Number(test.attemptCount) || 0}</p></div><div><b>Estado oficial</b><p>${officialIds.length ? `Oficializada · ${officialIds.length}` : 'Sin oficializar'}${officialIds.length ? `<br>IDs: ${esc(formatList(officialIds))}` : ''}</p></div><div><b>Ranking</b><p>${test.hasRankingPublications ? `Publicado · ${test.rankingPublicationCount || 0}` : 'Sin publicación'}</p></div><div><b>testId</b><p><code>${esc(test.testId)}</code></p></div></div>`;
+  }
+  function closeSummaryModal() { const modal = get('prTestSummaryModal'); if (!modal) return; modal.classList.remove('open'); modal.setAttribute('aria-hidden', 'true'); }
+  async function openSummaryModal(testId) {
+    const modal = get('prTestSummaryModal'); const content = get('prSummaryModalContent'); if (!modal || !content) return;
+    modal.classList.add('open'); modal.setAttribute('aria-hidden', 'false'); content.innerHTML = '<p class="pr-attempts-empty">Cargando detalles…</p>'; get('prSummaryModalClose')?.focus();
+    try {
+      const [testResponse, assignmentsResponse, officialsResponse] = await Promise.all([fetch(adminUrl(`/api/exams/${encodeURIComponent(testId)}`), { headers: { 'X-Admin-Password': _adminPass } }), fetch(adminUrl(`/api/exams/${encodeURIComponent(testId)}/assignments`), { headers: { 'X-Admin-Password': _adminPass } }), fetch(adminUrl(`/api/maestro/tests/${encodeURIComponent(testId)}/official-attempts`))]);
+      const testData = await testResponse.json(); const assignmentData = await assignmentsResponse.json(); const officialsData = officialsResponse.ok ? await officialsResponse.json() : { officialAttempts: [] };
+      if (!testResponse.ok) throw Error(testData.error || 'No se pudo cargar el detalle');
+      const test = tests.find(item => item.testId === testId) || { testId }; const fullTest = { ...test, ...(testData.test || {}) };
+      content.innerHTML = detailMarkup(fullTest, fullTest.configuration || {}, assignmentData.assignments || [], officialsData.officialAttempts || []);
+    } catch (error) { content.innerHTML = `<p class="pr-attempts-status">${esc(error.message || 'No se pudo cargar el detalle')}</p>`; }
+  }
   const groupStatus = message => { const node = get('prGroupsStatus'); if (node) node.textContent = message || ''; };
   function renderGroups() {
     const list = get('prGroupsList'); if (list) list.innerHTML = groups.length ? groups.map(group => `<div class="pr-group-card${group.groupId === selectedGroupId ? ' selected' : ''}" data-group-id="${esc(group.groupId)}"><button type="button" class="pr-group-select">${esc(group.name)} · ${esc(group.groupId)}</button><span>${group.memberAccountPlayerIds.length} miembro(s)</span></div>`).join('') : '<p class="pr-attempts-empty">No hay grupos disponibles.</p>';
@@ -50,6 +94,7 @@
   function render() {
     const target = get('prTestLibraryList');
     if (!target) return;
+    renderSummary();
     const rows = visible();
     target.innerHTML = rows.length ? rows.map(test => `<article class="pr-test-card${test.testId === selectedTestId ? ' selected' : ''}" data-test-library-card="${esc(test.testId)}"><div class="pr-test-card-main"><strong>${esc(test.title || 'Prueba sin título')}</strong><code>${esc(test.testId)}</code><span>${esc(statusLabel(test.status))} · creada ${esc(dateText(test.createdAt))} · ${test.attemptCount} intento(s)</span><span>${test.groups.length ? `Grupo(s): ${esc(test.groups.join(', '))}` : 'Sin grupo asignado'} · ${test.assignmentCount} asignación(es)</span></div><div class="pr-test-card-meta"><span>${test.hasOfficialResults ? 'Oficial ✓' : 'Sin oficializar'}</span><span>${test.hasRankingPublications ? 'Ranking ✓' : 'Sin publicación'}</span><span>${test.startsAt ? `Programada: ${esc(dateText(test.startsAt))}` : ''}</span></div><div class="pr-test-card-actions"><button type="button" class="pr-test-select" data-test-id="${esc(test.testId)}">Seleccionar prueba</button><button type="button" class="pr-test-copy" data-test-id="${esc(test.testId)}">Copiar testId</button>${test.status === 'draft' ? `<button type="button" class="pr-test-edit" data-test-id="${esc(test.testId)}">Editar borrador</button><button type="button" class="pr-test-schedule" data-test-id="${esc(test.testId)}">Programar</button>` : ''}${test.status === 'scheduled' && (!test.startsAt || Date.parse(test.startsAt) <= Date.now()) ? `<button type="button" class="pr-test-activate" data-test-id="${esc(test.testId)}">Activar</button>` : ''}${!['cancelled','finished'].includes(test.status) ? `<button type="button" class="pr-test-assign" data-test-id="${esc(test.testId)}">Asignar</button>` : ''}</div></article>`).join('') : '<p class="pr-attempts-empty">No hay pruebas que coincidan con los filtros.</p>';
     renderSelected(tests.find(test => test.testId === selectedTestId));
@@ -58,7 +103,7 @@
     const status = get('prTestLibraryStatus');
     if (status) status.textContent = 'Cargando biblioteca…';
     try {
-      const response = await fetch(adminUrl('/api/maestro/tests?limit=100&sort=createdAt&order=desc'));
+      const response = await fetch(adminUrl('/api/maestro/tests?limit=100&sort=updatedAt&order=desc'));
       const data = await response.json();
       if (!response.ok) throw Error(data.error || 'No se pudo cargar la biblioteca');
       tests = Array.isArray(data.tests) ? data.tests : [];
@@ -147,6 +192,9 @@
   }
   document.addEventListener('input', event => { if (event.target.closest('#prTestLibraryFilters')) render(); });
   document.addEventListener('click', event => {
+    const summaryCard = event.target.closest('.pr-summary-card');
+    if (summaryCard) return openSummaryModal(summaryCard.dataset.summaryTestId);
+    if (event.target.closest('#prSummaryModalClose') || event.target.id === 'prTestSummaryModal') return closeSummaryModal();
     const sectionButton = event.target.closest('[data-pr-section-target]');
     if (sectionButton) return setSection(sectionButton.dataset.prSectionTarget);
     const selectButton = event.target.closest('.pr-test-select');
@@ -163,6 +211,8 @@
     if (assignButton) return assignTest(assignButton.dataset.testId).catch(error => { const status = get('prTestLibraryStatus'); if (status) status.textContent = error.message; });
     if (event.target.closest('.pr-test-create')) return createDraft().catch(error => { const status = get('prTestLibraryStatus'); if (status) status.textContent = error.message; });
   });
+  document.addEventListener('keydown', event => { if (event.key === 'Escape') closeSummaryModal(); const card = event.target.closest('.pr-summary-card'); if (card && (event.key === 'Enter' || event.key === ' ')) { event.preventDefault(); openSummaryModal(card.dataset.summaryTestId); } });
+  window.prCloseTestSummaryModal = closeSummaryModal;
   window.prLoadTestLibrary = load;
   window.prSetTestSection = setSection;
   window.prSelectTest = select;

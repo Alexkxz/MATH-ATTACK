@@ -2,7 +2,7 @@
 
 const { TEST_STATES } = require('./testStateMachine');
 
-const SORTS = new Set(['createdAt', 'scheduledAt', 'title', 'status']);
+const SORTS = new Set(['createdAt', 'updatedAt', 'scheduledAt', 'title', 'status']);
 const DIRECTIONS = new Set(['asc', 'desc']);
 const clone = value => JSON.parse(JSON.stringify(value));
 
@@ -48,12 +48,19 @@ function createTestLibraryService({ loadRoot } = {}) {
       const testOfficials = officialAttempts.filter(item => item.testId === test.testId);
       const testPublications = publications.filter(item => item.testId === test.testId);
       const groups = [...new Set(testAssignments.filter(item => item.targetType === 'group' && item.groupId).map(item => item.groupId))].sort();
+      const configuration = test.configuration && typeof test.configuration === 'object' ? test.configuration : {};
+      const opsConfig = configuration.opsConfig && typeof configuration.opsConfig === 'object' ? configuration.opsConfig : {};
+      const operations = Object.keys(opsConfig).filter(key => ['add', 'sub', 'mult', 'div'].includes(key));
+      const questionCount = Number.isInteger(configuration.total) ? configuration.total : operations.reduce((sum, key) => sum + (Number.isInteger(opsConfig[key]?.qty) ? opsConfig[key].qty : 0), 0);
+      const stateHistory = (Array.isArray(root.events) ? root.events : []).filter(event => event.testId === test.testId && /^test_(created|updated|scheduled|started|paused|resumed|closed|finished|cancelled)$/.test(event.action)).map(event => ({ action: event.action, occurredAt: event.occurredAt })).sort((a, b) => String(a.occurredAt).localeCompare(String(b.occurredAt)));
       return {
         testId: test.testId,
         title: test.title,
         status: TEST_STATES.includes(test.status) ? test.status : 'unknown',
         revision: test.revision,
         createdAt: test.createdAt,
+        updatedAt: test.updatedAt || test.createdAt,
+        lastModifiedAt: test.updatedAt || test.createdAt,
         scheduledAt: test.scheduledAt || null,
         startsAt: test.startsAt || null,
         closesAt: test.closesAt || null,
@@ -64,6 +71,9 @@ function createTestLibraryService({ loadRoot } = {}) {
         rankingPublicationCount: testPublications.length,
         hasOfficialResults: testOfficials.length > 0,
         hasRankingPublications: testPublications.length > 0,
+        questionCount,
+        operations,
+        stateHistory,
       };
     });
     rows.sort((a, b) => {
