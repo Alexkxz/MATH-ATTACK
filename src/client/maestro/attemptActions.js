@@ -19,6 +19,7 @@
   const escText = value => String(value ?? '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
   const statusLabel = { pending: 'Pendiente', started: 'Iniciado', in_progress: 'En progreso', paused: 'Pausado', disconnected: 'Desconectado', reconnected: 'Reentrada permitida', finished: 'Finalizado', incomplete: 'Incompleto', reopened: 'Reabierto', restarted: 'Reiniciado', deleted: 'Eliminado' };
   const rewardLabels = { aureos: 'Áureos', experience: 'XP', streak: 'Racha' };
+  const connectionLabels = { connected: 'Conectado', disconnected: 'Desconectado', reconnected: 'Reentrada permitida', finished: 'Finalizado', unknown: 'Sin conexión confirmada' };
 
   function message(text, ok = false) { const element = document.getElementById('prAttemptsStatus'); if (element) { element.textContent = text; element.classList.toggle('ok', ok); element.classList.toggle('error', !ok); } }
   function safeReward(value) { if (!value || typeof value !== 'object') return null; return { status: value.status || '', rewardSettlementId: value.rewardSettlementId || '', eventId: value.eventId || '', applied: value.applied && typeof value.applied === 'object' ? value.applied : {}, completedAt: value.completedAt || '' }; }
@@ -48,12 +49,15 @@
   function row(attempt) {
     const status = statusLabel[attempt.status] || attempt.status || 'Estado desconocido';
     const parent = attempt.parentAttemptId ? `<span class="pr-attempt-parent">parent: ${escText(attempt.parentAttemptId)}</span>` : '';
+    const progress = attempt.totalQuestions ? `${Number(attempt.index) || 0} / ${Number(attempt.totalQuestions) || 0}` : '—';
+    const checkpoint = attempt.checkpointRestored ? `Checkpoint ${Number(attempt.checkpointRevision) || 0} · índice ${Number(attempt.index) || 0}` : 'Sin checkpoint';
+    const timing = `Inicio: ${escText(attempt.startedAt || '—')} · Actualizado: ${escText(attempt.updatedAt || '—')}${attempt.finishedAt ? ` · Fin: ${escText(attempt.finishedAt)}` : ''}`;
     const official = attempt.officialAttempt ? `<span class="pr-attempt-official-id">Oficial: ${escText(attempt.officialAttempt.officialAttemptId)}</span>` : '';
     const publication = attempt.rankingPublication ? `<span class="pr-attempt-publication-id">Publicado: ${escText(attempt.rankingPublication.rankingPublicationId)}</span>` : '';
     const reward = rewardEligibility(attempt);
     const rewardId = attempt.rewardSettlement?.rewardSettlementId ? `<span class="pr-attempt-reward-id">Liquidación: ${escText(attempt.rewardSettlement.rewardSettlementId)}</span>` : '';
     const stateTag = ['completed', 'pending', 'ready', 'pending-publication', 'unknown', 'ineligible'].includes(reward.kind) ? reward.label : attempt.rankingPublication ? 'Publicado en Ranking' : attempt.officialAttempt ? 'Oficial · pendiente de publicación' : status;
-    return `<article class="pr-attempt-card" data-attempt-card="${escText(attempt.attemptId)}"><div class="pr-attempt-main"><strong>${escText(attempt.name || attempt.accountPlayerId || 'Cuenta sin ID')}</strong><span class="pr-attempt-id">${escText(attempt.attemptId)}</span>${parent}${official}${publication}${rewardId}${effectSummary(attempt.rewardSettlement)}</div><span class="pr-attempt-state">${escText(stateTag)} · rev. ${Number(attempt.revision) || 0}</span><div class="pr-attempt-actions">${actionButtons(attempt)}</div></article>`;
+    return `<article class="pr-attempt-card" data-attempt-card="${escText(attempt.attemptId)}"><div class="pr-attempt-main"><strong>${escText(attempt.name || 'Cuenta del alumno')}</strong><span class="pr-attempt-id">accountPlayerId: ${escText(attempt.accountPlayerId)}</span><span class="pr-attempt-id">testId: ${escText(attempt.testId)} · attemptId: ${escText(attempt.attemptId)}</span>${parent}<span class="pr-attempt-meta">Progreso: ${escText(progress)} · Aciertos: ${Number(attempt.correct) || 0} · Errores: ${Number(attempt.incorrect) || 0}</span><span class="pr-attempt-meta">${escText(checkpoint)} · ${escText(connectionLabels[attempt.connectionState] || connectionLabels.unknown)}</span><span class="pr-attempt-meta">${timing}</span>${official}${publication}${rewardId}${effectSummary(attempt.rewardSettlement)}</div><span class="pr-attempt-state">${escText(stateTag)} · rev. ${Number(attempt.revision) || 0}</span><div class="pr-attempt-actions">${actionButtons(attempt)}</div></article>`;
   }
   function render(list) { const element = document.getElementById('prAttemptsList'); if (!element) return; rows.clear(); list.forEach(attempt => rows.set(attempt.attemptId, attempt)); element.innerHTML = list.length ? list.map(row).join('') : '<p class="pr-attempts-empty">No hay intentos para esta prueba.</p>'; }
   async function load() {

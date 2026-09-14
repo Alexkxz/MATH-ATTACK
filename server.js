@@ -171,8 +171,8 @@ const testService=createTestService({store:testStore,groupResolver:groupId=>{
 }});
 const attemptCheckpointService=createAttemptCheckpointService({store:testStore});
 const attemptActionRoot=testStore.load();
-const attemptActionService=createAttemptActionService({root:attemptActionRoot,persist:()=>testStore.save(attemptActionRoot)});
-const testSupervisionService=createTestSupervisionService({root:testStore.load()});
+const attemptActionService=createAttemptActionService({root:attemptActionRoot,store:testStore,persist:data=>testStore.save(data)});
+const testSupervisionService=createTestSupervisionService({store:testStore});
 const testLibraryService=createTestLibraryService({loadRoot:()=>testStore.load()});
 const GROUPS_STORE_PATH=process.env.MATH_ATTACK_GROUPS_PATH||path.join(__dirname,'groups.json');
 const groupStore=createGroupStore({baseDir:path.dirname(GROUPS_STORE_PATH),fileName:path.basename(GROUPS_STORE_PATH),logger:{error:(...args)=>L.err(...args)}});
