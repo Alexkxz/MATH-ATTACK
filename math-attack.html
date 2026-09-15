@@ -1788,6 +1788,8 @@ body.frozen-cursor *{cursor:not-allowed!important;}
 .workspace-range-block{max-width:820px;width:100%;margin:12px auto 0;padding:16px 18px 13px;border:1px solid rgba(167,139,250,.2);border-radius:14px;background:rgba(255,255,255,.035)}.workspace-range-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;color:#a7abc4;font-size:11px;font-weight:700}.workspace-range-heading strong{color:#c4b5fd;font-size:12px}.workspace-dynamic-range{display:block;width:100%;height:8px;margin:18px 0 9px;accent-color:#a78bfa;cursor:pointer}.workspace-range-labels{display:flex;justify-content:space-between;color:#7f849f;font-size:9px;font-weight:800}
 #studentWorkspace.workspace-dynamic-wizard .workspace-wizard-host{min-height:0}#studentWorkspace.workspace-dynamic-wizard .workspace-dynamic-panel{min-height:0}.workspace-dynamic-wizard .workspace-dynamic-options{margin-top:14px}.workspace-dynamic-wizard .workspace-dynamic-group-label{margin-top:12px}.workspace-dynamic-wizard .workspace-dynamic-nav{margin-top:16px}
 .workspace-range-pair{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:center}.workspace-range-pair .workspace-dynamic-range{margin-bottom:0}
+.workspace-mode-note{display:inline-flex;margin-top:10px;padding:5px 10px;border:1px solid rgba(167,139,250,.2);border-radius:999px;background:rgba(167,139,250,.08);color:#c4b5fd;font-size:10px;font-weight:800}
+.workspace-table-actions{display:flex;justify-content:center;gap:8px;max-width:820px;width:100%;margin:10px auto 0}.workspace-table-action{padding:8px 16px;border:1px solid rgba(167,139,250,.28);border-radius:10px;background:rgba(167,139,250,.08);color:#c4b5fd;font-size:11px;font-weight:800;cursor:pointer;transition:background 220ms ease-out,border-color 220ms ease-out,transform 220ms ease-out}.workspace-table-action:hover{transform:translateY(-1px);border-color:rgba(167,139,250,.62);background:rgba(167,139,250,.16)}
 @media (prefers-reduced-motion:reduce){.workspace-shell *{transition:none!important;animation:none!important}}
 </style>
 </head>
@@ -13670,6 +13672,7 @@ function workspaceOldButton(selector,key,value){
 }
 function workspaceActivateOld(selector,key,value){const btn=workspaceOldButton(selector,key,value);if(btn&&!btn.disabled){btn.click();return true;}return false;}
 function workspaceTypeLabel(type){return {free:'Libre',timed:'Tiempo',lives:'Vidas',countdown:'Cuenta atrás',streak:'Racha',survival:'Supervivencia',bot:'VS Bot'}[type]||type;}
+function workspaceModeCopy(type){return {free:'Configura libremente tu práctica.',timed:'El tiempo será tu único límite.',lives:'Protege tus vidas y avanza con precisión.',countdown:'Resuelve antes de que termine la cuenta atrás.',streak:'Un error termina la partida.',survival:'Cada pregunta será más difícil.',bot:'Compite contra un rival adaptativo.'}[type]||'';}
 function workspacePanelNav(back=true,next=true,nextLabel='Continuar'){
   const action=nextLabel==='Comenzar misión'?'start':'next';
   return `<div class="workspace-dynamic-nav">${back?'<button class="btn-sec" type="button" data-wizard-action="back">← Atrás</button>':'<span></span>'}${next?`<button class="btn-pri" type="button" data-wizard-action="${action}">${nextLabel}</button>`:''}</div>`;
@@ -13681,8 +13684,11 @@ function workspaceFlowPanels(){
   const type=workspaceDynamicState.type;
   const panels=['type'];
   if(type==='timed'||type==='lives'||type==='countdown'||type==='bot') panels.push('difficulty');
-  panels.push('answer','operations','specific','advanced','quantities');
-  if(selectedOps.includes('×')) panels.push('multiplierRange');
+  panels.push('answer','operations','specific','advanced');
+  const hasAddSub=selectedOps.includes('+')||selectedOps.includes('−');
+  const hasTables=selectedOps.includes('×')||selectedOps.includes('÷');
+  if(workspaceDynamicState.mode!=='solo'||(type==='free'&&(hasAddSub||hasTables))) panels.push('quantities');
+  if(workspaceDynamicState.mode!=='solo'||selectedOps.includes('×')) panels.push('multiplierRange');
   panels.push('summary');
   return panels;
 }
@@ -13712,6 +13718,8 @@ function workspaceSyncSpecific(action,value){
   if(action==='cifras'){selectedCifras=Number(value);normalizeAddSubConfig();if(typeof syncOperationsConfigScreens==='function')syncOperationsConfigScreens();}
   if(action==='addsub'){addSubMode=String(value)==='carry'?'carry':'direct';normalizeAddSubConfig();if(typeof syncOperationsConfigScreens==='function')syncOperationsConfigScreens();}
   if(action==='tblmode'){tblSelMode=String(value)==='all'?'all':'custom';if(tblSelMode==='all')selectedTbls=[...ALL_TBL_PICK];else{selectedTbls=selectedTbls.filter(t=>ALL_TBL_PICK.includes(t));if(!selectedTbls.length)selectedTbls=[ALL_TBL_PICK[0]];}if(typeof v2==='function')v2();}
+  if(action==='tblClear'){tblSelMode='custom';selectedTbls=[];renderCurrentPanel();return;}
+  if(action==='tblInvert'){tblSelMode='custom';selectedTbls=ALL_TBL_PICK.filter(table=>!selectedTbls.includes(table));if(typeof v2==='function')v2();renderCurrentPanel();return;}
   if(action==='table'){
     const table=Number(value);tblSelMode='custom';
     if(selectedTbls.includes(table)) selectedTbls=selectedTbls.filter(item=>item!==table); else selectedTbls.push(table);
@@ -13729,7 +13737,8 @@ function workspaceSyncAdvanced(action,value){
   if(action==='color'){pColor=value;if(typeof buildStep3LocalPickers==='function')buildStep3LocalPickers();}
 }
 function workspaceDynamicPanel(title,copy,body,back=true,next=true,nextLabel='Continuar'){
-  return `<div class="workspace-dynamic-panel"><div class="workspace-dynamic-panel-head"><h3>${title}</h3><p>${copy}</p></div>${body}${workspacePanelNav(back,next,nextLabel)}</div>`;
+  const modeNote=workspaceDynamicState?.mode==='solo'?`<span class="workspace-mode-note">${workspaceModeCopy(workspaceDynamicState.type)}</span>`:'';
+  return `<div class="workspace-dynamic-panel"><div class="workspace-dynamic-panel-head"><h3>${title}</h3><p>${copy}</p>${modeNote}</div>${body}${workspacePanelNav(back,next,nextLabel)}</div>`;
 }
 function renderCurrentPanel(){
   const s=workspaceDynamicState,host=$('workspaceWizardHost');if(!s||!host)return;
@@ -13753,12 +13762,13 @@ function renderCurrentPanel(){
     html=workspaceDynamicPanel('¿Qué quieres practicar?','Puedes elegir una o varias operaciones.',`<div class="workspace-dynamic-options">${buttons.map(b=>workspaceOption(b.dataset.op,b.querySelector('.op-sel-name')?.textContent||b.dataset.op,'',b.dataset.op,selectedOps.includes(b.dataset.op),'operation')).join('')}</div>`);
   }else if(s.panel==='specific'){
     const hasTables=selectedOps.includes('×')||selectedOps.includes('÷');let body='';
-    if(hasTables){const allTables=ALL_TBL_PICK.every(t=>selectedTbls.includes(t));if(allTables&&tblSelMode!=='custom')tblSelMode='all';body='<div class="workspace-dynamic-group-label">Tablas a practicar</div><div class="workspace-dynamic-options compact">'+workspaceOption('all','Todas','Tablas disponibles','▦',allTables&&tblSelMode==='all','tblmode')+workspaceOption('custom','Elegir','Selecciona tablas','✎',tblSelMode==='custom','tblmode')+'</div>';if(tblSelMode==='custom')body+='<div class="workspace-dynamic-options compact">'+ALL_TBL_PICK.map(t=>workspaceOption(t,`Tabla ${t}`,'',`×${t}`,selectedTbls.includes(t),'table')).join('')+'</div>';}
+    if(hasTables){const allTables=ALL_TBL_PICK.every(t=>selectedTbls.includes(t));if(allTables&&tblSelMode!=='custom')tblSelMode='all';body='<div class="workspace-dynamic-group-label">Tablas a practicar</div><div class="workspace-dynamic-options compact">'+workspaceOption('all','Todas','Tablas disponibles','▦',allTables&&tblSelMode==='all','tblmode')+workspaceOption('custom','Elegir','Selecciona tablas','✎',tblSelMode==='custom','tblmode')+'</div>';if(tblSelMode==='custom')body+='<div class="workspace-dynamic-options compact">'+ALL_TBL_PICK.map(t=>workspaceOption(t,`Tabla ${t}`,'',`×${t}`,selectedTbls.includes(t),'table')).join('')+'</div><div class="workspace-table-actions"><button type="button" class="workspace-table-action" data-wizard-action="tblClear">Limpiar</button><button type="button" class="workspace-table-action" data-wizard-action="tblInvert">Revertir</button></div>';}
     if(selectedOps.includes('+')||selectedOps.includes('−'))body+='<div class="workspace-dynamic-group-label">Cantidad de cifras</div><div class="workspace-dynamic-options compact">'+[1,2,3,4,5,6].map(n=>workspaceOption(n,`${n} cifra${n===1?'':'s'}`,'',String(n),selectedCifras===n,'cifras')).join('')+'</div><div class="workspace-dynamic-options compact">'+workspaceOption('direct','Directas','Sin llevar','—',addSubMode==='direct','addsub')+workspaceOption('carry','Llevadas','Con llevar','＋',addSubMode==='carry','addsub')+'</div>';
     html=workspaceDynamicPanel('Ajusta el desafío','Solo aparecen los detalles relacionados con tus operaciones.',body||'<div class="workspace-dynamic-note">No hay una configuración específica adicional para esta elección.</div>');
   }else if(s.panel==='advanced'){
     const colors=typeof PLAYER_COLORS!=='undefined'?PLAYER_COLORS:[];let body='<div class="workspace-dynamic-group-label">Color de jugador</div><div class="workspace-dynamic-options compact">'+colors.map(c=>`<button class="workspace-dynamic-option color-option${pColor===c.hex?' selected':''}" type="button" data-wizard-action="color" data-value="${c.hex}"><span class="workspace-color-swatch" style="background:${c.hex}"></span><strong>${c.name}</strong></button>`).join('')+'</div>';
     body+='<div class="workspace-dynamic-group-label">Visualización</div><div class="workspace-dynamic-options compact">'+workspaceOption('normal','Normal','Operación → resultado','▣',visualMode==='normal','visual')+workspaceOption('inversa','Inversa','Resultado → operación','↔',visualMode==='inversa','visual')+'</div>';
+    if(s.mode==='solo'&&s.type==='free')body+='<div class="workspace-dynamic-group-label">Orden</div><div class="workspace-dynamic-options compact">'+workspaceOption('ordered','En orden','De tabla en tabla','↕',tblManner==='ordered','manner')+workspaceOption('random','Aleatorio','Mezcla aleatoria','⤨',tblManner==='random','manner')+'</div>';
     html=workspaceDynamicPanel('Personaliza tu misión','Elige los últimos detalles antes de revisar el resumen.',body);
   }else if(s.panel==='quantities'){
     const hasAddSub=selectedOps.includes('+')||selectedOps.includes('−');const hasTables=selectedOps.includes('×')||selectedOps.includes('÷');let body='';
@@ -13799,6 +13809,7 @@ function workspaceDynamicHandle(event){
   if(action==='addsub'){workspaceSyncSpecific('addsub',value);renderCurrentPanel();return;}
   if(action==='tblmode'){workspaceSyncSpecific('tblmode',value);renderCurrentPanel();return;}
   if(action==='table'){workspaceSyncSpecific('table',value);renderCurrentPanel();return;}
+  if(action==='tblClear'||action==='tblInvert'){workspaceSyncSpecific(action,value);return;}
   if(action==='qptInput'){workspaceSyncAdvanced('qpt',value);const label=$('workspaceQptValue');if(label)label.textContent=`${value} preguntas por operación`;return;}
   if(action==='qptTableInput'){workspaceSyncAdvanced('qptTable',value);const label=$('workspaceQptTableValue');if(label)label.textContent=`${value} preguntas por tabla`;return;}
   if(action==='multMinInput'||action==='multMaxInput'){const range=action==='multMinInput'?'multMin':'multMax';workspaceSyncAdvanced(range,value);const min=$('workspaceMultMin'),max=$('workspaceMultMax'),minLabel=$('workspaceMultMinValue'),maxLabel=$('workspaceMultMaxValue'),rangeLabel=$('workspaceMultiplierRangeValue');if(min){min.value=multMin;}if(max){max.value=multMax;}if(minLabel)minLabel.textContent=multMin;if(maxLabel)maxLabel.textContent=multMax;if(rangeLabel)rangeLabel.textContent=`${multMin} al ${multMax}`;return;}
