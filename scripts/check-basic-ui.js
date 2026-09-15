@@ -55,6 +55,7 @@ async function main() {
           document.getElementById('openRegBtn') &&
           document.querySelector('.login-brand-panel') &&
           document.querySelector('.login-auth-panel') &&
+          document.getElementById('loginMusicToggle') &&
           document.getElementById('regPanel') &&
           document.getElementById('regName') &&
           document.getElementById('regPin') &&

@@ -1298,6 +1298,9 @@ button:disabled .wave-letter{animation:none;}
 .login-brand-panel{display:none;}
 .login-auth-panel{width:100%;}
 .login-form-hint{color:var(--muted);font-size:11px;font-weight:600;line-height:1.45;margin:-2px 2px 2px;}
+.login-music-toggle{align-self:flex-start;margin:-10px 0 16px;padding:7px 11px;border:1px solid rgba(167,139,250,.25);border-radius:9px;background:rgba(167,139,250,.07);color:#b9b2dd;font:700 10px 'Quicksand',sans-serif;cursor:pointer;transition:background 220ms ease-out,border-color 220ms ease-out,color 220ms ease-out,box-shadow 220ms ease-out;}
+.login-music-toggle:hover{border-color:rgba(167,139,250,.55);background:rgba(167,139,250,.14);color:#f8fafc;}
+.login-music-toggle.is-playing{border-color:rgba(251,191,36,.55);background:rgba(251,191,36,.1);color:#fef3c7;box-shadow:0 0 18px rgba(251,191,36,.16);}
 @media (max-width:430px){
   .reg-panel{padding:10px;}
   .reg-modal-card{padding:18px 15px;border-radius:18px;max-height:calc(100vh - 20px);}
@@ -1843,6 +1846,7 @@ body.frozen-cursor *{cursor:not-allowed!important;}
   #loginScreen .login-title{font-size:36px;}
   #loginScreen .login-subtitle{font-size:13px;}
   #loginScreen .login-server-badge{justify-content:flex-start;margin-bottom:22px;padding:8px 13px;}
+  #loginScreen .login-music-toggle{margin:-10px 0 18px;}
   #loginScreen .login-form{gap:12px;}
   #loginScreen .login-field{min-height:54px;padding:5px 16px 5px 13px;}
   #loginScreen .login-input{text-align:left;font-size:15px;}
@@ -1904,6 +1908,7 @@ body.frozen-cursor *{cursor:not-allowed!important;}
     <span class="login-dot" id="loginDot"></span>
     <span id="loginStatusTxt">Detectando servidor...</span>
   </div>
+  <button class="login-music-toggle" id="loginMusicToggle" type="button" onclick="toggleWorkspaceMusic()" aria-pressed="false" aria-label="Activar música de fondo" title="Activar música de fondo">♪ Activar música de fondo</button>
 
   <!-- Formulario -->
   <div class="login-form">
@@ -13996,10 +14001,11 @@ let workspaceMusicState={context:null,master:null,timer:null,playing:false,userD
 const workspaceMusicStorageKey='math-attack-background-music';
 function workspaceMusicPreferenceDisabled(){try{return localStorage.getItem(workspaceMusicStorageKey)==='off';}catch(_){return false;}}
 function workspaceMusicUpdateButton(){
-  const button=document.getElementById('workspaceMusicToggle');if(!button)return;
   const active=workspaceMusicState.playing;
-  button.classList.toggle('is-playing',active);button.setAttribute('aria-pressed',String(active));
-  button.setAttribute('aria-label',active?'Silenciar música de fondo':'Activar música de fondo');button.title=active?'Silenciar música de fondo':'Activar música de fondo';button.textContent=active?'♫':'♪';
+  document.querySelectorAll('#workspaceMusicToggle,#loginMusicToggle').forEach(button=>{
+    button.classList.toggle('is-playing',active);button.setAttribute('aria-pressed',String(active));
+    button.setAttribute('aria-label',active?'Silenciar música de fondo':'Activar música de fondo');button.title=active?'Silenciar música de fondo':'Activar música de fondo';button.textContent=button.id==='workspaceMusicToggle'?(active?'♫':'♪'):(active?'♫ Música activada':'♪ Activar música de fondo');
+  });
 }
 function workspaceMusicTone(frequency,when,duration,volume,type='sine'){
   const state=workspaceMusicState,context=state.context;if(!context||!state.master)return;
@@ -14028,8 +14034,10 @@ function toggleWorkspaceMusic(){
   state.userDisabled=false;try{localStorage.removeItem(workspaceMusicStorageKey);}catch(_){}workspaceMusicStart();
 }
 function workspaceMusicStartFromGesture(event){
-  if(event?.target?.closest?.('#workspaceMusicToggle'))return;
-  const shell=document.getElementById('studentWorkspace');if(!shell||!shell.classList.contains('workspace-home-active')||workspaceMusicState.playing||workspaceMusicState.userDisabled||workspaceMusicPreferenceDisabled())return;
+  if(event?.target?.closest?.('#workspaceMusicToggle,#loginMusicToggle'))return;
+  const shell=document.getElementById('studentWorkspace'),login=document.getElementById('loginScreen');
+  const eligible=login?.classList.contains('active')||shell?.classList.contains('workspace-home-active');
+  if(!eligible||workspaceMusicState.playing||workspaceMusicState.userDisabled||workspaceMusicPreferenceDisabled())return;
   workspaceMusicStart();
 }
 document.addEventListener('pointerdown',workspaceMusicStartFromGesture,{passive:true});
