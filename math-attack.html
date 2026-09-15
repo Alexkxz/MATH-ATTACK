@@ -1790,6 +1790,28 @@ body.frozen-cursor *{cursor:not-allowed!important;}
 .workspace-range-pair{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:center}.workspace-range-pair .workspace-dynamic-range{margin-bottom:0}
 .workspace-mode-note{display:inline-flex;margin-top:10px;padding:5px 10px;border:1px solid rgba(167,139,250,.2);border-radius:999px;background:rgba(167,139,250,.08);color:#c4b5fd;font-size:10px;font-weight:800}
 .workspace-table-actions{display:flex;justify-content:center;gap:8px;max-width:820px;width:100%;margin:10px auto 0}.workspace-table-action{padding:8px 16px;border:1px solid rgba(167,139,250,.28);border-radius:10px;background:rgba(167,139,250,.08);color:#c4b5fd;font-size:11px;font-weight:800;cursor:pointer;transition:background 220ms ease-out,border-color 220ms ease-out,transform 220ms ease-out}.workspace-table-action:hover{transform:translateY(-1px);border-color:rgba(167,139,250,.62);background:rgba(167,139,250,.16)}
+#studentWorkspace.workspace-home-active .workspace-welcome-hero{isolation:isolate;animation:workspaceHomeHeroIn 620ms cubic-bezier(.2,.75,.25,1) both}
+#studentWorkspace.workspace-home-active .workspace-welcome-hero:before{content:'';position:absolute;inset:-45%;z-index:-1;background:radial-gradient(circle at 30% 40%,rgba(167,139,250,.2),transparent 27%),radial-gradient(circle at 70% 60%,rgba(96,165,250,.16),transparent 30%);animation:workspaceHomeAurora 14s ease-in-out infinite alternate;pointer-events:none}
+#studentWorkspace.workspace-home-active .workspace-welcome-hero:after{animation:workspaceHomeGlow 7s ease-in-out infinite alternate}
+#studentWorkspace.workspace-home-active .workspace-hero-orbit-ring{animation:workspaceHomeOrbit 28s linear infinite}
+#studentWorkspace.workspace-home-active .workspace-hero-bolt{animation:workspaceHomeBolt 6s ease-in-out infinite}
+#studentWorkspace.workspace-home-active .workspace-orbit-dot.one{animation:workspaceHomeDotOne 9s ease-in-out infinite}
+#studentWorkspace.workspace-home-active .workspace-orbit-dot.two{animation:workspaceHomeDotTwo 11s ease-in-out infinite}
+#studentWorkspace.workspace-home-active .workspace-orbit-dot.three{animation:workspaceHomeDotThree 8s ease-in-out infinite}
+#studentWorkspace.workspace-home-active .workspace-stat-card{animation:workspaceHomeCardIn 520ms cubic-bezier(.2,.75,.25,1) both}
+#studentWorkspace.workspace-home-active .workspace-stat-card:nth-child(2){animation-delay:80ms}
+#studentWorkspace.workspace-home-active .workspace-stat-card:nth-child(3){animation-delay:160ms}
+#studentWorkspace.workspace-home-active .workspace-music-btn.is-playing{color:#fef3c7;border-color:rgba(251,191,36,.58);background:rgba(251,191,36,.13);box-shadow:0 0 18px rgba(251,191,36,.18);animation:workspaceMusicPulse 4.5s ease-in-out infinite}
+@keyframes workspaceHomeHeroIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes workspaceHomeAurora{from{transform:translate3d(-3%,1%,0) rotate(-2deg);opacity:.65}to{transform:translate3d(3%,-2%,0) rotate(2deg);opacity:1}}
+@keyframes workspaceHomeGlow{from{opacity:.45;transform:translateX(-2%)}to{opacity:1;transform:translateX(2%)}}
+@keyframes workspaceHomeOrbit{to{transform:rotate(360deg)}}
+@keyframes workspaceHomeBolt{0%,100%{transform:rotate(-8deg) translateY(0)}50%{transform:rotate(-5deg) translateY(-5px)}}
+@keyframes workspaceHomeDotOne{0%,100%{transform:translate(0,0)}50%{transform:translate(-9px,7px)}}
+@keyframes workspaceHomeDotTwo{0%,100%{transform:translate(0,0)}50%{transform:translate(8px,-8px)}}
+@keyframes workspaceHomeDotThree{0%,100%{transform:translate(0,0)}50%{transform:translate(7px,6px)}}
+@keyframes workspaceHomeCardIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes workspaceMusicPulse{0%,100%{box-shadow:0 0 12px rgba(251,191,36,.12)}50%{box-shadow:0 0 22px rgba(251,191,36,.28)}}
 @media (prefers-reduced-motion:reduce){.workspace-shell *{transition:none!important;animation:none!important}}
 </style>
 </head>
@@ -1893,6 +1915,7 @@ body.frozen-cursor *{cursor:not-allowed!important;}
   </div>
   <div class="workspace-top-actions">
     <div class="workspace-aureos"><span>🪙</span><strong id="workspaceAureos">0</strong><small>ÁUREOS</small></div>
+    <button class="workspace-icon-btn workspace-music-btn" id="workspaceMusicToggle" type="button" onclick="toggleWorkspaceMusic()" aria-pressed="false" aria-label="Activar música de fondo" title="Activar música de fondo">♫</button>
   </div>
 </header>
 <div class="workspace-layout">
@@ -13825,7 +13848,7 @@ function mountWorkspaceWizard(){
 }
 function showWorkspaceView(view){
   const shell=$('studentWorkspace');if(!shell)return;
-  mountWorkspaceWizard();shell.classList.remove('workspace-show-module','workspace-show-config','workspace-show-tests','workspace-mode-solo','workspace-mode-duel','workspace-mode-online');
+  mountWorkspaceWizard();shell.classList.remove('workspace-show-module','workspace-show-config','workspace-show-tests','workspace-mode-solo','workspace-mode-duel','workspace-mode-online');shell.classList.toggle('workspace-home-active',view==='home');
   if(view==='home')return;
   if(view==='solo'||view==='duel'||view==='online'){shell.classList.add('workspace-show-config',`workspace-mode-${view}`);workspaceDynamicStart(view);return;}
   if(view==='tests')shell.classList.add('workspace-show-tests');
@@ -13893,6 +13916,53 @@ async function submitStudentTestAnswer(){
 }
 window.addEventListener('online',()=>{if(studentTestState){document.getElementById('studentTestConnection').textContent='Conectado';renderStudentTest();}});
 window.addEventListener('offline',()=>{if(studentTestState)document.getElementById('studentTestConnection').textContent='Sin conexion';});
+</script>
+<script>
+// Ambientación musical local: se inicia después de una interacción del usuario
+// para respetar las políticas de reproducción automática del navegador.
+let workspaceMusicState={context:null,master:null,timer:null,playing:false,userDisabled:false};
+const workspaceMusicStorageKey='math-attack-background-music';
+function workspaceMusicPreferenceDisabled(){try{return localStorage.getItem(workspaceMusicStorageKey)==='off';}catch(_){return false;}}
+function workspaceMusicUpdateButton(){
+  const button=document.getElementById('workspaceMusicToggle');if(!button)return;
+  const active=workspaceMusicState.playing;
+  button.classList.toggle('is-playing',active);button.setAttribute('aria-pressed',String(active));
+  button.setAttribute('aria-label',active?'Silenciar música de fondo':'Activar música de fondo');button.title=active?'Silenciar música de fondo':'Activar música de fondo';button.textContent=active?'♫':'♪';
+}
+function workspaceMusicTone(frequency,when,duration,volume,type='sine'){
+  const state=workspaceMusicState,context=state.context;if(!context||!state.master)return;
+  const oscillator=context.createOscillator(),envelope=context.createGain();oscillator.type=type;oscillator.frequency.setValueAtTime(frequency,when);
+  envelope.gain.setValueAtTime(0.0001,when);envelope.gain.exponentialRampToValueAtTime(volume,when+0.08);envelope.gain.exponentialRampToValueAtTime(0.0001,when+duration);
+  oscillator.connect(envelope);envelope.connect(state.master);oscillator.start(when);oscillator.stop(when+duration+0.05);
+}
+function workspaceMusicSchedulePhrase(){
+  const state=workspaceMusicState,context=state.context;if(!context||!state.playing)return;
+  const start=context.currentTime+0.08,melody=[196,246.94,293.66,329.63,293.66,246.94];
+  melody.forEach((frequency,index)=>workspaceMusicTone(frequency,start+index*0.86,0.68,0.018,'triangle'));
+  workspaceMusicTone(98,start,4.75,0.012,'sine');workspaceMusicTone(146.83,start+2.58,2.1,0.008,'sine');
+}
+function workspaceMusicStart(){
+  const state=workspaceMusicState;if(state.playing||state.userDisabled)return;
+  const AudioContextClass=window.AudioContext||window.webkitAudioContext;if(!AudioContextClass){workspaceMusicUpdateButton();return;}
+  if(!state.context){state.context=new AudioContextClass();state.master=state.context.createGain();state.master.gain.value=0.0001;state.master.connect(state.context.destination);}
+  state.context.resume().catch(()=>{});state.playing=true;state.master.gain.cancelScheduledValues(state.context.currentTime);state.master.gain.exponentialRampToValueAtTime(0.055,state.context.currentTime+0.45);workspaceMusicSchedulePhrase();state.timer=window.setInterval(workspaceMusicSchedulePhrase,5200);workspaceMusicUpdateButton();
+}
+function workspaceMusicStop(){
+  const state=workspaceMusicState;if(!state.playing)return;window.clearInterval(state.timer);state.timer=null;state.playing=false;
+  if(state.context&&state.master){state.master.gain.cancelScheduledValues(state.context.currentTime);state.master.gain.exponentialRampToValueAtTime(0.0001,state.context.currentTime+0.22);state.context.suspend().catch(()=>{});}workspaceMusicUpdateButton();
+}
+function toggleWorkspaceMusic(){
+  const state=workspaceMusicState;if(state.playing){state.userDisabled=true;try{localStorage.setItem(workspaceMusicStorageKey,'off');}catch(_){}workspaceMusicStop();return;}
+  state.userDisabled=false;try{localStorage.removeItem(workspaceMusicStorageKey);}catch(_){}workspaceMusicStart();
+}
+function workspaceMusicStartFromGesture(event){
+  if(event?.target?.closest?.('#workspaceMusicToggle'))return;
+  const shell=document.getElementById('studentWorkspace');if(!shell||!shell.classList.contains('workspace-home-active')||workspaceMusicState.playing||workspaceMusicState.userDisabled||workspaceMusicPreferenceDisabled())return;
+  workspaceMusicStart();
+}
+document.addEventListener('pointerdown',workspaceMusicStartFromGesture,{passive:true});
+document.addEventListener('keydown',workspaceMusicStartFromGesture,{passive:true});
+workspaceMusicUpdateButton();
 </script>
 </body>
 </html>
