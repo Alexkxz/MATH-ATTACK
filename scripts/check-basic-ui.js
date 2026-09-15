@@ -52,9 +52,18 @@ async function main() {
         const ok = await page.evaluate(() => !!(
           document.getElementById('loginNameInput') &&
           document.querySelector('.login-btn-main') &&
-          document.getElementById('openRegBtn')
+          document.getElementById('openRegBtn') &&
+          document.querySelector('.login-brand-panel') &&
+          document.querySelector('.login-auth-panel') &&
+          document.getElementById('regPanel') &&
+          document.getElementById('regName') &&
+          document.getElementById('regPin') &&
+          document.getElementById('regPin2')
         ));
         if (!ok) throw new Error('Alumno: faltan controles principales de inicio');
+        await page.click('#openRegBtn');
+        if (await page.locator('#regPanel.open').count() !== 1) throw new Error('Alumno: el panel de registro no se abre');
+        await page.click('#regPanel .reg-modal-close');
         assertNoCriticalErrors('Alumno', pageErrors, consoleErrors);
         await page.close();
         console.log('OK: alumno carga pantalla inicial sin errores criticos.');

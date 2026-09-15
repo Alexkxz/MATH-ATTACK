@@ -1295,6 +1295,9 @@ button:disabled .wave-letter{animation:none;}
 .reg-btn-cancel:hover{background:rgba(255,255,255,.1);}
 .reg-err{font-size:11px;color:var(--wrong);font-weight:700;min-height:16px;text-align:center;padding:0 4px;}
 .reg-ok{font-size:11px;color:var(--correct);font-weight:700;min-height:16px;text-align:center;padding:0 4px;}
+.login-brand-panel{display:none;}
+.login-auth-panel{width:100%;}
+.login-form-hint{color:var(--muted);font-size:11px;font-weight:600;line-height:1.45;margin:-2px 2px 2px;}
 @media (max-width:430px){
   .reg-panel{padding:10px;}
   .reg-modal-card{padding:18px 15px;border-radius:18px;max-height:calc(100vh - 20px);}
@@ -1812,6 +1815,47 @@ body.frozen-cursor *{cursor:not-allowed!important;}
 @keyframes workspaceHomeDotThree{0%,100%{transform:translate(0,0)}50%{transform:translate(7px,6px)}}
 @keyframes workspaceHomeCardIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 @keyframes workspaceMusicPulse{0%,100%{box-shadow:0 0 12px rgba(251,191,36,.12)}50%{box-shadow:0 0 22px rgba(251,191,36,.28)}}
+@media (min-width:760px){
+  #loginScreen{align-items:center;justify-content:center;padding:32px 48px;overflow-y:auto;background:radial-gradient(circle at 18% 20%,rgba(124,58,237,.16),transparent 30%),radial-gradient(circle at 82% 80%,rgba(96,165,250,.1),transparent 28%)}
+  #loginScreen .login-card{display:grid;grid-template-columns:minmax(320px,.92fr) minmax(390px,1.08fr);width:100%;max-width:980px;height:min(680px,calc(100vh - 64px));min-height:560px;padding:0;overflow:hidden;border:1px solid rgba(167,139,250,.34);border-radius:30px;background:rgba(19,18,47,.94);box-shadow:0 34px 100px rgba(0,0,0,.58),0 0 0 1px rgba(96,165,250,.07);}
+  #loginScreen .login-brand-panel{display:flex;position:relative;flex-direction:column;justify-content:space-between;overflow:hidden;padding:42px 42px 32px;background:linear-gradient(145deg,rgba(52,30,111,.98),rgba(26,29,73,.98) 58%,rgba(15,38,70,.98));isolation:isolate;}
+  #loginScreen .login-brand-panel:before{content:'';position:absolute;inset:-30%;z-index:-2;background:radial-gradient(circle at 20% 22%,rgba(251,191,36,.22),transparent 18%),radial-gradient(circle at 84% 76%,rgba(52,211,153,.16),transparent 25%);animation:loginAurora 14s ease-in-out infinite alternate;}
+  #loginScreen .login-brand-panel:after{content:'';position:absolute;right:-110px;bottom:-130px;width:360px;height:360px;border:1px solid rgba(167,139,250,.18);border-radius:50%;box-shadow:0 0 0 26px rgba(167,139,250,.035),0 0 0 52px rgba(167,139,250,.025);transform:rotate(-18deg);}
+  #loginScreen .login-brand-topline{display:flex;align-items:center;gap:11px;color:#f8fafc;font:800 13px 'Baloo 2',cursive;letter-spacing:1.5px;}
+  #loginScreen .login-brand-topline small{display:block;margin-top:1px;color:#a7abc4;font:700 8px 'Quicksand',sans-serif;letter-spacing:1.2px;}
+  #loginScreen .login-brand-mark{display:grid;place-items:center;width:42px;height:42px;border-radius:14px;background:linear-gradient(145deg,#fbbf24,#f97316);color:#29134b;font-size:23px;box-shadow:0 10px 26px rgba(251,191,36,.24);animation:loginMarkGlow 5s ease-in-out infinite;}
+  #loginScreen .login-brand-content{position:relative;z-index:1;margin-top:44px;}
+  #loginScreen .login-brand-eyebrow{color:#c4b5fd;font-size:9px;font-weight:800;letter-spacing:1.8px;}
+  #loginScreen .login-brand-content h1{max-width:370px;margin-top:14px;color:#fff;font:800 clamp(34px,4vw,48px)/1.02 'Baloo 2',cursive;letter-spacing:-.7px;}
+  #loginScreen .login-brand-content p{max-width:370px;margin-top:16px;color:#c8cbe0;font-size:13px;font-weight:600;line-height:1.65;}
+  #loginScreen .login-brand-features{display:grid;gap:14px;margin-top:34px;}
+  #loginScreen .login-brand-features>div{display:flex;align-items:flex-start;gap:11px;}
+  #loginScreen .login-brand-features>div>span{display:grid;place-items:center;flex:0 0 30px;width:30px;height:30px;border:1px solid rgba(167,139,250,.32);border-radius:10px;background:rgba(167,139,250,.12);color:#ddd6fe;font-size:14px;}
+  #loginScreen .login-brand-features strong{display:block;color:#f1f5f9;font-size:12px;font-weight:800;}
+  #loginScreen .login-brand-features small{display:block;margin-top:2px;color:#9ea4c5;font-size:10px;font-weight:600;line-height:1.35;}
+  #loginScreen .login-brand-footer{position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;gap:12px;color:#9298b9;font-size:10px;font-weight:700;}
+  #loginScreen .login-brand-footer i{display:flex;align-items:flex-end;gap:3px;height:16px;}
+  #loginScreen .login-brand-footer b{display:block;width:3px;border-radius:4px;background:#60a5fa;animation:loginSignal 1.8s ease-in-out infinite;}
+  #loginScreen .login-brand-footer b:nth-child(1){height:7px;animation-delay:0s}.login-brand-footer b:nth-child(2){height:13px;animation-delay:.2s}.login-brand-footer b:nth-child(3){height:9px;animation-delay:.4s}
+  #loginScreen .login-auth-panel{display:flex;flex-direction:column;justify-content:center;min-width:0;padding:48px 64px;background:linear-gradient(180deg,rgba(10,15,34,.24),rgba(10,15,34,.5));}
+  #loginScreen .login-hero{text-align:left;margin-bottom:24px;}
+  #loginScreen .login-logo{font-size:50px;margin-bottom:10px;}
+  #loginScreen .login-title{font-size:36px;}
+  #loginScreen .login-subtitle{font-size:13px;}
+  #loginScreen .login-server-badge{justify-content:flex-start;margin-bottom:22px;padding:8px 13px;}
+  #loginScreen .login-form{gap:12px;}
+  #loginScreen .login-field{min-height:54px;padding:5px 16px 5px 13px;}
+  #loginScreen .login-input{text-align:left;font-size:15px;}
+  #loginScreen .login-pin-digits{justify-content:flex-start;gap:10px;}
+  #loginScreen .login-btn-main{margin-top:7px;min-height:54px;}
+  #loginScreen .login-btn-skip{margin-top:1px;}
+  #loginScreen .login-btn-new{margin-top:3px;padding:11px 14px;}
+  #loginScreen .reg-modal-card{max-width:430px;padding:26px;border-radius:24px;}
+}
+@keyframes loginAurora{from{transform:translate3d(-3%,2%,0) rotate(-2deg);opacity:.72}to{transform:translate3d(4%,-3%,0) rotate(3deg);opacity:1}}
+@keyframes loginMarkGlow{0%,100%{box-shadow:0 10px 26px rgba(251,191,36,.2)}50%{box-shadow:0 10px 34px rgba(251,191,36,.42)}}
+@keyframes loginSignal{0%,100%{opacity:.45;transform:scaleY(.72)}50%{opacity:1;transform:scaleY(1)}}
+@media (prefers-reduced-motion:reduce){#loginScreen *{animation:none!important;transition:none!important}}
 @media (prefers-reduced-motion:reduce){.workspace-shell *{transition:none!important;animation:none!important}}
 </style>
 </head>
@@ -1831,11 +1875,28 @@ body.frozen-cursor *{cursor:not-allowed!important;}
 <div class="screen active" id="loginScreen">
 <div class="login-card">
 
+  <aside class="login-brand-panel" aria-label="Información de MATH-ATTACK">
+    <div class="login-brand-topline"><span class="login-brand-mark">⚡</span><span>MATH-ATTACK <small>ACADEMIA DIGITAL</small></span></div>
+    <div class="login-brand-content">
+      <span class="login-brand-eyebrow">PLATAFORMA DE ENTRENAMIENTO</span>
+      <h1>Convierte cada reto en progreso.</h1>
+      <p>Practica, mejora tu precisión y construye tu récord en una arena matemática hecha para aprender jugando.</p>
+      <div class="login-brand-features">
+        <div><span>✦</span><div><strong>Desafíos a tu ritmo</strong><small>Elige cómo y cuánto quieres practicar.</small></div></div>
+        <div><span>♜</span><div><strong>Progreso guardado</strong><small>Tu avance queda ligado a tu usuario.</small></div></div>
+        <div><span>⚔</span><div><strong>Juega solo o compite</strong><small>Prepárate para la arena individual y los duelos.</small></div></div>
+      </div>
+    </div>
+    <div class="login-brand-footer"><span>Tu próxima respuesta empieza aquí</span><i aria-hidden="true"><b></b><b></b><b></b></i></div>
+  </aside>
+
+  <section class="login-auth-panel" aria-label="Acceso de alumno">
+
   <!-- Logo y titulo -->
   <div class="login-hero">
     <div class="login-logo">⚡</div>
-    <div class="login-title">Math Attack</div>
-    <div class="login-subtitle">¡Aprende las tablas de multiplicar!</div>
+    <div class="login-title">Bienvenido de nuevo</div>
+    <div class="login-subtitle">Continúa tu entrenamiento matemático</div>
   </div>
 
   <!-- Estado del servidor -->
@@ -1846,6 +1907,7 @@ body.frozen-cursor *{cursor:not-allowed!important;}
 
   <!-- Formulario -->
   <div class="login-form">
+    <div class="login-form-hint">Ingresa tus datos para recuperar tu progreso.</div>
     <div class="login-field">
       <span class="login-field-icon">👤</span>
       <input class="login-input" id="loginNameInput" placeholder="Tu nombre de usuario" autocomplete="off"/>
@@ -1868,6 +1930,8 @@ body.frozen-cursor *{cursor:not-allowed!important;}
     <button class="login-btn-skip" onclick="loginSinCuenta()">Jugar sin cuenta</button>
     <button class="login-btn-new" id="openRegBtn" onclick="openRegPanel()" aria-haspopup="dialog">➕ Crear nuevo usuario</button>
   </div>
+
+  </section>
 </div>
 
     <!-- Ventana emergente de registro -->
