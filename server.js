@@ -439,6 +439,16 @@ const server=http.createServer((req,res)=>{
     return;
   }
 
+  // Música ambiental creada para la pantalla de acceso y el escritorio del alumno.
+  if(req.method==='GET'&&url==='/assets/math-attack-ambient.wav'){
+    try{
+      const audio=fs.readFileSync(path.join(__dirname,'assets','math-attack-ambient.wav'));
+      res.writeHead(200,{'Content-Type':'audio/wav','Cache-Control':'public, max-age=86400'});
+      res.end(audio);
+    }catch(_){res.writeHead(404);res.end('');}
+    return;
+  }
+
   // ── Assets frontend del maestro (directorio y extensiones restringidos) ──
   if(req.method==='GET'&&url.startsWith(MAESTRO_FRONTEND_ASSET_ROUTE)){
     sendMaestroFrontendAsset(res,url);

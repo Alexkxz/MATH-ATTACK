@@ -56,12 +56,26 @@ async function main() {
           document.querySelector('.login-brand-panel') &&
           document.querySelector('.login-auth-panel') &&
           document.getElementById('loginMusicToggle') &&
+          document.getElementById('workspaceBackgroundMusic')?.getAttribute('src')?.endsWith('math-attack-ambient.wav') &&
           document.getElementById('regPanel') &&
           document.getElementById('regName') &&
           document.getElementById('regPin') &&
           document.getElementById('regPin2')
         ));
         if (!ok) throw new Error('Alumno: faltan controles principales de inicio');
+        await page.click('#loginMusicToggle');
+        try {
+          await page.waitForFunction(() => {
+            const audio = document.getElementById('workspaceBackgroundMusic');
+            return audio && !audio.paused;
+          }, null, { timeout: 3000 });
+        } catch (error) {
+          const audioState = await page.locator('#workspaceBackgroundMusic').evaluate(audio => ({ paused: audio.paused, readyState: audio.readyState, networkState: audio.networkState, error: audio.error?.message || null }));
+          throw new Error(`${error.message} Estado de audio: ${JSON.stringify(audioState)}`);
+        }
+        const audioPlaying = await page.locator('#workspaceBackgroundMusic').evaluate(audio => !audio.paused && audio.currentTime >= 0);
+        if (!audioPlaying) throw new Error('Alumno: la pista de música no inició');
+        await page.click('#loginMusicToggle');
         await page.click('#openRegBtn');
         if (await page.locator('#regPanel.open').count() !== 1) throw new Error('Alumno: el panel de registro no se abre');
         await page.click('#regPanel .reg-modal-close');

@@ -1876,6 +1876,7 @@ body.frozen-cursor *{cursor:not-allowed!important;}
 
 <!-- Step 1 -->
 <!-- ══ PANTALLA DE LOGIN ══ -->
+<audio id="workspaceBackgroundMusic" src="assets/math-attack-ambient.wav" loop preload="auto" aria-label="Música de fondo"></audio>
 <div class="screen active" id="loginScreen">
 <div class="login-card">
 
@@ -14021,12 +14022,21 @@ function workspaceMusicSchedulePhrase(){
 }
 function workspaceMusicStart(){
   const state=workspaceMusicState;if(state.playing||state.userDisabled)return;
+  const audio=document.getElementById('workspaceBackgroundMusic');
+  if(audio){
+    audio.volume=.32;
+    const playResult=audio.play();
+    if(playResult&&typeof playResult.then==='function'){
+      playResult.then(()=>{if(state.userDisabled){audio.pause();return;}state.playing=true;workspaceMusicUpdateButton();}).catch(()=>{state.playing=false;workspaceMusicUpdateButton();});
+    }else{state.playing=true;workspaceMusicUpdateButton();}
+    return;
+  }
   const AudioContextClass=window.AudioContext||window.webkitAudioContext;if(!AudioContextClass){workspaceMusicUpdateButton();return;}
   if(!state.context){state.context=new AudioContextClass();state.master=state.context.createGain();state.master.gain.value=0.0001;state.master.connect(state.context.destination);}
   state.context.resume().catch(()=>{});state.playing=true;state.master.gain.cancelScheduledValues(state.context.currentTime);state.master.gain.exponentialRampToValueAtTime(0.055,state.context.currentTime+0.45);workspaceMusicSchedulePhrase();state.timer=window.setInterval(workspaceMusicSchedulePhrase,5200);workspaceMusicUpdateButton();
 }
 function workspaceMusicStop(){
-  const state=workspaceMusicState;if(!state.playing)return;window.clearInterval(state.timer);state.timer=null;state.playing=false;
+  const state=workspaceMusicState,audio=document.getElementById('workspaceBackgroundMusic');if(audio)audio.pause();if(!state.playing&&!state.context){workspaceMusicUpdateButton();return;}window.clearInterval(state.timer);state.timer=null;state.playing=false;
   if(state.context&&state.master){state.master.gain.cancelScheduledValues(state.context.currentTime);state.master.gain.exponentialRampToValueAtTime(0.0001,state.context.currentTime+0.22);state.context.suspend().catch(()=>{});}workspaceMusicUpdateButton();
 }
 function toggleWorkspaceMusic(){
