@@ -6,6 +6,7 @@ const os = require('os');
 const path = require('path');
 const { createTestStore } = require('../src/server/exams/testStore');
 const { createTestService } = require('../src/server/exams/testService');
+const { generateConfiguredQuestions } = require('../src/server/exams/studentTestFlowService');
 const { validateMatrix } = require('../src/client/maestro/tableRanges');
 
 const html = fs.readFileSync('maestro.html', 'utf8');
@@ -17,6 +18,17 @@ assert.match(html, /pr-matrix-swatch included/);
 assert.match(html, /pr-matrix-swatch excluded/);
 assert.match(html, /mult\.matrix=prMatrixSelection\('mult'\)/);
 assert.match(html, /div\.matrix=prMatrixSelection\('div'\)/);
+assert.match(html, /data-matrix-row="\$\{row\}"/);
+assert.match(html, /data-matrix-col="\$\{col\}"/);
+assert.match(html, /prMatrixToggleRow/);
+assert.match(html, /prMatrixToggleColumn/);
+assert.match(html, /dataset\.state=state/);
+assert(!html.includes('prRangeTable_mult'), 'no debe existir el selector de rangos antiguo');
+assert(!html.includes('prRangeFrom_mult'), 'no debe existir el rango minimo antiguo');
+assert(!html.includes('prRangeTo_mult'), 'no debe existir el rango maximo antiguo');
+assert(!html.includes('prRangeTable_div'), 'no debe existir el selector de division antiguo');
+assert(!html.includes('function prAddRange'), 'no debe existir la logica de rangos antigua');
+assert(!html.includes('function prRenderRanges'), 'no debe existir el render antiguo de rangos');
 assert.match(html, /id="prBuilderNext"[^>]*>Continuar/);
 assert.match(html, /id="prBuilderPrevious"[^>]*>Regresar/);
 assert.match(html, /id="prStartConfiguredTest"/);
@@ -31,6 +43,9 @@ const cells = ['0x0', '0x12', '12x0', '12x12'];
 assert.doesNotThrow(() => validateMatrix(cells));
 assert.throws(() => validateMatrix(['13x1']), /matrix/);
 assert.throws(() => validateMatrix(['1x1', '1x1']), /matrix/);
+const questions = generateConfiguredQuestions({ opsConfig: { mult: { matrix: ['2x8', '5x8', '7x3'], manner: 'ordered' } } }, () => 0.1);
+assert.deepStrictEqual(questions.map(question => [question.a, question.b]), [[8, 2], [8, 5], [3, 7]], 'solo las celdas verdes deben generar preguntas');
+assert.deepStrictEqual(generateConfiguredQuestions({ opsConfig: { mult: { matrix: [] } } }, () => 0.1), [], 'una matriz vacía debe excluir todas las combinaciones');
 
 const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'math-attack-config-grid-'));
 try {

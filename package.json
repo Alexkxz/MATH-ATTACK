@@ -37,6 +37,7 @@
     "check:server": "node scripts/check-server-basic.js",
     "check:ui": "node scripts/check-basic-ui.js",
     "check:responsive": "node scripts/check-responsive.js",
+    "check:individual-ui": "node scripts/check-individual-ui.js",
     "check:powers-ui": "node scripts/check-multiplayer-powers-ui.js",
     "check:admin-auth": "node scripts/check-admin-auth.js",
     "check:test-model": "node scripts/check-test-model.js",

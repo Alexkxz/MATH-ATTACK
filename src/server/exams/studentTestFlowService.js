@@ -45,6 +45,16 @@ function generateConfiguredQuestions(configuration = {}, random = Math.random) {
     if (op === '×' || op === '÷') {
       const tables = Array.isArray(config.tables) && config.tables.length ? config.tables : (Array.isArray(configuration.tables) && configuration.tables.length ? configuration.tables : [1]);
       const qty = Math.max(1, integer(config.qty, integer(configuration.total, 1)));
+      if (Array.isArray(config.matrix)) {
+        const selected = [...new Set(config.matrix.map(value => String(value).split('x').map(Number)).filter(([factor, table]) => Number.isInteger(factor) && Number.isInteger(table) && factor >= 0 && factor <= 12 && table >= 0 && table <= 12 && (operation !== 'div' || table > 0)))];
+        for (const [factor, table] of selected) {
+          const a = operation === 'div' ? table * factor : table;
+          const b = operation === 'div' ? table : factor;
+          questions.push({ questionId: randomUUID(), op, a, b, answer: operation === 'div' ? factor : a * b });
+        }
+        if (config.manner === 'random') questions.splice(operationStart, questions.length - operationStart, ...shuffle(questions.slice(operationStart), random));
+        continue;
+      }
       // El contrato de rangos usa el valor que acompaña a la tabla: en
       // multiplicación es el factor permitido y en división es el cociente
       // (factor) permitido para construir `dividendo ÷ divisor`. Estos rangos
