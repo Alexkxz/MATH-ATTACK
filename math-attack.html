@@ -11249,6 +11249,14 @@ function goStart(){
   $('step3LocalScreen').classList.remove('active');
   $('step3bLocalScreen').classList.remove('active');
   $('step1Screen').classList.add('active');
+  // Regresar al inicio debe mostrar el escritorio limpio, sin conservar el panel
+  // ni la ruta del asistente dinámico de la partida anterior.
+  if(typeof workspaceDynamicState!=='undefined') workspaceDynamicState=null;
+  const workspaceShell=$('studentWorkspace');
+  if(workspaceShell) workspaceShell.classList.remove('workspace-dynamic-wizard','workspace-mode-solo','workspace-mode-duel','workspace-mode-online');
+  document.querySelectorAll('#workspaceSidebar .workspace-nav-item').forEach(item=>item.classList.toggle('active',item.dataset.workspaceTarget==='home'));
+  if($('workspaceStatusText')) $('workspaceStatusText').textContent='Sesión lista';
+  showWorkspaceView('home');
   // Cerrar lanWS al volver al menú: evita que quede una sesión fantasma duplicada junto a soloWS
   if(lanWS){ try{ lanWS.onclose=null; lanWS.close(); }catch(e){} lanWS=null; }
   clearInterval(lanRefreshIv);

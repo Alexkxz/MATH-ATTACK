@@ -170,6 +170,20 @@ async function main() {
     result('Catálogo de modos', types.length === 7, `Modos: ${types.join(', ')}`);
     for (const type of types) { try { await auditMode(page, type); } catch (error) { result(`${type} · fatal`, false, error.message); } }
     try { await auditDivision(page); } catch (error) { result('División · fatal', false, error.message); }
+    await page.evaluate(() => goStart());
+    const homeState = await page.evaluate(() => {
+      const shell = document.querySelector('#studentWorkspace');
+      const homeNav = document.querySelector('#workspaceSidebar [data-workspace-target="home"]');
+      return {
+        activeScreens: Array.from(document.querySelectorAll('.screen.active')).map(screen => screen.id),
+        home: shell?.classList.contains('workspace-home-active'),
+        configHidden: !shell?.classList.contains('workspace-show-config'),
+        wizardReset: !shell?.classList.contains('workspace-dynamic-wizard'),
+        homeNavActive: homeNav?.classList.contains('active'),
+        status: document.querySelector('#workspaceStatusText')?.textContent
+      };
+    });
+    result('Retorno al inicio · pantalla limpia', homeState.activeScreens.length === 1 && homeState.activeScreens[0] === 'step1Screen' && homeState.home && homeState.configHidden && homeState.wizardReset && homeState.homeNavActive && homeState.status === 'Sesión lista', JSON.stringify(homeState));
     result('Errores de ejecución', pageErrors.length === 0, pageErrors.length ? pageErrors.join(' | ') : 'Sin pageerror');
     result('Errores de consola', consoleErrors.length === 0, consoleErrors.length ? consoleErrors.join(' | ') : 'Sin errores de consola');
   } finally { await browser.close(); testServer.server.kill('SIGINT'); }
