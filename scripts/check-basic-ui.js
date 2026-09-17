@@ -75,6 +75,13 @@ async function main() {
         }
         const audioPlaying = await page.locator('#workspaceBackgroundMusic').evaluate(audio => !audio.paused && audio.currentTime >= 0);
         if (!audioPlaying) throw new Error('Alumno: la pista de música no inició');
+        await page.evaluate(() => workspaceMusicPauseForGame());
+        if (await page.locator('#workspaceBackgroundMusic').evaluate(audio => !audio.paused)) throw new Error('Alumno: la música no se detuvo al iniciar la partida');
+        await page.evaluate(() => workspaceMusicResumeAfterGame());
+        await page.waitForFunction(() => {
+          const audio = document.getElementById('workspaceBackgroundMusic');
+          return audio && !audio.paused;
+        }, null, { timeout: 3000 });
         await page.click('#loginMusicToggle');
         await page.click('#openRegBtn');
         if (await page.locator('#regPanel.open').count() !== 1) throw new Error('Alumno: el panel de registro no se abre');

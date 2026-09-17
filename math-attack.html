@@ -7914,6 +7914,7 @@ $('nameInput2').addEventListener('input',v2);
 // ══════════════════════════════════════════════════════
 function beginCountdown(){
   if(gameMode==='online'){ openMP(); return; }
+  workspaceMusicPauseForGame();
   if(gameMode==='duel'){
     const n2b=$('nameInput2b');
     pName2=(n2b&&n2b.value.trim())?n2b.value.trim():($('nameInput2').value.trim()||'Jugador 2');
@@ -7927,6 +7928,7 @@ function beginCountdown(){
 // Calibra al bot con el historial reciente del alumno y lanza la partida directo
 // (sin pasar por selección de tablas/dificultad — eso lo decide el propio historial).
 function startBotGame(){
+  workspaceMusicPauseForGame();
   isBotMode=true;
   const hist=(_botHistoryCache||[]).filter(h=>h.gameMode==='solo'&&h.tblResults&&selectedOps.some(op=>!!h.tblResults[op]));
   let correct=0,wrong=0,paceSum=0,paceN=0;
@@ -8824,6 +8826,7 @@ function calcTotalQ(){
 }
 
 function initGame(isOnline){
+  workspaceMusicPauseForGame();
   LOG.game(`initGame — mode:${gameMode} type:${gameType} diff:${difficulty} qpt:${qpt} qptPerTable:${qptPerTable} online:${isOnline}`);
   const totalQ=calcTotalQ();
   if(_examPrebuiltQuestions){
@@ -10558,6 +10561,7 @@ function showResults(){
   $('gameWrap').classList.remove('online-layout');
   document.body.classList.remove('game-active'); // restaurar botones flotantes
   $('resultsScreen').classList.add('active');
+  workspaceMusicResumeAfterGame();
   $('scoreBar').classList.remove('visible');
   $('soloLives').classList.remove('visible');
   $('globalTimer').classList.remove('visible');
@@ -11216,6 +11220,7 @@ function doOnlineReplay(){
 }
 
 function replayGame(){
+  workspaceMusicPauseForGame();
   const tbls=getConfiguredTables();
   if(gameType==='countdown'&&tblManner==='ordered'){
     questions=buildQCountdownCycle(tbls);
@@ -11327,6 +11332,7 @@ function goStart(){
   document.querySelectorAll('#workspaceSidebar .workspace-nav-item').forEach(item=>item.classList.toggle('active',item.dataset.workspaceTarget==='home'));
   if($('workspaceStatusText')) $('workspaceStatusText').textContent='Sesión lista';
   showWorkspaceView('home');
+  workspaceMusicResumeAfterGame();
   // Cerrar lanWS al volver al menú: evita que quede una sesión fantasma duplicada junto a soloWS
   if(lanWS){ try{ lanWS.onclose=null; lanWS.close(); }catch(e){} lanWS=null; }
   clearInterval(lanRefreshIv);
@@ -13998,7 +14004,7 @@ window.addEventListener('offline',()=>{if(studentTestState)document.getElementBy
 <script>
 // Ambientación musical local: se inicia después de una interacción del usuario
 // para respetar las políticas de reproducción automática del navegador.
-let workspaceMusicState={context:null,master:null,timer:null,playing:false,userDisabled:false};
+let workspaceMusicState={context:null,master:null,timer:null,playing:false,userDisabled:false,resumeAfterGame:false,playToken:0};
 const workspaceMusicStorageKey='math-attack-background-music';
 function workspaceMusicPreferenceDisabled(){try{return localStorage.getItem(workspaceMusicStorageKey)==='off';}catch(_){return false;}}
 function workspaceMusicUpdateButton(){
@@ -14021,13 +14027,13 @@ function workspaceMusicSchedulePhrase(){
   workspaceMusicTone(98,start,4.75,0.012,'sine');workspaceMusicTone(146.83,start+2.58,2.1,0.008,'sine');
 }
 function workspaceMusicStart(){
-  const state=workspaceMusicState;if(state.playing||state.userDisabled)return;
+  const state=workspaceMusicState;if(state.playing||state.userDisabled)return;const playToken=++state.playToken;
   const audio=document.getElementById('workspaceBackgroundMusic');
   if(audio){
     audio.volume=.32;
     const playResult=audio.play();
     if(playResult&&typeof playResult.then==='function'){
-      playResult.then(()=>{if(state.userDisabled){audio.pause();return;}state.playing=true;workspaceMusicUpdateButton();}).catch(()=>{state.playing=false;workspaceMusicUpdateButton();});
+      playResult.then(()=>{if(playToken!==state.playToken||state.userDisabled){audio.pause();return;}state.playing=true;workspaceMusicUpdateButton();}).catch(()=>{if(playToken===state.playToken){state.playing=false;workspaceMusicUpdateButton();}});
     }else{state.playing=true;workspaceMusicUpdateButton();}
     return;
   }
@@ -14036,8 +14042,14 @@ function workspaceMusicStart(){
   state.context.resume().catch(()=>{});state.playing=true;state.master.gain.cancelScheduledValues(state.context.currentTime);state.master.gain.exponentialRampToValueAtTime(0.055,state.context.currentTime+0.45);workspaceMusicSchedulePhrase();state.timer=window.setInterval(workspaceMusicSchedulePhrase,5200);workspaceMusicUpdateButton();
 }
 function workspaceMusicStop(){
-  const state=workspaceMusicState,audio=document.getElementById('workspaceBackgroundMusic');if(audio)audio.pause();if(!state.playing&&!state.context){workspaceMusicUpdateButton();return;}window.clearInterval(state.timer);state.timer=null;state.playing=false;
+  const state=workspaceMusicState,audio=document.getElementById('workspaceBackgroundMusic');state.playToken+=1;if(audio)audio.pause();if(!state.playing&&!state.context){workspaceMusicUpdateButton();return;}window.clearInterval(state.timer);state.timer=null;state.playing=false;
   if(state.context&&state.master){state.master.gain.cancelScheduledValues(state.context.currentTime);state.master.gain.exponentialRampToValueAtTime(0.0001,state.context.currentTime+0.22);state.context.suspend().catch(()=>{});}workspaceMusicUpdateButton();
+}
+function workspaceMusicPauseForGame(){
+  const state=workspaceMusicState;state.resumeAfterGame=state.resumeAfterGame||state.playing;workspaceMusicStop();
+}
+function workspaceMusicResumeAfterGame(){
+  const state=workspaceMusicState;if(!state.resumeAfterGame)return;state.resumeAfterGame=false;workspaceMusicStart();
 }
 function toggleWorkspaceMusic(){
   const state=workspaceMusicState;if(state.playing){state.userDisabled=true;try{localStorage.setItem(workspaceMusicStorageKey,'off');}catch(_){}workspaceMusicStop();return;}
