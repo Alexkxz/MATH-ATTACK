@@ -56,7 +56,7 @@ async function main() {
           document.querySelector('.login-brand-panel') &&
           document.querySelector('.login-auth-panel') &&
           document.getElementById('loginMusicToggle') &&
-          document.getElementById('workspaceBackgroundMusic')?.getAttribute('src')?.endsWith('math-attack-ambient.wav') &&
+          document.getElementById('workspaceBackgroundMusic')?.getAttribute('src')?.includes('math-attack-ambient.wav') &&
           document.getElementById('regPanel') &&
           document.getElementById('regName') &&
           document.getElementById('regPin') &&
