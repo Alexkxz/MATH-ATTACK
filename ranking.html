@@ -495,10 +495,16 @@ tr:hover td{background:rgba(255,255,255,.03)}
 <style>
   .exam-controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:0 0 14px;padding:10px;border:1px solid rgba(167,139,250,.18);border-radius:8px;background:rgba(167,139,250,.05)}
   .exam-controls input,.exam-controls select{min-width:140px;flex:1;background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.12);border-radius:5px;padding:8px 9px;color:#e2e8f0;font-size:12px}
-  .exam-identifiers{min-width:260px;display:grid;gap:3px;white-space:normal;font-size:10px}.exam-identifiers strong{color:#e2e8f0;font-size:12px}.exam-identifiers code{color:#67e8f9;font:10px monospace;overflow-wrap:anywhere}.exam-identifiers a{color:#67e8f9;text-decoration:none}.exam-copy-id{padding:2px 5px;border:1px solid rgba(103,232,249,.35);border-radius:3px;background:rgba(103,232,249,.08);color:#a5f3fc;font-size:9px;cursor:pointer}.exam-indicator{display:inline-block;margin:1px 2px 1px 0;padding:2px 4px;border-radius:3px;background:rgba(167,139,250,.12);color:#c4b5fd}
+  .exam-identifiers{min-width:180px;display:grid;gap:3px;white-space:normal;font-size:10px}.exam-identifiers strong{color:#e2e8f0;font-size:12px}.exam-identifiers a{color:#67e8f9;text-decoration:none}
   @media(max-width:700px){.exam-controls{align-items:stretch}.exam-controls input,.exam-controls select{width:100%;min-width:100%}.exam-identifiers{min-width:220px}}
-  .exam-analytics{margin:0 0 20px}.exam-analytics h3{margin:0 0 10px;color:#e2e8f0;font-size:13px}.exam-stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(125px,1fr));gap:8px;margin-bottom:14px}.exam-stat-card{padding:10px 12px;border:1px solid rgba(148,163,184,.14);border-radius:10px;background:rgba(15,23,42,.45)}.exam-stat-card strong{display:block;font-size:21px;color:#f8fafc}.exam-stat-card span{display:block;margin-top:4px;color:#94a3b8;font-size:10px;text-transform:uppercase}.exam-analytics-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.exam-analytics-card{padding:12px;border:1px solid rgba(148,163,184,.12);border-radius:12px;background:rgba(15,23,42,.35);overflow:auto}.exam-analytics-table{width:100%;border-collapse:collapse;font-size:11px}.exam-analytics-table th,.exam-analytics-table td{padding:6px 7px;border-bottom:1px solid rgba(148,163,184,.1);text-align:left;white-space:nowrap}.exam-analytics-table th{color:#94a3b8;font-size:10px;text-transform:uppercase}.exam-analytics-table td{color:#cbd5e1}.exam-analytics-table code{color:#67e8f9;font-size:10px}.exam-bar-row{display:grid;grid-template-columns:minmax(90px,1fr) 1.6fr 42px;gap:7px;align-items:center;margin:7px 0;font-size:10px}.exam-bar-label{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#cbd5e1}.exam-bar-track{height:8px;border-radius:99px;background:rgba(148,163,184,.14);overflow:hidden}.exam-bar-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,#60a5fa,#a78bfa)}.exam-empty-note{color:#94a3b8;font-size:12px;padding:8px 0}.exam-analytics-caption{margin:0 0 8px;color:#94a3b8;font-size:11px}
-  @media(max-width:700px){.exam-analytics-grid{grid-template-columns:1fr}.exam-analytics-table{font-size:10px}.exam-bar-row{grid-template-columns:minmax(75px,1fr) 1.3fr 38px}}
+  .exam-analytics{margin:0 0 20px}.exam-analytics h3{margin:0 0 10px;color:#e2e8f0;font-size:13px}.exam-analysis-intro{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 12px;padding:14px 16px;border:1px solid rgba(167,139,250,.16);border-radius:12px;background:rgba(167,139,250,.06)}.exam-analysis-intro h3{margin:0 0 4px}.exam-analysis-intro p{margin:0;color:#94a3b8;font-size:11px}.exam-analysis-signal{min-width:130px;padding:8px 12px;text-align:center;border-radius:10px;background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.2)}.exam-analysis-signal strong{display:block;color:#fca5a5;font-size:20px}.exam-analysis-signal span{display:block;color:#fda4af;font-size:9px;text-transform:uppercase}.exam-stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(125px,1fr));gap:8px;margin-bottom:14px}.exam-stat-card{padding:10px 12px;border:1px solid rgba(148,163,184,.14);border-radius:10px;background:rgba(15,23,42,.45)}.exam-stat-card strong{display:block;font-size:21px;color:#f8fafc}.exam-stat-card span{display:block;margin-top:4px;color:#94a3b8;font-size:10px;text-transform:uppercase}.exam-analytics-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.exam-analytics-card{padding:12px;border:1px solid rgba(148,163,184,.12);border-radius:12px;background:rgba(15,23,42,.35);overflow:auto}.exam-card-wide{grid-column:1/-1}.exam-analytics-table{width:100%;border-collapse:collapse;font-size:11px}.exam-analytics-table th,.exam-analytics-table td{padding:6px 7px;border-bottom:1px solid rgba(148,163,184,.1);text-align:left;white-space:nowrap}.exam-analytics-table th{color:#94a3b8;font-size:10px;text-transform:uppercase}.exam-analytics-table td{color:#cbd5e1}.exam-analytics-table td strong{font-size:11px}.exam-analytics-table td small{display:block;margin-top:3px}.exam-analytics-table code{color:#67e8f9;font-size:10px}.exam-bar-row{display:grid;grid-template-columns:minmax(90px,1fr) 1.6fr 42px;gap:7px;align-items:center;margin:7px 0;font-size:10px}.exam-bar-label{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#cbd5e1}.exam-bar-track{height:8px;border-radius:99px;background:rgba(148,163,184,.14);overflow:hidden}.exam-bar-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,#60a5fa,#a78bfa)}.exam-empty-note{color:#94a3b8;font-size:12px;padding:8px 0}.exam-analytics-caption{margin:0 0 8px;color:#94a3b8;font-size:11px}
+  @media(max-width:700px){.exam-analysis-intro{align-items:stretch;flex-direction:column}.exam-analysis-signal{min-width:0}.exam-analytics-grid{grid-template-columns:1fr}.exam-analytics-table{font-size:10px}.exam-bar-row{grid-template-columns:minmax(75px,1fr) 1.3fr 38px}}
+  .exam-pdf-btn{background:rgba(52,211,153,.14);border:1px solid rgba(52,211,153,.3);color:#6ee7b7;border-radius:8px;padding:7px 10px;font-size:11px;font-weight:800;cursor:pointer}.exam-detail-actions{display:flex;gap:8px;align-items:center}
+  .exam-navigation{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 14px}.exam-back-btn{background:rgba(167,139,250,.12);border:1px solid rgba(167,139,250,.25);color:#c4b5fd;border-radius:8px;padding:7px 10px;font-size:11px;font-weight:700;cursor:pointer}.exam-breadcrumb{color:#94a3b8;font-size:11px}.exam-day-grid,.exam-test-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-bottom:20px}.exam-day-card,.exam-test-card{display:block;width:100%;text-align:left;padding:16px;border:1px solid rgba(148,163,184,.14);border-radius:14px;background:linear-gradient(145deg,rgba(30,41,59,.74),rgba(15,23,42,.72));color:#e2e8f0;cursor:pointer;transition:.18s}.exam-day-card:hover,.exam-test-card:hover{border-color:rgba(167,139,250,.5);background:rgba(91,33,182,.14);transform:translateY(-1px)}.exam-day-title,.exam-test-title{font-size:15px;font-weight:800;color:#c4b5fd}.exam-day-meta,.exam-test-meta{margin-top:6px;color:#94a3b8;font-size:11px;line-height:1.5}.exam-day-stats,.exam-test-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:12px}.exam-day-stat,.exam-test-stat{padding:7px 5px;border-radius:8px;background:rgba(255,255,255,.04);text-align:center}.exam-day-stat strong,.exam-test-stat strong{display:block;font-size:15px;color:#f8fafc}.exam-day-stat span,.exam-test-stat span{display:block;margin-top:3px;color:#94a3b8;font-size:9px;text-transform:uppercase}.exam-section-label{margin:0 0 10px;color:#94a3b8;font-size:11px;font-weight:800;letter-spacing:.65px;text-transform:uppercase}.exam-detail-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:0 0 14px;padding:14px 16px;border:1px solid rgba(167,139,250,.18);border-radius:14px;background:rgba(167,139,250,.06)}.exam-detail-heading h2{margin:0;color:#f8fafc;font-size:18px}.exam-detail-heading p{margin:5px 0 0;color:#94a3b8;font-size:11px}.exam-podium{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:0 0 18px}.exam-place-card{padding:12px;border-radius:12px;background:rgba(15,23,42,.55);border:1px solid rgba(148,163,184,.12);text-align:center}.exam-place-card.place-1{border-color:rgba(251,191,36,.42);background:rgba(251,191,36,.08)}.exam-place-card.place-2{border-color:rgba(203,213,225,.3)}.exam-place-card.place-3{border-color:rgba(180,83,9,.35)}.exam-place-rank{font-size:20px}.exam-place-name{margin-top:5px;font-weight:800;font-size:13px;word-break:break-word}.exam-place-meta{margin-top:5px;color:#94a3b8;font-size:10px;line-height:1.55}.exam-detail-section-title{margin:18px 0 9px;color:#cbd5e1;font-size:12px;font-weight:800}.exam-empty-note strong{color:#e2e8f0}
+  @media(max-width:700px){.exam-podium{grid-template-columns:1fr}.exam-day-grid,.exam-test-grid{grid-template-columns:1fr}.exam-detail-heading h2{font-size:16px}}
+  .exam-table-grid-panel{margin:18px 0 0;padding:14px;border:1px solid rgba(148,163,184,.12);border-radius:14px;background:rgba(15,23,42,.42)}.exam-table-grid-header{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:10px}.exam-table-grid-header h3{margin:0;color:#e2e8f0;font-size:13px}.exam-table-grid-header p{margin:4px 0 0;color:#94a3b8;font-size:11px}.exam-table-grid-legend{display:flex;gap:8px;flex-wrap:wrap;color:#cbd5e1;font-size:10px}.exam-table-grid-legend span{display:inline-flex;align-items:center;gap:4px}.exam-table-grid-legend i{width:9px;height:9px;border-radius:3px;display:inline-block}.exam-table-grid-legend .good i{background:#34d399}.exam-table-grid-legend .bad i{background:#f87171}.exam-table-grid-legend .timeout i{background:#94a3b8}.exam-table-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:7px}.exam-table-cell{min-height:64px;padding:8px 6px;border:1px solid rgba(148,163,184,.18);border-radius:9px;text-align:center;background:rgba(100,116,139,.14)}.exam-table-cell.good{background:rgba(52,211,153,.14);border-color:rgba(52,211,153,.48)}.exam-table-cell.bad{background:rgba(248,113,113,.14);border-color:rgba(248,113,113,.48)}.exam-table-cell.timeout{background:rgba(100,116,139,.28);border-color:rgba(148,163,184,.45)}.exam-table-cell-label{display:block;color:#f8fafc;font-size:12px;font-weight:800}.exam-table-cell-status{display:block;margin-top:4px;color:#cbd5e1;font-size:9px}.exam-table-cell-count{display:block;margin-top:3px;color:#94a3b8;font-size:9px}.exam-student-row-selected td{box-shadow:inset 0 2px 0 rgba(103,232,249,.65),inset 0 -2px 0 rgba(103,232,249,.65)}@media(max-width:700px){.exam-table-grid-panel{padding:11px}.exam-table-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+  .exam-detail-toggle{min-width:94px;padding:7px 12px;border:1px solid rgba(167,139,250,.38);border-radius:9px;background:linear-gradient(135deg,rgba(167,139,250,.2),rgba(103,232,249,.1));color:#ddd6fe;font-size:12px;font-weight:800;cursor:pointer;box-shadow:0 4px 12px rgba(2,6,23,.18);transition:.18s}.exam-detail-toggle:hover,.exam-detail-toggle.is-open{border-color:rgba(103,232,249,.7);background:linear-gradient(135deg,rgba(167,139,250,.3),rgba(34,211,238,.18));color:#ecfeff;transform:translateY(-1px)}
+  .exam-table-operation{margin-top:12px}.exam-table-operation-title{margin:0 0 6px;color:#67e8f9;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.55px}.exam-results-matrix{display:grid;grid-template-columns:repeat(12,minmax(58px,1fr));gap:4px;min-width:720px}.exam-results-matrix-wrap{max-width:100%;overflow-x:auto;padding-bottom:4px}.exam-table-cell{min-height:70px;padding:7px 4px;border-radius:5px}.exam-table-cell-breakdown{display:block;margin-top:4px;color:#cbd5e1;font-size:8px;line-height:1.35}@media(max-width:700px){.exam-results-matrix{grid-template-columns:repeat(6,minmax(58px,1fr));min-width:390px}}
 </style>
 </head>
 <body>
@@ -862,6 +868,8 @@ function initChartCardReorder(){
 
 function setTab(tab){
   currentTab=tab;
+  if(tab==='pruebas') history.replaceState({},'','#pruebas');
+  if(tab!=='pruebas'&&location.hash.startsWith('#pruebas')) history.replaceState({},'',location.pathname+location.search);
   selectedGameIds.clear();
   getTabElements().forEach(el=>{
     el.classList.toggle('active',el.dataset.tab===tab);
@@ -989,6 +997,14 @@ function normalizeTableDetail(detail){
   });
   return out;
 }
+function normalizeQuestionDetail(detail){
+  const out={};
+  Object.entries(detail||{}).forEach(([op,questions])=>{
+    const key=normalizeOpKey(op);
+    out[key]=(Array.isArray(questions)?questions:[]).map(q=>({...q,question:repairText(q?.question||'')}));
+  });
+  return out;
+}
 function normalizeStepDetail(detail){
   const out={};
   Object.entries(detail||{}).forEach(([op,cats])=>{
@@ -1015,6 +1031,7 @@ function normalizeRankingRow(row){
     vs:repairText(row.vs||''),
     tblResults:normalizeTblResults(row.tblResults),
     tableDetail:normalizeTableDetail(row.tableDetail),
+    questionDetail:normalizeQuestionDetail(row.questionDetail),
     stepDetail:normalizeStepDetail(row.stepDetail)
   };
 }
@@ -3367,11 +3384,11 @@ function renderOfficialExamAnalytics(rows){
   const avg=safeExamPercent(examRows);
   const best=examMetric(examRows,row=>row.pct,'max');
   const lowest=examMetric(examRows,row=>row.pct,'min');
-  const tests=groupExamRows(examRows,row=>row.testId||`legacy-${row.id}`);
-  const students=groupExamRows(examRows,row=>row.accountPlayerId||`legacy-${row.id}`);
-  const groups=groupExamRows(examRows,row=>row.groupId||row.group);
-  const published=examRows.filter(row=>row.rankingPublicationId).length;
-  const settled=examRows.filter(row=>['completed','applied'].includes(row.rewardSettlement?.status||row.rewardStatus)||(row.rewardSettlementId&&!row.rewardStatus)).length;
+  const tests=groupExamRows(examRows,row=>row.testId||`${row.testTitle||row.testName||row.title||'Prueba'}-${row.date||'sin-fecha'}`);
+  const students=groupExamRows(examRows,row=>row.accountPlayerId||String(row.name||'').trim().toLowerCase()||`legacy-${row.id}`);
+  const groups=groupExamRows(examRows,row=>row.groupId||row.group||row.grade);
+  const published=[...tests.values()].filter(items=>items.some(row=>row.rankingPublicationId)).length;
+  const settled=[...tests.values()].filter(items=>items.some(row=>['completed','applied'].includes(row.rewardSettlement?.status||row.rewardStatus)||(row.rewardSettlementId&&!row.rewardStatus))).length;
   const testStats=[...tests.entries()].map(([key,items])=>({
     key,label:items[0].testTitle||items[0].testName||items[0].title||'No disponible',
     testId:items[0].testId||null,date:items.map(item=>item.date).find(Boolean)||'No disponible',count:items.length,avg:safeExamPercent(items),max:examMetric(items,row=>row.pct,'max'),min:examMetric(items,row=>row.pct,'min'),published:items.some(item=>item.rankingPublicationId),settled:items.some(item=>item.rewardSettlement?.status==='completed'||item.rewardStatus==='completed'||item.rewardSettlementId)
@@ -3380,118 +3397,196 @@ function renderOfficialExamAnalytics(rows){
   const groupStats=[...groups.entries()].map(([key,items])=>({key,label:key,count:items.length,avg:safeExamPercent(items)}));
   const evolution=[...examRows].filter(row=>Number.isFinite(Number(row.pct))).sort((a,b)=>examDateKey(a.date||a.createdAt)-examDateKey(b.date||b.createdAt)).map(row=>({label:row.date||'No disponible',value:Number(row.pct)}));
   const distribution=[{label:'0–49',value:examRows.filter(row=>Number(row.pct)<50).length},{label:'50–79',value:examRows.filter(row=>Number(row.pct)>=50&&Number(row.pct)<80).length},{label:'80–100',value:examRows.filter(row=>Number(row.pct)>=80).length}];
-  const testTable=testStats.map(item=>`<tr><td>${esc(item.label)}</td><td>${item.testId?`<code>${esc(item.testId)}</code>`:'No disponible'}</td><td>${esc(item.date)}</td><td>${item.count}</td><td>${item.avg===null?'No disponible':item.avg+'%'}</td><td>${item.max===null?'No disponible':item.max+'%'}</td><td>${item.min===null?'No disponible':item.min+'%'}</td><td>${item.published?'Publicada':'No publicada'}</td><td>${item.settled?'Liquidadas':'Pendientes'}</td></tr>`).join('');
+  const testTable=testStats.map(item=>`<tr><td><strong>${esc(item.label)}</strong>${item.testId?`<small><code>${esc(item.testId)}</code></small>`:''}</td><td>${esc(item.date)}</td><td>${item.count}</td><td>${item.avg===null?'No disponible':item.avg+'%'}</td><td>${item.max===null?'No disponible':item.max+'%'}</td><td>${item.min===null?'No disponible':item.min+'%'}</td><td>${item.published?'Publicada':'No publicada'}</td><td>${item.settled?'Liquidadas':'Pendientes'}</td></tr>`).join('');
   const studentTable=studentStats.map(item=>`<tr><td>${esc(item.label)}</td><td>${item.count}</td><td>${item.avg===null?'No disponible':item.avg+'%'}</td><td>${item.best===null?'No disponible':item.best+'%'}</td></tr>`).join('');
-  return `<section class="exam-analytics" data-exam-analytics aria-label="Estadísticas de pruebas oficiales">
-    <h3>Resumen de pruebas oficiales</h3><div class="exam-stat-grid">
-      <div class="exam-stat-card" data-stat="tests"><strong>${tests.size}</strong><span>Pruebas</span></div><div class="exam-stat-card" data-stat="students"><strong>${students.size}</strong><span>Alumnos</span></div><div class="exam-stat-card" data-stat="results"><strong>${examRows.length}</strong><span>Resultados</span></div><div class="exam-stat-card" data-stat="average"><strong>${avg===null?'No disponible':avg+'%'}</strong><span>Promedio</span></div><div class="exam-stat-card" data-stat="best"><strong>${best===null?'No disponible':best+'%'}</strong><span>Mejor resultado</span></div><div class="exam-stat-card" data-stat="lowest"><strong>${lowest===null?'No disponible':lowest+'%'}</strong><span>Resultado menor</span></div><div class="exam-stat-card" data-stat="published"><strong>${published}</strong><span>Publicados</span></div><div class="exam-stat-card" data-stat="settled"><strong>${settled}</strong><span>Recompensas liquidadas</span></div>
+  const lowStudents=studentStats.filter(item=>item.avg!==null&&item.avg<50).length;
+  return `<section class="exam-analytics" data-exam-analytics aria-label="Análisis de desempeño en pruebas">
+    <div class="exam-analysis-intro"><div><h3>Lectura del desempeño</h3><p>Compara las pruebas, detecta alumnos que necesitan apoyo y revisa la distribución del grupo.</p></div><div class="exam-analysis-signal"><strong>${lowStudents}</strong><span>alumnos debajo de 50%</span></div></div>
+    <div class="exam-stat-grid">
+      <div class="exam-stat-card" data-stat="best"><strong>${best===null?'No disponible':best+'%'}</strong><span>Mejor resultado</span></div><div class="exam-stat-card" data-stat="lowest"><strong>${lowest===null?'No disponible':lowest+'%'}</strong><span>Resultado menor</span></div><div class="exam-stat-card" data-stat="published"><strong>${published}</strong><span>Pruebas publicadas</span></div><div class="exam-stat-card" data-stat="settled"><strong>${settled}</strong><span>Recompensas liquidadas</span></div>
     </div><div class="exam-analytics-grid">
-      <div class="exam-analytics-card"><h3>Estadísticas por prueba</h3><table class="exam-analytics-table" data-table="by-test"><thead><tr><th>Prueba</th><th>testId</th><th>Fecha</th><th>Participantes</th><th>Promedio</th><th>Máximo</th><th>Mínimo</th><th>Publicación</th><th>Recompensas</th></tr></thead><tbody>${testTable}</tbody></table></div>
+      <div class="exam-analytics-card exam-card-wide"><h3>Comparación por prueba</h3><p class="exam-analytics-caption">Cada fila representa una prueba; el promedio permite comparar evaluaciones de distinto tamaño.</p><table class="exam-analytics-table" data-table="by-test"><thead><tr><th>Prueba</th><th>Fecha</th><th>Participantes</th><th>Promedio</th><th>Máximo</th><th>Mínimo</th><th>Publicación</th><th>Recompensas</th></tr></thead><tbody>${testTable}</tbody></table></div>
       <div class="exam-analytics-card"><h3>Estadísticas por alumno</h3><table class="exam-analytics-table" data-table="by-student"><thead><tr><th>Alumno</th><th>Pruebas</th><th>Promedio</th><th>Mejor resultado</th></tr></thead><tbody>${studentTable}</tbody></table></div>
-      <div class="exam-analytics-card"><h3>Promedio por prueba</h3><div data-chart="test-average">${renderExamBarRows(testStats.map(item=>({label:item.label,value:item.avg})).filter(item=>item.value!==null),'value')}</div></div>
-      <div class="exam-analytics-card"><h3>Resultados por alumno</h3><div data-chart="student-results">${renderExamBarRows(studentStats.map(item=>({label:item.label,value:item.avg})).filter(item=>item.value!==null),'value')}</div></div>
-      <div class="exam-analytics-card"><h3>Evolución temporal</h3><div data-chart="timeline">${renderExamBarRows(evolution,'value')}</div></div>
-      <div class="exam-analytics-card"><h3>Distribución de resultados</h3><div data-chart="distribution">${renderExamBarRows(distribution,'value')}</div></div>
+      <div class="exam-analytics-card"><h3>Promedio por prueba</h3><p class="exam-analytics-caption">Localiza evaluaciones con menor desempeño.</p><div data-chart="test-average">${renderExamBarRows(testStats.map(item=>({label:item.label,value:item.avg})).filter(item=>item.value!==null),'value')}</div></div>
+      <div class="exam-analytics-card"><h3>Promedio por alumno</h3><p class="exam-analytics-caption">Agrupa los intentos identificados del mismo alumno.</p><div data-chart="student-results">${renderExamBarRows(studentStats.map(item=>({label:item.label,value:item.avg})).filter(item=>item.value!==null),'value')}</div></div>
+      <div class="exam-analytics-card"><h3>Resultados por fecha</h3><p class="exam-analytics-caption">Vista cronológica de los resultados registrados.</p><div data-chart="timeline">${renderExamBarRows(evolution,'value')}</div></div>
+      <div class="exam-analytics-card"><h3>Distribución del grupo</h3><p class="exam-analytics-caption">Cantidad de resultados en cada rango de desempeño.</p><div data-chart="distribution">${renderExamBarRows(distribution,'value')}</div></div>
       <div class="exam-analytics-card"><h3>Comparación por grupo</h3>${groupStats.length?`<table class="exam-analytics-table" data-table="by-group"><thead><tr><th>Grupo</th><th>Resultados</th><th>Promedio</th></tr></thead><tbody>${groupStats.map(item=>`<tr><td>${esc(item.label)}</td><td>${item.count}</td><td>${item.avg===null?'No disponible':item.avg+'%'}</td></tr>`).join('')}</tbody></table>`:'<div class="exam-empty-note">No disponible</div>'}</div>
     </div>
   </section>`;
 }
 
 // ── TAB 5: Pruebas ────────────────────────────────────────
+function examTestKey(row){ return row.testId||`${row.testTitle||row.testName||row.title||'Prueba'}-${row.date||'sin-fecha'}`; }
+let activeExamDetailRows=[];
+let activeExamStudentId=null;
+function examTestTitle(row){ return row.testTitle||row.testName||row.title||'Prueba sin nombre'; }
+function examRowsAverage(rows){ return rows.length?Math.round(rows.reduce((sum,row)=>sum+(Number(row.pct)||0),0)/rows.length):0; }
+function examRowsScore(rows){ return rows.length?Math.max(...rows.map(row=>Number(row.score)||0)):0; }
+function examRowsStudents(rows){ return new Set(rows.map(row=>String(row.name||'').trim().toLowerCase()).filter(Boolean)).size; }
+function examDayGroups(rows){ return [...groupExamRows(rows,row=>row.date||'Fecha no disponible').entries()].sort((a,b)=>examDateKey(b[0])-examDateKey(a[0])); }
+function examTestGroups(rows){ return [...groupExamRows(rows,examTestKey).entries()].sort((a,b)=>examDateKey(b[1][0]?.date)-examDateKey(a[1][0]?.date)); }
+function examNav(button,label){ return `<div class="exam-navigation"><button class="exam-back-btn" type="button" onclick="examGoBack()">← Regresar</button><span class="exam-breadcrumb">${label}</span></div>`; }
 function renderPruebas(){
   document.getElementById('topCards').innerHTML='';
   document.getElementById('countInfo').textContent='';
-
   const examData=getFilteredExamResults();
   currentDetailRows=examData;
-  renderTabSummary('Pruebas','Resultados de evaluaciones por sesion para comparar desempeno, precision y comportamiento entre distintos cortes.',[
-    {value:examData.length,label:'Resultados',tone:'purple'},
-    {value:new Set(examData.map(d=>d.name)).size,label:'Alumnos',tone:'blue'},
-    {value:examData.length?Math.round(examData.reduce((s,d)=>s+(d.pct||0),0)/examData.length)+'%':'0%',label:'Promedio',tone:examData.length&&Math.round(examData.reduce((s,d)=>s+(d.pct||0),0)/examData.length)>=80?'green':'gold'},
-    {value:new Set(examData.map(d=>d.date)).size,label:'Sesiones',tone:'gold'}
-  ]);
-  if(!examData.length){
-    document.getElementById('mainContent').innerHTML='<div class="empty"><span>📝</span>No hay resultados de pruebas aún.<br><small style="font-size:13px;color:#4b5563;display:block;margin-top:8px">Los resultados aparecerán aquí cuando los alumnos completen una prueba configurada desde el Panel Maestro.</small></div>';
-    return;
-  }
-
-  // Detectar qué operaciones tienen datos
-  const presentOps=ALL_OPS.filter(op=>examData.some(d=>(d.tblResults||{})[op]?.total>0));
-
-  // Agrupar por fecha para mostrar "sesiones"
-  const parseDate=s=>{ if(!s) return new Date(0); const [dd,mm,yy]=s.split('/'); return new Date(+yy,+mm-1,+dd); };
-  const sessionDates=[...new Set(examData.map(d=>d.date))].sort((a,b)=>parseDate(b)-parseDate(a));
-
-  // Estadísticas globales
-  const totalStudents=new Set(examData.map(d=>d.name)).size;
-  const avgPct=Math.round(examData.reduce((s,d)=>s+(d.pct||0),0)/examData.length);
-  // Tarjetas de resumen
-  let summaryHtml=`
-    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px">
-      <div style="background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.3);border-radius:12px;padding:12px 20px;text-align:center;min-width:110px">
-        <div style="font-size:26px;font-weight:800;color:#34d399">${examData.length}</div>
-        <div style="font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px">Resultados</div>
-      </div>
-      <div style="background:rgba(167,139,250,.1);border:1px solid rgba(167,139,250,.3);border-radius:12px;padding:12px 20px;text-align:center;min-width:110px">
-        <div style="font-size:26px;font-weight:800;color:#a78bfa">${totalStudents}</div>
-        <div style="font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px">Alumnos</div>
-      </div>
-      <div style="background:rgba(96,165,250,.1);border:1px solid rgba(96,165,250,.3);border-radius:12px;padding:12px 20px;text-align:center;min-width:110px">
-        <div style="font-size:26px;font-weight:800;color:${avgPct>=80?'#34d399':avgPct>=50?'#fbbf24':'#f87171'}">${avgPct}%</div>
-        <div style="font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px">Promedio</div>
-      </div>
-      ${sessionDates.length>1
-        ?`<div style="background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.3);border-radius:12px;padding:12px 20px;text-align:center;min-width:110px">
-            <div style="font-size:26px;font-weight:800;color:#fbbf24">${sessionDates.length}</div>
-            <div style="font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px">Sesiones</div>
-          </div>`
-        :`<div style="display:flex;align-items:center;padding:0 12px;font-size:12px;color:#64748b">📅 ${sessionDates[0]}</div>`}
-    </div>`;
-
-  // Si hay múltiples sesiones, mostrar por sesión separada
-  let tableHtml='';
-  if(sessionDates.length>1){
-    sessionDates.forEach(date=>{
-      const sessionRows=examData.filter(d=>d.date===date).sort((a,b)=>b.pct-a.pct||b.score-a.score);
-      const sessionOps=presentOps.filter(op=>sessionRows.some(d=>(d.tblResults||{})[op]?.total>0));
-      const sAvg=Math.round(sessionRows.reduce((s,d)=>s+d.pct,0)/sessionRows.length);
-      const sessionTop=sessionRows[0];
-      tableHtml+=`
-        <div class="exam-session">
-          <div class="exam-session-head">
-            <div>
-              <div class="exam-session-title">📅 ${date}</div>
-              <div class="exam-session-meta">${sessionRows.length} alumno${sessionRows.length!==1?'s':''} · promedio <span class="${pctClass(sAvg)}">${sAvg}%</span></div>
-            </div>
-            <div class="exam-highlight-grid" style="margin-bottom:0">
-              <div class="exam-highlight"><strong class="${pctClass(sAvg)}">${sAvg}%</strong><span>Promedio</span></div>
-              <div class="exam-highlight"><strong>${sessionTop?sessionTop.score.toLocaleString():0}</strong><span>Mejor score</span></div>
-              <div class="exam-highlight"><strong>${sessionTop?esc(sessionTop.name):'—'}</strong><span>Mejor alumno</span></div>
-            </div>
-          </div>
-          ${buildExamTable(sessionRows,sessionOps)}
-        </div>`;
+  document.getElementById('tabSummary').innerHTML='';
+  renderExamScreen(examData);
+}
+function examGoBack(){
+  if(location.hash.startsWith('#pruebas/test/')) history.back();
+  else if(location.hash.startsWith('#pruebas/dia/')) history.pushState({},'', '#pruebas');
+  else setTab('partidas');
+}
+function examOpenDay(encodedDate){ const date=decodeURIComponent(encodedDate); history.pushState({},'',`#pruebas/dia/${encodeURIComponent(date)}`); renderExamScreen(getFilteredExamResults()); }
+function examOpenTest(encodedKey){ const key=decodeURIComponent(encodedKey); history.pushState({},'',`#pruebas/test/${encodeURIComponent(key)}`); renderExamScreen(getFilteredExamResults()); }
+function examCurrentRoute(){
+  const parts=location.hash.split('/');
+  return {level:parts[1]||'root',value:parts.slice(2).join('/')?decodeURIComponent(parts.slice(2).join('/')):''};
+}
+function renderExamScreen(examData){
+  const main=document.getElementById('mainContent');
+  if(!examData.length){ main.innerHTML='<div class="empty"><span>📝</span>No hay resultados de pruebas aún.<br><small style="font-size:13px;color:#4b5563;display:block;margin-top:8px">Los resultados aparecerán aquí cuando los alumnos completen una prueba configurada desde el Panel Maestro.</small></div>'; return; }
+  const route=examCurrentRoute();
+  if(route.level==='dia') return renderExamDayScreen(examData,route.value);
+  if(route.level==='test') return renderExamTestScreen(examData,route.value);
+  const days=examDayGroups(examData);
+  main.innerHTML=`<div class="exam-section-label">Selecciona un día para ver sus pruebas</div><div class="exam-day-grid">${days.map(([date,rows])=>`<button class="exam-day-card" type="button" onclick="examOpenDay('${encodeURIComponent(date)}')"><div class="exam-day-title">📅 ${esc(date)}</div><div class="exam-day-meta">${rows.length} resultado${rows.length!==1?'s':''} · ${examRowsStudents(rows)} alumno${examRowsStudents(rows)!==1?'s':''}</div><div class="exam-day-stats"><div class="exam-day-stat"><strong>${examTestGroups(rows).length}</strong><span>Pruebas</span></div><div class="exam-day-stat"><strong>${examRowsAverage(rows)}%</strong><span>Promedio</span></div><div class="exam-day-stat"><strong>${examRowsScore(rows).toLocaleString()}</strong><span>Mejor score</span></div></div></button>`).join('')}</div>`;
+}
+function renderExamDayScreen(examData,date){
+  const rows=examData.filter(row=>(row.date||'Fecha no disponible')===date);
+  const main=document.getElementById('mainContent');
+  if(!rows.length){ main.innerHTML=examNav(true,'Día no disponible')+'<div class="exam-empty-note">No hay resultados para este día con los filtros actuales.</div>'; return; }
+  const tests=examTestGroups(rows);
+  main.innerHTML=examNav(true,`Pruebas del ${esc(date)}`)+`<div class="exam-detail-heading"><div><h2>Pruebas del ${esc(date)}</h2><p>${rows.length} resultado${rows.length!==1?'s':''} · ${examRowsStudents(rows)} alumno${examRowsStudents(rows)!==1?'s':''} · promedio ${examRowsAverage(rows)}%</p></div></div><div class="exam-section-label">Selecciona una prueba para ver sus primeros lugares y resultados</div><div class="exam-test-grid">${tests.map(([key,testRows])=>{const sorted=testRows.slice().sort((a,b)=>(Number(b.pct)||0)-(Number(a.pct)||0)||(Number(b.score)||0)-(Number(a.score)||0));return `<button class="exam-test-card" type="button" onclick="examOpenTest('${encodeURIComponent(key)}')"><div class="exam-test-title">📝 ${esc(examTestTitle(testRows[0]))}</div><div class="exam-test-meta">${testRows[0].testId?`ID: ${esc(testRows[0].testId)} · `:''}${testRows.length} participante${testRows.length!==1?'s':''}</div><div class="exam-test-stats"><div class="exam-test-stat"><strong>${examRowsAverage(testRows)}%</strong><span>Promedio</span></div><div class="exam-test-stat"><strong>${sorted[0]?.pct||0}%</strong><span>Mejor resultado</span></div><div class="exam-test-stat"><strong>${sorted[0]?.score?.toLocaleString()||0}</strong><span>Mejor score</span></div></div></button>`;}).join('')}</div>`;
+}
+function examPodium(rows){
+  const sorted=rows.slice().sort((a,b)=>(Number(b.pct)||0)-(Number(a.pct)||0)||(Number(b.score)||0)-(Number(a.score)||0));
+  const medals=['🥇','🥈','🥉'];
+  return `<div class="exam-podium">${sorted.slice(0,3).map((row,index)=>`<div class="exam-place-card place-${index+1}"><div class="exam-place-rank">${medals[index]}</div><div class="exam-place-name">${esc(row.name||'Alumno sin nombre')}</div><div class="exam-place-meta"><strong class="${pctClass(row.pct)}">${row.pct||0}%</strong> · ${Number(row.score||0).toLocaleString()} pts<br>Tiempo: ${esc(row.time||'No disponible')}</div></div>`).join('')}</div>`;
+}
+function examTableEntries(row){
+  const questionDetail=row?.questionDetail||{};
+  const questionEntries=[];
+  ALL_OPS.forEach(op=>{
+    (questionDetail[op]||[]).forEach((question,index)=>{
+      const status=question.status||'timeout';
+      questionEntries.push({
+        op,
+        table:question.table,
+        question:question.question||'',
+        index,
+        detailed:true,
+        stats:{correct:status==='correct'?1:0,wrong:status==='wrong'?1:0,timeout:status==='timeout'?1:0,total:1}
+      });
     });
-  } else {
-    const sorted=[...examData].sort((a,b)=>b.pct-a.pct||b.score-a.score);
-    const topExam=sorted[0];
-    tableHtml=`<div class="exam-session">
-      <div class="exam-session-head">
-        <div>
-          <div class="exam-session-title">📅 ${sessionDates[0]}</div>
-          <div class="exam-session-meta">${sorted.length} resultado${sorted.length!==1?'s':''} registrados</div>
-        </div>
-        <div class="exam-highlight-grid" style="margin-bottom:0">
-          <div class="exam-highlight"><strong class="${pctClass(avgPct)}">${avgPct}%</strong><span>Promedio</span></div>
-          <div class="exam-highlight"><strong>${topExam?topExam.score.toLocaleString():0}</strong><span>Mejor score</span></div>
-          <div class="exam-highlight"><strong>${topExam?esc(topExam.name):'—'}</strong><span>Mejor alumno</span></div>
-        </div>
-      </div>
-      ${buildExamTable(sorted,presentOps)}
-    </div>`;
-  }
+  });
+  if(questionEntries.length) return questionEntries;
+  const detail=row?.tableDetail||{};
+  const entries=[];
+  ALL_OPS.forEach(op=>{
+    const opDetail=detail[op]||{};
+    const keys=Object.keys(opDetail);
+    if(op==='×'&&Array.isArray(row.tables)) row.tables.forEach(table=>{ if(!keys.includes(String(table))) keys.push(String(table)); });
+    keys.forEach(table=>entries.push({op,table,question:'',detailed:false,stats:opDetail[table]||{correct:0,wrong:0,timeout:0,total:0}}));
+  });
+  return entries;
+}
+function examTableCellState(stats){
+  if((stats?.timeout||0)>0) return {key:'timeout',label:'Sin tiempo'};
+  if((stats?.wrong||0)>0) return {key:'bad',label:'Con errores'};
+  if((stats?.correct||0)>0) return {key:'good',label:'Correcta'};
+  return {key:'timeout',label:'Sin respuesta'};
+}
+function buildExamStudentTableGrid(row){
+  if(!row) return '<div class="exam-empty-note">Selecciona un alumno para consultar sus tablas.</div>';
+  const entries=examTableEntries(row);
+  if(!entries.length) return '<div class="exam-empty-note">Esta prueba no tiene desglose por tabla guardado para este alumno.</div>';
+  const byOp={};
+  entries.forEach(entry=>{ if(!byOp[entry.op]) byOp[entry.op]=[]; byOp[entry.op].push(entry); });
+  const sections=ALL_OPS.filter(op=>byOp[op]?.length).map(op=>{
+    const cells=byOp[op].slice().sort((a,b)=>Number(a.table)-Number(b.table)||Number(a.b)-Number(b.b)||String(a.question).localeCompare(String(b.question))).map(({table,question,stats,detailed})=>{
+      const state=examTableCellState(stats);
+      const label=question?esc(question):(op==='×'?`×${esc(table)}`:`${OP_ICONS[op]||op}${esc(table)}`);
+      const count=stats.total?`${stats.correct||0}/${stats.total}`:'—';
+      const breakdown=`✓${stats.correct||0} · ✗${stats.wrong||0} · ⏱${stats.timeout||0}`;
+      return `<div class="exam-table-cell ${state.key}" title="${esc(OP_NAMES[op]||op)} ${label}: ${state.label}"><span class="exam-table-cell-label">${label}</span><span class="exam-table-cell-status">${state.label}</span><span class="exam-table-cell-count">${detailed?'1 ejercicio':count}</span><span class="exam-table-cell-breakdown">${breakdown}</span></div>`;
+    }).join('');
+    return `<div class="exam-table-operation"><div class="exam-table-operation-title">${OP_ICONS[op]||op} ${OP_NAMES[op]||op}</div><div class="exam-results-matrix-wrap"><div class="exam-results-matrix">${cells}</div></div></div>`;
+  }).join('');
+  const hasQuestionDetail=entries.some(entry=>entry.detailed);
+  const helper=hasQuestionDetail?'Cada celda representa un ejercicio aplicado. Así puedes identificar exactamente cuáles operaciones falló el alumno.':'Este resultado solo tiene resumen por tabla; los resultados nuevos mostrarán cada ejercicio individual.';
+  return `<div class="exam-table-grid-panel"><div class="exam-table-grid-header"><div><h3>📚 Ejercicios aplicados · ${esc(row.name||'Alumno')}</h3><p>${helper} Selecciona otro alumno en la tabla para comparar.</p></div><div class="exam-table-grid-legend"><span class="good"><i></i>Correcta</span><span class="bad"><i></i>Errores</span><span class="timeout"><i></i>Sin tiempo</span></div></div>${sections}</div>`;
+}
+function selectExamStudent(id){
+  const row=activeExamDetailRows.find(item=>String(item.id)===String(id));
+  if(!row) return;
+  activeExamStudentId=String(row.id);
+  document.querySelectorAll('[data-exam-student-id]').forEach(el=>el.classList.toggle('exam-student-row-selected',String(el.dataset.examStudentId)===String(id)));
+  const panel=document.getElementById('examTableDetailPanel');
+  if(panel) panel.innerHTML=buildExamStudentTableGrid(row);
+}
+function renderExamTestScreen(examData,key){
+  const rows=examData.filter(row=>examTestKey(row)===key);
+  const main=document.getElementById('mainContent');
+  if(!rows.length){ main.innerHTML=examNav(true,'Prueba no disponible')+'<div class="exam-empty-note">No hay resultados para esta prueba con los filtros actuales.</div>'; return; }
+  const sorted=rows.slice().sort((a,b)=>(Number(b.pct)||0)-(Number(a.pct)||0)||(Number(b.score)||0)-(Number(a.score)||0));
+  const ops=ALL_OPS.filter(op=>rows.some(row=>(row.tblResults||{})[op]?.total>0));
+  const title=examTestTitle(rows[0]);
+  activeExamDetailRows=sorted;
+  const selectedStudent=sorted.find(row=>String(row.id)===String(activeExamStudentId))||sorted[0];
+  main.innerHTML=examNav(true,`${esc(title)} · ${esc(rows[0].date||'Fecha no disponible')}`)+`<div class="exam-detail-heading"><div><h2>📝 ${esc(title)}</h2><p>${esc(rows[0].date||'Fecha no disponible')} · ${rows.length} participante${rows.length!==1?'s':''} · promedio ${examRowsAverage(rows)}%</p></div><div class="exam-detail-actions no-print"><button class="exam-pdf-btn" type="button" onclick="downloadExamPdf('${encodeURIComponent(key)}')">⬇️ Descargar PDF</button><button class="exam-back-btn" type="button" onclick="printExamReport('${encodeURIComponent(key)}')">🖨️ Imprimir</button></div></div>${examPodium(sorted)}<div class="exam-detail-section-title">Todos los resultados de esta prueba</div>${buildExamTable(sorted,ops)}<div id="examTableDetailPanel">${buildExamStudentTableGrid(selectedStudent)}</div>`;
+  selectExamStudent(selectedStudent.id);
+}
+function getExamReportRows(encodedKey){
+  const key=decodeURIComponent(encodedKey);
+  return {key,rows:getFilteredExamResults().filter(row=>examTestKey(row)===key).sort((a,b)=>(Number(b.pct)||0)-(Number(a.pct)||0)||(Number(b.score)||0)-(Number(a.score)||0))};
+}
+function buildExamReportHtml(rows,title,withToolbar=false){
+  const ops=ALL_OPS.filter(op=>rows.some(row=>(row.tblResults||{})[op]?.total>0));
+  const toolbar=withToolbar?'<div class="pdf-toolbar no-print"><button onclick="window.print()">🖨️ Imprimir / Guardar PDF</button><button onclick="window.close()">Cerrar</button></div>':'';
+  return `<!DOCTYPE html><html lang="es"><head><meta charset="utf-8"><title>${esc(title)} - resultados</title><style>
+    @page{size:A4 landscape;margin:10mm}@page{ @bottom-right{content:"Página " counter(page) " de " counter(pages);color:#64748b;font-size:8px} }*{box-sizing:border-box}body{margin:0;padding:24px;background:#070512;color:#e2e8f0;font-family:Arial,sans-serif}.pdf-toolbar{display:flex;justify-content:flex-end;gap:8px;margin-bottom:16px}.pdf-toolbar button{padding:8px 12px;border:1px solid #475569;border-radius:6px;background:#1e293b;color:#e2e8f0;cursor:pointer}.pdf-title{border-bottom:2px solid #22d3ee;padding-bottom:10px;margin-bottom:14px}.pdf-title h1{margin:0;font-size:21px;color:#f8fafc}.pdf-title p{margin:5px 0 0;font-size:11px;color:#94a3b8}.exam-podium{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}.exam-place-card{padding:10px;border:1px solid #334155;border-radius:8px;text-align:center;background:#0f172a}.exam-place-card.place-1{background:#33220b;border-color:#f59e0b}.exam-place-card.place-2{background:#1e293b;border-color:#94a3b8}.exam-place-card.place-3{background:#2b180e;border-color:#b45309}.exam-place-rank{font-size:18px}.exam-place-name{font-weight:700;font-size:12px;color:#f8fafc}.exam-place-meta{font-size:10px;color:#94a3b8;margin-top:4px}.exam-detail-section-title{margin:12px 0 8px;font-weight:700;color:#cbd5e1}.table-shell{overflow:visible}.data-table{width:100%;border-collapse:collapse;font-size:9px;color:#e2e8f0}.data-table th,.data-table td{padding:5px 4px;border:1px solid #334155;color:#e2e8f0!important;background:#0f172a!important}.data-table th{background:#1e293b!important;color:#cbd5e1!important;font-size:8px;text-transform:uppercase}.data-table thead{display:table-header-group}.data-table .pct-hi{color:#34d399!important}.data-table .pct-mid{color:#fbbf24!important}.data-table .pct-lo{color:#f87171!important}.pdf-question-details{page-break-before:always;break-before:page}.pdf-question-details h2{margin:0 0 12px;color:#67e8f9;font-size:16px}.pdf-student-detail{page-break-before:always;break-before:page;page-break-inside:avoid;break-inside:avoid;margin:0 0 12px;padding:9px;border:1px solid #334155;border-radius:7px;background:#0f172a}.pdf-student-detail h3{margin:0;color:#f8fafc;font-size:12px}.pdf-detail-caption{margin:3px 0 7px;color:#94a3b8;font-size:9px}.pdf-detail-operation{margin-top:7px}.pdf-detail-operation>b{display:block;margin-bottom:4px;color:#c4b5fd;font-size:9px;text-transform:uppercase}.pdf-detail-matrix{display:grid;grid-template-columns:repeat(13,minmax(0,1fr));gap:3px}.pdf-detail-cell{min-height:34px;padding:4px 2px;border:1px solid #475569;border-radius:4px;text-align:center;background:#1e293b}.pdf-detail-cell strong{display:block;color:#f8fafc;font-size:8px}.pdf-detail-cell span,.pdf-detail-cell small{display:block;margin-top:2px;color:#cbd5e1;font-size:7px}.pdf-detail-cell.good{background:#064e3b;border-color:#34d399}.pdf-detail-cell.bad{background:#7f1d1d;border-color:#f87171}.pdf-detail-cell.timeout{background:#334155;border-color:#94a3b8}.pdf-detail-empty{color:#94a3b8;font-size:9px}.no-print,.bulk-cell,.bulk-head,.data-table th:last-child,.data-table td:last-child{display:none!important}@media print{body{padding:0;background:#070512;-webkit-print-color-adjust:exact;print-color-adjust:exact}.pdf-toolbar{display:none!important}}
+  </style></head><body>${toolbar}<div class="pdf-title"><h1>${esc(title)}</h1><p>${esc(rows[0].date||'Fecha no disponible')} · ${rows.length} participantes · promedio ${examRowsAverage(rows)}%</p></div>${examPodium(rows)}<div class="exam-detail-section-title">Resultados completos</div>${buildExamTable(rows,ops)}<section class="pdf-question-details"><h2>Detalle de operaciones por alumno</h2>${buildExamQuestionDetailReport(rows)}</section></body></html>`;
+}
+async function downloadExamPdf(encodedKey){
+  const {rows}=getExamReportRows(encodedKey);
+  if(!rows.length){ alert('No hay resultados disponibles para generar el PDF.'); return; }
+  const title=examTestTitle(rows[0]);
+  try{
+    const response=await fetch('/api/ranking/exam-pdf',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({filename:`math-attack-${title.replace(/[^a-z0-9]+/gi,'-').replace(/^-|-$/g,'')||'prueba'}.pdf`,html:buildExamReportHtml(rows,title)})});
+    if(!response.ok) throw new Error('El servidor no pudo generar el archivo');
+    const blob=await response.blob();
+    const url=URL.createObjectURL(blob);const link=document.createElement('a');link.href=url;link.download=`math-attack-${title.replace(/[^a-z0-9]+/gi,'-').replace(/^-|-$/g,'')||'prueba'}.pdf`;document.body.appendChild(link);link.click();link.remove();URL.revokeObjectURL(url);
+  }catch(error){ alert(`No se pudo descargar el PDF: ${error.message}`); }
+}
+function printExamReport(encodedKey){
+  const {rows}=getExamReportRows(encodedKey);
+  if(!rows.length){ alert('No hay resultados disponibles para generar el PDF.'); return; }
+  const w=window.open('','_blank');
+  if(!w){ alert('El navegador bloqueó la ventana del reporte. Permite ventanas emergentes para este sitio e intenta de nuevo.'); return; }
+  w.document.open();w.document.write(buildExamReportHtml(rows,examTestTitle(rows[0]),true));w.document.close();
+}
 
-  document.getElementById('mainContent').innerHTML=summaryHtml+renderOfficialExamAnalytics(examData)+tableHtml;
+function buildExamQuestionDetailReport(rows){
+  return rows.map((row,index)=>{
+    const entries=examTableEntries(row);
+    if(!entries.length) return `<section class="pdf-student-detail"><h3>${index+1}. ${esc(row.name||'Alumno sin nombre')}</h3><p class="pdf-detail-empty">No hay desglose de ejercicios guardado para este resultado.</p></section>`;
+    const byOp={};
+    entries.forEach(entry=>{ if(!byOp[entry.op]) byOp[entry.op]=[]; byOp[entry.op].push(entry); });
+    const sections=ALL_OPS.filter(op=>byOp[op]?.length).map(op=>{
+      const cells=byOp[op].slice().sort((a,b)=>Number(a.table)-Number(b.table)||Number(a.b)-Number(b.b)||String(a.question).localeCompare(String(b.question))).map(({table,question,stats,detailed})=>{
+        const state=examTableCellState(stats);
+        const label=question|| (op==='×'?`×${esc(table)}`:`${OP_ICONS[op]||op}${esc(table)}`);
+        return `<div class="pdf-detail-cell ${state.key}"><strong>${label}</strong><span>${detailed?(state.key==='good'?'Correcta':state.key==='bad'?'Incorrecta':'Sin tiempo'):state.label}</span>${detailed?'':`<small>${stats.correct||0}/${stats.total||0}</small>`}</div>`;
+      }).join('');
+      return `<div class="pdf-detail-operation"><b>${OP_ICONS[op]||op} ${OP_NAMES[op]||op}</b><div class="pdf-detail-matrix">${cells}</div></div>`;
+    }).join('');
+    const detailed=entries.some(entry=>entry.detailed);
+    return `<section class="pdf-student-detail"><h3>${index+1}. ${esc(row.name||'Alumno sin nombre')}</h3><p class="pdf-detail-caption">${esc(row.grade||'Sin grado')} · ${row.pct||0}% · ${detailed?'Detalle por ejercicio':'Resumen por tabla; este resultado no conserva cada ejercicio individual'}</p>${sections}</section>`;
+  }).join('');
 }
 
 function buildExamTable(rows, ops){
@@ -3509,28 +3604,19 @@ function buildExamTable(rows, ops){
       const bar=`<div style="height:4px;background:rgba(255,255,255,.07);border-radius:2px;margin-top:3px;overflow:hidden"><div style="height:100%;width:${pct}%;background:${OP_COLORS[op].bar};border-radius:2px"></div></div>`;
       return `<td style="text-align:center"><span class="${pctClass(pct)}">${pct}%</span><div style="font-size:10px;color:#64748b">${r.correct}/${r.total}</div>${bar}</td>`;
     }).join('');
+    const isExpanded=expandedExamDetails.has(String(d.id));
     const toggleBtn=hasTblDetail
-      ?`<td><button onclick="toggleExamDetail('${rowId}')" style="background:rgba(167,139,250,.15);border:1px solid rgba(167,139,250,.3);color:#a78bfa;border-radius:6px;padding:2px 7px;font-size:11px;cursor:pointer;white-space:nowrap">📊 Tablas</button></td>`
+      ?`<td><button class="exam-detail-toggle${isExpanded?' is-open':''}" type="button" data-exam-detail-toggle="${esc(d.id)}" aria-expanded="${isExpanded}" onclick="toggleExamDetail('${rowId}',this)">${isExpanded?'▾ Ocultar tablas':'▸ Ver tablas'}</button></td>`
       :`<td></td>`;
     const detailRowHtml=hasTblDetail
-      ?`<tr id="${rowId}" style="display:none"><td colspan="${6+ops.length+3}" style="padding:12px 16px;background:rgba(167,139,250,.04);border-bottom:1px solid rgba(255,255,255,.06)">${buildTableDetailHtml(d.tableDetail)}</td></tr>`
-      :'';
+      ?`<tr id="${rowId}" style="display:${isExpanded?'':'none'}"><td colspan="${5+ops.length+3}" style="padding:12px 16px;background:rgba(167,139,250,.04);border-bottom:1px solid rgba(255,255,255,.06)">${buildTableDetailHtml(d.tableDetail)}</td></tr>`
+    :'';
     const rowCls=i===0?'table-row-top1':i===1?'table-row-top2':i===2?'table-row-top3':'';
-    const unavailable='<span style="color:#64748b">No disponible</span>';
-    const testTitle=esc(d.testTitle||d.testName||d.title||'No disponible');
-    const testId=d.testId?`<code>${esc(d.testId)}</code> <button class="exam-copy-id no-print" type="button" onclick="copyExamTestId('${esc(d.testId)}')" title="Copiar testId">Copiar</button>`:unavailable;
-    const attemptId=d.attemptId?esc(d.attemptId):unavailable;
-    const officialId=d.officialAttemptId?esc(d.officialAttemptId):unavailable;
-    const publicationId=d.rankingPublicationId?esc(d.rankingPublicationId):unavailable;
-    const rewardStatus=d.rewardSettlement?.status||d.rewardStatus||(d.rewardSettlementId?'completed':'');
-    const rewardLabel=rewardStatus==='completed'||rewardStatus==='applied'?'Recompensas aplicadas':rewardStatus==='pending'?'Recompensas pendientes':'Recompensas no disponible';
-    const indicators=[d.officialAttemptId?'Oficial':'Resultado histórico',d.rankingPublicationId?'Publicado':'No publicado',rewardLabel,d.complete===false?'Datos incompletos':''].filter(Boolean).map(label=>`<span class="exam-indicator">${esc(label)}</span>`).join(' ');
-    return `<tr class="${rowCls}">
+    return `<tr class="${rowCls}" data-exam-student-id="${esc(d.id)}">
       ${buildBulkRowCheckbox(d.id)}
       <td class="rn rank-cell">${rank}</td>
-      <td class="name" style="cursor:pointer" onclick="showStudent('${esc(d.name)}')">${esc(d.name)}</td>
+      <td class="name" style="cursor:pointer" onclick="selectExamStudent(this.closest('tr').dataset.examStudentId)" title="Ver tablas de ${esc(d.name)}">${esc(d.name)}</td>
       <td>${d.grade?'<span class="grade-badge">'+esc(d.grade)+'</span>':'—'}</td>
-      <td class="exam-identifiers"><strong>${testTitle}</strong><span>testId: ${testId}</span><span>attemptId: ${attemptId}</span><span>officialAttemptId: ${officialId}</span><span>rankingPublicationId: ${publicationId}</span><span>${indicators}</span>${d.testId?`<a class="no-print" href="/maestro?testId=${encodeURIComponent(d.testId)}">Ver prueba</a>`:''}</td>
       <td><div class="score-stack"><span class="score-main">${(d.score||0).toLocaleString()}</span><span class="score-sub">puntaje</span></div></td>
       <td><div class="pct-stack"><span class="${pctClass(d.pct)}">${d.pct}%</span>${pctBar(d.pct)}<span style="font-size:11px;color:#64748b"> (${d.correct}/${d.total})</span></div></td>
       ${opCells}
@@ -3539,15 +3625,25 @@ function buildExamTable(rows, ops){
     </tr>${detailRowHtml}`;
   }).join('');
   return `<div class="table-shell"><table class="data-table"><thead><tr>
-    ${buildBulkHeaderCheckbox(rowIds)}<th>#</th><th>Alumno</th><th>Grado</th><th>Prueba e identificadores</th><th>Puntaje</th><th>% Total</th>
+    ${buildBulkHeaderCheckbox(rowIds)}<th>#</th><th>Alumno</th><th>Grado</th><th>Puntaje</th><th>% Total</th>
     ${opHeaders}<th>Hora</th><th></th>
   </tr></thead><tbody>${opRows}</tbody></table></div>`;
 }
 
-function toggleExamDetail(id){
+let expandedExamDetails=new Set();
+function toggleExamDetail(id,button){
   const row=document.getElementById(id);
   if(!row) return;
-  row.style.display=row.style.display==='none'?'':'none';
+  const willOpen=row.style.display==='none';
+  row.style.display=willOpen?'':'none';
+  const studentId=button?.dataset?.examDetailToggle;
+  if(studentId){
+    if(willOpen) expandedExamDetails.add(String(studentId));
+    else expandedExamDetails.delete(String(studentId));
+    button.classList.toggle('is-open',willOpen);
+    button.setAttribute('aria-expanded',String(willOpen));
+    button.textContent=willOpen?'▾ Ocultar tablas':'▸ Ver tablas';
+  }
 }
 async function copyExamTestId(testId){
   if(!testId) return;
@@ -3558,6 +3654,7 @@ async function copyExamTestId(testId){
 // ── Init ──────────────────────────────────────────────────
 window.addEventListener('offline',()=>setConnectionStatus('offline','Sin internet'));
 window.addEventListener('online',()=>setConnectionStatus('loading','Reconectando…'));
+window.addEventListener('popstate',()=>{ if(currentTab==='pruebas') renderPruebas(); });
 initTabReorder();
 load();
 setInterval(load,30000);

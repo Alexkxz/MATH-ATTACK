@@ -23,14 +23,18 @@ try {
   const service = createTestService({ store: testStore, groupResolver: groupId => groupService.members(groupId) });
   const draft = service.create({ title: 'Prueba de grupo', creator: randomUUID() });
   const assignments = service.replaceAssignments(draft.testId, [{ targetType: 'group', groupId: group.groupId, expandGroup: true }]);
-  assert.equal(assignments.length, 2);
-  assert(assignments.every(item => item.targetType === 'student' && item.groupId === group.groupId));
-  assert.deepEqual(new Set(assignments.map(item => item.accountPlayerId)), new Set([ids.one, ids.two]));
-  assert.equal(service.listAssignments(draft.testId).length, 2);
+  assert.equal(assignments.length, 3);
+  assert.equal(assignments.filter(item => item.targetType === 'group').length, 1);
+  assert.equal(assignments.filter(item => item.targetType === 'student').length, 2);
+  assert(assignments.filter(item => item.targetType === 'student').every(item => item.sourceGroupId === group.groupId));
+  assert.deepEqual(new Set(assignments.filter(item => item.targetType === 'student').map(item => item.accountPlayerId)), new Set([ids.one, ids.two]));
+  assert.equal(service.listAssignments(draft.testId).length, 3);
+  const repeated = service.replaceAssignments(draft.testId, [{ targetType: 'group', groupId: group.groupId, expandGroup: true }, ...assignments.filter(item => item.targetType === 'student')]);
+  assert.equal(repeated.length, 3);
 
   const reopened = createTestStore({ baseDir: dir, fileName: 'pruebas.json' });
   const recovered = createTestService({ store: reopened, groupResolver: groupId => groupService.members(groupId) });
-  assert.equal(recovered.listAssignments(draft.testId).length, 2);
+  assert.equal(recovered.listAssignments(draft.testId).length, 3);
   assert(recovered.listAssignments(draft.testId).every(item => item.groupId === group.groupId));
 
   const cancelled = recovered.create({ title: 'Cancelada', creator: randomUUID() });

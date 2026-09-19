@@ -68,16 +68,40 @@ $script:hotspotClave    = "matematicas"
 
 function Get-LocalIP {
     if ($script:hotspotActivo) { return "192.168.137.1" }
+    # No depender de Internet para detectar la IP local. El truco anterior de
+    # conectar a 8.8.8.8 fallaba en redes aisladas y mostraba 127.0.0.1 aunque
+    # la PC sí estuviera conectada a la LAN de los alumnos.
     try {
-        $sock = New-Object System.Net.Sockets.Socket(
-            [System.Net.Sockets.AddressFamily]::InterNetwork,
-            [System.Net.Sockets.SocketType]::Dgram,
-            [System.Net.Sockets.ProtocolType]::Udp)
-        $sock.Connect("8.8.8.8", 80)
-        $ip = $sock.LocalEndPoint.Address.ToString()
-        $sock.Close()
-        return $ip
-    } catch { return "127.0.0.1" }
+        $virtualPattern = '(?i)(virtual|vmware|virtualbox|hyper-v|hyperv|vpn|tunnel|tailscale|hamachi|zerotier|wsl|bluetooth|loopback|docker|wireguard)' 
+        $candidates = @()
+        foreach ($adapter in [System.Net.NetworkInformation.NetworkInterface]::GetAllNetworkInterfaces()) {
+            if ($adapter.OperationalStatus -ne [System.Net.NetworkInformation.OperationalStatus]::Up) { continue }
+            $description = "$($adapter.Name) $($adapter.Description)"
+            $properties = $adapter.GetIPProperties()
+            $hasGateway = @($properties.GatewayAddresses | Where-Object {
+                $_.Address.AddressFamily -eq [System.Net.Sockets.AddressFamily]::InterNetwork -and
+                $_.Address.ToString() -notmatch '^0\.0\.0\.0$'
+            }).Count -gt 0
+            foreach ($unicast in $properties.UnicastAddresses) {
+                $address = $unicast.Address
+                if ($address.AddressFamily -ne [System.Net.Sockets.AddressFamily]::InterNetwork) { continue }
+                $ip = $address.ToString()
+                if ($ip -match '^(127\.|169\.254\.|0\.)') { continue }
+                $score = 0
+                if ($hasGateway) { $score += 100 }
+                if ($adapter.NetworkInterfaceType -in @(
+                    [System.Net.NetworkInformation.NetworkInterfaceType]::Ethernet,
+                    [System.Net.NetworkInformation.NetworkInterfaceType]::Wireless80211
+                )) { $score += 50 }
+                if ($ip -match '^(10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.)') { $score += 20 }
+                if ($description -match $virtualPattern) { $score -= 1000 }
+                $candidates += [pscustomobject]@{ Ip = $ip; Score = $score; Name = $description }
+            }
+        }
+        $selected = $candidates | Sort-Object Score -Descending | Select-Object -First 1
+        if ($selected) { return $selected.Ip }
+    } catch {}
+    return "127.0.0.1"
 }
 
 function Remove-AnsiCodes($text) {
@@ -1328,10 +1352,10 @@ Set-HotspotButtonState
 Update-ConnectionLabel
 
 if (-not (Test-NodeInstalled)) {
-    Write-Log "AVISO: Node.js no esta instalado en esta PC; el panel puede instalarlo al presionar Iniciar servidor.`n" $C.YELLOW
+    Write-Log "AVISO: Node.js no esta instalado en esta PC; se solicitara prepararlo para iniciar el servidor.`n" $C.YELLOW
 }
 
-Write-Log "Presiona INICIAR SERVIDOR para comenzar.`n`n" $C.DIM
+Write-Log "Iniciando servidor automaticamente para publicar el sitio...`n`n" $C.BLUE
 Update-DeviceList
 # Pestaña activa inicial: Registro
 $script:btnTabLog.ForeColor = $C.BLUE
@@ -1357,6 +1381,10 @@ $form.add_FormClosing({
         Stop-Hotspot
     }
 })
+
+# El acceso al panel no debe dejar la URL publicada con el servidor detenido.
+# Arrancar despues de registrar los eventos permite ver cualquier error en el log.
+Start-Server
 
 [System.Windows.Forms.Application]::Run($form)
 

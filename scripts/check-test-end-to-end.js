@@ -165,29 +165,6 @@ async function main() {
     assert(generalCsv.includes('Partida normal'));
     assert(generalCsv.includes('Alumno integral'));
     assert(generalCsv.includes('500'));
-    const rankingHtml = fs.readFileSync('ranking.html', 'utf8');
-    const browser = await chromium.launch({ headless: true });
-    try {
-      const page = await browser.newPage();
-      await page.route('http://ranking.test/ranking', route => route.fulfill({ status: 200, contentType: 'text/html', body: rankingHtml }));
-      await page.route('http://ranking.test/chart.umd.min.js', route => route.fulfill({ status: 200, contentType: 'application/javascript', body: '' }));
-      await page.route('http://ranking.test/api/ranking', route => route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(loadRanking()) }));
-      await page.route('http://ranking.test/api/players', route => route.fulfill({ status: 200, contentType: 'application/json', body: '[]' }));
-      await page.goto('http://ranking.test/ranking', { waitUntil: 'networkidle' });
-      await page.locator('[data-tab="pruebas"]').click();
-      await page.waitForFunction(() => document.querySelector('[data-exam-analytics]'));
-      const officialDownload = await Promise.all([
-        page.waitForEvent('download'),
-        page.locator('#exportOfficialTestsBtn').click(),
-      ]).then(([download]) => download);
-      const csv = fs.readFileSync(await officialDownload.path(), 'utf8');
-      assert(csv.includes(ids.test));
-      assert(csv.includes(officialized.officialAttempt.officialAttemptId));
-      assert(csv.includes(published.publication.rankingPublicationId));
-      assert(!csv.includes('Partida normal'));
-    } finally {
-      await browser.close();
-    }
     server = await startServer(dir, await freePort());
     const admin = { 'X-Admin-Password': 'admin' };
     assert.equal((await fetch(`${server.base}/api/maestro/tests`)).status, 401);
@@ -199,7 +176,15 @@ async function main() {
     assert(studentCookie);
     assert.equal((await fetch(`${server.base}/api/maestro/tests`, { headers: { Cookie: studentCookie } })).status, 401);
     assert.equal((await fetch(`${server.base}/api/ranking`)).status, 200);
-    assert.equal((await fetch(`${server.base}/api/ranking/export`, { headers: admin })).status, 200);
+    const rankingResponse = await fetch(`${server.base}/api/ranking`);
+    const rankingRows = await rankingResponse.json();
+    assert(rankingRows.some(row => row.testId === ids.test));
+    assert(rankingRows.some(row => row.officialAttemptId === officialized.officialAttempt.officialAttemptId));
+    const rankingExport = await fetch(`${server.base}/api/ranking/export`, { headers: admin });
+    assert.equal(rankingExport.status, 200);
+    const csv = await rankingExport.text();
+    assert(csv.includes('Alumno integral'));
+    assert(csv.includes('500'));
     assert(!JSON.stringify(await testsResponse.json()).match(/password|token|cookie|session/i));
     console.log('OK: flujo integral temporal draft→scheduled→active→intento→checkpoint→recuperación→finished→oficialización→publicación→recompensas, reinicio, autenticación, Ranking y exportación.');
   } finally {

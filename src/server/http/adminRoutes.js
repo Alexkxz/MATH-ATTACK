@@ -1,7 +1,23 @@
 'use strict';
 
+const { buildLegacyIdentityMap, resolveAccountPlayerId } = require('../exams/legacyIdentityAdapter');
+
+let rankingPdfBrowserPromise=null;
+async function renderRankingPdf(html){
+  if(!rankingPdfBrowserPromise){
+    const { chromium }=require('playwright');
+    rankingPdfBrowserPromise=chromium.launch({headless:true});
+  }
+  const browser=await rankingPdfBrowserPromise;
+  const page=await browser.newPage();
+  try{
+    await page.setContent(html,{waitUntil:'domcontentloaded',timeout:15000});
+    return await page.pdf({format:'A4',landscape:true,printBackground:true,preferCSSPageSize:true,margin:{top:'10mm',right:'10mm',bottom:'10mm',left:'10mm'}});
+  }finally{ await page.close(); }
+}
+
 function createHttpAdminRoutes(context) {
-  const { readBody, sendJson, requireAdmin, send, WebSocket, wss, maestroClients, connLog, getSessionId, getExternalPlayerId, getConnectionId, findActiveSession, gameSessions, loadRanking, saveRanking, buildRankingCsv, importRankingRows, removePlayerResults, removeRankingResult, persistCheckpoint, L, loadPlayers, savePlayers, calculatePlayerAverages, buildPlayerProfile, findPlayerById, findPlayerIndexById, findPlayerByName, preparePlayerRegistration, authenticatePlayer, REGISTRATION_REQUIRED_ERROR, getPlayerExperience, getPlayerLevel, ensurePlayerExperience, addPlayerInventoryItem, setPlayerInventoryQuantity, consumePlayerInventoryItem, normalizeAdminPin, updatePlayerPin, updatePlayerGrade, updatePlayerThemeColor, updatePlayerAvatar, ensurePlayerCosmetics, unlockPlayerCosmetic, calculateDirectGameReward, logAureosTx, resolveAccountPlayer, loadAureosLog, saveAureosLog, buildStudentHistory } = context;
+  const { readBody, sendJson, requireAdmin, send, WebSocket, wss, maestroClients, connLog, getSessionId, getExternalPlayerId, getConnectionId, findActiveSession, gameSessions, loadRanking, saveRanking, buildRankingCsv, importRankingRows, removePlayerResults, removeRankingResult, persistCheckpoint, L, loadPlayers, savePlayers, calculatePlayerAverages, buildPlayerProfile, findPlayerById, findPlayerIndexById, findPlayerByName, preparePlayerRegistration, authenticatePlayer, REGISTRATION_REQUIRED_ERROR, getPlayerExperience, getPlayerLevel, ensurePlayerExperience, addPlayerInventoryItem, setPlayerInventoryQuantity, consumePlayerInventoryItem, normalizeAdminPin, updatePlayerPin, updatePlayerGrade, updatePlayerThemeColor, updatePlayerAvatar, ensurePlayerCosmetics, unlockPlayerCosmetic, calculateDirectGameReward, logAureosTx, resolveAccountPlayer, loadAureosLog, saveAureosLog, flushSync, buildStudentHistory, testService } = context;
   const adminState = context.adminState;
   const groupService = context.groupService;
   const saveAdminConfig = context.saveAdminConfig;
@@ -13,7 +29,7 @@ function createHttpAdminRoutes(context) {
       url === '/api/maestro/config' || url === '/api/players' ||
       url.startsWith('/api/players/get-pin') || url === '/api/players/export' ||
       url.startsWith('/api/students/history') || url.startsWith('/api/players/aureos-log'))) return true;
-    if (req.method === 'POST' && (url === '/api/connections' || url === '/api/maestro/auth' ||
+    if (req.method === 'POST' && (url === '/api/ranking/exam-pdf' || url === '/api/connections' || url === '/api/maestro/auth' ||
       url === '/api/maestro/config' || url === '/api/ranking/clear' ||
       url === '/api/ranking/clear-student' || url === '/api/ranking/delete-game' ||
       url === '/api/ranking/import' || url === '/api/ranking/checkpoint' ||
@@ -23,7 +39,7 @@ function createHttpAdminRoutes(context) {
       url === '/api/players/add-aureos' || url === '/api/players/use-power' ||
       url === '/api/players/admin-aureos' || url === '/api/players/admin-power' ||
       url === '/api/players/admin-pin' || url === '/api/players/admin-grade' ||
-      url === '/api/players/aureos-log/clear' || url === '/api/players/bulk-aureos' ||
+      url === '/api/players/aureos-log/clear' || url === '/api/players/aureos-reset' || url === '/api/players/bulk-aureos' ||
       url === '/api/players/set-color' || url === '/api/players/buy-cosmetic' ||
       url === '/api/players/coinrob' || url === '/api/players/set-avatar')) return true;
     return req.method === 'DELETE' && /^\/api\/players\/[^/]+$/.test(url);
@@ -31,6 +47,18 @@ function createHttpAdminRoutes(context) {
 
   function handle(req, res) {
     const url = req.url.split('?')[0];
+  if(req.method==='POST'&&url==='/api/ranking/exam-pdf'){
+    return readBody(req,res,async body=>{
+      let data={};try{data=JSON.parse(body||'{}');}catch(_){return sendJson(res,400,{ok:false,error:'Solicitud invalida'});}
+      if(typeof data.html!=='string'||!data.html.trim())return sendJson(res,400,{ok:false,error:'Reporte vacio'});
+      try{
+        const pdf=await renderRankingPdf(data.html);
+        const filename=String(data.filename||'math-attack-prueba.pdf').replace(/[^a-z0-9._-]+/gi,'-');
+        res.writeHead(200,{'Content-Type':'application/pdf','Content-Disposition':`attachment; filename="${filename||'math-attack-prueba.pdf'}"`,'Content-Length':pdf.length,'Cache-Control':'no-store'});
+        res.end(pdf);
+      }catch(error){ L.err(`No se pudo generar PDF de ranking: ${error.message}`); if(!res.headersSent)sendJson(res,500,{ok:false,error:'No se pudo generar el PDF'}); }
+    });
+  }
   // ── Registro central de grupos ───────────────────────────
   const groupMatch=url.match(/^\/api\/maestro\/groups(?:\/([0-9a-f-]+)(?:\/members(?:\/([0-9a-f-]+))?)?)?$/i);
   if(groupMatch){
@@ -65,7 +93,32 @@ function createHttpAdminRoutes(context) {
   }
   if(req.method==='GET'&&url==='/api/ranking'){
     res.writeHead(200,{'Content-Type':'application/json','Access-Control-Allow-Origin':'*'});
-    res.end(JSON.stringify(loadRanking()));
+    const testsById=new Map();
+    const attemptsById=new Map();
+    const questionDetailFromAttempt=attempt=>{
+      const questions=attempt?.progress?.questions;
+      const answers=attempt?.progress?.answers;
+      if(!Array.isArray(questions)||!questions.length||!Array.isArray(answers)) return null;
+      const answersById=new Map(answers.map(item=>[item.questionId,item]));
+      return questions.reduce((out,q)=>{
+        const answer=answersById.get(q.questionId),op=q.op||'×';
+        if(!out[op]) out[op]=[];
+        out[op].push({table:q.table??q.a??null,a:q.a??null,b:q.b??null,question:`${q.a??''} ${op} ${q.b??''}`.trim(),status:answer?.corrected===true?'correct':answer?'wrong':'timeout'});
+        return out;
+      },{});
+    };
+    try{ (testService?.list?.()||[]).forEach(test=>{ const title=test.title||test.configuration?.title||test.configurationSnapshot?.title||test.folio; if(test.testId&&title) testsById.set(String(test.testId),String(title)); (testService?.listAttempts?.(test.testId)||[]).forEach(attempt=>attemptsById.set(String(attempt.attemptId),attempt)); }); }catch(_){ }
+    const ranking=loadRanking().map(row=>{
+      const attempt=attemptsById.get(String(row?.attemptId));
+      const snapshot=attempt?.progress?.studentSnapshot||{};
+      const next={...row};
+      if((!next.name||next.name==='?')&&snapshot.name) next.name=snapshot.name;
+      if(!next.grade&&snapshot.grade) next.grade=snapshot.grade;
+      if((!next.questionDetail||!Object.keys(next.questionDetail).length)&&attempt){ const detail=questionDetailFromAttempt(attempt); if(detail&&Object.keys(detail).length) next.questionDetail=detail; }
+      if(!next.testTitle&&testsById.has(String(next.testId))) next.testTitle=testsById.get(String(next.testId));
+      return next;
+    });
+    res.end(JSON.stringify(ranking));
     return;
   }
 
@@ -280,10 +333,11 @@ function createHttpAdminRoutes(context) {
     if(!requireAdmin(req,res)) return;
     const players=loadPlayers();
     const ranking=loadRanking();
+    const identityMap=buildLegacyIdentityMap(players);
     res.writeHead(200,{'Content-Type':'application/json','Access-Control-Allow-Origin':'*'});
     res.end(JSON.stringify(players.map(p=>{
       const {avgPct}=calculatePlayerAverages(ranking,p.name);
-      return {...buildPlayerProfile(p),avgPct};
+      return {...buildPlayerProfile(p),accountPlayerId:resolveAccountPlayerId(p,identityMap),avgPct};
     })));
     return;
   }
@@ -595,6 +649,32 @@ function createHttpAdminRoutes(context) {
         res.writeHead(200,{'Content-Type':'application/json'});
         res.end(JSON.stringify({ok:true,removed}));
       }catch(e){ res.writeHead(400); res.end('{}'); }
+    }); return;
+  }
+
+  // Reset total: saldo en memoria, archivo de alumnos e historial.
+  if(req.method==='POST'&&url==='/api/players/aureos-reset'){
+    readBody(req,res,body=>{
+      try{
+        const parsed=JSON.parse(body||'{}');
+        if(!requireAdmin(req,res,parsed)) return;
+        const players=loadPlayers();
+        const affected=players.filter(p=>(Number(p.aureos)||0)!==0);
+        const previousTotal=affected.reduce((sum,p)=>sum+(Number(p.aureos)||0),0);
+        players.forEach(p=>{ p.aureos=0; });
+        savePlayers(players);
+        const previousLogCount=loadAureosLog().length;
+        saveAureosLog([]);
+        flushSync();
+        players.forEach(p=>{
+          const s=gameSessions.listSessions().find(item=>item.name.toLowerCase()===p.name.toLowerCase());
+          if(s?.ws?.readyState===WebSocket.OPEN) s.ws.send(JSON.stringify({type:'admin_update',aureos:0}));
+        });
+        maestroClients.forEach(mc=>{ if(mc.readyState===WebSocket.OPEN) mc.send(JSON.stringify({type:'students_updated'})); });
+        L.panel(`Reset total de Aureos: ${players.length} alumnos, ${previousLogCount} transacciones`);
+        res.writeHead(200,{'Content-Type':'application/json'});
+        res.end(JSON.stringify({ok:true,count:players.length,affected:affected.length,previousTotal,removedTransactions:previousLogCount}));
+      }catch(e){ L.err(`No se pudo resetear Aureos: ${e.message}`); res.writeHead(400); res.end('{}'); }
     }); return;
   }
 

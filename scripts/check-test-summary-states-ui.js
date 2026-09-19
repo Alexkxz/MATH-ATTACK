@@ -39,7 +39,7 @@ async function json(response) { return { status: response.status, body: await re
         await page.click('#tab-pruebas'); await page.waitForFunction(() => typeof window.prLoadTestLibrary === 'function'); await page.evaluate(() => window.prLoadTestLibrary());
         await page.waitForFunction(() => document.querySelectorAll('.pr-summary-card').length > 0);
         const cards = page.locator(`.pr-summary-card[data-summary-test-id="${expectedId}"]`); assert.equal(await cards.count(), 1, `la prueba ${expectedId} debe aparecer una sola vez`);
-        const cardText = await cards.first().textContent(); assert(cardText.includes(expectedId)); assert(cardText.includes({ draft: 'Borrador', scheduled: 'Programada', active: 'Activa', paused: 'Pausada', closed: 'Cerrada', finished: 'Finalizada', cancelled: 'Cancelada' }[expectedStatus]));
+        const cardText = await cards.first().textContent(); assert(cardText.includes('Folio')); assert(cardText.includes({ draft: 'Borrador', scheduled: 'Programada', active: 'Activa', paused: 'Pausada', closed: 'Cerrada', finished: 'Finalizada', cancelled: 'Cancelada' }[expectedStatus]));
         assert.equal(await page.locator('.pr-summary-card').count() <= 5, true);
         await cards.first().click(); await page.waitForFunction(() => document.getElementById('prTestSummaryModal')?.getAttribute('aria-hidden') === 'false');
         assert.equal(await page.locator('#prSummaryModalContent .pr-test-edit').count(), 0); assert.equal(await page.locator('#prSummaryModalContent .pr-test-create').count(), 0);

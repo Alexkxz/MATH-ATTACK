@@ -35,6 +35,7 @@ function createTestLibraryService({ loadRoot } = {}) {
     const officialAttempts = Array.isArray(root.officialAttempts) ? root.officialAttempts : [];
     const publications = Array.isArray(root.rankingPublications) ? root.rankingPublications : [];
     const rows = (Array.isArray(root.tests) ? root.tests : []).filter(test => {
+      if (test.archivedAt) return false;
       if (status && test.status !== status) return false;
       const assignedGroups = assignments.filter(item => item.testId === test.testId && item.targetType === 'group').map(item => item.groupId).filter(Boolean);
       if (groupId && !assignedGroups.includes(groupId)) return false;
@@ -52,9 +53,11 @@ function createTestLibraryService({ loadRoot } = {}) {
       const opsConfig = configuration.opsConfig && typeof configuration.opsConfig === 'object' ? configuration.opsConfig : {};
       const operations = Object.keys(opsConfig).filter(key => ['add', 'sub', 'mult', 'div'].includes(key));
       const questionCount = Number.isInteger(configuration.total) ? configuration.total : operations.reduce((sum, key) => sum + (Number.isInteger(opsConfig[key]?.qty) ? opsConfig[key].qty : 0), 0);
-      const stateHistory = (Array.isArray(root.events) ? root.events : []).filter(event => event.testId === test.testId && /^test_(created|updated|scheduled|started|paused|resumed|closed|finished|cancelled)$/.test(event.action)).map(event => ({ action: event.action, occurredAt: event.occurredAt })).sort((a, b) => String(a.occurredAt).localeCompare(String(b.occurredAt)));
+      const stateHistory = (Array.isArray(root.events) ? root.events : []).filter(event => event.testId === test.testId && !['answer_submitted', 'checkpoint_saved'].includes(event.action)).map(event => ({ action: [event.action, event.actor, event.reason].filter(Boolean).join(' · '), occurredAt: event.occurredAt })).sort((a, b) => String(a.occurredAt).localeCompare(String(b.occurredAt)));
+      const auditHistory = (Array.isArray(root.events) ? root.events : []).filter(event => event.testId === test.testId && !['answer_submitted', 'checkpoint_saved'].includes(event.action)).map(event => ({ action: event.action, reason: event.reason || '', actor: event.actor || '', occurredAt: event.occurredAt })).sort((a, b) => String(b.occurredAt).localeCompare(String(a.occurredAt))).slice(0, 100);
       return {
         testId: test.testId,
+        folio: test.folio || test.title || null,
         title: test.title,
         status: TEST_STATES.includes(test.status) ? test.status : 'unknown',
         revision: test.revision,
@@ -74,6 +77,7 @@ function createTestLibraryService({ loadRoot } = {}) {
         questionCount,
         operations,
         stateHistory,
+        auditHistory,
       };
     });
     rows.sort((a, b) => {

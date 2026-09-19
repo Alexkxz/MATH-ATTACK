@@ -80,6 +80,7 @@ function buildCompletedResultRecord(msg, options={}){
     tables:msg.tables||[],
     tblResults:msg.tblResults||{},
     tableDetail:msg.tableDetail||{},
+    questionDetail:msg.questionDetail||{},
     stepDetail:msg.stepDetail||{},
     isExam:!!msg.isExam,
     date:now.toLocaleDateString('es-MX'),

@@ -594,11 +594,8 @@ body.proj-mode .q-display{font-size:48px;letter-spacing:4px}
     <nav class="pr-test-nav" aria-label="Secciones de la prueba" role="tablist">
       <button type="button" class="pr-test-nav-btn active" role="tab" aria-selected="true" data-pr-section-target="summary">Resumen</button>
       <button type="button" class="pr-test-nav-btn" role="tab" aria-selected="false" data-pr-section-target="programming">Configuración</button>
-      <button type="button" class="pr-test-nav-btn" role="tab" aria-selected="false" data-pr-section-target="assignments">Asignaciones</button>
       <button type="button" class="pr-test-nav-btn" role="tab" aria-selected="false" data-pr-section-target="supervision">Supervisión</button>
       <button type="button" class="pr-test-nav-btn" role="tab" aria-selected="false" data-pr-section-target="results">Resultados</button>
-      <button type="button" class="pr-test-nav-btn" role="tab" aria-selected="false" data-pr-section-target="ranking">Ranking</button>
-      <button type="button" class="pr-test-nav-btn" role="tab" aria-selected="false" data-pr-section-target="rewards">Recompensas</button>
     </nav>
     <p id="prTestSectionStatus" class="pr-test-section-status" aria-live="polite">Resumen de la prueba seleccionada.</p>
 
@@ -617,6 +614,12 @@ body.proj-mode .q-display{font-size:48px;letter-spacing:4px}
         <div id="prSummaryModalContent" class="pr-summary-modal-content"><p class="pr-attempts-empty">Selecciona una prueba para ver sus detalles.</p></div>
       </div>
     </div>
+    <div id="prScheduleModal" class="pr-summary-modal" role="dialog" aria-modal="true" aria-labelledby="prScheduleModalTitle" aria-hidden="true">
+      <div class="pr-summary-modal-card pr-schedule-modal-card">
+        <div class="pr-summary-modal-header"><div><span class="pr-eyebrow">PROGRAMACIÓN</span><h3 id="prScheduleModalTitle">Programar prueba</h3><p id="prScheduleModalTest" class="pr-config-note"></p></div><button id="prScheduleModalClose" class="pr-summary-modal-close" type="button" aria-label="Cerrar programación">×</button></div>
+        <div class="pr-summary-modal-content"><div class="pr-schedule-fields"><label>Fecha y hora de inicio<input id="prScheduleStart" type="datetime-local"></label><label>Fecha y hora de cierre (opcional)<input id="prScheduleClose" type="datetime-local"></label></div><p id="prScheduleStatus" class="pr-start-status" role="status" aria-live="polite"></p><div class="pr-schedule-actions"><button id="prScheduleCancel" type="button" class="pr-tbl-mini-btn">Cancelar</button><button id="prScheduleSave" type="button" class="pr-start-btn">Guardar programación</button></div></div>
+      </div>
+    </div>
 
     <!-- Banner prueba activa -->
     <div class="pr-banner" id="prBanner">
@@ -629,20 +632,21 @@ body.proj-mode .q-display{font-size:48px;letter-spacing:4px}
     </div>
 
     <!-- Configuración -->
-    <div id="prConfig" data-pr-section="programming">
+    <div id="prConfig" class="pr-config-screen" data-pr-section="programming">
       <div class="pr-config-intro">
         <div>
           <div class="pr-section-title">01 · CONFIGURAR PRUEBA</div>
           <p>Asistente para crear, editar o duplicar una prueba.</p>
         </div>
-        <div class="pr-config-tools"><span id="prConfigTestId" class="pr-config-note">testId: sin seleccionar</span><button type="button" class="pr-tbl-mini-btn" id="prCopyConfigTestId" disabled>Copiar testId</button><button type="button" class="pr-tbl-mini-btn" id="prCreateFromConfig">Crear nueva</button><button type="button" class="pr-tbl-mini-btn" id="prDuplicateFromConfig" disabled>Duplicar prueba</button></div>
+        <div class="pr-config-tools"><span id="prConfigTestId" class="pr-config-note">testId: sin seleccionar</span><button type="button" class="pr-tbl-mini-btn" id="prCreateNewTestFromConfig">＋ NUEVA PRUEBA</button></div>
       </div>
       <nav class="pr-builder-steps" aria-label="Pasos de configuración"><button type="button" class="pr-builder-step active" data-pr-builder-step="1">1. Información</button><button type="button" class="pr-builder-step" data-pr-builder-step="2">2. Operaciones</button><button type="button" class="pr-builder-step" data-pr-builder-step="3">3. Detalle</button><button type="button" class="pr-builder-step" data-pr-builder-step="4">4. Tiempos y recompensas</button><button type="button" class="pr-builder-step" data-pr-builder-step="5">5. Vista previa</button></nav>
+      <div class="pr-config-sections">
       <div class="pr-builder-panel" data-pr-builder-panel="1">
       <div class="pr-config-grid pr-builder-fields">
-        <div class="pr-field"><label for="prTestTitle">TITULO</label><input id="prTestTitle" type="text" maxlength="200" placeholder="Ej. Tablas del 1 al 10"></div>
+        <div class="pr-field pr-folio-field"><label for="prTestTitle">FOLIO</label><span id="prTestTitle" class="pr-folio-value" aria-live="polite">0001</span></div>
+        <div class="pr-field"><label for="prCreatedAt">FECHA Y HORA DE CREACIÓN</label><span id="prCreatedAt" class="pr-datetime-value" aria-live="polite"></span><span class="pr-live-clock-label">Hora actual</span><span id="prLiveClock" class="pr-live-clock" aria-live="off"></span></div>
         <div class="pr-field"><label for="prTestDescription">DESCRIPCION</label><textarea id="prTestDescription" maxlength="2000" rows="2" placeholder="Objetivo o instrucciones de la prueba"></textarea></div>
-        <div class="pr-field"><label for="prMultiplier">MULTIPLICADOR DE PUNTAJE</label><input id="prMultiplier" type="number" min="1" max="5" step="1" value="1"><small class="pr-config-note">Solo afecta el puntaje; no aumenta Áureos, XP, rachas ni logros.</small></div>
       </div>
       </div>
       <div class="pr-builder-panel" data-pr-builder-panel="2">
@@ -655,6 +659,13 @@ body.proj-mode .q-display{font-size:48px;letter-spacing:4px}
             <option>3° Grado</option><option>4° Grado</option>
             <option>5° Grado</option><option>6° Grado</option>
           </select>
+        </div>
+        <div class="pr-field pr-audience-field">
+          <label for="prAudienceMode">ASIGNACIÓN DE ALUMNOS</label>
+          <select id="prAudienceMode" aria-label="Modo de asignación"><option value="all">Todos los alumnos del grado</option><option value="group">Grupo completo</option><option value="custom">Seleccionar alumnos</option></select>
+          <select id="prAudienceGroup" aria-label="Grupo a asignar" hidden><option value="">Selecciona un grupo</option></select>
+          <div id="prAudienceStatus" class="pr-config-note" role="status" aria-live="polite">Se asignará a todos los alumnos del grado seleccionado.</div>
+          <div id="prAudienceStudentsGrid" class="pr-audience-students-grid" hidden aria-label="Alumnos seleccionables"></div>
         </div>
       </div>
       <div class="pr-field">
@@ -681,23 +692,33 @@ body.proj-mode .q-display{font-size:48px;letter-spacing:4px}
       <div class="pr-builder-panel" data-pr-builder-panel="5">
       <div class="pr-summary" id="prSummary"></div>
       </div>
+      </div>
       <div class="pr-action-row">
         <button class="pr-tbl-mini-btn" id="prBuilderPrevious" type="button">Regresar</button>
         <button class="pr-tbl-mini-btn" id="prBuilderNext" type="button">Continuar</button>
-        <button class="pr-tbl-mini-btn" id="prSaveConfig" type="button" onclick="window.prSaveSelectedTest?.()">Guardar y ver resumen</button>
         <button class="pr-tbl-mini-btn" id="prBuilderCancel" type="button">Cancelar</button>
         <button class="pr-start-btn" id="prStartConfiguredTest" onclick="startPrueba(this)">▶ INICIAR PRUEBA</button>
+        <span id="prStartStatus" class="pr-start-status" role="status" aria-live="polite"></span>
         <span class="pr-action-help">El seguimiento en vivo aparecerá aquí al comenzar.</span>
       </div>
       <p class="pr-ranking-note">Para el análisis histórico profundo, consulta el <a href="/ranking">Ranking</a>.</p>
     </div>
 
     <!-- Resultados en tiempo real -->
-    <div id="prResultados" data-pr-section="results" style="display:none">
+    <div id="prResultados" data-pr-section="results" style="display:block">
       <div class="pr-results-hdr">
         <span>02 · RESULTADOS EN TIEMPO REAL</span>
         <span id="prParticipantes" style="color:#34d399;font-size:10px"></span>
       </div>
+      <div class="pr-live-results-toolbar">
+        <label for="prLiveTestSelect">PRUEBA ACTIVA</label>
+        <select id="prLiveTestSelect" aria-label="Seleccionar prueba activa"><option value="">Cargando pruebas activas...</option></select>
+        <span id="prLiveResultsStatus" class="pr-live-results-status" aria-live="polite">Selecciona una prueba activa.</span>
+      </div>
+      <div id="prLiveResultsCards" class="pr-live-results-grid" aria-live="polite">
+        <p class="pr-attempts-empty">Selecciona una prueba activa para iniciar el seguimiento.</p>
+      </div>
+      <div class="pr-results-hdr" style="margin-top:24px"><span>DETALLE CLÁSICO DE LA SESIÓN</span></div>
       <div style="overflow-x:auto">
         <table class="pr-table">
           <thead id="prThead">
@@ -722,13 +743,12 @@ body.proj-mode .q-display{font-size:48px;letter-spacing:4px}
       </div>
     </div>
 
-    <section class="pr-test-library" data-pr-section="programming assignments" aria-labelledby="prTestLibraryTitle">
+    <section class="pr-test-library" data-pr-section="summary" aria-labelledby="prTestLibraryTitle">
       <div class="pr-results-hdr">
         <span id="prTestLibraryTitle">03 · BIBLIOTECA DE PRUEBAS</span>
-        <span id="prTestLibraryStatus" class="pr-attempts-status" aria-live="polite"></span>
+        <div class="pr-library-header-actions"><span id="prTestLibraryStatus" class="pr-attempts-status" aria-live="polite"></span><button id="prCreateNewTest" class="pr-test-create" type="button">＋ NUEVA PRUEBA</button></div>
       </div>
       <div id="prTestLibraryFilters" class="pr-test-library-filters">
-        <button class="pr-test-create" type="button">＋ Nueva prueba</button>
         <input id="prTestSearch" type="search" placeholder="Buscar por nombre o testId" autocomplete="off">
         <select id="prTestStatus" aria-label="Filtrar por estado"><option value="">Todos los estados</option><option value="draft">Borrador</option><option value="scheduled">Programada</option><option value="active">Activa</option><option value="paused">Pausada</option><option value="closed">Cerrada</option><option value="finished">Finalizada</option><option value="cancelled">Cancelada</option></select>
         <input id="prTestGroup" type="search" placeholder="Grupo" autocomplete="off">
@@ -737,12 +757,13 @@ body.proj-mode .q-display{font-size:48px;letter-spacing:4px}
         <button class="pr-tbl-mini-btn" type="button" onclick="prLoadTestLibrary()">↻ Actualizar biblioteca</button>
       </div>
       <div id="prSelectedTest" class="pr-selected-test" aria-live="polite"><span>Ninguna prueba seleccionada.</span></div>
-      <section id="prGroupsPanel" class="pr-groups-panel" aria-label="Grupos y asignaciones">
+      <section id="prAssignmentsPanel" class="pr-assignments-panel" aria-label="Asignaciones de la prueba seleccionada" hidden><div class="pr-results-hdr"><span>ASIGNACIONES DE ESTA PRUEBA</span><span id="prAssignmentsStatus" class="pr-attempts-status" aria-live="polite"></span></div><div id="prAssignmentsList" class="pr-assignments-list"><p class="pr-attempts-empty">Selecciona una prueba para consultar sus asignaciones.</p></div></section>
+      <section id="prGroupsPanel" class="pr-groups-panel" aria-label="Grupos y asignaciones" hidden>
         <div class="pr-results-hdr"><span>GRUPOS Y ASIGNACIONES</span><span id="prGroupsStatus" class="pr-attempts-status" aria-live="polite"></span></div>
         <div class="pr-group-create"><input id="prGroupName" placeholder="Nombre del grupo" autocomplete="off"><input id="prGroupGrade" placeholder="Grado" autocomplete="off"><input id="prGroupYear" placeholder="Ciclo escolar" autocomplete="off"><button id="prGroupCreate" type="button" class="pr-tbl-mini-btn">Crear grupo</button></div>
         <div id="prGroupsList" class="pr-groups-list"><p class="pr-attempts-empty">No hay grupos disponibles.</p></div>
         <div id="prSelectedGroup" class="pr-selected-test"><span>Ningún grupo seleccionado.</span></div>
-        <div class="pr-group-members"><input id="prGroupAccountPlayerId" placeholder="accountPlayerId del alumno" autocomplete="off"><button id="prGroupAddMember" type="button" class="pr-tbl-mini-btn">Agregar alumno</button><button id="prGroupRemoveMember" type="button" class="pr-tbl-mini-btn">Retirar alumno</button><button id="prGroupAssign" type="button" class="pr-tbl-mini-btn">Asignar grupo a prueba</button></div>
+        <div class="pr-group-members"><select id="prGroupStudentGrade" aria-label="Filtrar alumnos por grado"><option value="">Todos los grados</option><option value="1">1° Grado</option><option value="2">2° Grado</option><option value="3">3° Grado</option><option value="4">4° Grado</option><option value="5">5° Grado</option><option value="6">6° Grado</option></select><select id="prGroupStudentSelect" aria-label="Alumno registrado"><option value="">Selecciona un alumno registrado</option></select><select id="prGroupMemberSelect" aria-label="Alumno del grupo"><option value="">Selecciona un integrante para retirar</option></select><button id="prGroupAddMember" type="button" class="pr-tbl-mini-btn">Agregar alumno</button><button id="prGroupRemoveMember" type="button" class="pr-tbl-mini-btn">Retirar alumno</button><button id="prGroupAssign" type="button" class="pr-tbl-mini-btn">Asignar grupo a prueba</button></div>
         <div id="prGroupMembersList" class="pr-groups-list"><p class="pr-attempts-empty">Selecciona un grupo para ver sus miembros.</p></div>
       </section>
       <div id="prTestLibraryList" class="pr-test-library-list"><p class="pr-attempts-empty">Cargando biblioteca de pruebas…</p></div>
@@ -754,10 +775,27 @@ body.proj-mode .q-display{font-size:48px;letter-spacing:4px}
         <span id="prAttemptsStatus" class="pr-attempts-status" aria-live="polite"></span>
       </div>
       <div class="pr-attempts-toolbar">
-        <label for="prAttemptTestId">ID DE PRUEBA (RESPALDO TÉCNICO LEGACY)</label>
-        <input id="prAttemptTestId" class="legacy-test-id-fallback" type="text" maxlength="64" placeholder="Se completa desde la prueba seleccionada" autocomplete="off" readonly aria-readonly="true">
-        <button class="pr-tbl-mini-btn" type="button" onclick="prLoadAttempts()">↻ Cargar intentos</button>
+        <label for="prSupervisionTestSelect">PRUEBA FINALIZADA</label>
+        <select id="prSupervisionTestSelect" class="pr-supervision-test-select" onchange="prSelectSupervisionTest(this.value)">
+          <option value="">Selecciona una prueba finalizada</option>
+        </select>
+        <select id="prAttemptStatusFilter" class="pr-supervision-status-filter" aria-label="Filtrar intentos" onchange="prFilterAttempts()">
+          <option value="all">Todos los intentos</option>
+          <option value="pending-official">Pendientes de oficializar</option>
+          <option value="official">Oficializados</option>
+          <option value="published">Publicados</option>
+          <option value="rewards-pending">Recompensas pendientes</option>
+          <option value="rewards-completed">Recompensas aplicadas</option>
+        </select>
+        <input id="prAttemptTestId" class="legacy-test-id-fallback" type="text" maxlength="64" placeholder="Se completa desde la prueba seleccionada" autocomplete="off" readonly aria-readonly="true" hidden>
+        <button class="pr-tbl-mini-btn" type="button" onclick="prLoadAttempts()">↻ Actualizar intentos</button>
+        <button id="prExportAttempts" class="pr-export-attempts-btn" type="button" onclick="prExportAttemptsCsv()">⇩ EXPORTAR CSV</button>
+        <button id="prPrintAttempts" class="pr-print-attempts-btn" type="button" onclick="prPrintAttempts()">▣ IMPRIMIR / PDF</button>
+        <button id="prOfficializeAll" class="pr-officialize-all-btn" type="button" onclick="prOfficializeAll()" hidden>⚡ OFICIALIZAR TODO</button>
+        <button id="prPublishAll" class="pr-publish-all-btn" type="button" onclick="prPublishAll()" hidden>🏆 PUBLICAR TODO</button>
+        <button id="prSettleAll" class="pr-settle-all-btn" type="button" onclick="prSettleAll()" hidden>💰 LIQUIDAR TODO</button>
       </div>
+      <div id="prBatchSummary" class="pr-batch-summary" aria-live="polite"></div>
       <div id="prAttemptsList" class="pr-attempts-list">
         <p class="pr-attempts-empty">Indica el ID de una prueba para consultar sus intentos.</p>
       </div>
@@ -841,6 +879,7 @@ body.proj-mode .q-display{font-size:48px;letter-spacing:4px}
           style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);border-radius:6px;padding:5px 8px;color:#e2e8f0;font-size:12px;outline:none;color-scheme:dark">
         <button onclick="loadTransactions()" class="btn-icon" title="Actualizar">🔄</button>
         <button onclick="clearTransactions()" class="cx-clear-btn" style="border-color:rgba(248,113,113,.3);color:#f87171" title="Borrar registros visibles">🗑 Borrar</button>
+        <button onclick="openAureosReset()" class="cx-clear-btn reset-large-btn" style="border-color:rgba(239,68,68,.6);color:#fca5a5;font-weight:800" title="Poner todos los saldos e historial en cero">Resetear monedas</button>
       </div>
     </div>
     <div class="filter-bar" id="txGradeBar">
@@ -870,6 +909,22 @@ body.proj-mode .q-display{font-size:48px;letter-spacing:4px}
   <div class="big-modal" id="histModal" style="display:none">
     <h2>📊 <span id="histTitle">Historial</span></h2>
     <div id="histContent"><div style="text-align:center;padding:24px;color:#64748b">Cargando...</div></div>
+  </div>
+
+
+  <div class="big-overlay" id="aureosResetOverlay" onclick="closeAureosReset()"></div>
+  <div class="big-modal" id="aureosResetModal" style="display:none;max-width:460px">
+    <h2>Reset total de Aureos</h2>
+    <div class="reset-warning">Esta accion pondra en <b>0</b> el saldo de todos los alumnos y eliminara todo el historial de transacciones. Tambien actualizara a los alumnos conectados inmediatamente.</div>
+    <div class="bm-field">
+      <label>Escribe RESETEAR para confirmar</label>
+      <input id="aureosResetConfirm" class="reset-confirm-input" type="text" autocomplete="off" spellcheck="false" placeholder="RESETEAR">
+    </div>
+    <div id="aureosResetHint" style="color:#fbbf24;font-size:11px;min-height:16px">Al escribir RESETEAR se habilita la confirmacion.</div>
+    <div class="bm-actions">
+      <button class="bm-cancel" onclick="closeAureosReset()">Cancelar</button>
+      <button id="aureosResetButton" class="bm-save reset-danger" onclick="resetAllAureos()">Confirmar y resetear</button>
+    </div>
   </div>
 
   <!-- Overlay + popup de edición -->
@@ -910,6 +965,7 @@ body.proj-mode .q-display{font-size:48px;letter-spacing:4px}
 <script src="/src/client/maestro/transactionViews.js"></script>
 <script src="/src/client/maestro/testLibrary.js"></script>
 <script src="/src/client/maestro/attemptActions.js"></script>
+<script src="/src/client/maestro/liveTestResults.js"></script>
 <script>
 // ── Definición de poderes (espejo del cliente) ──
 const POWERS_DEF=[
@@ -1030,6 +1086,9 @@ function switchTab(name){
   document.querySelectorAll('.tab-panel').forEach(p=>p.classList.toggle('active',p.id==='panel-'+name));
   if(name==='alumnos'){ if(_studentsDirty||!studentsData.length){ _studentsDirty=false; loadStudents(); } else renderStudents(); }
   if(name==='ajustes') loadAjustes();
+  if(name==='pruebas'){
+    if(typeof window.prLoadTestLibrary==='function') window.prLoadTestLibrary();
+  }
   if(name==='conexion') initCxTab(); else stopCxTab();
   if(name==='pruebas'){ _updatePruebasUI(); renderPruebas(); }
   if(name==='transacciones') initTxTab(); else stopTxTab();
@@ -1186,11 +1245,11 @@ function updateExamBanner(examMode){
   if(!examMode){
     // Si la prueba fue detenida externamente (ej. por otro maestro), limpiar estado
     if(_pruebaConfig){ _pruebaConfig=null; sessionStorage.removeItem('pruebaConfig'); _updatePruebasUI(); }
-  } else if(!_pruebaConfig||_pruebaConfig.startedAt!==examMode.startedAt){
+  } else if(!_pruebaConfig||!_pruebaConfig.testId||!examMode.testId||_pruebaConfig.testId===examMode.testId){
     // Una prueba está activa en el servidor pero este panel/pestaña no la tiene cargada
     // (recién abierto, recargado, o es otro dispositivo distinto al que llamó startPrueba()):
     // sincronizar _pruebaConfig desde el estado compartido para que renderPruebas() funcione.
-    _pruebaConfig={grade:examMode.grade,ops:examMode.ops,tables:examMode.tables,opsConfig:examMode.opsConfig,total:examMode.total,timeLimit:examMode.timeLimit,startedAt:examMode.startedAt};
+    _pruebaConfig={grade:examMode.grade,ops:examMode.ops,tables:examMode.tables,opsConfig:examMode.opsConfig,total:examMode.total,timeLimit:examMode.timeLimit,testId:examMode.testId||'',startedAt:examMode.startedAt};
     sessionStorage.setItem('pruebaConfig',JSON.stringify(_pruebaConfig));
     _updatePruebasUI();
   }
@@ -1209,15 +1268,55 @@ const _PR_HAS_TABLES={mult:true,div:true,add:false,sub:false};
 const _PR_QTY_LABEL={mult:'PREG. POR TABLA',div:'PREG. POR TABLA',add:'TOTAL PREGUNTAS',sub:'TOTAL PREGUNTAS'};
 const _PR_QTY_DEFAULT={mult:4,div:3,add:10,sub:10};
 const _prMatrixTouched={mult:false,div:false};
+const _prDetailMode={mult:false,div:false};
 let _prBuilderStep=1;
+function prOrganizeBuilderSections(){
+  const operations=document.getElementById('prOpMult')?.closest('.pr-field');
+  const target=document.querySelector('[data-pr-builder-panel="3"]');
+  const sections=document.getElementById('prOpSections');
+  if(operations&&target&&sections&&operations.parentElement!==target) target.insertBefore(operations,sections);
+  const audienceMode=document.getElementById('prAudienceMode');
+  const audienceGroup=document.getElementById('prAudienceGroup');
+  const audienceGrid=document.getElementById('prAudienceStudentsGrid');
+  if(audienceMode) audienceMode.hidden=true;
+  if(audienceGroup) audienceGroup.hidden=true;
+  if(audienceGrid&&!document.getElementById('prAudienceSelectAll')){
+    const actions=document.createElement('div');
+    actions.className='pr-audience-actions';
+    actions.setAttribute('role','group');
+    actions.setAttribute('aria-label','Acciones de selección de alumnos');
+    actions.innerHTML='<button id="prAudienceSelectAll" type="button" class="pr-audience-action">SELECCIONAR TODOS</button><button id="prAudienceInvert" type="button" class="pr-audience-action">INVERTIR SELECCIÓN</button>';
+    audienceGrid.parentNode.insertBefore(actions,audienceGrid);
+  }
+  const folioField=document.getElementById('prTestTitle')?.closest('.pr-field');
+  if(folioField&&!document.getElementById('prTestName')){
+    const titleField=document.createElement('div');
+    titleField.className='pr-field pr-test-name-field';
+    titleField.innerHTML='<label for="prTestName">TÍTULO</label><input id="prTestName" type="text" maxlength="200" placeholder="Ej. Tablas del 1 al 10">';
+    folioField.parentNode.insertBefore(titleField,folioField.nextElementSibling);
+  }
+  const descriptionField=document.getElementById('prTestDescription')?.closest('.pr-field');
+  const titleFieldLayout=document.getElementById('prTestName')?.closest('.pr-field');
+  if(titleFieldLayout) titleFieldLayout.style.gridColumn='auto';
+  if(descriptionField) descriptionField.style.gridColumn='1 / -1';
+  const configIntro=document.querySelector('.pr-config-intro');
+  const configTools=document.querySelector('.pr-config-tools');
+  if(folioField&&configIntro&&configTools&&folioField.parentElement!==configIntro){
+    folioField.classList.add('pr-config-folio');
+    configIntro.insertBefore(folioField,configTools);
+  }
+  const assignmentStep=document.querySelector('[data-pr-builder-step="2"]');
+  const operationsStep=document.querySelector('[data-pr-builder-step="3"]');
+  if(assignmentStep) assignmentStep.textContent='2. Asignación';
+  if(operationsStep) operationsStep.textContent='3. Operaciones y detalle';
+}
 function prSetBuilderStep(step){
   _prBuilderStep=Math.min(5,Math.max(1,Number(step)||1));
-  document.querySelectorAll('[data-pr-builder-panel]').forEach(panel=>panel.classList.toggle('active',Number(panel.dataset.prBuilderPanel)===_prBuilderStep));
+  document.querySelectorAll('[data-pr-builder-panel]').forEach(panel=>panel.classList.add('active'));
   document.querySelectorAll('[data-pr-builder-step]').forEach(button=>{const active=Number(button.dataset.prBuilderStep)===_prBuilderStep;button.classList.toggle('active',active);button.setAttribute('aria-current',active?'step':'false');});
   const previous=document.getElementById('prBuilderPrevious'); if(previous){previous.hidden=_prBuilderStep===1;previous.disabled=_prBuilderStep===1;}
-  const next=document.getElementById('prBuilderNext'); if(next) next.hidden=_prBuilderStep===5;
-  const save=document.getElementById('prSaveConfig'); if(save) save.hidden=_prBuilderStep!==5;
-  const start=document.getElementById('prStartConfiguredTest'); if(start) start.hidden=_prBuilderStep!==5;
+  const next=document.getElementById('prBuilderNext'); if(next) next.hidden=true;
+  const start=document.getElementById('prStartConfiguredTest'); if(start) start.hidden=false;
 }
 function prRewardTierHTML(tier={},index){return `<div class="pr-reward-tier" data-reward-tier="${index}"><label>Mínimo %<input type="number" min="0" max="100" step="1" data-tier-field="minPercent" value="${Number.isInteger(tier.minPercent)?tier.minPercent:''}"></label><label>Máximo %<input type="number" min="0" max="100" step="1" data-tier-field="maxPercent" value="${Number.isInteger(tier.maxPercent)?tier.maxPercent:''}"></label><label>Gana<input type="number" min="0" max="100000" step="1" data-tier-field="earned" value="${Number.isInteger(tier.earned)?tier.earned:0}"></label><label>Pierde<input type="number" min="0" max="100000" step="1" data-tier-field="lost" value="${Number.isInteger(tier.lost)?tier.lost:0}"></label><button type="button" class="pr-tbl-mini-btn" data-remove-reward-tier>Quitar</button></div>`;}
 function prRenderRewardTiers(tiers=[]){const target=document.getElementById('prRewardTiers');if(target) target.innerHTML=tiers.length?tiers.map(prRewardTierHTML).join(''):'<p class="pr-attempts-empty">Sin tramos: se usará Áureos base.</p>';}
@@ -1238,6 +1337,7 @@ document.addEventListener('click',event=>{
   if(event.target.id==='prAddRewardTier'){const target=document.getElementById('prRewardTiers');if(target){const tiers=prCollectRewardTiers();target.innerHTML=(tiers.length?tiers:[]).concat({minPercent:85,maxPercent:100,earned:100,lost:0}).map(prRewardTierHTML).join('');}return;}
   const remove=event.target.closest('[data-remove-reward-tier]'); if(remove){remove.closest('[data-reward-tier]')?.remove(); if(!document.querySelector('#prRewardTiers [data-reward-tier]')) prRenderRewardTiers([]);}
 });
+prOrganizeBuilderSections();
 prSetBuilderStep(1);
 
 function _prOpSectionHTML(op){
@@ -1257,8 +1357,13 @@ function _prOpSectionHTML(op){
         <div class="pr-digits-grid" id="prDigitsGrid_${op}" style="grid-template-columns:repeat(4,1fr)">${[2,3,4,5].map(n=>`<button class="pr-digits-btn${n===2?' sel':''}" data-d="${n}" onclick="prSelDigits('${op}',this)">${n}</button>`).join('')}</div>
         <small class="pr-config-note">Cada celda representa divisor × cociente permitido; los rangos no son límites arbitrarios del dividendo.</small>
       </div>`:'';
+    const quickTables=Array.from({length:12},(_,i)=>i+1).map(table=>`<button type="button" class="pr-quick-table" data-quick-table="${table}" aria-pressed="true" onclick="prToggleQuickTable('${op}',${table})">${op==='div'?'D':'T'}${table}</button>`).join('');
     return `<div class="pr-op-section" id="prOpSection_${op}">
       <div class="pr-op-section-title">${_PR_OP_TITLE[op]}</div>
+      <label class="pr-detail-toggle"><input type="checkbox" id="prDetail_${op}" onchange="prToggleOpDetail('${op}',this.checked)"> <span>Más detalle</span><small>Elegir combinaciones exactas</small></label>
+      <div class="pr-quick-table-mode" id="prQuickTables_${op}"><div class="pr-matrix-help">Modo rápido: se incluyen las tablas completas.</div><div class="pr-quick-tables">${quickTables}</div></div>
+      <div class="pr-matrix-detail" id="prMatrixDetail_${op}">
+      <div class="pr-matrix-help pr-detail-rule">Modo detalle: 1 pregunta por cada casilla seleccionada. No usa Preg. por tabla.</div>
       <div class="pr-matrix-help">${op==='div'?'División: columnas = divisor y filas = cociente/factor.':'Multiplicación: columnas = tabla y filas = factor.'}</div>
       <div class="pr-matrix-legend"><span><i class="pr-matrix-swatch included"></i> Verde: se generará</span><span><i class="pr-matrix-swatch excluded"></i> Rojo: se excluirá</span><span>Estado de filas y columnas: incluida, excluida o parcial</span></div>
       <div class="pr-matrix-wrap"><div class="pr-matrix" id="prTablesGrid_${op}" role="grid" aria-label="Matriz de ${op==='div'?'divisores':'tablas'} y factores">${matrixCells}</div></div>
@@ -1266,7 +1371,8 @@ function _prOpSectionHTML(op){
         <button class="pr-tbl-mini-btn" onclick="prSelectTbls('${op}',true)">Seleccionar todo</button>
         <button class="pr-tbl-mini-btn" onclick="prSelectTbls('${op}',false)">Limpiar todo</button>
       </div>
-      <div class="pr-op-qty-row">
+      </div>
+      <div class="pr-op-qty-row" id="prQtyRow_${op}">
         <label>${_PR_QTY_LABEL[op]}</label>
         <input type="number" id="prQty_${op}" value="${_PR_QTY_DEFAULT[op]}" min="1" max="20" step="1">
       </div>
@@ -1274,8 +1380,8 @@ function _prOpSectionHTML(op){
     </div>`;
   }
   const digitsBtns=[1,2,3,4].map(n=>`<button class="pr-digits-btn${n===1?' sel':''}" data-d="${n}" onclick="prSelDigits('${op}',this)">${n}</button>`).join('');
-  const directText=op==='sub'?'Sin prestar':'Sin llevar';
-  const carryText=op==='sub'?'Con prestar':'Con llevar';
+  const directText='Sencillas';
+  const carryText=op==='sub'?'Con préstamos':'Llevadas';
   return `<div class="pr-op-section" id="prOpSection_${op}">
     <div class="pr-op-section-title">${_PR_OP_TITLE[op]}</div>
     <div class="pr-op-qty-row">
@@ -1302,13 +1408,39 @@ function prToggleOpSection(op,checked){
   if(checked){
     if(existing) return;
     wrap.insertAdjacentHTML('beforeend',_prOpSectionHTML(op));
-    prMatrixUpdateAxes(op);
+    _prDetailMode[op]=false;
+    prMatrixUpdateAxes(op); prToggleOpDetail(op,false);
   } else if(existing){
     existing.remove();
   }
 }
+function prToggleOpDetail(op,checked){
+  _prDetailMode[op]=!!checked;
+  document.getElementById('prQuickTables_'+op)?.classList.toggle('is-hidden',!!checked);
+  document.getElementById('prMatrixDetail_'+op)?.classList.toggle('is-hidden',!checked);
+  const qtyInput=document.getElementById('prQty_'+op);
+  document.getElementById('prQtyRow_'+op)?.classList.toggle('is-hidden',!!checked);
+  if(qtyInput) qtyInput.disabled=!!checked;
+  prUpdateQuickTables(op);
+  prUpdateSummary();
+}
+function prToggleQuickTable(op,table){
+  const cells=prMatrixCells(op).filter(cell=>Number(cell.dataset.col)===table&&Number(cell.dataset.row)>0);
+  const selected=cells.some(cell=>cell.classList.contains('sel'));
+  cells.forEach(cell=>{cell.classList.toggle('sel',!selected);cell.setAttribute('aria-pressed',String(!selected));});
+  prMatrixUpdateAxes(op); prUpdateQuickTables(op); prUpdateSummary();
+}
+function prUpdateQuickTables(op){
+  document.querySelectorAll('#prQuickTables_'+op+' [data-quick-table]').forEach(button=>{
+    const table=Number(button.dataset.quickTable);
+    const cells=prMatrixCells(op).filter(cell=>Number(cell.dataset.col)===table&&Number(cell.dataset.row)>0);
+    const active=cells.length>0&&cells.every(cell=>cell.classList.contains('sel'));
+    button.classList.toggle('sel',active); button.setAttribute('aria-pressed',String(active));
+  });
+}
 function prSelectTbls(op,sel){
   prMatrixSet(op,sel);
+  prUpdateQuickTables(op);
 }
 function prSelDigits(op,btn){
   document.querySelectorAll('#prDigitsGrid_'+op+' .pr-digits-btn').forEach(b=>b.classList.remove('sel'));
@@ -1374,7 +1506,10 @@ function _prCollectOpsConfig(ops){
     if(_PR_HAS_TABLES[op]){
       const matrix=prMatrixSelection(op);
       const tables=[...new Set(prMatrixCells(op).filter(b=>b.classList.contains('sel')&&Number(b.dataset.col)>0).map(b=>Number(b.dataset.col)))].sort((a,b)=>a-b);
-      opsConfig[op]={tables,qty,matrix};
+      const completeTables=[...new Set(tables)];
+      const config={tables:completeTables,qty,detailMode:!!_prDetailMode[op]};
+      if(_prDetailMode[op]) config.matrix=matrix;
+      opsConfig[op]=config;
       if(op==='mult'){
         const mannerBtn=document.querySelector('#prMannerGrid_'+op+' .pr-mode-btn.sel');
         opsConfig[op].manner=mannerBtn?.dataset.manner||'ordered';
@@ -1402,7 +1537,8 @@ function prDescribeOp(op,cfg){
   const name=_PR_OP_NAME[op]||op;
   if(op==='mult'){
     const tableCount=cfg.tables?.length||0;
-    return `${name}: ${cfg.matrix?.length||0} combinaciones seleccionadas, ${cfg.manner==='random'?'en desorden':'en orden'}`;
+    const combinations=Array.isArray(cfg.matrix)?cfg.matrix.length:tableCount*(Number(cfg.qty)||0);
+    return `${name}: ${_prDetailMode.mult?'combinaciones exactas':'tablas completas'} (${combinations}), ${cfg.manner==='random'?'en desorden':'en orden'}`;
   }
   if(op==='div'){
     const tableCount=cfg.tables?.length||0;
@@ -1430,8 +1566,15 @@ function prUpdateSummary(){
   const state=missingTables?'FALTAN TABLAS':'LISTA PARA INICIAR';
   el.innerHTML=`<div class="pr-summary-head"><div class="pr-summary-title">RESUMEN ANTES DE INICIAR</div><span class="pr-summary-state${missingTables?' warn':''}">${state}</span></div><div class="pr-summary-metrics"><span><b>GRUPO</b>${grade}</span><span><b>REACTIVOS</b>${total}</span><span><b>RITMO</b>${time?time+' seg/pregunta':'Tiempo libre'}</span></div><div class="pr-summary-details">${details}</div>${missingTables?'<p class="pr-summary-warning">Selecciona al menos una tabla en cada operación que la requiera.</p>':''}`;
 }
+let prClockTimer=null;
+function prFormatLongDate(value){const date=value.toLocaleDateString('es-MX',{day:'numeric',month:'long',year:'numeric'});const time=value.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',second:'2-digit',hour12:true});return `${date}, ${time}`;}
+function prUpdateLiveClock(){const clock=document.getElementById('prLiveClock');if(clock)clock.textContent=prFormatLongDate(new Date()).split(', ').slice(-1)[0];}
 function prLoadTestConfiguration(configuration){
-  const title=document.getElementById('prTestTitle'); if(title) title.value=configuration?.title||'';
+  const title=document.getElementById('prTestTitle'); if(title){const folio=configuration?.folio||configuration?.title||'';title.textContent=folio||'Sin asignar';title.classList.toggle('is-pending',!folio);}
+  const testName=document.getElementById('prTestName'); if(testName) testName.value=configuration?.title||'';
+  const createdAt=document.getElementById('prCreatedAt'); if(createdAt){const stamp=Date.parse(configuration?.createdAt||'');const value=Number.isFinite(stamp)?new Date(stamp):new Date();createdAt.textContent=prFormatLongDate(value);}
+  prUpdateLiveClock(); if(prClockTimer)clearInterval(prClockTimer); prClockTimer=setInterval(prUpdateLiveClock,1000);
+  const grade=document.getElementById('prGrade'); if(grade) grade.value=configuration?.grade||'';
   const description=document.getElementById('prTestDescription'); if(description) description.value=configuration?.description||'';
   const multiplier=document.getElementById('prMultiplier'); if(multiplier) multiplier.value=Number.isInteger(configuration?.multiplier)?configuration.multiplier:1;
   const rewards=configuration?.rewards||{};
@@ -1445,7 +1588,7 @@ function prLoadTestConfiguration(configuration){
   const mult=configuration?.opsConfig?.mult;
   const div=configuration?.opsConfig?.div;
   const ops=configuration?.opsConfig&&typeof configuration.opsConfig==='object'?configuration.opsConfig:{};
-   if(Object.keys(ops).length)_PR_OP_LIST.forEach(op=>{const checkbox=document.getElementById('prOp'+op.charAt(0).toUpperCase()+op.slice(1));if(!checkbox)return;checkbox.checked=!!ops[op];prToggleOpSection(op,checkbox.checked);const cfg=ops[op]||{};const qty=document.getElementById('prQty_'+op);if(qty&&Number.isInteger(cfg.qty))qty.value=String(cfg.qty);const digits=document.querySelector(`#prDigitsGrid_${op} .pr-digits-btn[data-d="${cfg.digits}"]`);if(digits)prSelDigits(op,digits);const mode=document.querySelector(`#prCarryGrid_${op} .pr-mode-btn[data-mode="${cfg.carryMode}"]`);if(mode)prSelCarryMode(op,mode);const manner=document.querySelector(`#prMannerGrid_${op} .pr-mode-btn[data-manner="${cfg.manner}"]`);if(manner)prSelManner(op,manner);if(cfg.matrix)prRenderMatrix(op,cfg.matrix);else if(cfg.ranges)prRenderMatrix(op,prMatrixFromRanges(cfg.ranges,cfg.tables));else if(cfg.tables)prRenderMatrix(op,prMatrixFromRanges(null,cfg.tables));});
+  if(Object.keys(ops).length)_PR_OP_LIST.forEach(op=>{const checkbox=document.getElementById('prOp'+op.charAt(0).toUpperCase()+op.slice(1));if(!checkbox)return;checkbox.checked=!!ops[op];prToggleOpSection(op,checkbox.checked);const cfg=ops[op]||{};_prDetailMode[op]=cfg.detailMode===true||Array.isArray(cfg.matrix);const detail=document.getElementById('prDetail_'+op);if(detail)detail.checked=_prDetailMode[op];const qty=document.getElementById('prQty_'+op);if(qty&&Number.isInteger(cfg.qty))qty.value=String(cfg.qty);const digits=document.querySelector(`#prDigitsGrid_${op} .pr-digits-btn[data-d="${cfg.digits}"]`);if(digits)prSelDigits(op,digits);const mode=document.querySelector(`#prCarryGrid_${op} .pr-mode-btn[data-mode="${cfg.carryMode}"]`);if(mode)prSelCarryMode(op,mode);const manner=document.querySelector(`#prMannerGrid_${op} .pr-mode-btn[data-manner="${cfg.manner}"]`);if(manner)prSelManner(op,manner);if(cfg.matrix)prRenderMatrix(op,cfg.matrix);else if(cfg.ranges)prRenderMatrix(op,prMatrixFromRanges(cfg.ranges,cfg.tables));else if(cfg.tables)prRenderMatrix(op,prMatrixFromRanges(null,cfg.tables));prToggleOpDetail(op,_prDetailMode[op]);});
   prUpdateSummary();
 }
 function prGetTestConfiguration(existing={}){
@@ -1455,8 +1598,10 @@ function prGetTestConfiguration(existing={}){
   const multiplier=multiplierInput?Number(multiplierInput.value):(Number.isInteger(next.multiplier)?next.multiplier:1);
   if(!Number.isInteger(multiplier)||multiplier<1||multiplier>5) throw Error('El multiplicador debe ser un entero entre 1 y 5');
   next.multiplier=multiplier;
-  const titleInput=document.getElementById('prTestTitle'); if(titleInput) next.title=titleInput.value.trim();
+  const folioInput=document.getElementById('prTestTitle'); if(folioInput){ next.folio=folioInput.textContent.trim(); }
+  const titleInput=document.getElementById('prTestName'); if(titleInput) next.title=titleInput.value.trim();
   const descriptionInput=document.getElementById('prTestDescription'); if(descriptionInput) next.description=descriptionInput.value.trim();
+  const gradeInput=document.getElementById('prGrade'); if(gradeInput) next.grade=gradeInput.value;
   const aureosInput=document.getElementById('prRewardAureos'), experienceInput=document.getElementById('prRewardExperience');
   if(aureosInput&&experienceInput){
     const aureos=Number(aureosInput.value||0), experience=Number(experienceInput.value||0);
@@ -1469,11 +1614,11 @@ function prGetTestConfiguration(existing={}){
   const opsConfig={...(next.opsConfig||{}),..._prCollectOpsConfig(activeOps)};
   _PR_OP_LIST.filter(o=>!activeOps.includes(o)).forEach(o=>delete opsConfig[o]);
   const mult={...(opsConfig.mult||{})};
-  mult.matrix=prMatrixSelection('mult');
+  if(_prDetailMode.mult) mult.matrix=prMatrixSelection('mult'); else delete mult.matrix;
   delete mult.ranges; delete mult.repeat;
   if(Object.keys(mult).length) opsConfig.mult=mult; else delete opsConfig.mult;
   const div={...(opsConfig.div||{})};
-  div.matrix=prMatrixSelection('div');
+  if(_prDetailMode.div) div.matrix=prMatrixSelection('div'); else delete div.matrix;
   delete div.ranges;
   if(Object.keys(div).length) opsConfig.div=div; else delete opsConfig.div;
   if(Object.keys(opsConfig).length) next.opsConfig=opsConfig; else delete next.opsConfig;
@@ -1489,13 +1634,16 @@ function prFmtDuration(ms){
   return min?`${min}m ${String(sec).padStart(2,'0')}s`:`${sec}s`;
 }
 async function startPrueba(btn){
+  const startStatus=document.getElementById('prStartStatus');
+  const startMessage=(text,ok=false)=>{if(startStatus){startStatus.textContent=text;startStatus.classList.toggle('ok',ok);startStatus.classList.toggle('error',!ok);}showMsg(text,ok);};
   const grade=document.getElementById('prGrade').value;
   const ops=_PR_OP_LIST.filter(o=>document.getElementById('prOp'+o.charAt(0).toUpperCase()+o.slice(1))?.checked);
   const timeLimit=Number(document.getElementById('prTime').value)||0;
-  if(!ops.length){ showMsg('❌ Selecciona al menos una operación'); return; }
+  const timePerQuestion=Number(document.getElementById('prTimePerQuestion')?.value)||0;
+  if(!ops.length){ startMessage('❌ No se puede iniciar: selecciona al menos una operación.'); return; }
   const opsConfig=_prCollectOpsConfig(ops);
   for(const op of ops){
-    if(_PR_HAS_TABLES[op]&&!opsConfig[op].tables.length){ showMsg(`❌ Selecciona al menos una tabla para ${_PR_OP_NAME[op]}`); return; }
+    if(_PR_HAS_TABLES[op]&&!opsConfig[op].tables.length){ startMessage(`❌ No se puede iniciar: selecciona al menos una tabla para ${_PR_OP_NAME[op]}.`); return; }
   }
   const total=_prCalcTotal(opsConfig)||20;
   // Compatibilidad: tables/op planos = de la primera operación con tablas (o vacío)
@@ -1504,35 +1652,62 @@ async function startPrueba(btn){
   const op=ops.length===1?ops[0]:'mixed';
   if(btn) btn.disabled=true;
   try{
+    const savedTest=typeof window.prSaveSelectedTest==='function'?await window.prSaveSelectedTest():null;
+    let activeTest=savedTest;
+    let audienceAssignments=[];
+    if(activeTest?.testId){
+      if(typeof window.prSaveAudienceAssignments==='function') audienceAssignments=await window.prSaveAudienceAssignments();
+      const stateResponse=await fetch(`/api/exams/${encodeURIComponent(activeTest.testId)}/state`,{method:'POST',headers:{'Content-Type':'application/json','X-Admin-Password':_adminPass},body:JSON.stringify({action:'start',revision:Number(activeTest.revision)+1})});
+      const stateData=await stateResponse.json();
+      if(!stateResponse.ok) throw Error(stateData.error||'No se pudo activar la prueba en la biblioteca');
+      activeTest=stateData.test;
+    }
     const r=await fetch('/api/exam/start',{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({grade,op,ops,tables,opsConfig,timeLimit,total,password:_adminPass})});
+      body:JSON.stringify({grade,op,ops,tables,opsConfig,timeLimit,timePerQuestion,total,testId:savedTest?.testId||'',audienceAccountPlayerIds:audienceAssignments.filter(item=>item.targetType==='student').map(item=>item.accountPlayerId),password:_adminPass})});
     const d=await r.json();
     if(d.ok){
-      _pruebaConfig={grade,ops,tables,opsConfig,total,timeLimit};
+      _pruebaConfig={grade,ops,tables,opsConfig,total,timeLimit,testId:activeTest?.testId||'',testRevision:activeTest?.revision||0};
       sessionStorage.setItem('pruebaConfig',JSON.stringify(_pruebaConfig));
       _updatePruebasUI();
-      showMsg('📊 Prueba iniciada');
-    } else showMsg('❌ '+(d.error||'Error al iniciar'));
-  }catch(e){ showMsg('❌ Error de red'); }
+      startMessage('📊 Prueba iniciada',true);
+    } else startMessage('❌ No se pudo iniciar: '+(d.error||'el servidor rechazó la solicitud.'));
+  }catch(e){ startMessage('❌ No se pudo iniciar: '+(e.message||'error de red')); }
   finally{ if(btn) btn.disabled=false; }
 }
 async function stopPrueba(){
+  const activeTestId=_pruebaConfig?.testId||'';
+  let activeTestRevision=Number(_pruebaConfig?.testRevision)||0;
   try{
     await fetch('/api/exam/stop',{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({password:_adminPass})});
+      body:JSON.stringify({password:_adminPass,testId:activeTestId})});
     showMsg('🛑 Prueba detenida');
   }catch(e){}
+  if(activeTestId&&!activeTestRevision){
+    try{
+      const currentResponse=await fetch(`/api/exams/${encodeURIComponent(activeTestId)}`,{headers:{'X-Admin-Password':_adminPass}});
+      const currentData=await currentResponse.json();
+      if(currentResponse.ok&&['active','paused','closed'].includes(currentData.test?.status)) activeTestRevision=Number(currentData.test.revision)||0;
+    }catch(_){ }
+  }
+  if(activeTestId&&activeTestRevision){
+    try{
+      const stateResponse=await fetch(`/api/exams/${encodeURIComponent(activeTestId)}/state`,{method:'POST',headers:{'Content-Type':'application/json','X-Admin-Password':_adminPass},body:JSON.stringify({action:'finish',revision:activeTestRevision+1})});
+      if(!stateResponse.ok){const stateData=await stateResponse.json().catch(()=>({}));showMsg('❌ La prueba en vivo se detuvo, pero no se pudo cerrar en la biblioteca: '+(stateData.error||'error desconocido'),false);}
+    }catch(error){showMsg('❌ La prueba en vivo se detuvo, pero no se pudo cerrar en la biblioteca: '+error.message,false);}
+  }
   _pruebaConfig=null;
   sessionStorage.removeItem('pruebaConfig');
   _updatePruebasUI();
+  if(typeof window.prLoadTestLibrary==='function') await window.prLoadTestLibrary();
+  if(typeof window.prSetTestSection==='function') window.prSetTestSection('summary');
 }
 function _updatePruebasUI(){
   const active=!!_pruebaConfig;
   document.getElementById('prBanner').classList.toggle('active',active);
   const status=document.querySelector('.pr-page-status');
   if(status){ status.classList.toggle('active',active); status.lastElementChild.textContent=active?'PRUEBA ACTIVA':'LISTA PARA CONFIGURAR'; }
-  document.getElementById('prConfig').style.display=active?'none':'block';
-  document.getElementById('prResultados').style.display=active?'block':'none';
+  document.getElementById('prConfig').style.display='block';
+  document.getElementById('prResultados').style.display='block';
   if(active){
     const gradeStr=_pruebaConfig.grade||'Todos';
     const opsStr=_pruebaConfig.ops.map(o=>_PR_OP_NAME[o]).join(' · ');

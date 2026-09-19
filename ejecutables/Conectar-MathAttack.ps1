@@ -69,6 +69,70 @@ function Test-Puerto {
     } catch { return $false }
 }
 
+function Get-RedesLocales {
+    $virtualPattern = '(?i)(virtual|vmware|virtualbox|hyper-v|hyperv|vpn|tunnel|tailscale|hamachi|zerotier|wsl|bluetooth|loopback|docker|wireguard)'
+    $redes = @()
+    foreach ($adapter in [System.Net.NetworkInformation.NetworkInterface]::GetAllNetworkInterfaces()) {
+        if ($adapter.OperationalStatus -ne [System.Net.NetworkInformation.OperationalStatus]::Up) { continue }
+        $nombre = "$($adapter.Name) $($adapter.Description)"
+        if ($nombre -match $virtualPattern) { continue }
+        try {
+            $props = $adapter.GetIPProperties()
+            $gateway = @($props.GatewayAddresses | Where-Object {
+                $_.Address.AddressFamily -eq [System.Net.Sockets.AddressFamily]::InterNetwork -and
+                $_.Address.ToString() -notmatch '^0\.0\.0\.0$'
+            } | Select-Object -First 1)
+            foreach ($unicast in $props.UnicastAddresses) {
+                $ip = $unicast.Address.ToString()
+                if ($unicast.Address.AddressFamily -ne [System.Net.Sockets.AddressFamily]::InterNetwork) { continue }
+                if ($ip -match '^(127\.|169\.254\.|0\.)') { continue }
+                $partes = $ip.Split('.')
+                if ($partes.Count -ne 4) { continue }
+                $redes += [PSCustomObject]@{
+                    IP = $ip
+                    Subred = "$($partes[0]).$($partes[1]).$($partes[2])"
+                    Octeto = [int]$partes[3]
+                    Gateway = if ($gateway.Count) { $gateway[0].Address.ToString() } else { '' }
+                    Adaptador = $adapter.Name
+                }
+            }
+        } catch {}
+    }
+    return $redes
+}
+
+function Test-ServidorWeb {
+    param([string]$ip, [int]$port, [int]$timeoutMs = 1800)
+    try {
+        $request = [System.Net.HttpWebRequest]::Create("http://${ip}:$port/")
+        $request.Method = 'GET'
+        $request.Timeout = $timeoutMs
+        $request.ReadWriteTimeout = $timeoutMs
+        $response = $request.GetResponse()
+        $response.Close()
+        return $true
+    } catch { return $false }
+}
+
+function Test-IPValida {
+    param([string]$ip)
+    $parsed = $null
+    if (-not [System.Net.IPAddress]::TryParse($ip, [ref]$parsed)) { return $false }
+    return $parsed.AddressFamily -eq [System.Net.Sockets.AddressFamily]::InterNetwork -and
+        $ip -notmatch '^(127\.|169\.254\.|0\.)'
+}
+
+function Show-ErrorComunicacion {
+    param([string]$detalle, [string]$redes)
+    [Microsoft.VisualBasic.Interaction]::MsgBox(
+        "No se pudo establecer comunicacion con el servidor de Math Attack.`r`n`r`n" +
+        "$detalle`r`n`r`n" +
+        "Red detectada en esta computadora:`r`n$redes`r`n`r`n" +
+        "Verifica que ambas computadoras esten en el mismo Wi-Fi y que el servidor este ACTIVO.`r`n" +
+        "No se abrira el navegador hasta comprobar el puerto 8080.",
+        'OKOnly,Exclamation', 'Math Attack - Error de red') | Out-Null
+}
+
 # Prueba un lote de IPs en paralelo (sockets asincronicos) y devuelve la primera que responda
 function Find-EnLote {
     param([string[]]$ips, [int]$port, [int]$timeoutMs = 600)
@@ -118,6 +182,7 @@ if (Test-Path $historyFile) {
 
 Update-Progreso 5 'Probando conexiones recientes...'
 $encontrado = $null
+$direcciones = @()
 foreach ($ip in $candidatos) {
     if (Test-Puerto -ip $ip -port $PORT -timeoutMs 800) { $encontrado = $ip; break }
 }
@@ -125,15 +190,13 @@ foreach ($ip in $candidatos) {
 # ── 2. Detectar subredes locales reales y escanearlas ────────────────────
 if (-not $encontrado) {
     Update-Progreso 15 'Detectando redes locales...'
-    $direcciones = Get-NetIPAddress -AddressFamily IPv4 -ErrorAction SilentlyContinue |
-        Where-Object { $_.IPAddress -notlike '127.*' -and $_.IPAddress -notlike '169.254.*' }
+    $direcciones = Get-RedesLocales
 
     $subredes = @()
     foreach ($dir in $direcciones) {
-        $p = $dir.IPAddress.Split('.')
-        $subred = "$($p[0]).$($p[1]).$($p[2])"
+        $subred = $dir.Subred
         if (-not ($subredes | Where-Object { $_.Subred -eq $subred })) {
-            $subredes += [PSCustomObject]@{ Subred = $subred; Octeto = [int]$p[3] }
+            $subredes += [PSCustomObject]@{ Subred = $subred; Octeto = $dir.Octeto }
         }
     }
     if (-not $subredes) {
@@ -161,23 +224,43 @@ if (-not $encontrado) {
 
 # ── 3. Resultado: conectar, o pedir la IP a mano ──────────────────────────
 if ($encontrado) {
-    Update-Progreso 100 "Servidor encontrado en $encontrado"
-    $encontrado | Out-File $historyFile -Encoding utf8 -NoNewline
-    Start-Sleep -Milliseconds 400
+    Update-Progreso 96 "Verificando sitio web en $encontrado..."
+    if (Test-ServidorWeb -ip $encontrado -port $PORT) {
+        Update-Progreso 100 "Servidor encontrado en $encontrado"
+        $encontrado | Out-File $historyFile -Encoding utf8 -NoNewline
+        Start-Sleep -Milliseconds 400
+        try { $ventana.Close() } catch {}
+        Start-Process "http://${encontrado}:$PORT/"
+        exit 0
+    }
+    $redesTexto = ($direcciones | ForEach-Object { "$($_.IP) / $($_.Adaptador)" }) -join [Environment]::NewLine
     try { $ventana.Close() } catch {}
-    Start-Process "http://${encontrado}:$PORT/"
-    exit 0
+    Show-ErrorComunicacion "El puerto 8080 respondio, pero el sitio web no devolvio respuesta." $redesTexto
+    exit 1
 }
 
 try { $ventana.Close() } catch {}
+$redesTexto = ($direcciones | ForEach-Object { "$($_.IP) / $($_.Adaptador) / gateway $($_.Gateway)" }) -join [Environment]::NewLine
+if (-not $redesTexto) { $redesTexto = '(No se detecto una interfaz IPv4 activa)' }
+Show-ErrorComunicacion "No se encontro ningun equipo con el puerto TCP 8080 abierto." $redesTexto
 $manual = [Microsoft.VisualBasic.Interaction]::InputBox(
     "No se encontro el servidor automaticamente en la red." + [Environment]::NewLine +
     "Escribe la IP del maestro (ejemplo: 192.168.1.42):",
     "Math Attack - Conectar", "")
 $manual = $manual.Trim()
-if ($manual -match '^\d{1,3}(\.\d{1,3}){3}$') {
-    $manual | Out-File $historyFile -Encoding utf8 -NoNewline
-    Start-Process "http://${manual}:$PORT/"
+if (Test-IPValida $manual) {
+    if (Test-Puerto -ip $manual -port $PORT -timeoutMs 1800) {
+        if (Test-ServidorWeb -ip $manual -port $PORT) {
+            $manual | Out-File $historyFile -Encoding utf8 -NoNewline
+            Start-Process "http://${manual}:$PORT/"
+        } else {
+            Show-ErrorComunicacion "La IP $manual existe, pero no responde como sitio web en el puerto $PORT." $redesTexto
+        }
+    } else {
+        Show-ErrorComunicacion "La IP $manual no responde en el puerto TCP $PORT." $redesTexto
+    }
+} elseif ($manual) {
+    Show-ErrorComunicacion "La IP escrita no es valida: $manual" $redesTexto
 }
 
 } catch {

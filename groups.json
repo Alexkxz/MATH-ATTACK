@@ -1,0 +1,357 @@
+{
+  "schemaVersion": 1,
+  "groups": [
+    {
+      "groupId": "67cb0692-d1c2-4fa7-ae88-85de0e12bb3f",
+      "name": "3 grado",
+      "grade": "3 grado",
+      "schoolYear": "2026",
+      "status": "active",
+      "memberAccountPlayerIds": [
+        "5ceefd1b-4db5-5fc0-9ba0-63fae6f55180",
+        "5fcc4b25-5798-56c0-bf5c-221b623860d2",
+        "2a38286a-2b41-5e9a-bb03-d68dc1b6c281",
+        "4ba2be16-9e3a-547d-89b4-cbf8906c70af",
+        "9cff755e-1282-5d11-883c-fdb79ce56801",
+        "49d3ece2-8d1a-5899-99ac-8cee5ea802a7"
+      ],
+      "createdAt": "2026-09-18T04:24:02.509Z",
+      "updatedAt": "2026-09-18T04:31:35.517Z",
+      "revision": 9,
+      "history": [
+        {
+          "action": "member_added",
+          "accountPlayerId": "51e29bf4-dffa-5925-a90b-2adeee2be53d",
+          "revision": 2,
+          "occurredAt": "2026-09-18T04:28:19.159Z",
+          "actor": "admin"
+        },
+        {
+          "action": "member_added",
+          "accountPlayerId": "5ceefd1b-4db5-5fc0-9ba0-63fae6f55180",
+          "revision": 3,
+          "occurredAt": "2026-09-18T04:31:19.790Z",
+          "actor": "admin"
+        },
+        {
+          "action": "member_added",
+          "accountPlayerId": "5fcc4b25-5798-56c0-bf5c-221b623860d2",
+          "revision": 4,
+          "occurredAt": "2026-09-18T04:31:23.260Z",
+          "actor": "admin"
+        },
+        {
+          "action": "member_added",
+          "accountPlayerId": "2a38286a-2b41-5e9a-bb03-d68dc1b6c281",
+          "revision": 5,
+          "occurredAt": "2026-09-18T04:31:25.534Z",
+          "actor": "admin"
+        },
+        {
+          "action": "member_added",
+          "accountPlayerId": "4ba2be16-9e3a-547d-89b4-cbf8906c70af",
+          "revision": 6,
+          "occurredAt": "2026-09-18T04:31:27.390Z",
+          "actor": "admin"
+        },
+        {
+          "action": "member_added",
+          "accountPlayerId": "9cff755e-1282-5d11-883c-fdb79ce56801",
+          "revision": 7,
+          "occurredAt": "2026-09-18T04:31:29.735Z",
+          "actor": "admin"
+        },
+        {
+          "action": "member_added",
+          "accountPlayerId": "49d3ece2-8d1a-5899-99ac-8cee5ea802a7",
+          "revision": 8,
+          "occurredAt": "2026-09-18T04:31:31.701Z",
+          "actor": "admin"
+        },
+        {
+          "action": "member_removed",
+          "accountPlayerId": "51e29bf4-dffa-5925-a90b-2adeee2be53d",
+          "revision": 9,
+          "occurredAt": "2026-09-18T04:31:35.517Z",
+          "actor": "admin"
+        }
+      ]
+    },
+    {
+      "groupId": "004368a5-0a74-4732-897d-f1fd8b40e99d",
+      "name": "4 grado",
+      "grade": "4",
+      "schoolYear": "2026",
+      "status": "active",
+      "memberAccountPlayerIds": [
+        "7d3a51eb-2565-5304-8e9a-106653ba5af1",
+        "142a67f0-e4ba-512f-b55d-86c2b18a9488",
+        "450c3187-fd46-5aff-a9a8-c4dfa3929438",
+        "4afaf2a0-1e0a-5a2e-abf8-c22cda9b5b2e",
+        "b64af2a1-c558-41ab-ad00-59f4ea4d7061",
+        "9ea78f33-950f-4d1c-82a4-f60ca07707fc"
+      ],
+      "createdAt": "2026-09-18T04:31:55.255Z",
+      "updatedAt": "2026-09-18T04:32:12.587Z",
+      "revision": 7,
+      "history": [
+        {
+          "action": "member_added",
+          "accountPlayerId": "7d3a51eb-2565-5304-8e9a-106653ba5af1",
+          "revision": 2,
+          "occurredAt": "2026-09-18T04:32:02.973Z",
+          "actor": "admin"
+        },
+        {
+          "action": "member_added",
+          "accountPlayerId": "142a67f0-e4ba-512f-b55d-86c2b18a9488",
+          "revision": 3,
+          "occurredAt": "2026-09-18T04:32:05.255Z",
+          "actor": "admin"
+        },
+        {
+          "action": "member_added",
+          "accountPlayerId": "450c3187-fd46-5aff-a9a8-c4dfa3929438",
+          "revision": 4,
+          "occurredAt": "2026-09-18T04:32:07.039Z",
+          "actor": "admin"
+        },
+        {
+          "action": "member_added",
+          "accountPlayerId": "4afaf2a0-1e0a-5a2e-abf8-c22cda9b5b2e",
+          "revision": 5,
+          "occurredAt": "2026-09-18T04:32:08.877Z",
+          "actor": "admin"
+        },
+        {
+          "action": "member_added",
+          "accountPlayerId": "b64af2a1-c558-41ab-ad00-59f4ea4d7061",
+          "revision": 6,
+          "occurredAt": "2026-09-18T04:32:10.702Z",
+          "actor": "admin"
+        },
+        {
+          "action": "member_added",
+          "accountPlayerId": "9ea78f33-950f-4d1c-82a4-f60ca07707fc",
+          "revision": 7,
+          "occurredAt": "2026-09-18T04:32:12.587Z",
+          "actor": "admin"
+        }
+      ]
+    }
+  ],
+  "events": [
+    {
+      "eventId": "63d9b297-4c2e-47d6-a1a7-e85302d9339b",
+      "operation": "group_created",
+      "groupId": "67cb0692-d1c2-4fa7-ae88-85de0e12bb3f",
+      "accountPlayerId": null,
+      "revision": null,
+      "payload": {
+        "name": "3 grado",
+        "grade": "3 grado",
+        "schoolYear": "2026"
+      },
+      "actor": "admin",
+      "occurredAt": "2026-09-18T04:24:02.512Z",
+      "fingerprint": "7b7ff002fd83b1747e45fbd1d3669484cca2af36369d8caa62a059d45b60156b"
+    },
+    {
+      "eventId": "a3dda03a-027b-4e6c-b4fc-cc337d4646fd",
+      "operation": "group_member_added",
+      "groupId": "67cb0692-d1c2-4fa7-ae88-85de0e12bb3f",
+      "accountPlayerId": "51e29bf4-dffa-5925-a90b-2adeee2be53d",
+      "revision": 2,
+      "payload": {
+        "adding": true
+      },
+      "actor": "admin",
+      "occurredAt": "2026-09-18T04:28:19.159Z",
+      "fingerprint": "996f452819246284906505e66bd127de7032e2f9b3013271cf97ec8869c72668"
+    },
+    {
+      "eventId": "192028c8-46ac-41ed-addc-a2d42fd84ae5",
+      "operation": "group_member_added",
+      "groupId": "67cb0692-d1c2-4fa7-ae88-85de0e12bb3f",
+      "accountPlayerId": "5ceefd1b-4db5-5fc0-9ba0-63fae6f55180",
+      "revision": 3,
+      "payload": {
+        "adding": true
+      },
+      "actor": "admin",
+      "occurredAt": "2026-09-18T04:31:19.791Z",
+      "fingerprint": "dcf48edc329f23e9d00282a0b0496479e58656686fb909c763a91ce35aa749fc"
+    },
+    {
+      "eventId": "3441c2a2-3101-45c1-af0e-686cb59b3675",
+      "operation": "group_member_added",
+      "groupId": "67cb0692-d1c2-4fa7-ae88-85de0e12bb3f",
+      "accountPlayerId": "5fcc4b25-5798-56c0-bf5c-221b623860d2",
+      "revision": 4,
+      "payload": {
+        "adding": true
+      },
+      "actor": "admin",
+      "occurredAt": "2026-09-18T04:31:23.260Z",
+      "fingerprint": "cd1ee921e131a1aebbde20a0634c98a66314771493e24fa3bb3ae20372273f44"
+    },
+    {
+      "eventId": "9ed761f3-6bd5-4875-8eb2-855c726778f4",
+      "operation": "group_member_added",
+      "groupId": "67cb0692-d1c2-4fa7-ae88-85de0e12bb3f",
+      "accountPlayerId": "2a38286a-2b41-5e9a-bb03-d68dc1b6c281",
+      "revision": 5,
+      "payload": {
+        "adding": true
+      },
+      "actor": "admin",
+      "occurredAt": "2026-09-18T04:31:25.534Z",
+      "fingerprint": "057b951842daf48cfe0c982ec174bc29a922a8e022b3e97809d72ef13ca077c9"
+    },
+    {
+      "eventId": "e636d53b-cb12-4e51-8f39-458654c48624",
+      "operation": "group_member_added",
+      "groupId": "67cb0692-d1c2-4fa7-ae88-85de0e12bb3f",
+      "accountPlayerId": "4ba2be16-9e3a-547d-89b4-cbf8906c70af",
+      "revision": 6,
+      "payload": {
+        "adding": true
+      },
+      "actor": "admin",
+      "occurredAt": "2026-09-18T04:31:27.390Z",
+      "fingerprint": "da22f21a88e794105d27eea551055a91c15b1a562463d264a8aa3277f9dee151"
+    },
+    {
+      "eventId": "e5374998-9fe0-4939-8791-e4925bc5d876",
+      "operation": "group_member_added",
+      "groupId": "67cb0692-d1c2-4fa7-ae88-85de0e12bb3f",
+      "accountPlayerId": "9cff755e-1282-5d11-883c-fdb79ce56801",
+      "revision": 7,
+      "payload": {
+        "adding": true
+      },
+      "actor": "admin",
+      "occurredAt": "2026-09-18T04:31:29.735Z",
+      "fingerprint": "e7c633cff758c7694048b909d66f067c6ebccbf951665a95310a67ad702867f9"
+    },
+    {
+      "eventId": "3c91916d-e855-4665-8afa-1d031ad6667c",
+      "operation": "group_member_added",
+      "groupId": "67cb0692-d1c2-4fa7-ae88-85de0e12bb3f",
+      "accountPlayerId": "49d3ece2-8d1a-5899-99ac-8cee5ea802a7",
+      "revision": 8,
+      "payload": {
+        "adding": true
+      },
+      "actor": "admin",
+      "occurredAt": "2026-09-18T04:31:31.701Z",
+      "fingerprint": "85cdc2027b4278243e51bc6660ff59899b2ee406770be9efdeadeafcf21d1d52"
+    },
+    {
+      "eventId": "09a27eec-1332-4e94-b1f9-f95f62663ae2",
+      "operation": "group_member_removed",
+      "groupId": "67cb0692-d1c2-4fa7-ae88-85de0e12bb3f",
+      "accountPlayerId": "51e29bf4-dffa-5925-a90b-2adeee2be53d",
+      "revision": 9,
+      "payload": {
+        "adding": false
+      },
+      "actor": "admin",
+      "occurredAt": "2026-09-18T04:31:35.517Z",
+      "fingerprint": "2349aa65f0632ffa45ff3d27fc5e6cc5bfa0314656f552bb132c97912c6f09b0"
+    },
+    {
+      "eventId": "c5c60a73-8c17-454a-a3ff-c080d7080149",
+      "operation": "group_created",
+      "groupId": "004368a5-0a74-4732-897d-f1fd8b40e99d",
+      "accountPlayerId": null,
+      "revision": null,
+      "payload": {
+        "name": "4 grado",
+        "grade": "4",
+        "schoolYear": "2026"
+      },
+      "actor": "admin",
+      "occurredAt": "2026-09-18T04:31:55.257Z",
+      "fingerprint": "03eae41549fcbca49c5523553e007bf7fb7ee45ff0a5736626ac1d7b44022cb0"
+    },
+    {
+      "eventId": "7a752897-bf20-4edb-8d5d-64bff5cdf21c",
+      "operation": "group_member_added",
+      "groupId": "004368a5-0a74-4732-897d-f1fd8b40e99d",
+      "accountPlayerId": "7d3a51eb-2565-5304-8e9a-106653ba5af1",
+      "revision": 2,
+      "payload": {
+        "adding": true
+      },
+      "actor": "admin",
+      "occurredAt": "2026-09-18T04:32:02.973Z",
+      "fingerprint": "d1175bcc646c78a2275e0af6e2ed434ae7895828cceb5889e139989c233df58f"
+    },
+    {
+      "eventId": "3663aaa2-0924-48f5-8ad6-1dfa9eb21a32",
+      "operation": "group_member_added",
+      "groupId": "004368a5-0a74-4732-897d-f1fd8b40e99d",
+      "accountPlayerId": "142a67f0-e4ba-512f-b55d-86c2b18a9488",
+      "revision": 3,
+      "payload": {
+        "adding": true
+      },
+      "actor": "admin",
+      "occurredAt": "2026-09-18T04:32:05.255Z",
+      "fingerprint": "58787dba1317a649410d615d3f07f3b2ab0309cb7ecfb8c9601eee989afc5201"
+    },
+    {
+      "eventId": "db8db9a7-2aea-48aa-a504-f8974e4eab0b",
+      "operation": "group_member_added",
+      "groupId": "004368a5-0a74-4732-897d-f1fd8b40e99d",
+      "accountPlayerId": "450c3187-fd46-5aff-a9a8-c4dfa3929438",
+      "revision": 4,
+      "payload": {
+        "adding": true
+      },
+      "actor": "admin",
+      "occurredAt": "2026-09-18T04:32:07.039Z",
+      "fingerprint": "3097dc62eb64747e20fb936392de643bc5f86daf8d1e579add9a8c7a8f722135"
+    },
+    {
+      "eventId": "2fd99128-873d-4cf7-bb1c-dbfefce82ce2",
+      "operation": "group_member_added",
+      "groupId": "004368a5-0a74-4732-897d-f1fd8b40e99d",
+      "accountPlayerId": "4afaf2a0-1e0a-5a2e-abf8-c22cda9b5b2e",
+      "revision": 5,
+      "payload": {
+        "adding": true
+      },
+      "actor": "admin",
+      "occurredAt": "2026-09-18T04:32:08.877Z",
+      "fingerprint": "6d5be06b356103a2cc1828752e0749bf0fd641ef5a3a3bc1ff3cc9f908721c42"
+    },
+    {
+      "eventId": "288443cd-28a2-43e7-a6cf-aa467a2037d7",
+      "operation": "group_member_added",
+      "groupId": "004368a5-0a74-4732-897d-f1fd8b40e99d",
+      "accountPlayerId": "b64af2a1-c558-41ab-ad00-59f4ea4d7061",
+      "revision": 6,
+      "payload": {
+        "adding": true
+      },
+      "actor": "admin",
+      "occurredAt": "2026-09-18T04:32:10.702Z",
+      "fingerprint": "bc7d07af9cf1d29661f57bf7a35abde609dc0b0a8178751667caec1218c0903b"
+    },
+    {
+      "eventId": "0098fad3-e816-4a60-abc5-40e56d8f9d07",
+      "operation": "group_member_added",
+      "groupId": "004368a5-0a74-4732-897d-f1fd8b40e99d",
+      "accountPlayerId": "9ea78f33-950f-4d1c-82a4-f60ca07707fc",
+      "revision": 7,
+      "payload": {
+        "adding": true
+      },
+      "actor": "admin",
+      "occurredAt": "2026-09-18T04:32:12.587Z",
+      "fingerprint": "d4b1c310038f595552632543e16f3765625bd2ed63e591ac87389e88eb99e549"
+    }
+  ]
+}

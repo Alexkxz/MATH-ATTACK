@@ -1,4 +1,5 @@
 'use strict';
+const { buildLegacyIdentityMap, resolveAccountPlayerId } = require('../exams/legacyIdentityAdapter');
 
 function createSaveResultMessages({
   wsContext,
@@ -15,6 +16,7 @@ function createSaveResultMessages({
   send,
   L,
   resultIdempotency,
+  testService,
 }) {
   const { gameSessions, maestroClients, examFinished } = wsContext;
   const { getAccountPlayerId, resolveAccountPlayer, getSessionId } = wsContext.identity;
@@ -25,8 +27,11 @@ function createSaveResultMessages({
     if (message.id && resultIdempotency.hasProcessedResult(message.id)) return false;
     const ranking = loadRanking();
     const players = loadPlayers();
-    const accountPlayerId = getAccountPlayerId(message);
-    const player = resolveAccountPlayer(players, { accountPlayerId, name: message.name || '' });
+    const rawAccountPlayerId = getAccountPlayerId(message);
+    const player = resolveAccountPlayer(players, { accountPlayerId: rawAccountPlayerId, name: message.name || '' });
+    const accountPlayerId = player
+      ? resolveAccountPlayerId(player, buildLegacyIdentityMap(players))
+      : rawAccountPlayerId;
     const resolvedGrade = message.grade || player?.grade || ws.grade || '';
     const resolvedDurationMs = Number(message.durationMs) || (
       message.isExam && message.examStartedAt ? Math.max(0, Date.now() - Number(message.examStartedAt)) : 0
@@ -112,13 +117,19 @@ function createSaveResultMessages({
       L.rank(`${message.name}${gradeStr} - ${message.score}pts (${message.pct}%) | ${modeLabel}${message.mpGameMode ? ` - ${message.mpGameMode}` : ''} | ${stats}`);
     }
     const examMode = wsContext.getExamMode();
-    if (message.isExam && (!examMode || examMode.startedAt === message.examStartedAt)) {
+    const examModes = wsContext.getExamModes();
+    const matchingExamMode = examModes.find(mode => (message.examTestId && mode.testId === message.examTestId) || mode.startedAt === message.examStartedAt) || examMode;
+    if (message.isExam && (!matchingExamMode || matchingExamMode.startedAt === message.examStartedAt)) {
       const examName = message.name || ws.playerName || '?';
       examFinished.set(examName, {
         name: examName, grade: resolvedGrade, score: message.score || 0, pct: message.pct || 0,
         correct: message.correct || 0, total: message.total || 0, durationMs: resolvedDurationMs,
         finished: message.finished !== false, finishedAt: Date.now(),
       });
+      const examTestId = message.examTestId || matchingExamMode?.testId;
+      if (testService && examTestId && accountPlayerId) {
+        try { testService.recordLiveExamResult({ testId: examTestId, accountPlayerId, studentSnapshot: { name: examName, grade: resolvedGrade }, message }); } catch (error) { L.err(`No se pudo vincular el intento de examen con ${examTestId}: ${error.message}`); }
+      }
     }
     gameSessions.removeSession(getSessionId(ws));
     if (message.id) resultIdempotency.markResultProcessed(message.id);

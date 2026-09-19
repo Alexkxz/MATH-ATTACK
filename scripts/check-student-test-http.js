@@ -29,7 +29,7 @@ async function ready(base) {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'math-attack-student-flow-'));
   const testsFile = path.join(dir, 'pruebas.json');
   const root = createRoot();
-  const test = createTest({ testId: '33333333-3333-4333-8333-333333333333', creator: ids.creator, status: 'active', title: 'Prueba visible', configuration: {
+  const test = createTest({ testId: '33333333-3333-4333-8333-333333333333', folio: '0001', creator: ids.creator, status: 'active', title: 'Prueba visible', configuration: {
     version: 1,
     multiplier: 3,
     total: 2,
@@ -49,7 +49,7 @@ async function ready(base) {
     const login = await call('/api/student/auth', { method: 'POST', body: JSON.stringify({ name: 'Alumno HTTP', pin: '1234' }) });
     assert.strictEqual(login.status, 200);
     const cookie = login.headers.get('set-cookie').split(';')[0];
-    const created = await call(`/api/student/tests/${test.testId}/attempts`, { method: 'POST', body: '{}' }, cookie);
+    const created = await call(`/api/student/tests/${test.folio}/attempts`, { method: 'POST', body: '{}' }, cookie);
     assert.strictEqual(created.status, 201);
     const createdBody = await created.json();
     const attemptId = createdBody.attempt.attemptId;

@@ -31,6 +31,21 @@ async function panelControls(page) {
   }));
 }
 
+async function auditLegacyNavigationGuard(page) {
+  const state = await page.evaluate(() => {
+    const beforePanel = workspaceDynamicState?.panel;
+    ['goStep1', 'goStep2', 'goStep2to3', 'goOpToStep3', 'goStep3LocalBack', 'goStep3aToStep3b', 'goStep3bBack']
+      .forEach(name => window[name]?.());
+    return {
+      beforePanel,
+      afterPanel: workspaceDynamicState?.panel,
+      activeLegacyScreens: ['step2Screen', 'stepOpScreen', 'step3LocalScreen', 'step3bLocalScreen']
+        .filter(id => document.getElementById(id)?.classList.contains('active')),
+    };
+  });
+  result('Legacy Individual · navegación', state.beforePanel === state.afterPanel && state.activeLegacyScreens.length === 0, `El asistente dinámico conserva ${state.afterPanel} y no activa pantallas antiguas: ${JSON.stringify(state)}`);
+}
+
 async function chooseOperations(page, expected) {
   const buttons = page.locator('#workspaceWizardHost [data-wizard-action="operation"]');
   for (let i = 0; i < await buttons.count(); i += 1) {
@@ -166,6 +181,7 @@ async function main() {
   page.on('console', message => { if (message.type() === 'error' && !/favicon|Failed to load resource/i.test(message.text())) consoleErrors.push(message.text()); });
   try {
     await enterIndividual(page);
+    await auditLegacyNavigationGuard(page);
     const types = await page.locator('#workspaceWizardHost [data-wizard-action="type"]').evaluateAll(nodes => nodes.map(node => node.dataset.value));
     result('Catálogo de modos', types.length === 7, `Modos: ${types.join(', ')}`);
     for (const type of types) { try { await auditMode(page, type); } catch (error) { result(`${type} · fatal`, false, error.message); } }

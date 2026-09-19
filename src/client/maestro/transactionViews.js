@@ -103,6 +103,40 @@ async function clearTransactions(){
     else showMsg('Error al borrar',false);
   }catch(e){ showMsg('Error al borrar',false); }
 }
+function openAureosReset(){
+  document.getElementById('aureosResetOverlay')?.classList.add('open');
+  document.getElementById('aureosResetModal').style.display='block';
+  document.getElementById('aureosResetConfirm')?.focus();
+}
+function closeAureosReset(){
+  document.getElementById('aureosResetOverlay')?.classList.remove('open');
+  const modal=document.getElementById('aureosResetModal');
+  if(modal) modal.style.display='none';
+}
+async function resetAllAureos(){
+  const confirmInput=document.getElementById('aureosResetConfirm');
+  const hint=document.getElementById('aureosResetHint');
+  if((confirmInput?.value||'').trim().toUpperCase()!=='RESETEAR'){
+    if(hint) hint.textContent='Escribe RESETEAR para habilitar el reset.';
+    if(confirmInput) confirmInput.focus();
+    return;
+  }
+  const button=document.getElementById('aureosResetButton');
+  if(button) { button.disabled=true; button.textContent='RESETEANDO...'; }
+  if(hint) hint.textContent='Procesando: guardando saldos en 0 y limpiando historial...';
+  try{
+    const res=await fetch('/api/players/aureos-reset',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(withAdminPassword({}))});
+    const raw=await res.text();
+    let data={};
+    try{ data=JSON.parse(raw||'{}'); }catch(_){ data={}; }
+    if(!res.ok||!data.ok) throw new Error(data.error||`HTTP ${res.status}`);
+    closeAureosReset();
+    if(confirmInput) confirmInput.value='';
+    showMsg(`OK ${data.count} alumnos quedaron en 0 y se borraron ${data.removedTransactions} transacciones`);
+    loadTransactions();
+  }catch(e){ const detail=e?.message||'error desconocido'; if(hint) hint.textContent=`No se pudo completar: ${detail}. Si aparece HTTP 404, reinicia el servidor.`; showMsg(`Error al resetear Aureos: ${detail}`,false); }
+  finally{ if(button){ button.disabled=false; button.textContent='Confirmar y resetear'; } }
+}
 
 // ── Historial ──
 function openHistory(){ document.getElementById('histOverlay').classList.add('open'); document.getElementById('histModal').style.display='block'; }

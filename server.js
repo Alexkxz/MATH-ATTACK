@@ -26,6 +26,7 @@ const { createAttemptCheckpointService } = require('./src/server/exams/attemptCh
 const { createAttemptActionService } = require('./src/server/exams/attemptActionService');
 const { createOfficialAttemptService } = require('./src/server/exams/officialAttemptService');
 const { createOfficialRewardService } = require('./src/server/exams/officialRewardService');
+const { examGradeMatches: _examGradeMatches } = require('./src/server/exams/gradeMatch');
 const { createTestSupervisionService } = require('./src/server/exams/testSupervisionService');
 const { createTestLibraryService } = require('./src/server/exams/testLibraryService');
 const { createGroupStore } = require('./src/server/groups/groupStore');
@@ -110,7 +111,8 @@ const SINGLE_TARGET_POWERS = new Set(['steal','drainlife','inversion']);
 const TWO_PLAYER_ONLY_MODES = new Set(['bomb','survival']);
 
 // ── Estado del modo examen ────────────────────────────────────
-let examMode=null; // null=inactivo, o {grade,tables,op,ops,opsConfig,timeLimit,total,startedAt} — opsConfig (config por operación, opcional) es la fuente de verdad para generar preguntas cuando está presente; tables/total son agregados para compatibilidad con UI existente
+let examMode=null; // Compatibilidad: apunta a la última prueba activa.
+const examModes=new Map(); // testId/startedAt -> prueba activa; permite varias pruebas simultáneas.
 // Alumnos que terminaron durante el examen (visible en panel hasta que se detenga el examen)
 const examFinished=new Map();
 let _lastExamStartAt=0; // evita que un doble-submit accidental borre examFinished
@@ -169,6 +171,14 @@ else L.game('Almacén de pruebas nuevo/no persistido');
 const testService=createTestService({store:testStore,groupResolver:groupId=>{
   try{return groupService.members(groupId);}catch(error){if(/grupo no encontrado/.test(error.message))return undefined;throw error;}
 }});
+function resolveStudentTestIdentifier(identifier){
+  const value=String(identifier||'').trim();
+  try{return testService.get(value).testId;}catch(_){
+    const test=testService.list().find(item=>String(item.folio||item.title||'').trim()===value);
+    if(!test)throw Error('prueba no encontrada');
+    return test.testId;
+  }
+}
 const attemptCheckpointService=createAttemptCheckpointService({store:testStore});
 const attemptActionRoot=testStore.load();
 const attemptActionService=createAttemptActionService({root:attemptActionRoot,store:testStore,persist:data=>testStore.save(data)});
@@ -191,6 +201,7 @@ const {
   savePlayers,
   loadAureosLog,
   saveAureosLog,
+  flushSync,
   logAureosTx,
 } = dataStore;
 const operationStatsCache=createOperationStatsCache(loadRanking);
@@ -489,31 +500,31 @@ const server=http.createServer((req,res)=>{
     });
   }
   // ── Intentos de alumno: identidad exclusivamente derivada de la cookie de sesion ──
-  const studentAttemptMatch=url.match(/^\/api\/student\/tests\/([0-9a-f-]+)\/attempts(?:\/([0-9a-f-]+)(?:\/start)?)?$/i);
+  const studentAttemptMatch=url.match(/^\/api\/student\/tests\/([A-Za-z0-9-]+)\/attempts(?:\/([0-9a-f-]+)(?:\/start)?)?$/i);
   if(studentAttemptMatch){
     const auth=studentHttpSessions.validateStudentSession(getStudentSessionToken(req));
     if(!auth.ok)return sendJson(res,401,{ok:false,error:'Sesion no valida'});
     const player=findPlayerById(loadPlayers(),auth.session.accountPlayerId)||loadPlayers().find(p=>{try{return resolveAccountPlayerId(p,buildLegacyIdentityMap(loadPlayers()))===auth.session.accountPlayerId;}catch(_){return false;}});
     if(!player)return sendJson(res,401,{ok:false,error:'Sesion no valida'});
-    try{if(req.method==='GET'&&studentAttemptMatch[2]){const attempt=testService.getStudentAttempt(studentAttemptMatch[1],studentAttemptMatch[2],auth.session.accountPlayerId);return sendJson(res,200,{ok:true,attempt:studentAttemptView(attempt,testService.get(studentAttemptMatch[1]))});}if(req.method==='POST'&&!studentAttemptMatch[2]){const attempt=testService.createStudentAttempt({testId:studentAttemptMatch[1],accountPlayerId:auth.session.accountPlayerId,groupId:player.grade||'',studentSnapshot:{name:player.name,grade:player.grade||''}});return sendJson(res,201,{ok:true,attempt:studentAttemptView(attempt,testService.get(studentAttemptMatch[1]))});}if(req.method==='POST'&&studentAttemptMatch[2]){const attempt=testService.startStudentAttempt(studentAttemptMatch[2],auth.session.accountPlayerId);return sendJson(res,200,{ok:true,attempt:studentAttemptView(attempt,testService.get(studentAttemptMatch[1]))});}}catch(e){const msg=e.message||'Solicitud invalida';return sendJson(res,/no encontrado/.test(msg)?404:/no asignado/.test(msg)?403:/ya existe/.test(msg)?409:422,{ok:false,error:msg});}
+    try{const testId=resolveStudentTestIdentifier(studentAttemptMatch[1]);if(req.method==='GET'&&studentAttemptMatch[2]){const attempt=testService.getStudentAttempt(testId,studentAttemptMatch[2],auth.session.accountPlayerId);return sendJson(res,200,{ok:true,attempt:studentAttemptView(attempt,testService.get(testId))});}if(req.method==='POST'&&!studentAttemptMatch[2]){const attempt=testService.createStudentAttempt({testId,accountPlayerId:auth.session.accountPlayerId,groupId:player.grade||'',studentSnapshot:{name:player.name,grade:player.grade||''}});return sendJson(res,201,{ok:true,attempt:studentAttemptView(attempt,testService.get(testId))});}if(req.method==='POST'&&studentAttemptMatch[2]){const attempt=testService.startStudentAttempt(studentAttemptMatch[2],auth.session.accountPlayerId);return sendJson(res,200,{ok:true,attempt:studentAttemptView(attempt,testService.get(testId))});}}catch(e){const msg=e.message||'Solicitud invalida';return sendJson(res,/no encontrado/.test(msg)?404:/no asignado/.test(msg)?403:/ya existe/.test(msg)?409:422,{ok:false,error:msg});}
     return sendJson(res,404,{ok:false,error:'Ruta no encontrada'});
   }
-  const studentFlowMatch=url.match(/^\/api\/student\/tests\/([0-9a-f-]+)\/attempts\/([0-9a-f-]+)\/(answer|disconnect|reconnect|finish)$/i);
+  const studentFlowMatch=url.match(/^\/api\/student\/tests\/([A-Za-z0-9-]+)\/attempts\/([0-9a-f-]+)\/(answer|disconnect|reconnect|finish)$/i);
   if(studentFlowMatch){
     const auth=studentHttpSessions.validateStudentSession(getStudentSessionToken(req));
     if(!auth.ok)return sendJson(res,401,{ok:false,error:'Sesion no valida'});
-    const input={testId:studentFlowMatch[1],attemptId:studentFlowMatch[2],accountPlayerId:auth.session.accountPlayerId};
+    let resolvedTestId;try{resolvedTestId=resolveStudentTestIdentifier(studentFlowMatch[1]);}catch(error){return sendJson(res,404,{ok:false,error:error.message});}const input={testId:resolvedTestId,attemptId:studentFlowMatch[2],accountPlayerId:auth.session.accountPlayerId};
     const action=studentFlowMatch[3].toLowerCase();
     const run=data=>{try{let result;if(action==='answer')result=testService.answerStudentQuestion({...input,...data});else if(action==='disconnect')result={attempt:testService.disconnectStudentAttempt(input),duplicate:false};else if(action==='reconnect')result={attempt:testService.reconnectStudentAttempt(input),duplicate:false};else result=testService.finishStudentAttempt({...input,...data});const test=testService.get(input.testId);return sendJson(res,200,{ok:true,duplicate:result.duplicate===true,correct:result.correct,attempt:studentAttemptView(result.attempt,test),result:result.result||null});}catch(e){const msg=e.message||'Solicitud invalida';return sendJson(res,/no encontrado/.test(msg)?404:/contradictorio|ya respondida/.test(msg)?409:/no activo|no finalizable|invalida/.test(msg)?422:422,{ok:false,error:msg});}};
     if(req.method!=='POST')return sendJson(res,405,{ok:false,error:'Metodo no permitido'});
     if(action==='disconnect'||action==='reconnect')return run({});
     return readBody(req,res,body=>{let data;try{data=JSON.parse(body||'{}');}catch(_){return sendJson(res,400,{ok:false,error:'Solicitud invalida'});}return run(data);});
   }
-  const checkpointMatch=url.match(/^\/api\/student\/tests\/([0-9a-f-]+)\/attempts\/([0-9a-f-]+)\/checkpoint(?:\/(\d+))?$/i);
+  const checkpointMatch=url.match(/^\/api\/student\/tests\/([A-Za-z0-9-]+)\/attempts\/([0-9a-f-]+)\/checkpoint(?:\/(\d+))?$/i);
   if(checkpointMatch){
     const auth=studentHttpSessions.validateStudentSession(getStudentSessionToken(req));
     if(!auth.ok)return sendJson(res,401,{ok:false,error:'Sesion no valida'});
-    const input={testId:checkpointMatch[1],attemptId:checkpointMatch[2],accountPlayerId:auth.session.accountPlayerId};
+    let resolvedTestId;try{resolvedTestId=resolveStudentTestIdentifier(checkpointMatch[1]);}catch(error){return sendJson(res,404,{ok:false,error:error.message});}const input={testId:resolvedTestId,attemptId:checkpointMatch[2],accountPlayerId:auth.session.accountPlayerId};
     try{
       if(req.method==='POST')return readBody(req,res,body=>{let data;try{data=JSON.parse(body);}catch(_){return sendJson(res,400,{ok:false,error:'Solicitud invalida'});}try{const result=attemptCheckpointService.saveAttemptCheckpoint({...data,...input});return sendJson(res,result.duplicate?200:201,{ok:true,checkpoint:result.checkpoint,duplicate:result.duplicate});}catch(e){return sendJson(res,/antigua/.test(e.message)?409:/propietario/.test(e.message)?403:422,{ok:false,error:e.message});}});
       if(req.method==='GET'){const checkpoint=checkpointMatch[3]?attemptCheckpointService.getAttemptCheckpointByRevision({...input,revision:Number(checkpointMatch[3])}):attemptCheckpointService.getLatestAttemptCheckpoint(input);return checkpoint?sendJson(res,200,{ok:true,checkpoint}):sendJson(res,404,{ok:false,error:'Checkpoint no encontrado'});}
@@ -544,7 +555,7 @@ const server=http.createServer((req,res)=>{
       if(!data||typeof data!=='object'||Array.isArray(data))return sendJson(res,400,{ok:false,error:'Solicitud invalida'});
       if(!requireAdmin(req,res,data))return;
       const [testId,attemptId]=attemptActionMatch.slice(1);
-      const actions={pause:'pauseAttempt',resume:'resumeAttempt',close:'closeAttempt',reopen:'reopenAttempt',allowReentry:'allowReentry',restart:'restartAttempt',markIncomplete:'markAttemptIncomplete',delete:'deleteAttemptLogically'};
+      const actions={pause:'pauseAttempt',resume:'resumeAttempt',close:'closeAttempt',allowReentry:'allowReentry',restart:'restartAttempt',markIncomplete:'markAttemptIncomplete',delete:'deleteAttemptLogically'};
       const action=data.action;
       if(typeof action!=='string'||!Object.prototype.hasOwnProperty.call(actions,action))return sendJson(res,400,{ok:false,error:'Accion invalida'});
       if(data.testId!==undefined&&data.testId!==testId||data.attemptId!==undefined&&data.attemptId!==attemptId)return sendJson(res,400,{ok:false,error:'Identificador inconsistente'});
@@ -645,7 +656,7 @@ const server=http.createServer((req,res)=>{
         if(!Number.isInteger(data.revision)||data.revision<1)return sendJson(res,400,{ok:false,error:'revision invalida'});
         let test;
         if(kind==='schedule') test=testService.schedule(testId,data.revision,{startsAt:data.startsAt,closesAt:data.closesAt,entryToleranceMinutes:data.entryToleranceMinutes||0});
-        else { const actions={start:'start',pause:'pause',resume:'resume',close:'close',finish:'finish',cancel:'cancel'}; const method=actions[data.action]; if(!method)return sendJson(res,400,{ok:false,error:'accion de estado invalida'}); test=method==='start'?testService.start(testId,data.revision,{now:data.now||new Date().toISOString(),force:data.force===true}):testService[method](testId,data.revision); }
+        else { const actions={start:'start',pause:'pause',resume:'resume',close:'close',finish:'finish',cancel:'cancel'}; const method=actions[data.action]; if(data.action==='finish_legacy') test=testService.finishLegacy(testId,data.revision,data.reason); else { if(!method)return sendJson(res,400,{ok:false,error:'accion de estado invalida'}); test=method==='start'?testService.start(testId,data.revision,{now:data.now||new Date().toISOString(),force:data.force===true}):testService[method](testId,data.revision); } }
         return sendJson(res,200,{ok:true,test});
       }catch(e){const msg=e.message||'Solicitud invalida';return sendJson(res,/no encontrada/.test(msg)?404:/stale|no editable|Transici/.test(msg)?409:422,{ok:false,error:msg});}
     });
@@ -665,7 +676,7 @@ const server=http.createServer((req,res)=>{
     }
     if(req.method==='GET'&&testId&&assignments){
       if(!requireAdmin(req,res))return;
-      try{return sendJson(res,200,{ok:true,assignments:testService.listAssignments(testId).map(item=>({assignmentId:item.assignmentId,testId:item.testId,targetType:item.targetType,groupId:item.groupId||null,accountPlayerId:item.accountPlayerId||null,startsAt:item.startsAt||null,closesAt:item.closesAt||null,createdAt:item.createdAt,revision:item.revision}))});}catch(e){return respondError(/no encontrada/.test(e.message)?404:422,e.message);}
+      try{return sendJson(res,200,{ok:true,assignments:testService.listAssignments(testId).map(item=>({assignmentId:item.assignmentId,testId:item.testId,targetType:item.targetType,groupId:item.groupId||null,sourceGroupId:item.sourceGroupId||null,accountPlayerId:item.accountPlayerId||null,startsAt:item.startsAt||null,closesAt:item.closesAt||null,createdAt:item.createdAt,revision:item.revision}))});}catch(e){return respondError(/no encontrada/.test(e.message)?404:422,e.message);}
     }
     if(req.method==='GET'&&testId&&!assignments){
       if(!requireAdmin(req,res)) return;
@@ -673,6 +684,7 @@ const server=http.createServer((req,res)=>{
     }
     if(req.method==='POST'&&!testId){return readBody(req,res,body=>{let data;try{data=JSON.parse(body);}catch(_){return respondError(400,'JSON inválido');}const {testId: _ignoredTestId, ...createData}=data;run(createData,d=>sendJson(res,201,{ok:true,test:testService.create(d)}));});}
     if(req.method==='PATCH'&&testId&&!assignments){return readBody(req,res,body=>{let data;try{data=JSON.parse(body);}catch(_){return respondError(400,'JSON inválido');}if(data.revision==null)return respondError(400,'revision obligatoria');run(data,d=>sendJson(res,200,{ok:true,test:testService.update(testId,d.revision,d)}));});}
+    if(req.method==='DELETE'&&testId&&!assignments){return readBody(req,res,body=>{let data={};try{data=body?JSON.parse(body):{};}catch(_){return respondError(400,'JSON inválido');}if(data.revision==null)return respondError(400,'revision obligatoria');run(data,d=>sendJson(res,200,{ok:true,test:testService.archive(testId,d.revision)}));});}
     if(req.method==='PUT'&&testId&&assignments){return readBody(req,res,body=>{let data;try{data=JSON.parse(body);}catch(_){return respondError(400,'JSON inválido');}if(!Array.isArray(data.assignments))return respondError(400,'assignments obligatorias');run(data,d=>sendJson(res,200,{ok:true,assignments:testService.replaceAssignments(testId,d.assignments)}));});}
     return respondError(404,'Ruta de pruebas no encontrada');
   }
@@ -684,14 +696,14 @@ const server=http.createServer((req,res)=>{
         const d=JSON.parse(body);
         if(!requireAdmin(req,res,d)) return;
         const _now=Date.now();
-        if(_now-_lastExamStartAt<2000){
+        if(_now-_lastExamStartAt<2000&&examMode?.testId===d.testId){
           // Doble-submit accidental (doble click) — ignorar y devolver el estado ya vigente
           res.writeHead(200,{'Content-Type':'application/json'});
           res.end(JSON.stringify({ok:true,examMode}));
           return;
         }
         _lastExamStartAt=_now;
-        const {grade,tables,timeLimit}=d;
+        const {grade,tables,timeLimit,timePerQuestion}=d;
         const op=d.op||d.operation||'mult';
         const ops=Array.isArray(d.ops)&&d.ops.length?d.ops:[];
         // opsConfig: configuración independiente por operación, ej. {mult:{tables:[1,2],qty:4},add:{qty:10,digits:2}}
@@ -704,6 +716,8 @@ const server=http.createServer((req,res)=>{
             if(!cfg||typeof cfg!=='object') continue;
             const entry={qty:Math.max(1,Number(cfg.qty)||1)};
             if(Array.isArray(cfg.tables)) entry.tables=cfg.tables.map(Number).filter(n=>!isNaN(n));
+            if(cfg.detailMode===true) entry.detailMode=true;
+            if(Array.isArray(cfg.matrix)) entry.matrix=cfg.matrix.filter(value=>typeof value==='string'&&/^([0-9]|1[0-2])x([0-9]|1[0-2])$/.test(value));
             if(cfg.digits!=null) entry.digits=Math.max(1,Number(cfg.digits)||1);
             if(cfg.manner==='ordered'||cfg.manner==='random') entry.manner=cfg.manner;
             if(cfg.carryMode==='direct'||cfg.carryMode==='carry') entry.carryMode=cfg.carryMode;
@@ -716,18 +730,26 @@ const server=http.createServer((req,res)=>{
         let total=Number(d.total)||20;
         if(opsConfig){
           total=Object.entries(opsConfig).reduce((sum,[opKey,cfg])=>{
+            if(Array.isArray(cfg.matrix)) return sum+cfg.matrix.length;
             if(Array.isArray(cfg.tables)) return sum+cfg.qty*cfg.tables.length;
             return sum+cfg.qty;
           },0)||total;
         }
-        examMode={grade:grade||'',tables:tables||[],op,ops,opsConfig,timeLimit:Number(timeLimit)||0,total,startedAt:Date.now()};
+        const startedTestId=typeof d.testId==='string'?d.testId:'';
+        const configuredAudience=startedTestId
+          ? testService.listAssignments(startedTestId).filter(item=>item.targetType==='student'&&item.accountPlayerId).map(item=>item.accountPlayerId)
+          : null;
+        if(startedTestId&&(!configuredAudience||!configuredAudience.length)) throw Error('La prueba no tiene alumnos asignados');
+        examMode={grade:grade||'',tables:tables||[],op,ops,opsConfig,timeLimit:Number(timeLimit)||0,timePerQuestion:Number(timePerQuestion)||0,total,testId:startedTestId,audienceAccountPlayerIds:configuredAudience,startedAt:Date.now()};
+        examModes.set(startedTestId||String(examMode.startedAt),examMode);
         examFinished.clear(); // Nueva sesión de examen — limpiar terminados anteriores
         const payload=JSON.stringify({type:'exam_start',config:examMode});
         gameSessions.listSessions().forEach(s=>{
-          if(!examMode.grade||s.grade===examMode.grade){
+          if(_examAudienceMatchesFor(examMode,s.name,s.grade)){
             if(s.ws?.readyState===WebSocket.OPEN){
               s.ws.send(payload);
-              s.ws._examNotified=true; // Marcar como notificado para evitar reenvío en session_update
+              if(!s.ws._examNotifiedTests) s.ws._examNotifiedTests=new Set();
+              s.ws._examNotifiedTests.add(examMode.testId||String(examMode.startedAt));
             }
           }
         });
@@ -735,7 +757,7 @@ const server=http.createServer((req,res)=>{
         L.panel(`Modo Examen activado${grade?' grado:'+grade:' todos'}`);
         res.writeHead(200,{'Content-Type':'application/json'});
         res.end(JSON.stringify({ok:true,examMode}));
-      }catch(e){ res.writeHead(400); res.end('{}'); }
+      }catch(e){ res.writeHead(422,{'Content-Type':'application/json'}); res.end(JSON.stringify({ok:false,error:e.message||'No se pudo iniciar la prueba'})); }
     }); return;
   }
 
@@ -744,15 +766,26 @@ const server=http.createServer((req,res)=>{
     readBody(req, res, body=>{
       let parsed={}; try{ parsed=JSON.parse(body||'{}'); }catch(e){}
       if(!requireAdmin(req,res,parsed)) return;
-      examMode=null;
+      const stoppedTestId=typeof parsed.testId==='string'?parsed.testId:'';
+      const stopped=stoppedTestId?examModes.get(stoppedTestId):null;
+      if(stoppedTestId) examModes.delete(stoppedTestId); else examModes.clear();
+      examMode=[...examModes.values()].at(-1)||null;
+      if(stoppedTestId){
+        try{
+          const persistedTest=testService.get(stoppedTestId);
+          if(persistedTest.status==='active') testService.finish(stoppedTestId,Number(persistedTest.revision)+1);
+        }catch(e){
+          L.err(`No se pudo cerrar la prueba ${stoppedTestId}: ${e.message||e}`);
+          return sendJson(res,422,{ok:false,error:e.message||'No se pudo cerrar la prueba'});
+        }
+      }
       examFinished.clear(); // Limpiar registro de terminados al detener el examen
-      const payload=JSON.stringify({type:'exam_stop'});
-      // Broadcast a TODOS los clientes WS de juego (incl. los que ya terminaron y no tienen sesión activa)
+      const payload=JSON.stringify({type:'exam_stop',testId:stoppedTestId||null});
       wss.clients.forEach(ws=>{
-        if(!maestroClients.has(ws)&&ws.readyState===WebSocket.OPEN) ws.send(payload);
-        if(!maestroClients.has(ws)) ws._examNotified=false; // Resetear para próximo examen
+        if(!maestroClients.has(ws)&&ws.readyState===WebSocket.OPEN&&(!stopped||_examAudienceMatchesFor(stopped,ws.playerName,ws.grade))){ws.send(payload);}
+        if(!maestroClients.has(ws)&&ws._examNotifiedTests){if(stoppedTestId)ws._examNotifiedTests.delete(stoppedTestId);else ws._examNotifiedTests.clear();}
       });
-      maestroClients.forEach(mc=>{ if(mc.readyState===WebSocket.OPEN) mc.send(JSON.stringify({type:'exam_state',examMode:null})); });
+      maestroClients.forEach(mc=>{ if(mc.readyState===WebSocket.OPEN) mc.send(JSON.stringify({type:'exam_state',examMode,examModes:[...examModes.values()]})); });
       L.panel('Modo Examen desactivado');
       res.writeHead(200,{'Content-Type':'application/json'});
       res.end(JSON.stringify({ok:true}));
@@ -763,7 +796,7 @@ const server=http.createServer((req,res)=>{
   // ── Modo Examen: estado ──
   if(req.method==='GET'&&url==='/api/exam/status'){
     res.writeHead(200,{'Content-Type':'application/json','Access-Control-Allow-Origin':'*'});
-    res.end(JSON.stringify({examMode:examMode||null}));
+    res.end(JSON.stringify({examMode:examMode||null,examModes:[...examModes.values()]}));
     return;
   }
 
@@ -796,7 +829,8 @@ const adminRoutes = createHttpAdminRoutes({
   setPlayerInventoryQuantity, consumePlayerInventoryItem, normalizeAdminPin,
   updatePlayerPin, updatePlayerGrade, updatePlayerThemeColor, updatePlayerAvatar,
   ensurePlayerCosmetics, unlockPlayerCosmetic, calculateDirectGameReward, logAureosTx,
-  resolveAccountPlayer, loadAureosLog, saveAureosLog, buildStudentHistory,
+  resolveAccountPlayer, loadAureosLog, saveAureosLog, flushSync, buildStudentHistory,
+  testService,
   groupService,
   adminState: { get username(){ return ADMIN_USERNAME; }, set username(value){ ADMIN_USERNAME=value; },
     get password(){ return ADMIN_PASSWORD; }, set password(value){ ADMIN_PASSWORD=value; } },
@@ -913,6 +947,7 @@ const wsContext = createWsContext({
   rankingLiveClients,
   examFinished,
   getExamMode: () => examMode,
+  getExamModes: () => [...examModes.values()],
   setExamMode: value => { examMode = value; },
   timers: {
     heartbeatInterval,
@@ -982,6 +1017,7 @@ const saveResultMessages = createSaveResultMessages({
   send,
   L,
   resultIdempotency,
+  testService,
 });
 
 const potDeductMessages = createPotDeductMessages({
@@ -1206,12 +1242,15 @@ function handle(ws,msg){ // Procesa todos los mensajes entrantes de los clientes
 // Avisa al cliente que hay un examen activo (se llama tanto al identificarse como al jugar,
 // para que alumnos que aún están en la pantalla de inicio también reciban el aviso)
 function _checkExamNotify(ws, grade){
-  if(examMode&&(!examMode.grade||examMode.grade===(grade||''))&&!ws._examNotified){
-    if(ws.readyState===WebSocket.OPEN){
-      ws.send(JSON.stringify({type:'exam_start',config:examMode}));
-      ws._examNotified=true;
+  if(ws.readyState!==WebSocket.OPEN) return;
+  if(!ws._examNotifiedTests) ws._examNotifiedTests=new Set();
+  [...examModes.values()].forEach(mode=>{
+    const key=mode.testId||String(mode.startedAt);
+    if(_examAudienceMatchesFor(mode,ws.playerName,grade)&&!ws._examNotifiedTests.has(key)){
+      ws.send(JSON.stringify({type:'exam_start',config:mode}));
+      ws._examNotifiedTests.add(key);
     }
-  }
+  });
 }
 
 // ── Notificación de resultado de pozo/bono pendiente ──────────
@@ -1309,11 +1348,34 @@ function broadcastRoomsList(){ const msg={type:'rooms_list',rooms:getRoomsList()
 
 // ── IP helper ────────────────────────────────────────────────
 function getLocalIP(){
-  for(const ifaces of Object.values(os.networkInterfaces()))
-    for(const i of ifaces)
-      if(i.family==='IPv4'&&!i.internal) return i.address;
+  const virtualPattern=/virtual|vmware|virtualbox|hyper-v|hyperv|vpn|tunnel|tailscale|hamachi|zerotier|wsl|bluetooth|loopback|docker|wireguard/i;
+  const candidates=[];
+  for(const [name,ifaces] of Object.entries(os.networkInterfaces())){
+    for(const i of ifaces||[]){
+      if(i.family!=='IPv4'||i.internal||/^127\.|^169\.254\.|^0\./.test(i.address)) continue;
+      let score=0;
+      if(/^(10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.)/.test(i.address)) score+=20;
+      if(/wi-?fi|wireless|ethernet|lan/i.test(name)) score+=50;
+      if(virtualPattern.test(name)) score-=1000;
+      candidates.push({address:i.address,score:name==='Wi-Fi'?score+10:score,name});
+    }
+  }
+  candidates.sort((a,b)=>b.score-a.score);
+  if(candidates[0]) return candidates[0].address;
   return 'localhost';
 }
+
+function _examAudienceMatchesFor(mode,name,grade){
+  if(!_examGradeMatches(mode?.grade,grade)) return false;
+  if(!Array.isArray(mode?.audienceAccountPlayerIds)) return true;
+  if(!mode.audienceAccountPlayerIds.length||!name) return false;
+  const players=loadPlayers();
+  const player=resolveAccountPlayer(players,{name});
+  if(!player) return false;
+  try{return mode.audienceAccountPlayerIds.includes(resolveAccountPlayerId(player,buildLegacyIdentityMap(players)));}
+  catch(_){return false;}
+}
+function _examAudienceMatches(name){return _examAudienceMatchesFor(examMode,name,'');}
 
 // ── Start ────────────────────────────────────────────────────
 server.listen(PORT,'0.0.0.0',()=>{

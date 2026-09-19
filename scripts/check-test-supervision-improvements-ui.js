@@ -1,0 +1,12 @@
+'use strict';
+const assert = require('assert');
+const fs = require('fs');
+const html = fs.readFileSync('maestro.html', 'utf8');
+const attempts = fs.readFileSync('src/client/maestro/attemptActions.js', 'utf8');
+assert(html.includes('id="prAttemptStatusFilter"'));
+assert(html.includes('id="prExportAttempts"') && html.includes('id="prPrintAttempts"'));
+assert(html.includes('id="prOfficializeAll"') && html.includes('id="prPublishAll"') && html.includes('id="prSettleAll"'));
+assert(attempts.includes('prFilterAttempts') && attempts.includes('prExportAttemptsCsv') && attempts.includes('prPrintAttempts'));
+assert(attempts.includes('prBatchSummary') && attempts.includes('rewardEligibility'));
+assert(!attempts.includes("label: 'Reabrir'"));
+console.log('OK: Supervisión incluye filtros, resumen, exportación CSV/PDF, acciones generales y no muestra Reabrir.');

@@ -10,6 +10,7 @@ function createWsContext(dependencies = {}) {
     rankingLiveClients,
     examFinished,
     getExamMode,
+    getExamModes,
     setExamMode,
     timers = {},
     persistence = {},
@@ -26,6 +27,7 @@ function createWsContext(dependencies = {}) {
     rankingLiveClients,
     examFinished,
     getExamMode: getExamMode || (() => undefined),
+    getExamModes: getExamModes || (() => []),
     setExamMode: setExamMode || (() => undefined),
     timers: Object.freeze({
       heartbeatInterval: timers.heartbeatInterval,

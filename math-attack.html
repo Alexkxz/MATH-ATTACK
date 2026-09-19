@@ -523,20 +523,6 @@ body.game-active #shopFloatGroup{display:none!important;}
 }
 .vertical-division-line .vcell.blank{border-top:none;}
 .question-card.notebook-mode + .feedback{color:#c2410c;}
-.ops-config-summary{
-  margin:0 0 14px;padding:12px 14px;border-radius:14px;
-  background:rgba(96,165,250,.1);border:1px solid rgba(96,165,250,.22);
-  display:flex;align-items:flex-start;gap:10px;
-}
-.ops-config-icon{
-  width:34px;height:34px;border-radius:12px;flex-shrink:0;
-  display:flex;align-items:center;justify-content:center;
-  background:rgba(96,165,250,.18);color:#93c5fd;font-size:18px;
-}
-.ops-config-body{min-width:0;flex:1;}
-.ops-config-title{font-family:'Baloo 2',cursive;font-size:17px;color:#e2e8f0;line-height:1.1;}
-.ops-config-copy{margin-top:3px;font-size:11px;color:var(--muted);font-weight:700;line-height:1.45;}
-.ops-hidden{display:none!important;}
 
 /* pause overlay */
 .pause-overlay{display:none;position:absolute;inset:0;border-radius:18px;
@@ -1740,7 +1726,7 @@ body.frozen-cursor *{cursor:not-allowed!important;}
 .workspace-shell.workspace-show-module .workspace-welcome-hero,.workspace-shell.workspace-show-module .workspace-heading,.workspace-shell.workspace-show-module .workspace-quick-grid{display:none}.workspace-shell.workspace-show-module .workspace-module-view{display:block}.workspace-shell.workspace-show-module .workspace-activity-card{display:none}.workspace-shell.workspace-show-config .workspace-welcome-hero,.workspace-shell.workspace-show-config .workspace-heading,.workspace-shell.workspace-show-config .workspace-quick-grid{display:none}.workspace-shell.workspace-show-config .workspace-activity-card{display:block}.workspace-shell.workspace-show-config .workspace-module-view{display:none}.workspace-shell.workspace-mode-solo .duel-toggle,.workspace-shell.workspace-mode-duel .duel-toggle,.workspace-shell.workspace-mode-online .duel-toggle{display:none}.workspace-shell.workspace-mode-solo .workspace-activity-header h2:after{content:' · Individual'}.workspace-shell.workspace-mode-duel .workspace-activity-header h2:after{content:' · Duelo'}.workspace-shell.workspace-mode-online .workspace-activity-header h2:after{content:' · Multijugador'}
 .workspace-shell:not(.workspace-show-config) .workspace-activity-card{display:none}
 .workspace-main{scroll-behavior:smooth}
-.workspace-wizard-chrome{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:0 4px 14px;padding-bottom:14px;border-bottom:1px solid rgba(255,255,255,.08)}.workspace-wizard-chrome strong{display:block;margin-top:4px;color:#f8fafc;font:800 21px 'Baloo 2',cursive}.workspace-wizard-chrome>span{padding:6px 10px;border-radius:999px;background:rgba(167,139,250,.12);border:1px solid rgba(167,139,250,.25);color:#c4b5fd;font-size:10px;font-weight:800;white-space:nowrap}.workspace-wizard-host>.screen{position:static;inset:auto;z-index:auto;display:none!important;align-items:stretch;justify-content:initial;padding:0;overflow:visible;animation:workspaceFadeIn .24s ease both}.workspace-wizard-host>.screen.active{display:flex!important}.workspace-wizard-host>.screen .setup-card{max-width:none;width:100%;padding:0;border:0;background:transparent;box-shadow:none;border-radius:0;overflow:visible;max-height:none}.workspace-wizard-host>.screen .card-header{display:none}.workspace-wizard-host>.screen .step-indicator{display:none}.workspace-wizard-host>.screen .nav-row{margin-top:22px;position:sticky;bottom:0;padding-top:14px;background:linear-gradient(180deg,transparent,rgba(27,22,58,.98) 22%)}.workspace-wizard-step-active>.workspace-config-content>.setup-card{display:none}.workspace-wizard-step-active .workspace-wizard-chrome{display:flex}.workspace-wizard-step-active .workspace-wizard-host{display:block}.workspace-config-content .setup-card{transition:opacity .2s ease}
+.workspace-wizard-chrome{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:0 4px 14px;padding-bottom:14px;border-bottom:1px solid rgba(255,255,255,.08)}.workspace-wizard-chrome strong{display:block;margin-top:4px;color:#f8fafc;font:800 21px 'Baloo 2',cursive}.workspace-wizard-chrome>span{padding:6px 10px;border-radius:999px;background:rgba(167,139,250,.12);border:1px solid rgba(167,139,250,.25);color:#c4b5fd;font-size:10px;font-weight:800;white-space:nowrap}
 .workspace-shell{width:100%;height:calc(100vh - 32px);min-height:620px;display:flex;flex-direction:column;overflow:hidden;border:1px solid rgba(167,139,250,.18);border-radius:28px;background:linear-gradient(145deg,rgba(22,14,48,.96),rgba(11,18,38,.97));box-shadow:0 28px 80px rgba(0,0,0,.42);}
 .workspace-topbar{height:76px;flex:0 0 76px;display:flex;align-items:center;gap:24px;padding:0 26px;border-bottom:1px solid rgba(255,255,255,.08);background:rgba(14,19,39,.72);}
 .workspace-brand{display:flex;align-items:center;gap:11px;min-width:220px}.workspace-brand-mark{width:38px;height:38px;display:grid;place-items:center;border-radius:12px;background:linear-gradient(145deg,#fbbf24,#f97316);color:#29134b;font-size:21px;box-shadow:0 8px 20px rgba(251,191,36,.22)}
@@ -1750,8 +1736,7 @@ body.frozen-cursor *{cursor:not-allowed!important;}
 .workspace-main{min-width:0;overflow-y:auto;flex:1;padding:32px clamp(22px,4vw,56px) 42px;background:radial-gradient(circle at 85% 10%,rgba(124,58,237,.13),transparent 35%)}.workspace-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;max-width:1120px;margin:0 auto 24px}.workspace-eyebrow{color:#9d8ec7;font-size:9px;font-weight:800;letter-spacing:1.6px}.workspace-heading h1{margin-top:7px;color:#f8fafc;font:800 clamp(24px,3vw,36px)/1.08 'Baloo 2',cursive}.workspace-heading p{margin-top:7px;color:#a7abc4;font-size:13px}.workspace-status{display:flex;align-items:center;gap:7px;margin-top:5px;padding:7px 10px;border-radius:999px;background:rgba(52,211,153,.08);color:#9ee7c7;font-size:10px;font-weight:800;white-space:nowrap}.workspace-status span:first-child{width:7px;height:7px;border-radius:50%;background:#34d399;box-shadow:0 0 12px #34d399}.workspace-quick-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;max-width:1120px;margin:0 auto 24px}.workspace-stat-card{display:flex;align-items:center;gap:12px;min-height:74px;padding:14px 16px;border:1px solid rgba(255,255,255,.08);border-radius:16px;background:rgba(255,255,255,.045);box-shadow:0 10px 24px rgba(0,0,0,.14)}.workspace-stat-primary{border-color:rgba(167,139,250,.28);background:linear-gradient(135deg,rgba(124,58,237,.2),rgba(255,255,255,.045))}.workspace-stat-icon{width:34px;height:34px;display:grid;place-items:center;border-radius:10px;background:rgba(167,139,250,.15);font-size:17px}.workspace-stat-card small{display:block;color:#8d91ae;font-size:9px;font-weight:800;letter-spacing:.7px;text-transform:uppercase}.workspace-stat-card strong{display:block;color:#f3f4ff;font:700 13px 'Quicksand',sans-serif;margin-top:4px}.workspace-activity-card{max-width:1120px;margin:0 auto;padding:20px;border:1px solid rgba(167,139,250,.18);border-radius:20px;background:rgba(14,19,40,.7);box-shadow:0 18px 44px rgba(0,0,0,.2)}.workspace-activity-header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 18px 4px}.workspace-activity-header h2{margin-top:4px;color:#f8fafc;font:800 22px 'Baloo 2',cursive}.workspace-live-chip{padding:5px 9px;border-radius:999px;border:1px solid rgba(52,211,153,.25);background:rgba(52,211,153,.08);color:#80e4b5;font-size:9px;font-weight:800;letter-spacing:1px}.workspace-config-content .setup-card{max-width:none;width:100%;padding:24px 22px;border-color:rgba(255,255,255,.08);background:rgba(27,22,58,.64);box-shadow:none}.workspace-config-content .card-logo img{max-width:260px}
 @media (max-width:820px){.workspace-shell{height:auto;min-height:calc(100vh - 16px);border-radius:18px}.workspace-topbar{height:auto;min-height:70px;flex-wrap:wrap;padding:14px 16px;gap:12px}.workspace-brand{min-width:0}.workspace-player{margin-left:auto}.workspace-aureos small{display:none}.workspace-layout{display:block}.workspace-sidebar{width:100%;height:auto;flex-basis:auto;padding:8px 10px;border-right:0;border-bottom:1px solid rgba(255,255,255,.07)}.workspace-collapse{display:none}.workspace-nav{display:flex;flex-direction:row;overflow-x:auto;gap:5px}.workspace-nav-item{flex:0 0 auto;width:auto;padding:9px 10px}.workspace-nav-item span:last-child{font-size:10px}.workspace-nav-footer{display:none}.workspace-main{overflow:visible;padding:22px 14px 30px}.workspace-heading{display:block}.workspace-status{display:inline-flex;margin-top:14px}.workspace-quick-grid{grid-template-columns:1fr;gap:8px}.workspace-stat-card{min-height:62px}.workspace-activity-card{padding:12px;border-radius:16px}.workspace-activity-header{margin:4px 4px 14px}.workspace-config-content .setup-card{padding:18px 14px}.workspace-config-content .card-logo img{max-width:220px}}
 @media (max-width:520px){.workspace-player-copy{display:none}.workspace-top-actions{margin-left:auto}.workspace-brand strong{font-size:14px}.workspace-brand span{font-size:8px}.workspace-nav-item span:last-child{display:none}.workspace-nav-item{width:40px;justify-content:center;padding:9px 0}.workspace-heading h1{font-size:28px}.workspace-heading p{font-size:12px}.workspace-activity-header h2{font-size:20px}.workspace-config-content .setup-card{border:0;padding:12px 4px;background:transparent}}
- .workspace-summary-card{margin-top:22px;padding:16px;border:1px solid rgba(96,165,250,.24);border-radius:16px;background:linear-gradient(135deg,rgba(96,165,250,.09),rgba(167,139,250,.06))}.workspace-summary-heading{display:flex;align-items:center;gap:10px}.workspace-summary-heading>span{width:30px;height:30px;display:grid;place-items:center;border-radius:9px;background:rgba(251,191,36,.14);color:#fbbf24}.workspace-summary-heading h3{margin-top:3px;color:#f8fafc;font:800 17px 'Baloo 2',cursive}.workspace-summary-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:14px}.workspace-summary-grid>div{min-width:0;padding:9px 10px;border-radius:10px;background:rgba(8,15,32,.32)}.workspace-summary-grid small{display:block;overflow:hidden;color:#8f94b4;font-size:8px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;white-space:nowrap;text-overflow:ellipsis}.workspace-summary-grid strong{display:block;overflow:hidden;margin-top:4px;color:#e8eaff;font-size:11px;white-space:nowrap;text-overflow:ellipsis}.workspace-summary-card~.nav-row #startBtn{background:linear-gradient(135deg,#059669,#10b981);box-shadow:0 8px 28px rgba(16,185,129,.28)}
-@media (max-width:520px){.workspace-summary-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.workspace-summary-grid>div{padding:8px}.workspace-wizard-chrome strong{font-size:19px}}
+@media (max-width:520px){.workspace-wizard-chrome strong{font-size:19px}}
 /* ── Calma visual del escritorio: iconos estáticos y microinteracciones breves ── */
 #studentWorkspace .workspace-nav-item,
 #studentWorkspace .workspace-collapse,
@@ -1788,7 +1773,7 @@ body.frozen-cursor *{cursor:not-allowed!important;}
 #studentWorkspace .sel-btn.selected .si,
 #studentWorkspace .op-sel-btn.selected .op-sel-symbol{animation:workspaceIconConfirm 250ms ease-out both!important}
 @keyframes workspaceIconConfirm{0%{transform:scale(1)}45%{transform:scale(1.08)}100%{transform:scale(1)}}
-#workspaceTestSlot{display:none}#studentWorkspace.workspace-show-tests #workspaceTestSlot{display:block}
+#workspaceTestSlot{display:none}#studentWorkspace.workspace-show-tests #workspaceTestSlot,body.exam-active #studentWorkspace #workspaceTestSlot{display:block}body.exam-active #studentTestEntry{display:none!important}
 #studentWorkspace.workspace-dynamic-wizard .workspace-config-content>.setup-card{display:none!important}
 .workspace-dynamic-wizard .workspace-activity-header{display:none}.workspace-dynamic-wizard .workspace-wizard-host{display:block;min-height:360px;overflow:visible}.workspace-dynamic-panel{display:flex;flex-direction:column;min-height:360px;animation:workspacePanelIn 240ms ease-out both}.workspace-dynamic-panel-head{max-width:720px;margin:4px auto 0;width:100%;text-align:center}.workspace-dynamic-panel-head h3{margin-top:4px;color:#f8fafc;font:800 clamp(26px,3vw,34px)/1.05 'Baloo 2',cursive}.workspace-dynamic-panel-head p{max-width:560px;margin:7px auto 0;color:#a7abc4;font-size:13px;line-height:1.4}.workspace-dynamic-options{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;max-width:820px;width:100%;margin:20px auto 0}.workspace-dynamic-option{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:96px;padding:14px 12px;border:1px solid rgba(255,255,255,.1);border-radius:16px;background:rgba(255,255,255,.04);color:#f8fafc;cursor:pointer;text-align:center;transition:transform 220ms ease-out,border-color 220ms ease-out,background 220ms ease-out,box-shadow 220ms ease-out}.workspace-dynamic-option:hover{transform:translateY(-2px);border-color:rgba(167,139,250,.55);background:rgba(167,139,250,.1);box-shadow:0 9px 20px rgba(0,0,0,.16)}.workspace-dynamic-option.selected{border-color:#a78bfa;background:rgba(167,139,250,.15);box-shadow:0 0 0 2px rgba(167,139,250,.12)}.workspace-dynamic-option .dynamic-option-icon{font-size:24px;line-height:1;margin-bottom:7px}.workspace-dynamic-option strong{font:800 14px 'Baloo 2',cursive}.workspace-dynamic-option small{margin-top:4px;color:#9da1bb;font-size:10px;font-weight:700;line-height:1.25}.workspace-dynamic-option.color-option{min-height:68px;padding:8px}.workspace-color-swatch{width:28px;height:28px;border-radius:50%;border:3px solid rgba(255,255,255,.2);box-shadow:0 3px 10px rgba(0,0,0,.25);margin-bottom:5px}.workspace-dynamic-nav{display:flex;justify-content:space-between;gap:10px;max-width:820px;width:100%;margin:22px auto 0;padding-top:14px;border-top:1px solid rgba(255,255,255,.08)}.workspace-dynamic-nav .btn-pri:disabled{opacity:.35;cursor:not-allowed}.workspace-dynamic-summary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;max-width:720px;width:100%;margin:20px auto 0}.workspace-dynamic-summary>div{padding:10px 12px;border:1px solid rgba(96,165,250,.2);border-radius:12px;background:rgba(96,165,250,.06)}.workspace-dynamic-summary small{display:block;color:#8f94b4;font-size:9px;font-weight:800;letter-spacing:.7px;text-transform:uppercase}.workspace-dynamic-summary strong{display:block;margin-top:4px;color:#f1f5f9;font-size:12px}.workspace-dynamic-note{max-width:720px;margin:12px auto 0;color:#8f94b4;font-size:11px;text-align:center}.workspace-dynamic-group-label{max-width:820px;width:100%;margin:18px auto 0;color:#9d8ec7;font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase}.workspace-dynamic-options.compact{margin-top:8px;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:7px}.workspace-dynamic-options.compact .workspace-dynamic-option{min-height:64px;padding:8px}.workspace-dynamic-options.compact .workspace-dynamic-option .dynamic-option-icon{font-size:19px;margin-bottom:4px}.workspace-dynamic-options.compact .workspace-dynamic-option strong{font-size:12px}@keyframes workspacePanelIn{from{opacity:0;transform:translateX(10px)}to{opacity:1;transform:translateX(0)}}
 .workspace-range-block{max-width:820px;width:100%;margin:12px auto 0;padding:16px 18px 13px;border:1px solid rgba(167,139,250,.2);border-radius:14px;background:rgba(255,255,255,.035)}.workspace-range-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;color:#a7abc4;font-size:11px;font-weight:700}.workspace-range-heading strong{color:#c4b5fd;font-size:12px}.workspace-dynamic-range{display:block;width:100%;height:8px;margin:18px 0 9px;accent-color:#a78bfa;cursor:pointer}.workspace-range-labels{display:flex;justify-content:space-between;color:#7f849f;font-size:9px;font-weight:800}
@@ -1796,6 +1781,7 @@ body.frozen-cursor *{cursor:not-allowed!important;}
 .workspace-range-pair{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:center}.workspace-range-pair .workspace-dynamic-range{margin-bottom:0}
 .workspace-mode-note{display:inline-flex;margin-top:10px;padding:5px 10px;border:1px solid rgba(167,139,250,.2);border-radius:999px;background:rgba(167,139,250,.08);color:#c4b5fd;font-size:10px;font-weight:800}
 .workspace-table-actions{display:flex;justify-content:center;gap:8px;max-width:820px;width:100%;margin:10px auto 0}.workspace-table-action{padding:8px 16px;border:1px solid rgba(167,139,250,.28);border-radius:10px;background:rgba(167,139,250,.08);color:#c4b5fd;font-size:11px;font-weight:800;cursor:pointer;transition:background 220ms ease-out,border-color 220ms ease-out,transform 220ms ease-out}.workspace-table-action:hover{transform:translateY(-1px);border-color:rgba(167,139,250,.62);background:rgba(167,139,250,.16)}
+.workspace-duel-config{max-width:820px;width:100%;margin:12px auto 0;padding:14px 16px;border:1px solid rgba(96,165,250,.2);border-radius:14px;background:rgba(96,165,250,.05)}.workspace-duel-config .input-label{margin-bottom:6px}.workspace-duel-config .name-input{margin:0}.workspace-dynamic-option:disabled{opacity:.35;cursor:not-allowed;transform:none!important;box-shadow:none!important}.workspace-duel-player-label{max-width:820px;width:100%;margin:12px auto 0;color:#9d8ec7;font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase}
 #studentWorkspace.workspace-home-active .workspace-welcome-hero{isolation:isolate;animation:workspaceHomeHeroIn 620ms cubic-bezier(.2,.75,.25,1) both}
 #studentWorkspace.workspace-home-active .workspace-welcome-hero:before{content:'';position:absolute;inset:-45%;z-index:-1;background:radial-gradient(circle at 30% 40%,rgba(167,139,250,.2),transparent 27%),radial-gradient(circle at 70% 60%,rgba(96,165,250,.16),transparent 30%);animation:workspaceHomeAurora 14s ease-in-out infinite alternate;pointer-events:none}
 #studentWorkspace.workspace-home-active .workspace-welcome-hero:after{animation:workspaceHomeGlow 7s ease-in-out infinite alternate}
@@ -1860,6 +1846,39 @@ body.frozen-cursor *{cursor:not-allowed!important;}
 @keyframes loginMarkGlow{0%,100%{box-shadow:0 10px 26px rgba(251,191,36,.2)}50%{box-shadow:0 10px 34px rgba(251,191,36,.42)}}
 @keyframes loginSignal{0%,100%{opacity:.45;transform:scaleY(.72)}50%{opacity:1;transform:scaleY(1)}}
 @media (prefers-reduced-motion:reduce){#loginScreen *{animation:none!important;transition:none!important}}
+@media (max-width:520px){
+  .workspace-dynamic-wizard .workspace-dynamic-panel{width:100%;min-width:0}
+  .workspace-dynamic-wizard .workspace-dynamic-panel-head h3{font-size:24px}
+  .workspace-dynamic-wizard .workspace-dynamic-panel-head p{margin-top:4px;font-size:12px}
+  .workspace-dynamic-wizard .workspace-dynamic-options.compact.color-options{grid-template-columns:repeat(6,minmax(0,1fr));gap:4px}
+  .workspace-dynamic-wizard .workspace-dynamic-options.compact.color-options .workspace-dynamic-option{min-height:42px;padding:3px 2px}
+  .workspace-dynamic-wizard .workspace-dynamic-options.compact.color-options .workspace-color-swatch{width:18px;height:18px;margin-bottom:2px}
+  .workspace-dynamic-wizard .workspace-dynamic-options.compact.color-options .workspace-dynamic-option strong{font-size:9px;line-height:1.05}
+}
+@media (min-width:521px) and (max-width:820px){
+  .workspace-dynamic-wizard .workspace-dynamic-options.compact.color-options{grid-template-columns:repeat(8,minmax(0,1fr));gap:5px}
+  .workspace-dynamic-wizard .workspace-dynamic-options.compact.color-options .workspace-dynamic-option{min-height:56px;padding:5px 3px}
+  .workspace-dynamic-wizard .workspace-dynamic-options.compact.color-options .workspace-color-swatch{width:24px;height:24px;margin-bottom:3px}
+  .workspace-dynamic-wizard .workspace-dynamic-options.compact.color-options .workspace-dynamic-option strong{font-size:10px;line-height:1.05}
+}
+@media (min-width:821px){
+  .workspace-dynamic-wizard .workspace-dynamic-options.compact.color-options{grid-template-columns:repeat(12,minmax(0,1fr));gap:5px}
+  .workspace-dynamic-wizard .workspace-dynamic-options.compact.color-options .workspace-dynamic-option{min-height:56px;padding:5px 3px}
+  .workspace-dynamic-wizard .workspace-dynamic-options.compact.color-options .workspace-color-swatch{width:24px;height:24px;margin-bottom:3px}
+  .workspace-dynamic-wizard .workspace-dynamic-options.compact.color-options .workspace-dynamic-option strong{font-size:10px;line-height:1.05}
+}
+@media (max-width:820px){
+  .workspace-dynamic-wizard .workspace-duel-player-label{margin-top:7px}
+  .workspace-dynamic-wizard .workspace-duel-config{margin-top:7px;padding:9px 12px}
+  .workspace-dynamic-wizard .workspace-dynamic-group-label{margin-top:8px}
+  .workspace-dynamic-wizard .workspace-dynamic-nav{margin-top:10px;padding-top:8px}
+}
+@media (min-width:821px){
+  .workspace-dynamic-wizard .workspace-duel-player-label{margin-top:8px}
+  .workspace-dynamic-wizard .workspace-duel-config{margin-top:8px;padding:9px 12px}
+  .workspace-dynamic-wizard .workspace-dynamic-group-label{margin-top:8px}
+  .workspace-dynamic-wizard .workspace-dynamic-nav{margin-top:10px;padding-top:8px}
+}
 @media (prefers-reduced-motion:reduce){.workspace-shell *{transition:none!important;animation:none!important}}
 </style>
 </head>
@@ -2056,8 +2075,8 @@ body.frozen-cursor *{cursor:not-allowed!important;}
 
   <div id="studentTestEntry">
     <div style="font-weight:800;color:#60a5fa">&#128221; Prueba configurada</div>
-    <div style="font-size:12px;color:#94a3b8">Ingresa el testId proporcionado por tu maestro.</div>
-    <div style="display:flex;gap:8px"><input class="name-input" id="studentTestIdInput" placeholder="testId" autocomplete="off"/><button class="exam-apply-btn" type="button" onclick="openStudentConfiguredTest()">Entrar</button></div>
+    <div style="font-size:12px;color:#94a3b8">Ingresa el folio proporcionado por tu maestro, por ejemplo: 0001.</div>
+    <div style="display:flex;gap:8px"><input class="name-input" id="studentTestIdInput" placeholder="Folio de prueba" autocomplete="off"/><button class="exam-apply-btn" type="button" onclick="openStudentConfiguredTest()">Entrar</button></div>
     <div id="studentTestStatus" role="status"></div>
   </div>
 
@@ -2092,7 +2111,7 @@ body.frozen-cursor *{cursor:not-allowed!important;}
 </div>
 
 <!-- Step 2 -->
-<div class="screen" id="step2Screen">
+<div class="screen" id="step2Screen" data-legacy-scope="solo,duel,online,operations">
 <div class="setup-card">
   <div class="card-header">
     <div class="card-header-logo" id="step2ModeIcon">🧑</div>
@@ -2208,7 +2227,7 @@ body.frozen-cursor *{cursor:not-allowed!important;}
 </div>
 
 <!-- Step Operaciones (solo/duel) -->
-<div class="screen" id="stepOpScreen">
+<div class="screen" id="stepOpScreen" data-legacy-scope="solo,duel,operations">
 <div class="setup-card">
   <div class="card-header">
     <div class="card-header-logo" id="stepOpIcon">🧑</div>
@@ -2252,7 +2271,7 @@ body.frozen-cursor *{cursor:not-allowed!important;}
 </div>
 
 <!-- Step 3 local (solo/duel) -->
-<div class="screen" id="step3LocalScreen">
+<div class="screen" id="step3LocalScreen" data-legacy-scope="solo,duel,operations">
 <div class="setup-card">
   <div class="card-header">
     <div class="card-header-logo" id="step3LocalIcon">🧑</div>
@@ -2264,14 +2283,6 @@ body.frozen-cursor *{cursor:not-allowed!important;}
     <div class="step-dot done"></div>
     <div class="step-dot active"></div>
     <div class="step-dot"></div>
-  </div>
-
-  <div class="ops-config-summary" id="opsConfigSummaryA" style="display:none">
-    <div class="ops-config-icon">✏️</div>
-    <div class="ops-config-body">
-      <div class="ops-config-title" id="opsConfigSummaryATitle">Operación vertical</div>
-      <div class="ops-config-copy" id="opsConfigSummaryACopy">Aquí ajustas cómo se va a practicar la operación paso a paso.</div>
-    </div>
   </div>
 
   <!-- P1 color picker (always shown) -->
@@ -2351,7 +2362,7 @@ body.frozen-cursor *{cursor:not-allowed!important;}
 </div>
 
 <!-- Step 3b local (cifras / tablas) -->
-<div class="screen" id="step3bLocalScreen">
+<div class="screen" id="step3bLocalScreen" data-legacy-scope="solo,duel,operations">
 <div class="setup-card">
   <div class="card-header">
     <div class="card-header-logo" id="step3bLocalIcon">🧑</div>
@@ -2363,14 +2374,6 @@ body.frozen-cursor *{cursor:not-allowed!important;}
     <div class="step-dot done"></div>
     <div class="step-dot done"></div>
     <div class="step-dot active"></div>
-  </div>
-
-  <div class="ops-config-summary" id="opsConfigSummaryB" style="display:none">
-    <div class="ops-config-icon">🧮</div>
-    <div class="ops-config-body">
-      <div class="ops-config-title" id="opsConfigSummaryBTitle">Detalle de la operación</div>
-      <div class="ops-config-copy" id="opsConfigSummaryBCopy">Aquí defines los números que verá el alumno en la libreta.</div>
-    </div>
   </div>
 
   <!-- Tablas + Rango (visible cuando × o ÷ están seleccionadas) -->
@@ -2449,10 +2452,6 @@ body.frozen-cursor *{cursor:not-allowed!important;}
     </div>
   </div>
 
-  <section class="workspace-summary-card" id="workspaceSummaryCard">
-    <div class="workspace-summary-heading"><span>✦</span><div><span class="workspace-eyebrow">REVISIÓN FINAL</span><h3>Resumen de tu misión</h3></div></div>
-    <div class="workspace-summary-grid"><div><small>Tipo de juego</small><strong id="summaryGameType">—</strong></div><div><small>Respuesta</small><strong id="summaryAnswerMode">—</strong></div><div><small>Operaciones</small><strong id="summaryOperations">—</strong></div><div><small>Configuración</small><strong id="summaryRules">—</strong></div></div>
-  </section>
   <div class="nav-row two">
     <button class="btn-sec" onclick="goStep3bBack()">← Atrás</button>
     <button class="btn-pri" id="startBtn" onclick="beginCountdown()"><span class="wave-letter" style="animation-delay:0s">¡</span><span class="wave-letter" style="animation-delay:.07s">C</span><span class="wave-letter" style="animation-delay:.14s">o</span><span class="wave-letter" style="animation-delay:.21s">m</span><span class="wave-letter" style="animation-delay:.28s">e</span><span class="wave-letter" style="animation-delay:.35s">n</span><span class="wave-letter" style="animation-delay:.42s">z</span><span class="wave-letter" style="animation-delay:.49s">a</span><span class="wave-letter" style="animation-delay:.56s">r</span><span class="wave-letter" style="animation-delay:.63s">!</span></button>
@@ -2461,7 +2460,7 @@ body.frozen-cursor *{cursor:not-allowed!important;}
 </div>
 
 <!-- Step 3 (online only: game config) -->
-<div class="screen" id="step3Screen">
+<div class="screen" id="step3Screen" data-legacy-scope="online">
 <div class="setup-card">
   <div class="card-header">
     <div class="card-header-logo" id="step3ModeIcon">⚡</div>
@@ -2622,7 +2621,7 @@ body.frozen-cursor *{cursor:not-allowed!important;}
 </div>
 
 <!-- Step 3b (online only: tablas / cifras config) -->
-<div class="screen" id="step3bScreen">
+<div class="screen" id="step3bScreen" data-legacy-scope="online">
 <div class="setup-card">
   <div class="card-header">
     <div class="card-header-logo" id="s3bModeIcon">⚡</div>
@@ -3499,7 +3498,10 @@ function getAllModeTablePool(){
   return ALL_MODE_TBLS;
 }
 function getConfiguredTables(opSymbol=null){
-  if(tblSelMode==='all') return [...getAllModeTablePool()];
+  if(tblSelMode==='all'){
+    const dynamicMode=typeof workspaceDynamicState!=='undefined'&&workspaceDynamicState&&(workspaceDynamicState.mode==='solo'||workspaceDynamicState.mode==='duel');
+    return dynamicMode?[...ALL_TBL_PICK]:[...getAllModeTablePool()];
+  }
   if(opSymbol==='÷') return selectedTbls.filter(t=>getAllowedTablePool(opSymbol).includes(t));
   return [...selectedTbls];
 }
@@ -4400,8 +4402,6 @@ function syncOperationsConfigScreens(){
   const isDivision=opSymbol==='÷';
   normalizeAddSubConfig();
 
-  setDisplay('opsConfigSummaryA',opsMode,'flex');
-  setDisplay('opsConfigSummaryB',opsMode,'flex');
   setDisplay('localColorLabel',!opsMode);
   setDisplay('colorPicker1',!opsMode,'flex');
   setDisplay('p2DuelWrap',!opsMode&&gameMode==='duel');
@@ -4409,25 +4409,6 @@ function syncOperationsConfigScreens(){
   setDisplay('localVisualGrid',!opsMode,'grid');
   setDisplay('maneraSection',!opsMode&&gameType!=='countdown');
   setDisplay('maneraGrid',!opsMode&&gameType!=='countdown','grid');
-
-  if($('opsConfigSummaryATitle')) $('opsConfigSummaryATitle').textContent=`${opLabel} vertical`;
-  if($('opsConfigSummaryACopy')) $('opsConfigSummaryACopy').textContent=
-    isDivision
-      ? 'Primero define cuántos ejercicios se van a resolver y luego ajusta divisores y cifras del dividendo.'
-      : (isMultiply
-          ? 'Primero define cuántos ejercicios se van a resolver y luego ajusta multiplicando y multiplicador.'
-          : (isMulDiv
-              ? 'Primero define cuántos ejercicios se van a resolver y luego ajusta tablas y rango.'
-              : 'Primero define cuántos ejercicios se van a resolver y luego ajusta el tamaño de los números.'));
-  if($('opsConfigSummaryBTitle')) $('opsConfigSummaryBTitle').textContent=`Configuración de ${opLabel.toLowerCase()}`;
-  if($('opsConfigSummaryBCopy')) $('opsConfigSummaryBCopy').textContent=
-    isDivision
-      ? 'Esta ventana controla los divisores y cuántas cifras tendrá el dividendo para resolver la casita paso a paso.'
-      : (isMultiply
-          ? 'Esta ventana controla por separado los valores del multiplicando y del multiplicador.'
-          : (isMulDiv
-              ? 'Esta ventana controla las tablas, el rango y la dificultad numérica que verá el alumno.'
-              : 'Esta ventana controla la cantidad de cifras para acomodar y resolver la operación en vertical.'));
 
   if($('qptSectionLabel')) $('qptSectionLabel').textContent=opsMode?'📝 Cantidad de ejercicios':'🎯 Cantidad';
   if($('qptSectionCopy')) $('qptSectionCopy').textContent=opsMode?'Ejercicios a resolver:':'Preguntas por operación:';
@@ -4988,57 +4969,6 @@ function updateWorkspaceIdentity(){
   const levelEl=$('workspaceLevel'); if(levelEl) levelEl.textContent=`Nivel ${level}`;
 }
 function toggleWorkspaceSidebar(){ $('workspaceSidebar')?.classList.toggle('collapsed'); }
-function mountWorkspaceWizard(){
-  const host=$('workspaceWizardHost'); if(!host||host.dataset.mounted) return;
-  const testEntry=$('studentTestEntry'),testSlot=$('workspaceTestSlot'); if(testEntry&&testSlot) testSlot.appendChild(testEntry);
-  ['step2Screen','stepOpScreen','step3LocalScreen','step3bLocalScreen','step3Screen','step3bScreen'].forEach(id=>{const screen=$(id);if(screen)host.appendChild(screen);});
-  const start=$('startBtn'); if(start) start.textContent='Comenzar misión';
-  host.dataset.mounted='true';
-  const wizardIds=new Set(['step2Screen','stepOpScreen','step3LocalScreen','step3bLocalScreen','step3Screen','step3bScreen']);
-  const sync=()=>{
-    const active=Array.from(host.querySelectorAll('.screen.active')).some(screen=>wizardIds.has(screen.id));
-    $('workspaceActivityCard')?.classList.toggle('workspace-wizard-step-active',active);
-    if(active){ $('studentWorkspace')?.classList.add('workspace-show-config'); $('step1Screen')?.classList.add('active'); }
-    const step=Array.from(host.querySelectorAll('.screen.active')).find(screen=>wizardIds.has(screen.id));
-    const stepMap={step2Screen:'Paso 2 de 5',stepOpScreen:'Paso 3 de 5',step3LocalScreen:'Paso 4 de 5',step3bLocalScreen:'Paso 5 de 5'};
-    if(step&&$('workspaceWizardStep')) $('workspaceWizardStep').textContent=stepMap[step.id]||'Paso 2 de 5';
-    refreshWorkspaceSummary();
-  };
-  new MutationObserver(sync).observe(host,{subtree:true,attributes:true,attributeFilter:['class']});
-  sync();
-}
-function refreshWorkspaceSummary(){
-  const typeLabels={free:'Libre',timed:'Tiempo',lives:'Vidas',countdown:'Cuenta atrás',streak:'Racha',survival:'Supervivencia',bot:'VS Bot'};
-  const answer=document.querySelector('#step2Screen [data-ans].selected .sn')?.textContent||'Opciones';
-  const ops=Array.isArray(selectedOps)&&selectedOps.length?selectedOps.join(' · '):'Multiplicación';
-  const diff=document.querySelector('#step2Screen .diff-sub-panel.visible .diff.selected .sn')?.textContent||'';
-  const time=document.querySelector('#countdownSubPanel .countdown-time-btn.selected .cti')?.textContent;
-  const config=[typeLabels[gameType]||'Libre',diff||'',time?`${time} min`:''].filter(Boolean).join(' · ');
-  const set=(id,value)=>{const el=$(id);if(el)el.textContent=value;};
-  set('summaryGameType',typeLabels[gameType]||'Libre');set('summaryAnswerMode',answer);set('summaryOperations',ops);set('summaryRules',config||'Configuración lista');
-}
-function showWorkspaceView(view){
-  mountWorkspaceWizard();
-  const shell=$('studentWorkspace'); if(!shell) return;
-  shell.classList.remove('workspace-show-config','workspace-show-module','workspace-mode-solo','workspace-mode-duel','workspace-mode-online');
-  if(view==='home') return;
-  if(view==='solo'||view==='duel'||view==='online'){
-    shell.classList.add('workspace-show-config',`workspace-mode-${view}`);
-    const title=$('workspaceWizardTitle'); if(title) title.textContent=view==='solo'?'Modo Individual':view==='duel'?'Duelo':'Multijugador';
-    $('workspaceActivityCard')?.scrollIntoView({behavior:'smooth',block:'start'});
-    return;
-  }
-  const moduleCopy={
-    tests:['▣','PRUEBAS','Pruebas','Aquí podrás consultar y resolver las pruebas asignadas por tu maestro.'],
-    missions:['◇','MISIONES','Misiones','Este centro está preparado para organizar tus próximos desafíos.'],
-    ranking:['♜','PROGRESO PERSONAL','Ranking personal','Tu evolución y tus mejores marcas aparecerán aquí.']
-  }[view]||['◇','MÓDULO PREPARADO','Próximamente','Este espacio está preparado para una futura expansión del centro de operaciones.'];
-  $('workspaceModuleIcon')&&( $('workspaceModuleIcon').textContent=moduleCopy[0] );
-  $('workspaceModuleEyebrow')&&( $('workspaceModuleEyebrow').textContent=moduleCopy[1] );
-  $('workspaceModuleTitle')&&( $('workspaceModuleTitle').textContent=moduleCopy[2] );
-  $('workspaceModuleCopy')&&( $('workspaceModuleCopy').textContent=moduleCopy[3] );
-  shell.classList.add('workspace-show-module');
-}
 function selectWorkspaceNav(btn,target){
   document.querySelectorAll('#workspaceSidebar .workspace-nav-item').forEach(item=>item.classList.remove('active'));
   btn?.classList.add('active');
@@ -5046,14 +4976,6 @@ function selectWorkspaceNav(btn,target){
   const labels={home:'Sesión lista',tests:'Pruebas disponibles',missions:'Misiones preparadas'};
   if(status) status.textContent=labels[target]||'Sesión lista';
   showWorkspaceView(target);
-}
-function selectWorkspaceMode(btn,mode){
-  document.querySelectorAll('#workspaceSidebar .workspace-nav-item').forEach(item=>item.classList.remove('active'));
-  btn?.classList.add('active');
-  const target=document.querySelector(`#step1Screen [data-mode="${mode}"]`);
-  if(target) target.click();
-  $('workspaceStatusText')&&( $('workspaceStatusText').textContent = mode==='solo'?'Modo individual listo':mode==='duel'?'Duelo listo':'Multijugador listo' );
-  showWorkspaceView(mode);
 }
 function openWorkspaceRegistry(btn){ selectWorkspaceNav(btn,'ranking'); }
 
@@ -5096,8 +5018,7 @@ function floatCerrarSesion(){
   stopSessionReporting();
   stopBgMusic();
   // Quitar active de todas las pantallas posibles
-  ['step1Screen','step2Screen','step3LocalScreen','step3bLocalScreen','step3Screen',
-   'gameScreen','resultsScreen','registryScreen','cntScreen']
+  ['step1Screen',...LEGACY_SCREEN_IDS,'gameScreen','resultsScreen','registryScreen','cntScreen']
     .forEach(id=>{ const el=$(id); if(el) el.classList.remove('active'); });
   // Cerrar overlays abiertos
   closeShop(); $('mpOverlay').classList.remove('active');
@@ -6769,6 +6690,7 @@ let _examResumeData=null; // checkpoint a restituir en initGame
 // normal interrumpida se marcaba como "prueba ya entregada" y el botón nunca volvía a aparecer en el menú.
 let _examPlaythrough=false;
 let _examPrebuiltQuestions=null; // preguntas ya generadas por applyPrueba() cuando config.opsConfig existe (config por operación)
+let _examGlobalDeadline=0;
 
 function _cpKey(){ return 'examCp_'+(pName||'_'); }
 function _saveExamCheckpoint(){
@@ -6861,8 +6783,14 @@ function _refreshExamResumeButton(){
   }
   return cp;
 }
+function _examGradeAllowed(configGrade){
+  if(!configGrade) return true;
+  const expected=String(configGrade).match(/[1-6]/)?.[0]||'';
+  const actual=String(currentPlayer?.grade||gradeName||$('gradeInput')?.value||'').match(/[1-6]/)?.[0]||'';
+  return !!expected&&!!actual&&expected===actual;
+}
 function handleExamStart(config){
-  if(!config) return;
+  if(!config||!_examGradeAllowed(config.grade)) return;
   // Si el alumno ya hizo la prueba en esta sesión, ignorar reenvíos del servidor
   if(_examDone) return;
   // El servidor reenvía exam_start ante CUALQUIER conexión nueva no notificada (ws._examNotified
@@ -6917,13 +6845,16 @@ function applyPrueba(){
   // Tablas (fallback/compatibilidad cuando no hay opsConfig)
   if(config.tables?.length){ selectedTbls=[...config.tables]; tblSelMode='custom'; }
   else { selectedTbls=[...getAllModeTablePool()]; tblSelMode='all'; }
-  // Tiempo por pregunta
-  if(config.timeLimit>0){
-    gameType='timed'; timeLimit=config.timeLimit;
+  // Tiempo por pregunta y límite global de la prueba.
+  const perQuestionTime=Number(config.timePerQuestion)||Number(config.timeLimit)||0;
+  const globalTime=Number(config.timeLimit)||0;
+  _examGlobalDeadline=globalTime>0?Date.now()+globalTime*1000:0;
+  if(perQuestionTime>0){
+    gameType='timed'; timeLimit=perQuestionTime;
     // Elegir etiqueta de dificultad más cercana al timeLimit configurado
-    if(config.timeLimit>=12) difficulty='easy';
-    else if(config.timeLimit>=7) difficulty='medium';
-    else if(config.timeLimit>=3) difficulty='hard';
+    if(perQuestionTime>=12) difficulty='easy';
+    else if(perQuestionTime>=7) difficulty='medium';
+    else if(perQuestionTime>=3) difficulty='hard';
     else difficulty='expert';
   } else {
     gameType='free'; timeLimit=0; difficulty='free';
@@ -6959,6 +6890,7 @@ function handleExamStop(){
   _examDone=false; // el maestro detuvo la prueba; permitir una nueva si se inicia otra
   _examPlaythrough=false;
   _pendingExamConfig=null;
+  _examGlobalDeadline=0;
   _clearExamCheckpoint();
   document.body.classList.remove('exam-active');
   $('replayBtn').style.display=''; // restaurar por si el alumno está en resultados
@@ -7367,7 +7299,11 @@ function v1(){
   // Step 1: only needs name (game mode has a default selected)
   $('nextBtn').disabled=!$('nameInput').value.trim();
 }
+function isSoloDynamicWorkspaceActive(){
+  return workspaceDynamicState?.mode==='solo'&&$('studentWorkspace')?.classList.contains('workspace-dynamic-wizard');
+}
 function goStep2(){
+  if(isSoloDynamicWorkspaceActive()) return;
   pName=$('nameInput').value.trim()||pName; gradeName=$('gradeInput').value;
   // El login ya se hizo al inicio — solo actualizar saldo local si no hay cuenta
   if(!currentPlayer){
@@ -7449,6 +7385,7 @@ function syncStep2OperationsAnswerMode(){
   syncVoiceAnswerAvailability();
 }
 function goStep2to3(){
+  if(isSoloDynamicWorkspaceActive()) return;
   if(gameMode==='online'){ openMP(); return; }
   // Para solo/duelo (incluye bot): pasar primero por la selección de operaciones
   applyModeMeta('stepOpIcon','stepOpTitle',getActiveSetupMode());
@@ -7512,6 +7449,7 @@ function vOp(){
   if(btn) btn.disabled=isOperationsSetup()?(selectedOps.length!==1||timedLocked):selectedOps.length===0;
 }
 function goOpToStep3(){
+  if(isSoloDynamicWorkspaceActive()) return;
   if(gameMode==='solo'&&gameType==='bot'){ startBotGame(); return; }
   applyModeMeta('step3LocalIcon','step3LocalTitle',getActiveSetupMode());
   if(isOperationsSetup()){
@@ -7537,11 +7475,13 @@ function goOpToStep3(){
   v3Local();
 }
 function goStep3LocalBack(){
+  if(isSoloDynamicWorkspaceActive()) return;
   $('step3LocalScreen').classList.remove('active');
   $('stepOpScreen').classList.add('active');
   vOp();
 }
 function goStep3aToStep3b(){
+  if(isSoloDynamicWorkspaceActive()) return;
   const t=$('step3bLocalTitle'),s=$('step3bLocalSub'),ic=$('step3bLocalIcon');
   if(t) t.textContent=$('step3LocalTitle').textContent;
   if(s) s.textContent=$('step3LocalSub').textContent;
@@ -7552,6 +7492,7 @@ function goStep3aToStep3b(){
   syncOperationsConfigScreens();
 }
 function goStep3bBack(){
+  if(isSoloDynamicWorkspaceActive()) return;
   $('step3bLocalScreen').classList.remove('active');
   $('step3LocalScreen').classList.add('active');
   syncOperationsConfigScreens();
@@ -7635,6 +7576,26 @@ function sendSaveResult(){
     });
   });
   const stepDetailSummary=summarizeStepDetailResults(stepDetailResults);
+  // Guardar cada ejercicio permite al ranking mostrar exactamente cuáles operaciones
+  // fueron correctas, incorrectas o quedaron sin tiempo dentro de cada tabla.
+  const questionDetailSummary={};
+  const questionOpIndexes={};
+  questions.forEach(q=>{
+    const op=q.op||'×';
+    const resultIndex=questionOpIndexes[op]||0;
+    questionOpIndexes[op]=resultIndex+1;
+    const status=(tblResults[op]||[])[resultIndex];
+    if(!status) return;
+    if(!questionDetailSummary[op]) questionDetailSummary[op]=[];
+    questionDetailSummary[op].push({
+      table:q.table??null,
+      a:q.a??null,
+      b:q.b??null,
+      dividend:q._divA??null,
+      question:qText(q),
+      status
+    });
+  });
   // En online cada dispositivo tiene su propio duelScores[mpMyIdx]; en duel local P1=índice 0
   const finalScore = gameMode==='online' ? (duelScores[mpMyIdx]||0)
                    : gameMode==='duel'   ? (duelScores[0]||0)
@@ -7666,12 +7627,14 @@ function sendSaveResult(){
     tables: getConfiguredTables(),
     tblResults: tblSummary,
     tableDetail: tableDetailSummary,
+    questionDetail: questionDetailSummary,
     stepDetail: stepDetailSummary,
     isExam:_examPlaythrough,
     // El maestro puede haber detenido la prueba mientras yo seguía respondiendo (handleExamStop
     // me deja terminar a mi ritmo) — mando el startedAt de la prueba que en realidad estaba
     // jugando para que el servidor pueda registrarme como terminado aunque ya no sea la activa.
     examStartedAt:_examPlaythrough?(_pendingExamConfig?.startedAt||null):null,
+    examTestId:_examPlaythrough?(_pendingExamConfig?.testId||null):null,
     durationMs:examDurationMs,
     aureosBonus: !!powerState.aureosMagnetActive,
     isWinner:_p1IsWinner,
@@ -7697,6 +7660,8 @@ function sendSaveResult(){
       gameMode, setupMode:getActiveSetupMode(), mpGameMode:'', gameType, difficulty, op:_opVal,
       tables: getConfiguredTables(),
       tblResults: tblSummary,
+      tableDetail: tableDetailSummary,
+      questionDetail: questionDetailSummary,
       stepDetail: stepDetailSummary,
       isWinner:_p2IsWinner,
       vs:pName,
@@ -7778,6 +7743,7 @@ function sendGameCheckpoint(){
 }
 
 function goStep1(){
+  if(isSoloDynamicWorkspaceActive()) return;
   // Si el host tiene sala activa en lobby, cancelarla al regresar
   if(lanRoomId&&mpRole==='host'&&!mpConnected) lanDisconnect();
   // Restaurar mp-card al overlay si estaba embebido
@@ -9264,6 +9230,14 @@ function recycleCountdownQuestion(){
 const _PR_OPMAP_REV={mult:'×',add:'+',sub:'−',div:'÷'};
 function buildQForOpConfig(opSym,cfg){
   const qs=[];
+  if((opSym==='×'||opSym==='÷')&&Array.isArray(cfg.matrix)){
+    const selected=[...new Set(cfg.matrix.map(value=>String(value).split('x').map(Number)).filter(([factor,table])=>Number.isInteger(factor)&&Number.isInteger(table)&&factor>=0&&factor<=12&&table>=1&&table<=12))];
+    for(const [factor,tbl] of selected){
+      if(opSym==='÷') qs.push({table:tbl,a:tbl*factor,op:opSym,b:tbl,answer:factor});
+      else qs.push({table:tbl,a:tbl,op:opSym,b:factor,answer:tbl*factor});
+    }
+    return opSym===_PR_OPMAP_REV.mult&&cfg.manner==='random'?shuffle(qs):qs;
+  }
   if(opSym==='×'||opSym==='÷'){
     const pool=(cfg.tables&&cfg.tables.length?cfg.tables:[...getAllowedTablePool(opSym)]).filter(t=>opSym==='÷'?getAllowedTablePool(opSym).includes(t):t>0);
     const qty=Math.max(1,cfg.qty||1);
@@ -9795,6 +9769,9 @@ function startTimer(){
 }
 function tickTimer(){
   timeLeft-=0.1;
+  if(_examGlobalDeadline&&Date.now()>=_examGlobalDeadline){
+    timeLeft=0;updateTimerBar();clearInterval(timerIv);if(!answered){answered=true;setTimeout(()=>showResults(),0);}return;
+  }
   if(timeLeft<=0){timeLeft=0;updateTimerBar();clearInterval(timerIv);if(!answered)handleTimeout();}
   else updateTimerBar();
 }
@@ -10532,6 +10509,7 @@ function clearAllPowerEffects(){
 }
 
 function showResults(){
+  _examGlobalDeadline=0;
   const _resultKey=currentGameId||'no-game';
   if(_resultsShownGameId===_resultKey&&$('resultsScreen')?.classList.contains('active')) return;
   _resultsShownGameId=_resultKey;
@@ -10686,7 +10664,8 @@ function showResults(){
   else{emoji='📚';msg='A practicar más';setTimeout(playGameOver,200);}
   if(vfxEnabled&&pct>=.8) setTimeout(launchResultsConfetti,500);
   $('rEmoji').textContent=emoji;
-  $('rName').textContent=`${emoji} ${pName}`;
+  const resultOwnerName=gameMode==='duel'?(gameType==='lives'?(duelLives[1]>duelLives[0]?pName2:pName):(duelWinnerIdx===1?pName2:pName)):pName;
+  $('rName').textContent=`${emoji} ${resultOwnerName}`;
   $('rStars').textContent=stars(pct);
   const tu=tblSelMode==='all'?'Todas (1–12)':`${selectedTbls.length} tablas`;
   const diffLabel=gameType==='free'?'🕊️ Libre':
@@ -13742,7 +13721,7 @@ function restoreQuestionMarkFallbacks(){
   const setAll=(selector,icon)=>document.querySelectorAll(selector).forEach(el=>{ if(/^\?+$/.test(el.textContent.trim())) el.textContent=icon; });
   setAll('.gear-btn','\u2699\ufe0f'); setAll('.login-logo','\u26a1'); setAll('.login-field-icon','\ud83d\udc64');
   setAll('.login-btn-arrow','\u2192'); setAll('.si','\u2b50'); setAll('.card-header-logo','\ud83c\udfae');
-  setAll('.card-header-sub','\u2699\ufe0f'); setAll('.ops-config-icon','\u270f\ufe0f');
+  setAll('.card-header-sub','\u2699\ufe0f');
   // Exact icon and label recovery from math-attack-respaldo.html.
   const setText=(selector,text)=>document.querySelectorAll(selector).forEach(el=>el.textContent=text);
   setText('#cntDisplay','3');
@@ -13761,7 +13740,6 @@ function restoreQuestionMarkFallbacks(){
   document.querySelectorAll('.btn-sec[onclick="goStep1()"],.btn-sec[onclick="goOpBack()"],.btn-sec[onclick="goStep3LocalBack()"]').forEach(el=>el.textContent='\u2190 Atr\u00e1s');
   setText('#stepOpIcon','\ud83e\uddd1'); setText('#stepOpSub','\u2014'); setText('#stepOpQuestionLbl','\ud83d\udd22 \u00bfQu\u00e9 operaciones quieres practicar?');
   setText('#step3LocalIcon','\ud83e\uddd1'); setText('#step3LocalSub','\u2014');
-  const configIcons=document.querySelectorAll('.ops-config-icon'); if(configIcons[0]) configIcons[0].textContent='\u270f\ufe0f'; if(configIcons[1]) configIcons[1].textContent='\ud83e\uddee';
   setText('#localColorLabel','\ud83c\udfa8 Tu color'); setText('#localVisualLabel','\ud83d\udc41 Visualizaci\u00f3n');
   setText('#maneraSection','\ud83d\udd00 Manera'); setText('#qptSectionLabel','\ud83c\udfaf Cantidad'); setText('#qptPerTableSectionLabel','\ud83d\udccb Cantidad por tabla');
   setText('#step3bLocalIcon','\ud83e\uddd1'); setText('#step3bLocalSub','\u2014'); setText('#tblSectionLabel','\ud83d\udccb Tablas a practicar');
@@ -13774,10 +13752,61 @@ function restoreQuestionMarkFallbacks(){
 }
 // ── Dynamic configuration panels (V2) ──
 let workspaceDynamicState=null;
-function workspaceOldButton(selector,key,value){
-  return Array.from(document.querySelectorAll(selector)).find(btn=>!key||btn.dataset?.[key]===String(value));
+// Inventario explícito de compatibilidad. Estos paneles no pertenecen al
+// asistente dinámico, pero algunos todavía son compartidos por Duelo,
+// Multijugador y el modo de operaciones antiguo.
+const LEGACY_SCREEN_MANIFEST=Object.freeze({
+  step2Screen:Object.freeze(['solo','duel','online','operations']),
+  stepOpScreen:Object.freeze(['solo','duel','operations']),
+  step3LocalScreen:Object.freeze(['solo','duel','operations']),
+  step3bLocalScreen:Object.freeze(['solo','duel','operations']),
+  step3Screen:Object.freeze(['online']),
+  step3bScreen:Object.freeze(['online'])
+});
+const LEGACY_SCREEN_IDS=Object.freeze(Object.keys(LEGACY_SCREEN_MANIFEST));
+function legacyScreensForScope(scope){
+  return LEGACY_SCREEN_IDS.filter(id=>LEGACY_SCREEN_MANIFEST[id].includes(scope));
 }
-function workspaceActivateOld(selector,key,value){const btn=workspaceOldButton(selector,key,value);if(btn&&!btn.disabled){btn.click();return true;}return false;}
+const WORKSPACE_GAME_TYPES=[
+  {v:'free',t:'Libre',c:'Sin tiempo',i:'✦'},
+  {v:'timed',t:'Con tiempo',c:'Contrarreloj por pregunta',i:'⏱'},
+  {v:'lives',t:'Vidas',c:'Sin errores',i:'♥'},
+  {v:'countdown',t:'Contrarreloj',c:'Máx. preguntas en tiempo',i:'⌛'},
+  {v:'streak',t:'Racha',c:'Termina al primer fallo',i:'🔥'},
+  {v:'survival',t:'Supervivencia',c:'El tiempo se acorta',i:'⚡'},
+  {v:'bot',t:'vs Bot',c:'Reta a la IA',i:'🤖'}
+];
+const WORKSPACE_DIFFICULTIES={
+  timed:[
+    {v:'easy',t:'Fácil',c:'12 seg',i:'⚡'},
+    {v:'medium',t:'Medio',c:'8 seg',i:'⚡'},
+    {v:'hard',t:'Difícil',c:'4 seg',i:'⚡'},
+    {v:'expert',t:'Experto',c:'2 seg',i:'⚡'}
+  ],
+  lives:[
+    {v:'8',t:'Fácil',c:'8 vidas',i:'♥'},
+    {v:'5',t:'Medio',c:'5 vidas',i:'♥'},
+    {v:'3',t:'Difícil',c:'3 vidas',i:'♥'},
+    {v:'1',t:'Experto',c:'1 vida',i:'♥'}
+  ],
+  countdown:[60,120,180,300,600].map(seconds=>({v:String(seconds),t:`${seconds/60} minutos`,c:'Tiempo total',i:'⌛'})),
+  bot:[
+    {v:'easy',t:'Fácil',c:'Reta justo',i:'🤖'},
+    {v:'medium',t:'Moderada',c:'Bot más fuerte',i:'🤖'},
+    {v:'hard',t:'Difícil',c:'Bot experto',i:'🤖'}
+  ]
+};
+const WORKSPACE_ANSWER_TYPES=[
+  {v:'options',t:'Opciones',c:'Elige entre 4',i:'▦'},
+  {v:'write',t:'Escribir',c:'Escribe la respuesta',i:'✎'},
+  {v:'voice',t:'Voz',c:'Responde hablando',i:'◉'}
+];
+const WORKSPACE_OPERATIONS=[
+  {v:'+',t:'Suma',i:'+'},
+  {v:'−',t:'Resta',i:'−'},
+  {v:'×',t:'Multiplicación',i:'×'},
+  {v:'÷',t:'División',i:'÷'}
+];
 function workspaceTypeLabel(type){return {free:'Libre',timed:'Tiempo',lives:'Vidas',countdown:'Cuenta atrás',streak:'Racha',survival:'Supervivencia',bot:'VS Bot'}[type]||type;}
 function workspaceModeCopy(type){return {free:'Configura libremente tu práctica.',timed:'El tiempo será tu único límite.',lives:'Protege tus vidas y avanza con precisión.',countdown:'Resuelve antes de que termine la cuenta atrás.',streak:'Un error termina la partida.',survival:'Cada pregunta será más difícil.',bot:'Compite contra un rival adaptativo.'}[type]||'';}
 function workspacePanelNav(back=true,next=true,nextLabel='Continuar'){
@@ -13792,6 +13821,7 @@ function workspaceFlowPanels(){
   const panels=['type'];
   if(type==='timed'||type==='lives'||type==='countdown'||type==='bot') panels.push('difficulty');
   panels.push('answer','operations','specific','advanced');
+  if(workspaceDynamicState.mode==='duel'&&type!=='countdown') panels.push('order');
   const hasAddSub=selectedOps.includes('+')||selectedOps.includes('−');
   const hasTables=selectedOps.includes('×')||selectedOps.includes('÷');
   if(workspaceDynamicState.mode!=='solo'||(type==='free'&&(hasAddSub||hasTables))) panels.push('quantities');
@@ -13807,41 +13837,95 @@ function workspaceBack(){
   const s=workspaceDynamicState;if(!s)return;
   if(s.history.length){s.panel=s.history.pop();renderCurrentPanel();}else showWorkspaceView('home');
 }
-function workspaceSyncType(value){workspaceActivateOld('.diff-type-btn','gtype',value);}
-function workspaceSyncDifficulty(value){
-  const type=workspaceDynamicState.type;
-  if(type==='timed') workspaceActivateOld('#timedSubPanel .diff','diff',value);
-  else if(type==='lives') workspaceActivateOld('#livesSubPanel .diff-lives','lives',value);
-  else if(type==='countdown') workspaceActivateOld('#countdownSubPanel .countdown-time-btn','cdt',value);
-  else if(type==='bot') workspaceActivateOld('#botDiffSubPanel .diff','diff',value);
+function workspaceApplyGameType(value){
+  if(!isAllowedGameTypeForCurrentSetup(value)) return false;
+  gameType=String(value);
+  isBotMode=gameType==='bot';
+  if(gameType==='timed'){
+    difficulty='';
+  }else if(gameType==='lives'){
+    difficulty='';
+    livesCount=0;
+  }else if(gameType==='free'){
+    difficulty='free';
+    timeLimit=0;
+  }else if(gameType==='countdown'){
+    difficulty='countdown';
+  }else if(gameType==='streak'){
+    difficulty='streak';
+    timeLimit=0;
+  }else if(gameType==='survival'){
+    difficulty='survival';
+    timeLimit=10;
+  }else if(gameType==='bot'){
+    difficulty='';
+    botLevel='';
+  }
+  return true;
 }
-function workspaceSyncAnswer(value){workspaceActivateOld('#step2AnsGrid [data-ans]','ans',value);}
+function workspaceSyncType(value){workspaceApplyGameType(value);}
+function workspaceSyncDifficulty(value){
+  const type=workspaceDynamicState?.type;
+  if(type==='timed'){
+    difficulty=String(value);
+    const cfg=getActiveDiffCfg();
+    timeLimit=cfg[difficulty]||timeLimit;
+  }else if(type==='lives'){
+    livesCount=Number(value)||0;
+    difficulty=`lives_${livesCount}`;
+  }else if(type==='countdown'){
+    countdownTotal=Number(value)||countdownTotal;
+    difficulty=`countdown_${countdownTotal}`;
+  }else if(type==='bot'){
+    botLevel=String(value);
+  }
+}
+function workspaceSyncAnswer(value){
+  if(isOperationsSetup()){
+    ansMode='write';
+    return;
+  }
+  if(value==='voice'&&!canUseVoiceAnswerMode()){
+    syncVoiceAnswerAvailability();
+    return;
+  }
+  ansMode=String(value);
+  syncVoiceAnswerAvailability();
+}
 function workspaceSyncOperations(value){
-  const target=workspaceOldButton('#stepOpScreen .op-sel-btn','op',value);if(!target)return;
-  target.click();
-  if(typeof buildStep3LocalPickers==='function') buildStep3LocalPickers();
+  const op=String(value);
+  if(!['+','−','×','÷'].includes(op)) return;
+  if(isOperationsSetup()) selectedOps=[op];
+  else if(selectedOps.includes(op)) selectedOps=selectedOps.filter(item=>item!==op);
+  else selectedOps=[...selectedOps,op];
+  normalizeAddSubConfig();
 }
 function workspaceSyncSpecific(action,value){
-  if(action==='cifras'){selectedCifras=Number(value);normalizeAddSubConfig();if(typeof syncOperationsConfigScreens==='function')syncOperationsConfigScreens();}
-  if(action==='addsub'){addSubMode=String(value)==='carry'?'carry':'direct';normalizeAddSubConfig();if(typeof syncOperationsConfigScreens==='function')syncOperationsConfigScreens();}
-  if(action==='tblmode'){tblSelMode=String(value)==='all'?'all':'custom';if(tblSelMode==='all')selectedTbls=[...ALL_TBL_PICK];else{selectedTbls=selectedTbls.filter(t=>ALL_TBL_PICK.includes(t));if(!selectedTbls.length)selectedTbls=[ALL_TBL_PICK[0]];}if(typeof v2==='function')v2();}
+  if(action==='cifras'){selectedCifras=Number(value);normalizeAddSubConfig();}
+  if(action==='addsub'){addSubMode=String(value)==='carry'?'carry':'direct';normalizeAddSubConfig();}
+  if(action==='tblmode'){tblSelMode=String(value)==='all'?'all':'custom';if(tblSelMode==='all')selectedTbls=[...ALL_TBL_PICK];else{selectedTbls=selectedTbls.filter(t=>ALL_TBL_PICK.includes(t));if(!selectedTbls.length)selectedTbls=[ALL_TBL_PICK[0]];}}
   if(action==='tblClear'){tblSelMode='custom';selectedTbls=[];renderCurrentPanel();return;}
-  if(action==='tblInvert'){tblSelMode='custom';selectedTbls=ALL_TBL_PICK.filter(table=>!selectedTbls.includes(table));if(typeof v2==='function')v2();renderCurrentPanel();return;}
+  if(action==='tblInvert'){tblSelMode='custom';selectedTbls=ALL_TBL_PICK.filter(table=>!selectedTbls.includes(table));renderCurrentPanel();return;}
   if(action==='table'){
     const table=Number(value);tblSelMode='custom';
     if(selectedTbls.includes(table)) selectedTbls=selectedTbls.filter(item=>item!==table); else selectedTbls.push(table);
     if(ALL_TBL_PICK.every(item=>selectedTbls.includes(item))) tblSelMode='all';
-    if(typeof v2==='function')v2();
   }
 }
 function workspaceSyncAdvanced(action,value){
-  if(action==='visual') workspaceActivateOld('#step3LocalScreen #localVisualGrid [data-vis]','vis',value);
-  if(action==='manner') workspaceActivateOld('#step3LocalScreen #maneraGrid [data-manner]','manner',value);
-  if(action==='qpt'){qpt=Number(value);const slider=$('qptSlider');if(slider){slider.value=value;if(typeof onQptSlider==='function')onQptSlider(slider);}}
-  if(action==='qptTable'){qptPerTable=Number(value);const slider=$('qptPerTableSlider');if(slider){slider.value=value;if(typeof onQptPerTableSlider==='function')onQptPerTableSlider(slider);}}
+  if(action==='visual') visualMode=String(value)==='inversa'?'inversa':'normal';
+  if(action==='manner') tblManner=String(value)==='random'?'random':'ordered';
+  if(action==='qpt') qpt=Math.max(1,Math.min(20,Number(value)||qpt));
+  if(action==='qptTable') qptPerTable=Math.max(1,Math.min(12,Number(value)||qptPerTable));
   if(action==='multMin'){multMin=Math.min(Number(value),multMax-1);}
   if(action==='multMax'){multMax=Math.max(Number(value),multMin+1);}
-  if(action==='color'){pColor=value;if(typeof buildStep3LocalPickers==='function')buildStep3LocalPickers();}
+  if(action==='color') pColor=String(value);
+  if(action==='color2') p2Color=String(value);
+  if(action==='player2Name'){
+    pName2=String(value||'').trim().slice(0,30);
+    const legacyName=$('nameInput2b')||$('nameInput2');
+    if(legacyName) legacyName.value=pName2;
+  }
 }
 function workspaceDynamicPanel(title,copy,body,back=true,next=true,nextLabel='Continuar'){
   const modeNote=workspaceDynamicState?.mode==='solo'?`<span class="workspace-mode-note">${workspaceModeCopy(workspaceDynamicState.type)}</span>`:'';
@@ -13852,31 +13936,37 @@ function renderCurrentPanel(){
   const root=host.querySelector('.workspace-dynamic-root')||host;
   let html='';
   if(s.panel==='type'){
-    const types=Array.from(document.querySelectorAll('.diff-type-btn')).filter(btn=>isAllowedGameTypeForCurrentSetup(btn.dataset.gtype));
-    html=workspaceDynamicPanel('¿Cómo quieres jugar?','Elige el ritmo de tu próxima misión.',`<div class="workspace-dynamic-options">${types.map(btn=>workspaceOption(btn.dataset.gtype,btn.querySelector('.dtn')?.textContent||workspaceTypeLabel(btn.dataset.gtype),btn.querySelector('.dtd')?.textContent||'',btn.dataset.gtype==='timed'?'⏱':btn.dataset.gtype==='lives'?'♥':btn.dataset.gtype==='countdown'?'⌛':btn.dataset.gtype==='bot'?'🤖':'✦',s.type===btn.dataset.gtype,'type')).join('')}</div>`,false,false);
+    const types=WORKSPACE_GAME_TYPES.filter(type=>isAllowedGameTypeForCurrentSetup(type.v)&&!(s.mode==='duel'&&type.v==='bot'));
+    html=workspaceDynamicPanel('¿Cómo quieres jugar?','Elige el ritmo de tu próxima misión.',`<div class="workspace-dynamic-options">${types.map(type=>workspaceOption(type.v,type.t,type.c,type.i,s.type===type.v,'type')).join('')}</div>`,false,false);
   }else if(s.panel==='difficulty'){
-    let buttons=[];
-    if(s.type==='timed')buttons=Array.from(document.querySelectorAll('#timedSubPanel .diff')).map(b=>({v:b.dataset.diff,t:b.querySelector('.sn')?.textContent||b.dataset.diff,c:b.querySelector('.sd')?.textContent||'',i:'⚡'}));
-    if(s.type==='lives')buttons=Array.from(document.querySelectorAll('#livesSubPanel .diff-lives')).map(b=>({v:b.dataset.lives,t:b.querySelector('.sn')?.textContent||`${b.dataset.lives} vidas`,c:b.querySelector('.sd')?.textContent||'',i:'♥'}));
-    if(s.type==='countdown')buttons=Array.from(document.querySelectorAll('#countdownSubPanel .countdown-time-btn')).map(b=>({v:b.dataset.cdt,t:`${b.querySelector('.cti')?.textContent||b.dataset.cdt} minutos`,c:'Tiempo total',i:'⌛'}));
-    if(s.type==='bot')buttons=Array.from(document.querySelectorAll('#botDiffSubPanel .diff')).map(b=>({v:b.dataset.diff,t:b.querySelector('.sn')?.textContent||b.dataset.diff,c:b.querySelector('.sd')?.textContent||'',i:'🤖'}));
+    const buttons=WORKSPACE_DIFFICULTIES[s.type]||[];
     html=workspaceDynamicPanel(s.type==='countdown'?'¿Cuánto tiempo tienes?':'Selecciona la dificultad','La elección ajustará el desafío de esta misión.',`<div class="workspace-dynamic-options">${buttons.map(b=>workspaceOption(b.v,b.t,b.c,b.i,String(s.difficulty)===String(b.v),'difficulty')).join('')}</div>`);
   }else if(s.panel==='answer'){
-    const buttons=Array.from(document.querySelectorAll('#step2AnsGrid [data-ans]')).filter(b=>b.style.display!=='none');
-    html=workspaceDynamicPanel('¿Cómo quieres responder?','Elige la forma que te resulte más natural.',`<div class="workspace-dynamic-options">${buttons.map(b=>workspaceOption(b.dataset.ans,b.querySelector('.sn')?.textContent||b.dataset.ans,b.querySelector('.sd')?.textContent||'',b.dataset.ans==='voice'?'◉':b.dataset.ans==='write'?'✎':'▦',ansMode===b.dataset.ans,'answer')).join('')}</div>`);
+    const buttons=isOperationsSetup()?WORKSPACE_ANSWER_TYPES.filter(button=>button.v==='write'):WORKSPACE_ANSWER_TYPES;
+    html=workspaceDynamicPanel('¿Cómo quieres responder?','Elige la forma que te resulte más natural.',`<div class="workspace-dynamic-options">${buttons.map(b=>workspaceOption(b.v,b.t,b.c,b.i,ansMode===b.v,'answer')).join('')}</div>`);
   }else if(s.panel==='operations'){
-    const buttons=Array.from(document.querySelectorAll('#stepOpScreen .op-sel-btn'));
-    html=workspaceDynamicPanel('¿Qué quieres practicar?','Puedes elegir una o varias operaciones.',`<div class="workspace-dynamic-options">${buttons.map(b=>workspaceOption(b.dataset.op,b.querySelector('.op-sel-name')?.textContent||b.dataset.op,'',b.dataset.op,selectedOps.includes(b.dataset.op),'operation')).join('')}</div>`);
+    html=workspaceDynamicPanel('¿Qué quieres practicar?','Puedes elegir una o varias operaciones.',`<div class="workspace-dynamic-options">${WORKSPACE_OPERATIONS.map(operation=>workspaceOption(operation.v,operation.t,'',operation.i,selectedOps.includes(operation.v),'operation')).join('')}</div>`);
   }else if(s.panel==='specific'){
     const hasTables=selectedOps.includes('×')||selectedOps.includes('÷');let body='';
-    if(hasTables){const allTables=ALL_TBL_PICK.every(t=>selectedTbls.includes(t));if(allTables&&tblSelMode!=='custom')tblSelMode='all';body='<div class="workspace-dynamic-group-label">Tablas a practicar</div><div class="workspace-dynamic-options compact">'+workspaceOption('all','Todas','Tablas disponibles','▦',allTables&&tblSelMode==='all','tblmode')+workspaceOption('custom','Elegir','Selecciona tablas','✎',tblSelMode==='custom','tblmode')+'</div>';if(tblSelMode==='custom')body+='<div class="workspace-dynamic-options compact">'+ALL_TBL_PICK.map(t=>workspaceOption(t,`Tabla ${t}`,'',`×${t}`,selectedTbls.includes(t),'table')).join('')+'</div><div class="workspace-table-actions"><button type="button" class="workspace-table-action" data-wizard-action="tblClear">Limpiar</button><button type="button" class="workspace-table-action" data-wizard-action="tblInvert">Revertir</button></div>';}
+    if(hasTables){const allTables=tblSelMode==='all'||ALL_TBL_PICK.every(t=>selectedTbls.includes(t));if(allTables&&tblSelMode!=='custom')tblSelMode='all';body='<div class="workspace-dynamic-group-label">Tablas a practicar</div><div class="workspace-dynamic-options compact">'+workspaceOption('all','Todas','Tablas disponibles','▦',allTables&&tblSelMode==='all','tblmode')+workspaceOption('custom','Elegir','Selecciona tablas','✎',tblSelMode==='custom','tblmode')+'</div>';if(tblSelMode==='custom')body+='<div class="workspace-dynamic-options compact">'+ALL_TBL_PICK.map(t=>workspaceOption(t,`Tabla ${t}`,'',`×${t}`,selectedTbls.includes(t),'table')).join('')+'</div><div class="workspace-table-actions"><button type="button" class="workspace-table-action" data-wizard-action="tblClear">Limpiar</button><button type="button" class="workspace-table-action" data-wizard-action="tblInvert">Revertir</button></div>';}
     if(selectedOps.includes('+')||selectedOps.includes('−'))body+='<div class="workspace-dynamic-group-label">Cantidad de cifras</div><div class="workspace-dynamic-options compact">'+[1,2,3,4,5,6].map(n=>workspaceOption(n,`${n} cifra${n===1?'':'s'}`,'',String(n),selectedCifras===n,'cifras')).join('')+'</div><div class="workspace-dynamic-options compact">'+workspaceOption('direct','Directas','Sin llevar','—',addSubMode==='direct','addsub')+workspaceOption('carry','Llevadas','Con llevar','＋',addSubMode==='carry','addsub')+'</div>';
     html=workspaceDynamicPanel('Ajusta el desafío','Solo aparecen los detalles relacionados con tus operaciones.',body||'<div class="workspace-dynamic-note">No hay una configuración específica adicional para esta elección.</div>');
   }else if(s.panel==='advanced'){
-    const colors=typeof PLAYER_COLORS!=='undefined'?PLAYER_COLORS:[];let body='<div class="workspace-dynamic-group-label">Color de jugador</div><div class="workspace-dynamic-options compact">'+colors.map(c=>`<button class="workspace-dynamic-option color-option${pColor===c.hex?' selected':''}" type="button" data-wizard-action="color" data-value="${c.hex}"><span class="workspace-color-swatch" style="background:${c.hex}"></span><strong>${c.name}</strong></button>`).join('')+'</div>';
+    const colors=typeof PLAYER_COLORS!=='undefined'?PLAYER_COLORS:[];
+    let body='';
+    if(s.mode==='duel'){
+      body+='<div class="workspace-duel-player-label">Segundo jugador</div><div class="workspace-duel-config"><label class="input-label" for="workspacePlayer2Name">👤 Nombre del 2° alumno</label><input class="name-input" id="workspacePlayer2Name" type="text" maxlength="30" autocomplete="off" placeholder="Escribe el nombre..." value="'+esc(pName2||'')+'" data-wizard-action="player2Name" aria-label="Nombre del segundo jugador"></div>';
+    }
+    const colorOptions=(selected,other,action)=>colors.map(c=>`<button class="workspace-dynamic-option color-option${selected===c.hex?' selected':''}" type="button" data-wizard-action="${action}" data-value="${c.hex}"${other===c.hex?' disabled':''}><span class="workspace-color-swatch" style="background:${c.hex}"></span><strong>${c.name}</strong></button>`).join('');
+    body+='<div class="workspace-dynamic-group-label">'+(s.mode==='duel'?'Color del primer jugador':'Color de jugador')+'</div><div class="workspace-dynamic-options compact color-options">'+colorOptions(pColor,s.mode==='duel'?p2Color:null,'color')+'</div>';
+    if(s.mode==='duel') body+='<div class="workspace-dynamic-group-label">Color del segundo jugador</div><div class="workspace-dynamic-options compact color-options">'+colorOptions(p2Color,pColor,'color2')+'</div>';
     body+='<div class="workspace-dynamic-group-label">Visualización</div><div class="workspace-dynamic-options compact">'+workspaceOption('normal','Normal','Operación → resultado','▣',visualMode==='normal','visual')+workspaceOption('inversa','Inversa','Resultado → operación','↔',visualMode==='inversa','visual')+'</div>';
-    if(s.mode==='solo'&&s.type==='free')body+='<div class="workspace-dynamic-group-label">Orden</div><div class="workspace-dynamic-options compact">'+workspaceOption('ordered','En orden','De tabla en tabla','↕',tblManner==='ordered','manner')+workspaceOption('random','Aleatorio','Mezcla aleatoria','⤨',tblManner==='random','manner')+'</div>';
+    const showManner=s.mode==='solo'&&s.type==='free';
+    if(showManner)body+='<div class="workspace-dynamic-group-label">Orden</div><div class="workspace-dynamic-options compact">'+workspaceOption('ordered','En orden','De tabla en tabla','↕',tblManner==='ordered','manner')+workspaceOption('random','Aleatorio','Mezcla aleatoria','⤨',tblManner==='random','manner')+'</div>';
     html=workspaceDynamicPanel('Personaliza tu misión','Elige los últimos detalles antes de revisar el resumen.',body);
+  }else if(s.panel==='order'){
+    const body='<div class="workspace-dynamic-group-label">Orden de las tablas</div><div class="workspace-dynamic-options compact">'+workspaceOption('ordered','En orden','De tabla en tabla','↕',tblManner==='ordered','manner')+workspaceOption('random','Aleatorio','Mezcla aleatoria','⤨',tblManner==='random','manner')+'</div>';
+    html=workspaceDynamicPanel('¿Cómo quieres avanzar?','Define el orden en que aparecerán las tablas durante el Duelo.',body);
   }else if(s.panel==='quantities'){
     const hasAddSub=selectedOps.includes('+')||selectedOps.includes('−');const hasTables=selectedOps.includes('×')||selectedOps.includes('÷');let body='';
     if(hasAddSub)body+='<div class="workspace-dynamic-group-label">Cantidad por operación</div><div class="workspace-range-block"><div class="workspace-range-heading"><span>Preguntas por operación</span><strong id="workspaceQptValue">'+(qpt||3)+' preguntas por operación</strong></div><input class="workspace-dynamic-range" id="workspaceQptSlider" type="range" min="1" max="20" value="'+(qpt||3)+'" data-wizard-action="qptInput" aria-label="Cantidad de preguntas por operación"><div class="workspace-range-labels"><span>1</span><span>5</span><span>10</span><span>15</span><span>20</span></div></div>';
@@ -13887,20 +13977,24 @@ function renderCurrentPanel(){
     html=workspaceDynamicPanel('Define el rango','Selecciona los valores permitidos para el multiplicando.',body);
   }else if(s.panel==='summary'){
     const mode=workspaceTypeLabel(s.type),diff=s.type==='countdown'?`${countdownTotal/60} min`:s.type==='lives'?`${livesCount} vidas`:s.difficulty||'—';
-    const allTables=ALL_TBL_PICK.every(t=>selectedTbls.includes(t));const tableSummary=(selectedOps.includes('×')||selectedOps.includes('÷'))?(allTables?'Todas':selectedTbls.length?selectedTbls.map(t=>`×${t}`).join(', '):'Ninguna'):'No aplica';const colorName=typeof PLAYER_COLORS!=='undefined'?(PLAYER_COLORS.find(c=>c.hex===pColor)?.name||pColor):pColor;const answerLabel={options:'Opciones',write:'Escribir',voice:'Voz'}[ansMode]||ansMode||'Opciones';const visualLabel=visualMode==='inversa'?'Inversa':'Normal';
+    const allTables=tblSelMode==='all'||ALL_TBL_PICK.every(t=>selectedTbls.includes(t));const tableSummary=(selectedOps.includes('×')||selectedOps.includes('÷'))?(allTables?'Todas':selectedTbls.length?selectedTbls.map(t=>`×${t}`).join(', '):'Ninguna'):'No aplica';const colorName=typeof PLAYER_COLORS!=='undefined'?(PLAYER_COLORS.find(c=>c.hex===pColor)?.name||pColor):pColor;const answerLabel={options:'Opciones',write:'Escribir',voice:'Voz'}[ansMode]||ansMode||'Opciones';const visualLabel=visualMode==='inversa'?'Inversa':'Normal';
     const hasAddSub=selectedOps.includes('+')||selectedOps.includes('−');const hasTables=selectedOps.includes('×')||selectedOps.includes('÷');const tableQuestionSummary=hasTables?`${qptPerTable||3} por tabla`:'No aplica';const operationQuestionSummary=hasAddSub?String(qpt||3):'No aplica';const multiplierRangeSummary=selectedOps.includes('×')?`${multMin} al ${multMax}`:'No aplica';
-    html=workspaceDynamicPanel('Revisa tu misión','Comprueba tus decisiones antes de entrar a la arena.',`<div class="workspace-dynamic-summary"><div><small>Tipo de juego</small><strong>${mode}</strong></div><div><small>Respuesta</small><strong>${answerLabel}</strong></div><div><small>Operaciones</small><strong>${selectedOps.join(' · ')||'Ninguna'}</strong></div><div><small>Tablas</small><strong>${tableSummary}</strong></div><div><small>Cantidad por operación</small><strong>${operationQuestionSummary}</strong></div><div><small>Cantidad por tabla</small><strong>${tableQuestionSummary}</strong></div><div><small>Rango del multiplicando</small><strong>${multiplierRangeSummary}</strong></div><div><small>Color</small><strong>${colorName||'Predeterminado'}</strong></div><div><small>Visualización</small><strong>${visualLabel}</strong></div><div><small>Orden</small><strong>${tblManner==='random'?'Aleatorio':'En orden'}</strong></div></div><div class="workspace-dynamic-note">Tu configuración está lista. Al comenzar se conservará toda la lógica actual del juego.</div>`,true,true,'Comenzar misión');
+    const opponentName=s.mode==='duel'?(pName2||'Falta nombre'):'No aplica';
+    const opponentColor=s.mode==='duel'?(typeof PLAYER_COLORS!=='undefined'?(PLAYER_COLORS.find(c=>c.hex===p2Color)?.name||p2Color):p2Color):'No aplica';
+    const duelSummary=s.mode==='duel'?`<div><small>Segundo jugador</small><strong>${esc(opponentName)}</strong></div><div><small>Color del segundo jugador</small><strong>${esc(opponentColor)}</strong></div>`:'';
+    html=workspaceDynamicPanel('Revisa tu misión','Comprueba tus decisiones antes de entrar a la arena.',`<div class="workspace-dynamic-summary"><div><small>Tipo de juego</small><strong>${mode}</strong></div>${duelSummary}<div><small>Respuesta</small><strong>${answerLabel}</strong></div><div><small>Operaciones</small><strong>${selectedOps.join(' · ')||'Ninguna'}</strong></div><div><small>Tablas</small><strong>${tableSummary}</strong></div><div><small>Cantidad por operación</small><strong>${operationQuestionSummary}</strong></div><div><small>Cantidad por tabla</small><strong>${tableQuestionSummary}</strong></div><div><small>Rango del multiplicando</small><strong>${multiplierRangeSummary}</strong></div><div><small>Color</small><strong>${colorName||'Predeterminado'}</strong></div><div><small>Visualización</small><strong>${visualLabel}</strong></div><div><small>Orden</small><strong>${tblManner==='random'?'Aleatorio':'En orden'}</strong></div></div><div class="workspace-dynamic-note">Tu configuración está lista. Al comenzar se conservará toda la lógica actual del juego.</div>`,true,true,'Comenzar misión');
   }
   root.innerHTML=html;
   const nextBtn=root.querySelector('.workspace-dynamic-nav [data-wizard-action="next"]');
   if(nextBtn&&s.panel==='operations')nextBtn.disabled=selectedOps.length===0;
   if(nextBtn&&s.panel==='specific'&&(selectedOps.includes('×')||selectedOps.includes('÷'))&&tblSelMode==='custom')nextBtn.disabled=selectedTbls.length===0;
+  if(nextBtn&&s.panel==='summary'&&s.mode==='duel')nextBtn.disabled=!pName2.trim();
   const step=$('workspaceWizardStep');if(step){const idx=workspaceFlowPanels().indexOf(s.panel)+1;step.textContent=`Paso ${idx} de ${workspaceFlowPanels().length}`;}
 }
 function workspaceDynamicStart(mode){
   mountWorkspaceWizard();
   workspaceDynamicState={mode,type:gameType||'free',difficulty:difficulty||'',panel:'type',history:[]};
-  const shell=$('studentWorkspace');if(shell){shell.classList.add('workspace-dynamic-wizard','workspace-show-config');shell.classList.remove('workspace-wizard-step-active');}
+  const shell=$('studentWorkspace');if(shell){shell.classList.add('workspace-dynamic-wizard','workspace-show-config');shell.dataset.legacyCompatScreens=legacyScreensForScope(mode).join(',');}
   const host=$('workspaceWizardHost');if(host){host.innerHTML='<div class="workspace-dynamic-root"></div>';}
   renderCurrentPanel();
 }
@@ -13920,13 +14014,16 @@ function workspaceDynamicHandle(event){
   if(action==='qptInput'){workspaceSyncAdvanced('qpt',value);const label=$('workspaceQptValue');if(label)label.textContent=`${value} preguntas por operación`;return;}
   if(action==='qptTableInput'){workspaceSyncAdvanced('qptTable',value);const label=$('workspaceQptTableValue');if(label)label.textContent=`${value} preguntas por tabla`;return;}
   if(action==='multMinInput'||action==='multMaxInput'){const range=action==='multMinInput'?'multMin':'multMax';workspaceSyncAdvanced(range,value);const min=$('workspaceMultMin'),max=$('workspaceMultMax'),minLabel=$('workspaceMultMinValue'),maxLabel=$('workspaceMultMaxValue'),rangeLabel=$('workspaceMultiplierRangeValue');if(min){min.value=multMin;}if(max){max.value=multMax;}if(minLabel)minLabel.textContent=multMin;if(maxLabel)maxLabel.textContent=multMax;if(rangeLabel)rangeLabel.textContent=`${multMin} al ${multMax}`;return;}
-  if(action==='visual'||action==='manner'||action==='qpt'||action==='qptTable'||action==='color'){workspaceSyncAdvanced(action,value);renderCurrentPanel();return;}
+  if(action==='player2Name'){workspaceSyncAdvanced(action,value);return;}
+  if(action==='visual'||action==='manner'||action==='qpt'||action==='qptTable'||action==='color'||action==='color2'){workspaceSyncAdvanced(action,value);renderCurrentPanel();return;}
   if(action==='next'){workspaceSetPanel(workspaceFlowPanels()[workspaceFlowPanels().indexOf(s.panel)+1]);return;}
   if(action==='start'){if(gameMode==='solo'&&s.type==='bot')startBotGame();else beginCountdown();}
 }
 function mountWorkspaceWizard(){
   const host=$('workspaceWizardHost');if(!host)return;
-  const testEntry=$('studentTestEntry'),testSlot=$('workspaceTestSlot');if(testEntry&&testSlot)testSlot.appendChild(testEntry);
+  const testSlot=$('workspaceTestSlot'),examBanner=$('examBannerStep1'),testEntry=$('studentTestEntry');
+  if(examBanner&&testSlot)testSlot.appendChild(examBanner);
+  if(testEntry&&testSlot)testSlot.appendChild(testEntry);
   if(!host.dataset.dynamicBound){host.addEventListener('click',workspaceDynamicHandle);host.addEventListener('input',workspaceDynamicHandle);host.dataset.dynamicBound='true';}
   if(!host.querySelector('.workspace-dynamic-root'))host.innerHTML='<div class="workspace-dynamic-root"></div>';
 }
@@ -13981,7 +14078,7 @@ function renderStudentTest(){
 function startStudentTestClock(){clearInterval(studentTestTimerId);const limit=Number(studentTestState?.attempt?.configurationSnapshot?.timeLimit)||0;if(!limit){document.getElementById('studentTestTimer').textContent='Tiempo: libre';return;}const started=Date.parse(studentTestState.attempt.startedAt||new Date().toISOString());const tick=()=>{const left=Math.max(0,limit-Math.floor((Date.now()-started)/1000));document.getElementById('studentTestTimer').textContent=`Tiempo: ${left}s`;if(left===0)clearInterval(studentTestTimerId);};tick();studentTestTimerId=setInterval(tick,1000);}
 async function openStudentConfiguredTest(){
   const testId=(document.getElementById('studentTestIdInput').value||'').trim();
-  if(!testId){studentTestMessage('Escribe un testId valido.','#f87171');return;}
+  if(!testId){studentTestMessage('Escribe el folio de la prueba.','#f87171');return;}
   try{
     let attemptId=localStorage.getItem(studentTestStorageKey(testId)), body;
     if(attemptId){try{body=await studentTestRequest(`/api/student/tests/${testId}/attempts/${attemptId}`);}catch(_){localStorage.removeItem(studentTestStorageKey(testId));attemptId=null;}}

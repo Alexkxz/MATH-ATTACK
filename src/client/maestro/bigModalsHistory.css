@@ -16,6 +16,12 @@
 .bm-save:hover{opacity:.85}
 .bm-cancel{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:11px 18px;color:#94a3b8;font-size:14px;cursor:pointer}
 .bm-cancel:hover{background:rgba(255,255,255,.12)}
+.reset-warning{color:#fca5a5;background:rgba(239,68,68,.1);border:1px solid rgba(248,113,113,.25);border-radius:10px;padding:12px;font-size:12px;line-height:1.5;margin-bottom:14px}
+.reset-confirm-input{text-transform:uppercase;text-align:center;letter-spacing:2px;font-weight:800}
+.reset-large-btn{padding:8px 14px;font-size:12px;font-weight:900;letter-spacing:.2px}
+.reset-danger{background:linear-gradient(135deg,#991b1b,#dc2626)}
+.reset-danger:hover{opacity:.88}
+.reset-danger:disabled{opacity:.55;cursor:wait}
 /* ── Historial ── */
 .hist-table{width:100%;border-collapse:collapse;font-size:12px;margin-top:8px}
 .hist-table th{padding:6px 8px;text-align:left;color:#64748b;font-size:10px;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid rgba(255,255,255,.07)}
