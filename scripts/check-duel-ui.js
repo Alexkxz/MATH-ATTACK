@@ -14,12 +14,25 @@ function result(section, ok, detail) { findings.push({ section, ok, detail }); }
 async function enterDuel(page) {
   await page.goto(page.baseUrl + '/math-attack.html', { waitUntil: 'domcontentloaded' });
   await page.evaluate(() => _entrarAlJuego('Auditoria Duelo'));
-  await page.click('#workspaceSidebar .workspace-nav-item:nth-child(3)');
+  await page.locator('#workspaceSidebar .workspace-nav-item[onclick*="selectWorkspaceMode(this,\'duel\')"]').evaluate(node => node.click());
   await page.waitForSelector('#workspaceWizardHost [data-wizard-action="type"]');
 }
 
 async function panelState(page) {
   return page.evaluate(() => workspaceDynamicState?.panel || null);
+}
+
+async function auditDuelLegacyGuard(page) {
+  const before=await panelState(page);
+  const state=await page.evaluate(()=>{
+    ['goStep1','goStep2','goStep2to3','goOpToStep3','goStep3LocalBack','goStep3aToStep3b','goStep3bBack'].forEach(name=>window[name]?.());
+    const legacyIds=['step2Screen','stepOpScreen','step3LocalScreen','step3bLocalScreen'];
+    return {
+      after:workspaceDynamicState?.panel||null,
+      activeLegacyScreens:legacyIds.filter(id=>document.getElementById(id)?.classList.contains('active'))
+    };
+  });
+  result('Duelo · separación legacy',before==='type'&&state.after==='type'&&state.activeLegacyScreens.length===0,'La navegación antigua permanece bloqueada: '+JSON.stringify(state));
 }
 
 async function panelControls(page) {
@@ -134,6 +147,7 @@ async function main() {
     const types = await page.locator('#workspaceWizardHost [data-wizard-action="type"]').evaluateAll(nodes => nodes.map(node => node.dataset.value));
     result('Catálogo Duelo', JSON.stringify(types) === JSON.stringify(DUEL_TYPES), `Modos disponibles: ${types.join(', ')}`);
     result('Catálogo Duelo', !types.includes('bot'), 'VS Bot no aparece dentro de Duelo');
+    await auditDuelLegacyGuard(page);
     for (const type of DUEL_TYPES) {
       try { await auditDuelType(page, type); } catch (error) { result(`Duelo ${type} · fatal`, false, error.message); }
     }
@@ -151,6 +165,24 @@ async function main() {
     result('Duelo · inicio', await start.count() === 1 && !(await start.isDisabled()), 'El inicio se habilita con rival configurado');
     await start.click();
     result('Duelo · inicio', await page.evaluate(() => window.__duelStartCalled === true), 'Conserva la llamada a beginCountdown()');
+    await page.evaluate(() => goStart());
+    const resetState = await page.evaluate(() => ({
+      activeScreens: [...document.querySelectorAll('.screen.active')].map(screen => screen.id),
+      home: document.querySelector('#studentWorkspace')?.classList.contains('workspace-home-active'),
+      wizardReset: !document.querySelector('#studentWorkspace')?.classList.contains('workspace-dynamic-wizard'),
+      gameType,
+      gameMode,
+      difficulty,
+      pName2,
+      selectedOps: [...selectedOps],
+      tblSelMode,
+      qpt,
+      qptPerTable,
+      multMin,
+      multMax,
+    }));
+    const resetOk = resetState.activeScreens.length === 1 && resetState.activeScreens[0] === 'step1Screen' && resetState.home && resetState.wizardReset && resetState.gameType === 'free' && resetState.gameMode === 'solo' && resetState.difficulty === '' && resetState.pName2 === '' && JSON.stringify(resetState.selectedOps) === JSON.stringify([OP_MUL]) && resetState.tblSelMode === 'all' && resetState.qpt === 3 && resetState.qptPerTable === 3 && resetState.multMin === 1 && resetState.multMax === 12;
+    result('Duelo · retorno a Inicio', resetOk, `La siguiente configuración inicia limpia: ${JSON.stringify(resetState)}`);
     result('Errores de ejecución', pageErrors.length === 0, pageErrors.length ? pageErrors.join(' | ') : 'Sin pageerror');
     result('Errores de consola', consoleErrors.length === 0, consoleErrors.length ? consoleErrors.join(' | ') : 'Sin errores de consola');
   } finally {

@@ -221,7 +221,8 @@
   function renderSupervisionTestSelector() {
     const selector = get('prSupervisionTestSelect');
     if (!selector) return;
-    const finished = tests.filter(test => test.status === 'finished');
+    // Solo mostrar pruebas finalizadas con intentos para evitar registros historicos vacios.
+    const finished = tests.filter(test => test.status === 'finished' && Number(test.attemptCount) > 0);
     const current = finished.some(test => test.testId === selectedTestId) ? selectedTestId : '';
     selector.innerHTML = '<option value="">Selecciona una prueba finalizada</option>' + finished.map(test => `<option value="${esc(test.testId)}">Folio ${esc(publicTestCode(test))} · ${esc(test.title || 'Prueba sin título')} · ${Number(test.attemptCount) || 0} intento(s)</option>`).join('');
     selector.value = current;

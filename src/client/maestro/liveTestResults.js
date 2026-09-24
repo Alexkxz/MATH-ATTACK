@@ -8,6 +8,7 @@
   let tests = [];
   let timer = null;
   let loading = false;
+  let testsLoading = false;
 
   function formatDuration(value) {
     const seconds = Math.max(0, Math.round(Number(value || 0) / 1000));
@@ -61,17 +62,23 @@
     } finally { loading = false; }
   }
   async function loadTests() {
+    if (testsLoading) return;
+    testsLoading = true;
     try {
-      const response = await fetch(adminUrl('/api/exams?status=active'));
+      const [response, liveResponse] = await Promise.all([fetch(adminUrl('/api/exams?status=active&limit=100')), fetch('/api/exam/status')]);
       const data = await response.json();
+      const liveData = liveResponse.ok ? await liveResponse.json() : {};
       if (!response.ok) throw Error(data.error || 'No se pudieron cargar las pruebas activas');
       const active = Array.isArray(data.tests) ? data.tests : [];
+      const activeIds = new Set(active.map(test => test.testId));
+      const liveModes = Array.isArray(liveData.examModes) ? liveData.examModes : liveData.examMode ? [liveData.examMode] : [];
+      const missingLiveTests = await Promise.all(liveModes.filter(mode => mode.testId && !activeIds.has(mode.testId)).map(async mode => { const item = await fetch(adminUrl(`/api/exams/${encodeURIComponent(mode.testId)}`)); return item.ok ? (await item.json()).test : null; }));
       const selected = selectedTestId ? await fetch(adminUrl(`/api/exams/${encodeURIComponent(selectedTestId)}`)).then(item => item.ok ? item.json() : null) : null;
-      tests = active.slice();
+      tests = active.concat(missingLiveTests.filter(Boolean).filter(test => !activeIds.has(test.testId)));
       if (selected?.test && !tests.some(test => test.testId === selected.test.testId) && ['finished', 'closed', 'paused'].includes(selected.test.status)) tests.push(selected.test);
       renderTestSelect();
       if (selectedTestId) await loadResults();
-    } catch (error) { setStatus(error.message || 'No se pudieron cargar las pruebas activas.'); }
+    } catch (error) { setStatus(error.message || 'No se pudieron cargar las pruebas activas.'); } finally { testsLoading = false; }
   }
   function selectTest(testId) {
     selectedTestId = testId || '';

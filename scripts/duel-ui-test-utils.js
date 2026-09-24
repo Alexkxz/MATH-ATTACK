@@ -24,7 +24,7 @@ async function enterDuel(page) {
   await page.goto(page.baseUrl + '/math-attack.html', { waitUntil: 'domcontentloaded' });
   await page.evaluate(() => _entrarAlJuego('Auditoria Duelo'));
   await page.waitForTimeout(300);
-  await page.locator('#workspaceSidebar .workspace-nav-item:nth-child(3)').evaluate(node => node.click());
+  await page.locator('#workspaceSidebar .workspace-nav-item[onclick*="selectWorkspaceMode(this,\'duel\')"]').evaluate(node => node.click());
   await page.waitForSelector('#workspaceWizardHost [data-wizard-action="type"]');
 }
 

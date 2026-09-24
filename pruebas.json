@@ -973,6 +973,904 @@
         "timeLimit": 0,
         "timePerQuestion": 10
       }
+    },
+    {
+      "testId": "8a16b773-683a-415b-9f86-88b8988facbf",
+      "folio": "0002",
+      "title": "0002",
+      "schemaVersion": 1,
+      "description": "",
+      "status": "finished",
+      "configuration": {
+        "version": 1,
+        "multiplier": 1,
+        "rewards": {
+          "aureos": 0,
+          "experience": 0,
+          "streak": {
+            "enabled": false,
+            "bonus": 0
+          },
+          "achievements": {}
+        },
+        "folio": "0002",
+        "title": "0002",
+        "description": "",
+        "createdAt": "2026-09-21T15:10:36.353Z",
+        "grade": "3° Grado",
+        "opsConfig": {
+          "mult": {
+            "tables": [
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10
+            ],
+            "qty": 4,
+            "detailMode": true,
+            "matrix": [
+              "0x4",
+              "0x5",
+              "0x6",
+              "0x7",
+              "0x8",
+              "0x9",
+              "0x10",
+              "1x4",
+              "1x5",
+              "1x6",
+              "1x7",
+              "1x8",
+              "1x9",
+              "1x10",
+              "2x4",
+              "2x5",
+              "2x6",
+              "2x7",
+              "2x8",
+              "2x9",
+              "2x10",
+              "3x4",
+              "3x5",
+              "3x6",
+              "3x7",
+              "3x8",
+              "3x9",
+              "3x10",
+              "4x4",
+              "4x5",
+              "4x6",
+              "4x7",
+              "4x8",
+              "4x9",
+              "4x10",
+              "5x4",
+              "5x5",
+              "5x6",
+              "5x7",
+              "5x8",
+              "5x9",
+              "5x10",
+              "6x4",
+              "6x5",
+              "6x6",
+              "6x7",
+              "6x8",
+              "6x9",
+              "6x10",
+              "7x4",
+              "7x5",
+              "7x6",
+              "7x7",
+              "7x8",
+              "7x9",
+              "7x10",
+              "8x4",
+              "8x5",
+              "8x6",
+              "8x7",
+              "8x8",
+              "8x9",
+              "8x10",
+              "9x4",
+              "9x5",
+              "9x6",
+              "9x7",
+              "9x8",
+              "9x9",
+              "9x10",
+              "10x4",
+              "10x5",
+              "10x6",
+              "10x7",
+              "10x8",
+              "10x9",
+              "10x10"
+            ],
+            "manner": "random"
+          }
+        },
+        "timeLimit": 0,
+        "timePerQuestion": 15
+      },
+      "creator": "00000000-0000-4000-8000-000000000000",
+      "createdAt": "2026-09-21T15:10:36.353Z",
+      "updatedAt": "2026-09-21T16:23:07.705Z",
+      "scheduledAt": null,
+      "startsAt": null,
+      "closesAt": null,
+      "revision": 4,
+      "configurationSnapshot": {
+        "version": 1,
+        "multiplier": 1,
+        "rewards": {
+          "aureos": 0,
+          "experience": 0,
+          "streak": {
+            "enabled": false,
+            "bonus": 0
+          },
+          "achievements": {}
+        },
+        "folio": "0002",
+        "title": "0002",
+        "description": "",
+        "createdAt": "2026-09-21T15:10:36.353Z",
+        "grade": "3° Grado",
+        "opsConfig": {
+          "mult": {
+            "tables": [
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10
+            ],
+            "qty": 4,
+            "detailMode": true,
+            "matrix": [
+              "0x4",
+              "0x5",
+              "0x6",
+              "0x7",
+              "0x8",
+              "0x9",
+              "0x10",
+              "1x4",
+              "1x5",
+              "1x6",
+              "1x7",
+              "1x8",
+              "1x9",
+              "1x10",
+              "2x4",
+              "2x5",
+              "2x6",
+              "2x7",
+              "2x8",
+              "2x9",
+              "2x10",
+              "3x4",
+              "3x5",
+              "3x6",
+              "3x7",
+              "3x8",
+              "3x9",
+              "3x10",
+              "4x4",
+              "4x5",
+              "4x6",
+              "4x7",
+              "4x8",
+              "4x9",
+              "4x10",
+              "5x4",
+              "5x5",
+              "5x6",
+              "5x7",
+              "5x8",
+              "5x9",
+              "5x10",
+              "6x4",
+              "6x5",
+              "6x6",
+              "6x7",
+              "6x8",
+              "6x9",
+              "6x10",
+              "7x4",
+              "7x5",
+              "7x6",
+              "7x7",
+              "7x8",
+              "7x9",
+              "7x10",
+              "8x4",
+              "8x5",
+              "8x6",
+              "8x7",
+              "8x8",
+              "8x9",
+              "8x10",
+              "9x4",
+              "9x5",
+              "9x6",
+              "9x7",
+              "9x8",
+              "9x9",
+              "9x10",
+              "10x4",
+              "10x5",
+              "10x6",
+              "10x7",
+              "10x8",
+              "10x9",
+              "10x10"
+            ],
+            "manner": "random"
+          }
+        },
+        "timeLimit": 0,
+        "timePerQuestion": 15
+      }
+    },
+    {
+      "testId": "02872762-1719-484f-8853-ef05c173e4c3",
+      "folio": "0003",
+      "title": "0003",
+      "schemaVersion": 1,
+      "description": "",
+      "status": "finished",
+      "configuration": {
+        "version": 1,
+        "multiplier": 1,
+        "rewards": {
+          "aureos": 0,
+          "experience": 0,
+          "streak": {
+            "enabled": false,
+            "bonus": 0
+          },
+          "achievements": {}
+        },
+        "folio": "0003",
+        "title": "0003",
+        "description": "",
+        "createdAt": "2026-09-21T15:11:07.298Z",
+        "grade": "4° Grado",
+        "opsConfig": {
+          "mult": {
+            "tables": [
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10
+            ],
+            "qty": 4,
+            "detailMode": true,
+            "matrix": [
+              "0x4",
+              "0x5",
+              "0x6",
+              "0x7",
+              "0x8",
+              "0x9",
+              "0x10",
+              "1x4",
+              "1x5",
+              "1x6",
+              "1x7",
+              "1x8",
+              "1x9",
+              "1x10",
+              "2x4",
+              "2x5",
+              "2x6",
+              "2x7",
+              "2x8",
+              "2x9",
+              "2x10",
+              "3x4",
+              "3x5",
+              "3x6",
+              "3x7",
+              "3x8",
+              "3x9",
+              "3x10",
+              "4x4",
+              "4x5",
+              "4x6",
+              "4x7",
+              "4x8",
+              "4x9",
+              "4x10",
+              "5x4",
+              "5x5",
+              "5x6",
+              "5x7",
+              "5x8",
+              "5x9",
+              "5x10",
+              "6x4",
+              "6x5",
+              "6x6",
+              "6x7",
+              "6x8",
+              "6x9",
+              "6x10",
+              "7x4",
+              "7x5",
+              "7x6",
+              "7x7",
+              "7x8",
+              "7x9",
+              "7x10",
+              "8x4",
+              "8x5",
+              "8x6",
+              "8x7",
+              "8x8",
+              "8x9",
+              "8x10",
+              "9x4",
+              "9x5",
+              "9x6",
+              "9x7",
+              "9x8",
+              "9x9",
+              "9x10",
+              "10x4",
+              "10x5",
+              "10x6",
+              "10x7",
+              "10x8",
+              "10x9",
+              "10x10",
+              "11x4",
+              "11x5",
+              "11x6",
+              "11x7",
+              "11x8",
+              "11x9",
+              "11x10",
+              "12x4",
+              "12x5",
+              "12x6",
+              "12x7",
+              "12x8",
+              "12x9",
+              "12x10"
+            ],
+            "manner": "random"
+          }
+        },
+        "timeLimit": 0,
+        "timePerQuestion": 15
+      },
+      "creator": "00000000-0000-4000-8000-000000000000",
+      "createdAt": "2026-09-21T15:11:07.298Z",
+      "updatedAt": "2026-09-21T16:23:05.832Z",
+      "scheduledAt": null,
+      "startsAt": null,
+      "closesAt": null,
+      "revision": 4,
+      "configurationSnapshot": {
+        "version": 1,
+        "multiplier": 1,
+        "rewards": {
+          "aureos": 0,
+          "experience": 0,
+          "streak": {
+            "enabled": false,
+            "bonus": 0
+          },
+          "achievements": {}
+        },
+        "folio": "0003",
+        "title": "0003",
+        "description": "",
+        "createdAt": "2026-09-21T15:11:07.298Z",
+        "grade": "4° Grado",
+        "opsConfig": {
+          "mult": {
+            "tables": [
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10
+            ],
+            "qty": 4,
+            "detailMode": true,
+            "matrix": [
+              "0x4",
+              "0x5",
+              "0x6",
+              "0x7",
+              "0x8",
+              "0x9",
+              "0x10",
+              "1x4",
+              "1x5",
+              "1x6",
+              "1x7",
+              "1x8",
+              "1x9",
+              "1x10",
+              "2x4",
+              "2x5",
+              "2x6",
+              "2x7",
+              "2x8",
+              "2x9",
+              "2x10",
+              "3x4",
+              "3x5",
+              "3x6",
+              "3x7",
+              "3x8",
+              "3x9",
+              "3x10",
+              "4x4",
+              "4x5",
+              "4x6",
+              "4x7",
+              "4x8",
+              "4x9",
+              "4x10",
+              "5x4",
+              "5x5",
+              "5x6",
+              "5x7",
+              "5x8",
+              "5x9",
+              "5x10",
+              "6x4",
+              "6x5",
+              "6x6",
+              "6x7",
+              "6x8",
+              "6x9",
+              "6x10",
+              "7x4",
+              "7x5",
+              "7x6",
+              "7x7",
+              "7x8",
+              "7x9",
+              "7x10",
+              "8x4",
+              "8x5",
+              "8x6",
+              "8x7",
+              "8x8",
+              "8x9",
+              "8x10",
+              "9x4",
+              "9x5",
+              "9x6",
+              "9x7",
+              "9x8",
+              "9x9",
+              "9x10",
+              "10x4",
+              "10x5",
+              "10x6",
+              "10x7",
+              "10x8",
+              "10x9",
+              "10x10",
+              "11x4",
+              "11x5",
+              "11x6",
+              "11x7",
+              "11x8",
+              "11x9",
+              "11x10",
+              "12x4",
+              "12x5",
+              "12x6",
+              "12x7",
+              "12x8",
+              "12x9",
+              "12x10"
+            ],
+            "manner": "random"
+          }
+        },
+        "timeLimit": 0,
+        "timePerQuestion": 15
+      }
+    },
+    {
+      "testId": "55679956-25a0-415f-9e1b-81012aba692b",
+      "folio": "0004",
+      "title": "0004",
+      "schemaVersion": 1,
+      "description": "",
+      "status": "finished",
+      "configuration": {
+        "version": 1,
+        "multiplier": 1,
+        "rewards": {
+          "aureos": 0,
+          "experience": 0,
+          "streak": {
+            "enabled": false,
+            "bonus": 0
+          },
+          "achievements": {}
+        },
+        "folio": "0004",
+        "title": "0004",
+        "description": "",
+        "createdAt": "2026-09-23T15:53:15.380Z",
+        "grade": "3° Grado",
+        "opsConfig": {
+          "mult": {
+            "tables": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10
+            ],
+            "qty": 5,
+            "detailMode": false,
+            "manner": "random"
+          }
+        },
+        "timeLimit": 0,
+        "timePerQuestion": 15
+      },
+      "creator": "00000000-0000-4000-8000-000000000000",
+      "createdAt": "2026-09-23T15:53:15.380Z",
+      "updatedAt": "2026-09-23T16:03:31.330Z",
+      "scheduledAt": null,
+      "startsAt": null,
+      "closesAt": null,
+      "revision": 4,
+      "configurationSnapshot": {
+        "version": 1,
+        "multiplier": 1,
+        "rewards": {
+          "aureos": 0,
+          "experience": 0,
+          "streak": {
+            "enabled": false,
+            "bonus": 0
+          },
+          "achievements": {}
+        },
+        "folio": "0004",
+        "title": "0004",
+        "description": "",
+        "createdAt": "2026-09-23T15:53:15.380Z",
+        "grade": "3° Grado",
+        "opsConfig": {
+          "mult": {
+            "tables": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10
+            ],
+            "qty": 5,
+            "detailMode": false,
+            "manner": "random"
+          }
+        },
+        "timeLimit": 0,
+        "timePerQuestion": 15
+      }
+    },
+    {
+      "testId": "695e85fe-d80b-4113-a73e-8a9eba116557",
+      "folio": "0005",
+      "title": "0005",
+      "schemaVersion": 1,
+      "description": "",
+      "status": "finished",
+      "configuration": {
+        "version": 1,
+        "multiplier": 1,
+        "rewards": {
+          "aureos": 0,
+          "experience": 0,
+          "streak": {
+            "enabled": false,
+            "bonus": 0
+          },
+          "achievements": {}
+        },
+        "folio": "0005",
+        "title": "0005",
+        "description": "",
+        "createdAt": "2026-09-23T15:54:08.986Z",
+        "grade": "4° Grado",
+        "opsConfig": {
+          "mult": {
+            "tables": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12
+            ],
+            "qty": 5,
+            "detailMode": false,
+            "manner": "random"
+          }
+        },
+        "timeLimit": 0,
+        "timePerQuestion": 10
+      },
+      "creator": "00000000-0000-4000-8000-000000000000",
+      "createdAt": "2026-09-23T15:54:08.986Z",
+      "updatedAt": "2026-09-23T16:03:29.763Z",
+      "scheduledAt": null,
+      "startsAt": null,
+      "closesAt": null,
+      "revision": 4,
+      "configurationSnapshot": {
+        "version": 1,
+        "multiplier": 1,
+        "rewards": {
+          "aureos": 0,
+          "experience": 0,
+          "streak": {
+            "enabled": false,
+            "bonus": 0
+          },
+          "achievements": {}
+        },
+        "folio": "0005",
+        "title": "0005",
+        "description": "",
+        "createdAt": "2026-09-23T15:54:08.986Z",
+        "grade": "4° Grado",
+        "opsConfig": {
+          "mult": {
+            "tables": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12
+            ],
+            "qty": 5,
+            "detailMode": false,
+            "manner": "random"
+          }
+        },
+        "timeLimit": 0,
+        "timePerQuestion": 10
+      }
+    },
+    {
+      "testId": "666bb25c-e0df-456f-b037-f263c61b4c75",
+      "folio": "0007",
+      "title": "0007",
+      "schemaVersion": 1,
+      "description": "",
+      "status": "finished",
+      "configuration": {
+        "version": 1,
+        "multiplier": 1,
+        "rewards": {
+          "aureos": 0,
+          "experience": 0,
+          "streak": {
+            "enabled": false,
+            "bonus": 0
+          },
+          "achievements": {}
+        },
+        "folio": "0007",
+        "title": "0007",
+        "description": "",
+        "createdAt": "2026-09-23T16:03:34.818Z",
+        "grade": "4° Grado",
+        "opsConfig": {
+          "mult": {
+            "tables": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12
+            ],
+            "qty": 5,
+            "detailMode": false,
+            "manner": "random"
+          }
+        },
+        "timeLimit": 0,
+        "timePerQuestion": 10
+      },
+      "creator": "00000000-0000-4000-8000-000000000000",
+      "createdAt": "2026-09-23T16:03:34.818Z",
+      "updatedAt": "2026-09-23T16:41:00.482Z",
+      "scheduledAt": null,
+      "startsAt": null,
+      "closesAt": null,
+      "revision": 4,
+      "configurationSnapshot": {
+        "version": 1,
+        "multiplier": 1,
+        "rewards": {
+          "aureos": 0,
+          "experience": 0,
+          "streak": {
+            "enabled": false,
+            "bonus": 0
+          },
+          "achievements": {}
+        },
+        "folio": "0007",
+        "title": "0007",
+        "description": "",
+        "createdAt": "2026-09-23T16:03:34.818Z",
+        "grade": "4° Grado",
+        "opsConfig": {
+          "mult": {
+            "tables": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12
+            ],
+            "qty": 5,
+            "detailMode": false,
+            "manner": "random"
+          }
+        },
+        "timeLimit": 0,
+        "timePerQuestion": 10
+      }
+    },
+    {
+      "testId": "6e858ad2-05cf-4285-85f4-776df3618e27",
+      "folio": "0008",
+      "title": "0008",
+      "schemaVersion": 1,
+      "description": "",
+      "status": "finished",
+      "configuration": {
+        "version": 1,
+        "multiplier": 1,
+        "rewards": {
+          "aureos": 0,
+          "experience": 0,
+          "streak": {
+            "enabled": false,
+            "bonus": 0
+          },
+          "achievements": {}
+        },
+        "folio": "0008",
+        "title": "0008",
+        "description": "",
+        "createdAt": "2026-09-23T16:04:17.540Z",
+        "grade": "3° Grado",
+        "opsConfig": {
+          "mult": {
+            "tables": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10
+            ],
+            "qty": 5,
+            "detailMode": false,
+            "manner": "random"
+          }
+        },
+        "timeLimit": 0,
+        "timePerQuestion": 15
+      },
+      "creator": "00000000-0000-4000-8000-000000000000",
+      "createdAt": "2026-09-23T16:04:17.540Z",
+      "updatedAt": "2026-09-23T16:40:58.643Z",
+      "scheduledAt": null,
+      "startsAt": null,
+      "closesAt": null,
+      "revision": 4,
+      "configurationSnapshot": {
+        "version": 1,
+        "multiplier": 1,
+        "rewards": {
+          "aureos": 0,
+          "experience": 0,
+          "streak": {
+            "enabled": false,
+            "bonus": 0
+          },
+          "achievements": {}
+        },
+        "folio": "0008",
+        "title": "0008",
+        "description": "",
+        "createdAt": "2026-09-23T16:04:17.540Z",
+        "grade": "3° Grado",
+        "opsConfig": {
+          "mult": {
+            "tables": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10
+            ],
+            "qty": 5,
+            "detailMode": false,
+            "manner": "random"
+          }
+        },
+        "timeLimit": 0,
+        "timePerQuestion": 15
+      }
     }
   ],
   "assignments": [
@@ -1205,6 +2103,435 @@
       "startsAt": null,
       "closesAt": null,
       "createdAt": "2026-09-18T17:50:10.407Z",
+      "revision": 1
+    },
+    {
+      "assignmentId": "88c02f76-70c6-4106-b8b3-80e3554abab2",
+      "testId": "8a16b773-683a-415b-9f86-88b8988facbf",
+      "targetType": "student",
+      "groupId": null,
+      "accountPlayerId": "5ceefd1b-4db5-5fc0-9ba0-63fae6f55180",
+      "startsAt": null,
+      "closesAt": null,
+      "createdAt": "2026-09-21T15:11:02.933Z",
+      "revision": 1
+    },
+    {
+      "assignmentId": "97709090-e010-4d1d-abe0-ff42a65d0128",
+      "testId": "8a16b773-683a-415b-9f86-88b8988facbf",
+      "targetType": "student",
+      "groupId": null,
+      "accountPlayerId": "5fcc4b25-5798-56c0-bf5c-221b623860d2",
+      "startsAt": null,
+      "closesAt": null,
+      "createdAt": "2026-09-21T15:11:02.933Z",
+      "revision": 1
+    },
+    {
+      "assignmentId": "636efee4-18e5-482e-afd6-b68d131dc901",
+      "testId": "8a16b773-683a-415b-9f86-88b8988facbf",
+      "targetType": "student",
+      "groupId": null,
+      "accountPlayerId": "9cff755e-1282-5d11-883c-fdb79ce56801",
+      "startsAt": null,
+      "closesAt": null,
+      "createdAt": "2026-09-21T15:11:02.933Z",
+      "revision": 1
+    },
+    {
+      "assignmentId": "b21a43b6-47b3-4c2d-9f61-8b84681e235a",
+      "testId": "8a16b773-683a-415b-9f86-88b8988facbf",
+      "targetType": "student",
+      "groupId": null,
+      "accountPlayerId": "4ba2be16-9e3a-547d-89b4-cbf8906c70af",
+      "startsAt": null,
+      "closesAt": null,
+      "createdAt": "2026-09-21T15:11:02.933Z",
+      "revision": 1
+    },
+    {
+      "assignmentId": "5df5260c-0a24-41b6-8c94-f7b519b113a5",
+      "testId": "8a16b773-683a-415b-9f86-88b8988facbf",
+      "targetType": "student",
+      "groupId": null,
+      "accountPlayerId": "2a38286a-2b41-5e9a-bb03-d68dc1b6c281",
+      "startsAt": null,
+      "closesAt": null,
+      "createdAt": "2026-09-21T15:11:02.933Z",
+      "revision": 1
+    },
+    {
+      "assignmentId": "e190fd1e-0dc6-4c34-b6e0-e8bd5f5e878c",
+      "testId": "8a16b773-683a-415b-9f86-88b8988facbf",
+      "targetType": "student",
+      "groupId": null,
+      "accountPlayerId": "49d3ece2-8d1a-5899-99ac-8cee5ea802a7",
+      "startsAt": null,
+      "closesAt": null,
+      "createdAt": "2026-09-21T15:11:02.934Z",
+      "revision": 1
+    },
+    {
+      "assignmentId": "323d7db2-2b50-43b7-82d4-64fe8226c434",
+      "testId": "02872762-1719-484f-8853-ef05c173e4c3",
+      "targetType": "student",
+      "groupId": null,
+      "accountPlayerId": "7d3a51eb-2565-5304-8e9a-106653ba5af1",
+      "startsAt": null,
+      "closesAt": null,
+      "createdAt": "2026-09-21T15:11:32.803Z",
+      "revision": 1
+    },
+    {
+      "assignmentId": "4c02cedb-92a4-466c-bf1b-921b991567ed",
+      "testId": "02872762-1719-484f-8853-ef05c173e4c3",
+      "targetType": "student",
+      "groupId": null,
+      "accountPlayerId": "142a67f0-e4ba-512f-b55d-86c2b18a9488",
+      "startsAt": null,
+      "closesAt": null,
+      "createdAt": "2026-09-21T15:11:32.803Z",
+      "revision": 1
+    },
+    {
+      "assignmentId": "e081bbc1-1332-4e28-b7bc-0d1cc5d782d9",
+      "testId": "02872762-1719-484f-8853-ef05c173e4c3",
+      "targetType": "student",
+      "groupId": null,
+      "accountPlayerId": "4afaf2a0-1e0a-5a2e-abf8-c22cda9b5b2e",
+      "startsAt": null,
+      "closesAt": null,
+      "createdAt": "2026-09-21T15:11:32.803Z",
+      "revision": 1
+    },
+    {
+      "assignmentId": "f0488301-4de8-4073-97a2-aeb25cec3c19",
+      "testId": "02872762-1719-484f-8853-ef05c173e4c3",
+      "targetType": "student",
+      "groupId": null,
+      "accountPlayerId": "450c3187-fd46-5aff-a9a8-c4dfa3929438",
+      "startsAt": null,
+      "closesAt": null,
+      "createdAt": "2026-09-21T15:11:32.803Z",
+      "revision": 1
+    },
+    {
+      "assignmentId": "619107b3-2717-4851-9a7a-dc6befe0d84d",
+      "testId": "02872762-1719-484f-8853-ef05c173e4c3",
+      "targetType": "student",
+      "groupId": null,
+      "accountPlayerId": "b64af2a1-c558-41ab-ad00-59f4ea4d7061",
+      "startsAt": null,
+      "closesAt": null,
+      "createdAt": "2026-09-21T15:11:32.803Z",
+      "revision": 1
+    },
+    {
+      "assignmentId": "1fe1fdb0-d363-4623-885a-fbe19916ad62",
+      "testId": "02872762-1719-484f-8853-ef05c173e4c3",
+      "targetType": "student",
+      "groupId": null,
+      "accountPlayerId": "9ea78f33-950f-4d1c-82a4-f60ca07707fc",
+      "startsAt": null,
+      "closesAt": null,
+      "createdAt": "2026-09-21T15:11:32.803Z",
+      "revision": 1
+    },
+    {
+      "assignmentId": "36770390-0ddd-419a-bf80-625993a726d0",
+      "testId": "02872762-1719-484f-8853-ef05c173e4c3",
+      "targetType": "student",
+      "groupId": null,
+      "accountPlayerId": "bf5e9dee-f04f-47c4-a281-deb291117e9d",
+      "startsAt": null,
+      "closesAt": null,
+      "createdAt": "2026-09-21T15:11:32.803Z",
+      "revision": 1
+    },
+    {
+      "assignmentId": "a66ec2ff-cec5-48b2-92b4-df2ff4a9a8ba",
+      "testId": "55679956-25a0-415f-9e1b-81012aba692b",
+      "targetType": "student",
+      "groupId": null,
+      "accountPlayerId": "5ceefd1b-4db5-5fc0-9ba0-63fae6f55180",
+      "startsAt": null,
+      "closesAt": null,
+      "createdAt": "2026-09-23T15:54:04.840Z",
+      "revision": 1
+    },
+    {
+      "assignmentId": "30410584-d8fa-42aa-9c66-affdd6f9e81c",
+      "testId": "55679956-25a0-415f-9e1b-81012aba692b",
+      "targetType": "student",
+      "groupId": null,
+      "accountPlayerId": "5fcc4b25-5798-56c0-bf5c-221b623860d2",
+      "startsAt": null,
+      "closesAt": null,
+      "createdAt": "2026-09-23T15:54:04.840Z",
+      "revision": 1
+    },
+    {
+      "assignmentId": "b9f7141d-879c-45fd-9f4c-36e12cb986d1",
+      "testId": "55679956-25a0-415f-9e1b-81012aba692b",
+      "targetType": "student",
+      "groupId": null,
+      "accountPlayerId": "9cff755e-1282-5d11-883c-fdb79ce56801",
+      "startsAt": null,
+      "closesAt": null,
+      "createdAt": "2026-09-23T15:54:04.840Z",
+      "revision": 1
+    },
+    {
+      "assignmentId": "60d8b62f-5124-4bab-8c8b-c0220c766f52",
+      "testId": "55679956-25a0-415f-9e1b-81012aba692b",
+      "targetType": "student",
+      "groupId": null,
+      "accountPlayerId": "4ba2be16-9e3a-547d-89b4-cbf8906c70af",
+      "startsAt": null,
+      "closesAt": null,
+      "createdAt": "2026-09-23T15:54:04.840Z",
+      "revision": 1
+    },
+    {
+      "assignmentId": "7740ad8a-17c7-417d-bb97-9a5b48a539fc",
+      "testId": "55679956-25a0-415f-9e1b-81012aba692b",
+      "targetType": "student",
+      "groupId": null,
+      "accountPlayerId": "2a38286a-2b41-5e9a-bb03-d68dc1b6c281",
+      "startsAt": null,
+      "closesAt": null,
+      "createdAt": "2026-09-23T15:54:04.840Z",
+      "revision": 1
+    },
+    {
+      "assignmentId": "9e40c7af-8419-4278-8ef6-8ca0e7f7d9be",
+      "testId": "55679956-25a0-415f-9e1b-81012aba692b",
+      "targetType": "student",
+      "groupId": null,
+      "accountPlayerId": "49d3ece2-8d1a-5899-99ac-8cee5ea802a7",
+      "startsAt": null,
+      "closesAt": null,
+      "createdAt": "2026-09-23T15:54:04.840Z",
+      "revision": 1
+    },
+    {
+      "assignmentId": "c834483e-8903-4186-aad2-7a24d82ee0fd",
+      "testId": "695e85fe-d80b-4113-a73e-8a9eba116557",
+      "targetType": "student",
+      "groupId": null,
+      "accountPlayerId": "7d3a51eb-2565-5304-8e9a-106653ba5af1",
+      "startsAt": null,
+      "closesAt": null,
+      "createdAt": "2026-09-23T15:54:20.743Z",
+      "revision": 1
+    },
+    {
+      "assignmentId": "7f070f0e-792c-4d7e-b3ba-dce1d312d8c9",
+      "testId": "695e85fe-d80b-4113-a73e-8a9eba116557",
+      "targetType": "student",
+      "groupId": null,
+      "accountPlayerId": "142a67f0-e4ba-512f-b55d-86c2b18a9488",
+      "startsAt": null,
+      "closesAt": null,
+      "createdAt": "2026-09-23T15:54:20.743Z",
+      "revision": 1
+    },
+    {
+      "assignmentId": "9fdc67c0-ec41-4dcb-9d40-c86370d09a1a",
+      "testId": "695e85fe-d80b-4113-a73e-8a9eba116557",
+      "targetType": "student",
+      "groupId": null,
+      "accountPlayerId": "4afaf2a0-1e0a-5a2e-abf8-c22cda9b5b2e",
+      "startsAt": null,
+      "closesAt": null,
+      "createdAt": "2026-09-23T15:54:20.743Z",
+      "revision": 1
+    },
+    {
+      "assignmentId": "011614af-33c7-4a19-8449-cafd8bd8bd9b",
+      "testId": "695e85fe-d80b-4113-a73e-8a9eba116557",
+      "targetType": "student",
+      "groupId": null,
+      "accountPlayerId": "450c3187-fd46-5aff-a9a8-c4dfa3929438",
+      "startsAt": null,
+      "closesAt": null,
+      "createdAt": "2026-09-23T15:54:20.743Z",
+      "revision": 1
+    },
+    {
+      "assignmentId": "3d9fdf7f-79b5-4e68-95f7-5c52e6734a93",
+      "testId": "695e85fe-d80b-4113-a73e-8a9eba116557",
+      "targetType": "student",
+      "groupId": null,
+      "accountPlayerId": "b64af2a1-c558-41ab-ad00-59f4ea4d7061",
+      "startsAt": null,
+      "closesAt": null,
+      "createdAt": "2026-09-23T15:54:20.743Z",
+      "revision": 1
+    },
+    {
+      "assignmentId": "7cd22d8d-ba68-48b7-908a-e8d51c0f8bb0",
+      "testId": "695e85fe-d80b-4113-a73e-8a9eba116557",
+      "targetType": "student",
+      "groupId": null,
+      "accountPlayerId": "9ea78f33-950f-4d1c-82a4-f60ca07707fc",
+      "startsAt": null,
+      "closesAt": null,
+      "createdAt": "2026-09-23T15:54:20.743Z",
+      "revision": 1
+    },
+    {
+      "assignmentId": "6d723b0f-eecf-473d-a710-72590e92c085",
+      "testId": "695e85fe-d80b-4113-a73e-8a9eba116557",
+      "targetType": "student",
+      "groupId": null,
+      "accountPlayerId": "bf5e9dee-f04f-47c4-a281-deb291117e9d",
+      "startsAt": null,
+      "closesAt": null,
+      "createdAt": "2026-09-23T15:54:20.743Z",
+      "revision": 1
+    },
+    {
+      "assignmentId": "2d0bc5f2-febc-4b61-8cb9-5420fe227495",
+      "testId": "666bb25c-e0df-456f-b037-f263c61b4c75",
+      "targetType": "student",
+      "groupId": null,
+      "accountPlayerId": "7d3a51eb-2565-5304-8e9a-106653ba5af1",
+      "startsAt": null,
+      "closesAt": null,
+      "createdAt": "2026-09-23T16:03:59.161Z",
+      "revision": 1
+    },
+    {
+      "assignmentId": "bf779d2c-cddb-4a62-9332-0b84b87824d1",
+      "testId": "666bb25c-e0df-456f-b037-f263c61b4c75",
+      "targetType": "student",
+      "groupId": null,
+      "accountPlayerId": "142a67f0-e4ba-512f-b55d-86c2b18a9488",
+      "startsAt": null,
+      "closesAt": null,
+      "createdAt": "2026-09-23T16:03:59.161Z",
+      "revision": 1
+    },
+    {
+      "assignmentId": "26f225e6-5dd4-44cf-aa4a-bfcaa7ed5bd0",
+      "testId": "666bb25c-e0df-456f-b037-f263c61b4c75",
+      "targetType": "student",
+      "groupId": null,
+      "accountPlayerId": "4afaf2a0-1e0a-5a2e-abf8-c22cda9b5b2e",
+      "startsAt": null,
+      "closesAt": null,
+      "createdAt": "2026-09-23T16:03:59.161Z",
+      "revision": 1
+    },
+    {
+      "assignmentId": "a6b8a358-3367-43c6-8048-ef9f762c4a91",
+      "testId": "666bb25c-e0df-456f-b037-f263c61b4c75",
+      "targetType": "student",
+      "groupId": null,
+      "accountPlayerId": "450c3187-fd46-5aff-a9a8-c4dfa3929438",
+      "startsAt": null,
+      "closesAt": null,
+      "createdAt": "2026-09-23T16:03:59.161Z",
+      "revision": 1
+    },
+    {
+      "assignmentId": "3ba86ab4-72d1-4723-8652-f24137fdd660",
+      "testId": "666bb25c-e0df-456f-b037-f263c61b4c75",
+      "targetType": "student",
+      "groupId": null,
+      "accountPlayerId": "b64af2a1-c558-41ab-ad00-59f4ea4d7061",
+      "startsAt": null,
+      "closesAt": null,
+      "createdAt": "2026-09-23T16:03:59.161Z",
+      "revision": 1
+    },
+    {
+      "assignmentId": "0a339029-2889-4cd8-b5eb-ba2352db0e44",
+      "testId": "666bb25c-e0df-456f-b037-f263c61b4c75",
+      "targetType": "student",
+      "groupId": null,
+      "accountPlayerId": "9ea78f33-950f-4d1c-82a4-f60ca07707fc",
+      "startsAt": null,
+      "closesAt": null,
+      "createdAt": "2026-09-23T16:03:59.161Z",
+      "revision": 1
+    },
+    {
+      "assignmentId": "0248803c-8f45-420f-b87a-c709bd2b087f",
+      "testId": "666bb25c-e0df-456f-b037-f263c61b4c75",
+      "targetType": "student",
+      "groupId": null,
+      "accountPlayerId": "bf5e9dee-f04f-47c4-a281-deb291117e9d",
+      "startsAt": null,
+      "closesAt": null,
+      "createdAt": "2026-09-23T16:03:59.161Z",
+      "revision": 1
+    },
+    {
+      "assignmentId": "866486c9-6b1a-430a-8bd2-33690fd22acf",
+      "testId": "6e858ad2-05cf-4285-85f4-776df3618e27",
+      "targetType": "student",
+      "groupId": null,
+      "accountPlayerId": "5ceefd1b-4db5-5fc0-9ba0-63fae6f55180",
+      "startsAt": null,
+      "closesAt": null,
+      "createdAt": "2026-09-23T16:04:57.391Z",
+      "revision": 1
+    },
+    {
+      "assignmentId": "29b76a58-378c-48a0-b484-8d966157b7ba",
+      "testId": "6e858ad2-05cf-4285-85f4-776df3618e27",
+      "targetType": "student",
+      "groupId": null,
+      "accountPlayerId": "5fcc4b25-5798-56c0-bf5c-221b623860d2",
+      "startsAt": null,
+      "closesAt": null,
+      "createdAt": "2026-09-23T16:04:57.391Z",
+      "revision": 1
+    },
+    {
+      "assignmentId": "648acaee-df43-4c54-9e5f-299571929965",
+      "testId": "6e858ad2-05cf-4285-85f4-776df3618e27",
+      "targetType": "student",
+      "groupId": null,
+      "accountPlayerId": "9cff755e-1282-5d11-883c-fdb79ce56801",
+      "startsAt": null,
+      "closesAt": null,
+      "createdAt": "2026-09-23T16:04:57.391Z",
+      "revision": 1
+    },
+    {
+      "assignmentId": "bc03d19d-05a6-4bf8-bb97-0fb04884d55b",
+      "testId": "6e858ad2-05cf-4285-85f4-776df3618e27",
+      "targetType": "student",
+      "groupId": null,
+      "accountPlayerId": "4ba2be16-9e3a-547d-89b4-cbf8906c70af",
+      "startsAt": null,
+      "closesAt": null,
+      "createdAt": "2026-09-23T16:04:57.391Z",
+      "revision": 1
+    },
+    {
+      "assignmentId": "5b23b8ee-1e37-4da3-8cc7-9efe29d2e3b3",
+      "testId": "6e858ad2-05cf-4285-85f4-776df3618e27",
+      "targetType": "student",
+      "groupId": null,
+      "accountPlayerId": "2a38286a-2b41-5e9a-bb03-d68dc1b6c281",
+      "startsAt": null,
+      "closesAt": null,
+      "createdAt": "2026-09-23T16:04:57.391Z",
+      "revision": 1
+    },
+    {
+      "assignmentId": "74209ce7-0f7f-4f9c-a1bb-040807278161",
+      "testId": "6e858ad2-05cf-4285-85f4-776df3618e27",
+      "targetType": "student",
+      "groupId": null,
+      "accountPlayerId": "49d3ece2-8d1a-5899-99ac-8cee5ea802a7",
+      "startsAt": null,
+      "closesAt": null,
+      "createdAt": "2026-09-23T16:04:57.391Z",
       "revision": 1
     }
   ],
@@ -2864,6 +4191,2449 @@
       "deletedAt": null,
       "officialAttemptId": "0c2cfd56-07a7-4ac5-b126-d4c305c4daee",
       "officialAt": "2026-09-18T19:51:49.799Z"
+    },
+    {
+      "attemptId": "5de5e085-1b7b-4d72-a9a2-4a04a8817664",
+      "testId": "02872762-1719-484f-8853-ef05c173e4c3",
+      "accountPlayerId": "142a67f0-e4ba-512f-b55d-86c2b18a9488",
+      "parentAttemptId": null,
+      "status": "finished",
+      "progress": {
+        "studentSnapshot": {
+          "name": "William",
+          "grade": "4° Grado"
+        },
+        "examStartedAt": 1790003492829,
+        "currentIndex": 91,
+        "totalQuestions": 91,
+        "correct": 84,
+        "incorrect": 7,
+        "score": 23160
+      },
+      "configurationSnapshot": {
+        "version": 1,
+        "multiplier": 1,
+        "rewards": {
+          "aureos": 0,
+          "experience": 0,
+          "streak": {
+            "enabled": false,
+            "bonus": 0
+          },
+          "achievements": {}
+        },
+        "folio": "0003",
+        "title": "0003",
+        "description": "",
+        "createdAt": "2026-09-21T15:11:07.298Z",
+        "grade": "4° Grado",
+        "opsConfig": {
+          "mult": {
+            "tables": [
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10
+            ],
+            "qty": 4,
+            "detailMode": true,
+            "matrix": [
+              "0x4",
+              "0x5",
+              "0x6",
+              "0x7",
+              "0x8",
+              "0x9",
+              "0x10",
+              "1x4",
+              "1x5",
+              "1x6",
+              "1x7",
+              "1x8",
+              "1x9",
+              "1x10",
+              "2x4",
+              "2x5",
+              "2x6",
+              "2x7",
+              "2x8",
+              "2x9",
+              "2x10",
+              "3x4",
+              "3x5",
+              "3x6",
+              "3x7",
+              "3x8",
+              "3x9",
+              "3x10",
+              "4x4",
+              "4x5",
+              "4x6",
+              "4x7",
+              "4x8",
+              "4x9",
+              "4x10",
+              "5x4",
+              "5x5",
+              "5x6",
+              "5x7",
+              "5x8",
+              "5x9",
+              "5x10",
+              "6x4",
+              "6x5",
+              "6x6",
+              "6x7",
+              "6x8",
+              "6x9",
+              "6x10",
+              "7x4",
+              "7x5",
+              "7x6",
+              "7x7",
+              "7x8",
+              "7x9",
+              "7x10",
+              "8x4",
+              "8x5",
+              "8x6",
+              "8x7",
+              "8x8",
+              "8x9",
+              "8x10",
+              "9x4",
+              "9x5",
+              "9x6",
+              "9x7",
+              "9x8",
+              "9x9",
+              "9x10",
+              "10x4",
+              "10x5",
+              "10x6",
+              "10x7",
+              "10x8",
+              "10x9",
+              "10x10",
+              "11x4",
+              "11x5",
+              "11x6",
+              "11x7",
+              "11x8",
+              "11x9",
+              "11x10",
+              "12x4",
+              "12x5",
+              "12x6",
+              "12x7",
+              "12x8",
+              "12x9",
+              "12x10"
+            ],
+            "manner": "random"
+          }
+        },
+        "timeLimit": 0,
+        "timePerQuestion": 15
+      },
+      "revision": 1,
+      "startedAt": "2026-09-21T15:11:32.829Z",
+      "updatedAt": "2026-09-21T15:23:42.206Z",
+      "finishedAt": "2026-09-21T15:23:42.206Z",
+      "origin": "live_exam",
+      "official": false,
+      "deletedAt": null
+    },
+    {
+      "attemptId": "2bb98cbf-594c-424f-ac87-0af0d352d15a",
+      "testId": "02872762-1719-484f-8853-ef05c173e4c3",
+      "accountPlayerId": "7d3a51eb-2565-5304-8e9a-106653ba5af1",
+      "parentAttemptId": null,
+      "status": "finished",
+      "progress": {
+        "studentSnapshot": {
+          "name": "Dario",
+          "grade": "4° Grado"
+        },
+        "examStartedAt": 1790003492829,
+        "currentIndex": 91,
+        "totalQuestions": 91,
+        "correct": 67,
+        "incorrect": 24,
+        "score": 10550
+      },
+      "configurationSnapshot": {
+        "version": 1,
+        "multiplier": 1,
+        "rewards": {
+          "aureos": 0,
+          "experience": 0,
+          "streak": {
+            "enabled": false,
+            "bonus": 0
+          },
+          "achievements": {}
+        },
+        "folio": "0003",
+        "title": "0003",
+        "description": "",
+        "createdAt": "2026-09-21T15:11:07.298Z",
+        "grade": "4° Grado",
+        "opsConfig": {
+          "mult": {
+            "tables": [
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10
+            ],
+            "qty": 4,
+            "detailMode": true,
+            "matrix": [
+              "0x4",
+              "0x5",
+              "0x6",
+              "0x7",
+              "0x8",
+              "0x9",
+              "0x10",
+              "1x4",
+              "1x5",
+              "1x6",
+              "1x7",
+              "1x8",
+              "1x9",
+              "1x10",
+              "2x4",
+              "2x5",
+              "2x6",
+              "2x7",
+              "2x8",
+              "2x9",
+              "2x10",
+              "3x4",
+              "3x5",
+              "3x6",
+              "3x7",
+              "3x8",
+              "3x9",
+              "3x10",
+              "4x4",
+              "4x5",
+              "4x6",
+              "4x7",
+              "4x8",
+              "4x9",
+              "4x10",
+              "5x4",
+              "5x5",
+              "5x6",
+              "5x7",
+              "5x8",
+              "5x9",
+              "5x10",
+              "6x4",
+              "6x5",
+              "6x6",
+              "6x7",
+              "6x8",
+              "6x9",
+              "6x10",
+              "7x4",
+              "7x5",
+              "7x6",
+              "7x7",
+              "7x8",
+              "7x9",
+              "7x10",
+              "8x4",
+              "8x5",
+              "8x6",
+              "8x7",
+              "8x8",
+              "8x9",
+              "8x10",
+              "9x4",
+              "9x5",
+              "9x6",
+              "9x7",
+              "9x8",
+              "9x9",
+              "9x10",
+              "10x4",
+              "10x5",
+              "10x6",
+              "10x7",
+              "10x8",
+              "10x9",
+              "10x10",
+              "11x4",
+              "11x5",
+              "11x6",
+              "11x7",
+              "11x8",
+              "11x9",
+              "11x10",
+              "12x4",
+              "12x5",
+              "12x6",
+              "12x7",
+              "12x8",
+              "12x9",
+              "12x10"
+            ],
+            "manner": "random"
+          }
+        },
+        "timeLimit": 0,
+        "timePerQuestion": 15
+      },
+      "revision": 1,
+      "startedAt": "2026-09-21T15:11:32.829Z",
+      "updatedAt": "2026-09-21T15:32:15.363Z",
+      "finishedAt": "2026-09-21T15:32:15.363Z",
+      "origin": "live_exam",
+      "official": false,
+      "deletedAt": null
+    },
+    {
+      "attemptId": "daab0912-80d7-41ea-9582-d02a0b0047f5",
+      "testId": "02872762-1719-484f-8853-ef05c173e4c3",
+      "accountPlayerId": "4afaf2a0-1e0a-5a2e-abf8-c22cda9b5b2e",
+      "parentAttemptId": null,
+      "status": "finished",
+      "progress": {
+        "studentSnapshot": {
+          "name": "Natali",
+          "grade": "4° Grado"
+        },
+        "examStartedAt": 1790003492829,
+        "currentIndex": 91,
+        "totalQuestions": 91,
+        "correct": 84,
+        "incorrect": 7,
+        "score": 24480
+      },
+      "configurationSnapshot": {
+        "version": 1,
+        "multiplier": 1,
+        "rewards": {
+          "aureos": 0,
+          "experience": 0,
+          "streak": {
+            "enabled": false,
+            "bonus": 0
+          },
+          "achievements": {}
+        },
+        "folio": "0003",
+        "title": "0003",
+        "description": "",
+        "createdAt": "2026-09-21T15:11:07.298Z",
+        "grade": "4° Grado",
+        "opsConfig": {
+          "mult": {
+            "tables": [
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10
+            ],
+            "qty": 4,
+            "detailMode": true,
+            "matrix": [
+              "0x4",
+              "0x5",
+              "0x6",
+              "0x7",
+              "0x8",
+              "0x9",
+              "0x10",
+              "1x4",
+              "1x5",
+              "1x6",
+              "1x7",
+              "1x8",
+              "1x9",
+              "1x10",
+              "2x4",
+              "2x5",
+              "2x6",
+              "2x7",
+              "2x8",
+              "2x9",
+              "2x10",
+              "3x4",
+              "3x5",
+              "3x6",
+              "3x7",
+              "3x8",
+              "3x9",
+              "3x10",
+              "4x4",
+              "4x5",
+              "4x6",
+              "4x7",
+              "4x8",
+              "4x9",
+              "4x10",
+              "5x4",
+              "5x5",
+              "5x6",
+              "5x7",
+              "5x8",
+              "5x9",
+              "5x10",
+              "6x4",
+              "6x5",
+              "6x6",
+              "6x7",
+              "6x8",
+              "6x9",
+              "6x10",
+              "7x4",
+              "7x5",
+              "7x6",
+              "7x7",
+              "7x8",
+              "7x9",
+              "7x10",
+              "8x4",
+              "8x5",
+              "8x6",
+              "8x7",
+              "8x8",
+              "8x9",
+              "8x10",
+              "9x4",
+              "9x5",
+              "9x6",
+              "9x7",
+              "9x8",
+              "9x9",
+              "9x10",
+              "10x4",
+              "10x5",
+              "10x6",
+              "10x7",
+              "10x8",
+              "10x9",
+              "10x10",
+              "11x4",
+              "11x5",
+              "11x6",
+              "11x7",
+              "11x8",
+              "11x9",
+              "11x10",
+              "12x4",
+              "12x5",
+              "12x6",
+              "12x7",
+              "12x8",
+              "12x9",
+              "12x10"
+            ],
+            "manner": "random"
+          }
+        },
+        "timeLimit": 0,
+        "timePerQuestion": 15
+      },
+      "revision": 1,
+      "startedAt": "2026-09-21T15:11:32.829Z",
+      "updatedAt": "2026-09-21T15:33:02.637Z",
+      "finishedAt": "2026-09-21T15:33:02.637Z",
+      "origin": "live_exam",
+      "official": false,
+      "deletedAt": null
+    },
+    {
+      "attemptId": "09170cbe-067e-4bbe-aebb-d0e4aeaf6111",
+      "testId": "02872762-1719-484f-8853-ef05c173e4c3",
+      "accountPlayerId": "bf5e9dee-f04f-47c4-a281-deb291117e9d",
+      "parentAttemptId": null,
+      "status": "finished",
+      "progress": {
+        "studentSnapshot": {
+          "name": "Marlen",
+          "grade": "4° Grado"
+        },
+        "examStartedAt": 1790003492829,
+        "currentIndex": 91,
+        "totalQuestions": 91,
+        "correct": 90,
+        "incorrect": 1,
+        "score": 31780
+      },
+      "configurationSnapshot": {
+        "version": 1,
+        "multiplier": 1,
+        "rewards": {
+          "aureos": 0,
+          "experience": 0,
+          "streak": {
+            "enabled": false,
+            "bonus": 0
+          },
+          "achievements": {}
+        },
+        "folio": "0003",
+        "title": "0003",
+        "description": "",
+        "createdAt": "2026-09-21T15:11:07.298Z",
+        "grade": "4° Grado",
+        "opsConfig": {
+          "mult": {
+            "tables": [
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10
+            ],
+            "qty": 4,
+            "detailMode": true,
+            "matrix": [
+              "0x4",
+              "0x5",
+              "0x6",
+              "0x7",
+              "0x8",
+              "0x9",
+              "0x10",
+              "1x4",
+              "1x5",
+              "1x6",
+              "1x7",
+              "1x8",
+              "1x9",
+              "1x10",
+              "2x4",
+              "2x5",
+              "2x6",
+              "2x7",
+              "2x8",
+              "2x9",
+              "2x10",
+              "3x4",
+              "3x5",
+              "3x6",
+              "3x7",
+              "3x8",
+              "3x9",
+              "3x10",
+              "4x4",
+              "4x5",
+              "4x6",
+              "4x7",
+              "4x8",
+              "4x9",
+              "4x10",
+              "5x4",
+              "5x5",
+              "5x6",
+              "5x7",
+              "5x8",
+              "5x9",
+              "5x10",
+              "6x4",
+              "6x5",
+              "6x6",
+              "6x7",
+              "6x8",
+              "6x9",
+              "6x10",
+              "7x4",
+              "7x5",
+              "7x6",
+              "7x7",
+              "7x8",
+              "7x9",
+              "7x10",
+              "8x4",
+              "8x5",
+              "8x6",
+              "8x7",
+              "8x8",
+              "8x9",
+              "8x10",
+              "9x4",
+              "9x5",
+              "9x6",
+              "9x7",
+              "9x8",
+              "9x9",
+              "9x10",
+              "10x4",
+              "10x5",
+              "10x6",
+              "10x7",
+              "10x8",
+              "10x9",
+              "10x10",
+              "11x4",
+              "11x5",
+              "11x6",
+              "11x7",
+              "11x8",
+              "11x9",
+              "11x10",
+              "12x4",
+              "12x5",
+              "12x6",
+              "12x7",
+              "12x8",
+              "12x9",
+              "12x10"
+            ],
+            "manner": "random"
+          }
+        },
+        "timeLimit": 0,
+        "timePerQuestion": 15
+      },
+      "revision": 1,
+      "startedAt": "2026-09-21T15:11:32.829Z",
+      "updatedAt": "2026-09-21T15:40:48.872Z",
+      "finishedAt": "2026-09-21T15:40:48.872Z",
+      "origin": "live_exam",
+      "official": false,
+      "deletedAt": null
+    },
+    {
+      "attemptId": "05086c1f-4962-44b7-a3c6-3c23292e7adc",
+      "testId": "02872762-1719-484f-8853-ef05c173e4c3",
+      "accountPlayerId": "b64af2a1-c558-41ab-ad00-59f4ea4d7061",
+      "parentAttemptId": null,
+      "status": "finished",
+      "progress": {
+        "studentSnapshot": {
+          "name": "Yuli",
+          "grade": "4° Grado"
+        },
+        "examStartedAt": 1790003492829,
+        "currentIndex": 91,
+        "totalQuestions": 91,
+        "correct": 82,
+        "incorrect": 7,
+        "score": 19705
+      },
+      "configurationSnapshot": {
+        "version": 1,
+        "multiplier": 1,
+        "rewards": {
+          "aureos": 0,
+          "experience": 0,
+          "streak": {
+            "enabled": false,
+            "bonus": 0
+          },
+          "achievements": {}
+        },
+        "folio": "0003",
+        "title": "0003",
+        "description": "",
+        "createdAt": "2026-09-21T15:11:07.298Z",
+        "grade": "4° Grado",
+        "opsConfig": {
+          "mult": {
+            "tables": [
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10
+            ],
+            "qty": 4,
+            "detailMode": true,
+            "matrix": [
+              "0x4",
+              "0x5",
+              "0x6",
+              "0x7",
+              "0x8",
+              "0x9",
+              "0x10",
+              "1x4",
+              "1x5",
+              "1x6",
+              "1x7",
+              "1x8",
+              "1x9",
+              "1x10",
+              "2x4",
+              "2x5",
+              "2x6",
+              "2x7",
+              "2x8",
+              "2x9",
+              "2x10",
+              "3x4",
+              "3x5",
+              "3x6",
+              "3x7",
+              "3x8",
+              "3x9",
+              "3x10",
+              "4x4",
+              "4x5",
+              "4x6",
+              "4x7",
+              "4x8",
+              "4x9",
+              "4x10",
+              "5x4",
+              "5x5",
+              "5x6",
+              "5x7",
+              "5x8",
+              "5x9",
+              "5x10",
+              "6x4",
+              "6x5",
+              "6x6",
+              "6x7",
+              "6x8",
+              "6x9",
+              "6x10",
+              "7x4",
+              "7x5",
+              "7x6",
+              "7x7",
+              "7x8",
+              "7x9",
+              "7x10",
+              "8x4",
+              "8x5",
+              "8x6",
+              "8x7",
+              "8x8",
+              "8x9",
+              "8x10",
+              "9x4",
+              "9x5",
+              "9x6",
+              "9x7",
+              "9x8",
+              "9x9",
+              "9x10",
+              "10x4",
+              "10x5",
+              "10x6",
+              "10x7",
+              "10x8",
+              "10x9",
+              "10x10",
+              "11x4",
+              "11x5",
+              "11x6",
+              "11x7",
+              "11x8",
+              "11x9",
+              "11x10",
+              "12x4",
+              "12x5",
+              "12x6",
+              "12x7",
+              "12x8",
+              "12x9",
+              "12x10"
+            ],
+            "manner": "random"
+          }
+        },
+        "timeLimit": 0,
+        "timePerQuestion": 15
+      },
+      "revision": 1,
+      "startedAt": "2026-09-21T15:11:32.829Z",
+      "updatedAt": "2026-09-21T15:43:34.236Z",
+      "finishedAt": "2026-09-21T15:43:34.236Z",
+      "origin": "live_exam",
+      "official": false,
+      "deletedAt": null
+    },
+    {
+      "attemptId": "de97229c-0564-41a7-8444-dd0eda073a13",
+      "testId": "8a16b773-683a-415b-9f86-88b8988facbf",
+      "accountPlayerId": "5ceefd1b-4db5-5fc0-9ba0-63fae6f55180",
+      "parentAttemptId": null,
+      "status": "finished",
+      "progress": {
+        "studentSnapshot": {
+          "name": "Alexa",
+          "grade": "3° Grado"
+        },
+        "examStartedAt": 1790003462966,
+        "currentIndex": 77,
+        "totalQuestions": 77,
+        "correct": 42,
+        "incorrect": 35,
+        "score": 4985
+      },
+      "configurationSnapshot": {
+        "version": 1,
+        "multiplier": 1,
+        "rewards": {
+          "aureos": 0,
+          "experience": 0,
+          "streak": {
+            "enabled": false,
+            "bonus": 0
+          },
+          "achievements": {}
+        },
+        "folio": "0002",
+        "title": "0002",
+        "description": "",
+        "createdAt": "2026-09-21T15:10:36.353Z",
+        "grade": "3° Grado",
+        "opsConfig": {
+          "mult": {
+            "tables": [
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10
+            ],
+            "qty": 4,
+            "detailMode": true,
+            "matrix": [
+              "0x4",
+              "0x5",
+              "0x6",
+              "0x7",
+              "0x8",
+              "0x9",
+              "0x10",
+              "1x4",
+              "1x5",
+              "1x6",
+              "1x7",
+              "1x8",
+              "1x9",
+              "1x10",
+              "2x4",
+              "2x5",
+              "2x6",
+              "2x7",
+              "2x8",
+              "2x9",
+              "2x10",
+              "3x4",
+              "3x5",
+              "3x6",
+              "3x7",
+              "3x8",
+              "3x9",
+              "3x10",
+              "4x4",
+              "4x5",
+              "4x6",
+              "4x7",
+              "4x8",
+              "4x9",
+              "4x10",
+              "5x4",
+              "5x5",
+              "5x6",
+              "5x7",
+              "5x8",
+              "5x9",
+              "5x10",
+              "6x4",
+              "6x5",
+              "6x6",
+              "6x7",
+              "6x8",
+              "6x9",
+              "6x10",
+              "7x4",
+              "7x5",
+              "7x6",
+              "7x7",
+              "7x8",
+              "7x9",
+              "7x10",
+              "8x4",
+              "8x5",
+              "8x6",
+              "8x7",
+              "8x8",
+              "8x9",
+              "8x10",
+              "9x4",
+              "9x5",
+              "9x6",
+              "9x7",
+              "9x8",
+              "9x9",
+              "9x10",
+              "10x4",
+              "10x5",
+              "10x6",
+              "10x7",
+              "10x8",
+              "10x9",
+              "10x10"
+            ],
+            "manner": "random"
+          }
+        },
+        "timeLimit": 0,
+        "timePerQuestion": 15
+      },
+      "revision": 1,
+      "startedAt": "2026-09-21T15:11:02.966Z",
+      "updatedAt": "2026-09-21T16:01:24.871Z",
+      "finishedAt": "2026-09-21T16:01:24.871Z",
+      "origin": "live_exam",
+      "official": false,
+      "deletedAt": null
+    },
+    {
+      "attemptId": "97604883-ea65-4157-ba75-3017c55f3032",
+      "testId": "8a16b773-683a-415b-9f86-88b8988facbf",
+      "accountPlayerId": "9cff755e-1282-5d11-883c-fdb79ce56801",
+      "parentAttemptId": null,
+      "status": "finished",
+      "progress": {
+        "studentSnapshot": {
+          "name": "Alexia",
+          "grade": "3° Grado"
+        },
+        "examStartedAt": 1790003462966,
+        "currentIndex": 77,
+        "totalQuestions": 77,
+        "correct": 68,
+        "incorrect": 8,
+        "score": 12305
+      },
+      "configurationSnapshot": {
+        "version": 1,
+        "multiplier": 1,
+        "rewards": {
+          "aureos": 0,
+          "experience": 0,
+          "streak": {
+            "enabled": false,
+            "bonus": 0
+          },
+          "achievements": {}
+        },
+        "folio": "0002",
+        "title": "0002",
+        "description": "",
+        "createdAt": "2026-09-21T15:10:36.353Z",
+        "grade": "3° Grado",
+        "opsConfig": {
+          "mult": {
+            "tables": [
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10
+            ],
+            "qty": 4,
+            "detailMode": true,
+            "matrix": [
+              "0x4",
+              "0x5",
+              "0x6",
+              "0x7",
+              "0x8",
+              "0x9",
+              "0x10",
+              "1x4",
+              "1x5",
+              "1x6",
+              "1x7",
+              "1x8",
+              "1x9",
+              "1x10",
+              "2x4",
+              "2x5",
+              "2x6",
+              "2x7",
+              "2x8",
+              "2x9",
+              "2x10",
+              "3x4",
+              "3x5",
+              "3x6",
+              "3x7",
+              "3x8",
+              "3x9",
+              "3x10",
+              "4x4",
+              "4x5",
+              "4x6",
+              "4x7",
+              "4x8",
+              "4x9",
+              "4x10",
+              "5x4",
+              "5x5",
+              "5x6",
+              "5x7",
+              "5x8",
+              "5x9",
+              "5x10",
+              "6x4",
+              "6x5",
+              "6x6",
+              "6x7",
+              "6x8",
+              "6x9",
+              "6x10",
+              "7x4",
+              "7x5",
+              "7x6",
+              "7x7",
+              "7x8",
+              "7x9",
+              "7x10",
+              "8x4",
+              "8x5",
+              "8x6",
+              "8x7",
+              "8x8",
+              "8x9",
+              "8x10",
+              "9x4",
+              "9x5",
+              "9x6",
+              "9x7",
+              "9x8",
+              "9x9",
+              "9x10",
+              "10x4",
+              "10x5",
+              "10x6",
+              "10x7",
+              "10x8",
+              "10x9",
+              "10x10"
+            ],
+            "manner": "random"
+          }
+        },
+        "timeLimit": 0,
+        "timePerQuestion": 15
+      },
+      "revision": 1,
+      "startedAt": "2026-09-21T15:11:02.966Z",
+      "updatedAt": "2026-09-21T16:04:12.597Z",
+      "finishedAt": "2026-09-21T16:04:12.597Z",
+      "origin": "live_exam",
+      "official": false,
+      "deletedAt": null
+    },
+    {
+      "attemptId": "92444c37-0902-4d4e-8b87-0513a9c08a41",
+      "testId": "02872762-1719-484f-8853-ef05c173e4c3",
+      "accountPlayerId": "9ea78f33-950f-4d1c-82a4-f60ca07707fc",
+      "parentAttemptId": null,
+      "status": "finished",
+      "progress": {
+        "studentSnapshot": {
+          "name": "Santiago",
+          "grade": "4° Grado"
+        },
+        "examStartedAt": 1790003492829,
+        "currentIndex": 91,
+        "totalQuestions": 91,
+        "correct": 63,
+        "incorrect": 28,
+        "score": 10300
+      },
+      "configurationSnapshot": {
+        "version": 1,
+        "multiplier": 1,
+        "rewards": {
+          "aureos": 0,
+          "experience": 0,
+          "streak": {
+            "enabled": false,
+            "bonus": 0
+          },
+          "achievements": {}
+        },
+        "folio": "0003",
+        "title": "0003",
+        "description": "",
+        "createdAt": "2026-09-21T15:11:07.298Z",
+        "grade": "4° Grado",
+        "opsConfig": {
+          "mult": {
+            "tables": [
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10
+            ],
+            "qty": 4,
+            "detailMode": true,
+            "matrix": [
+              "0x4",
+              "0x5",
+              "0x6",
+              "0x7",
+              "0x8",
+              "0x9",
+              "0x10",
+              "1x4",
+              "1x5",
+              "1x6",
+              "1x7",
+              "1x8",
+              "1x9",
+              "1x10",
+              "2x4",
+              "2x5",
+              "2x6",
+              "2x7",
+              "2x8",
+              "2x9",
+              "2x10",
+              "3x4",
+              "3x5",
+              "3x6",
+              "3x7",
+              "3x8",
+              "3x9",
+              "3x10",
+              "4x4",
+              "4x5",
+              "4x6",
+              "4x7",
+              "4x8",
+              "4x9",
+              "4x10",
+              "5x4",
+              "5x5",
+              "5x6",
+              "5x7",
+              "5x8",
+              "5x9",
+              "5x10",
+              "6x4",
+              "6x5",
+              "6x6",
+              "6x7",
+              "6x8",
+              "6x9",
+              "6x10",
+              "7x4",
+              "7x5",
+              "7x6",
+              "7x7",
+              "7x8",
+              "7x9",
+              "7x10",
+              "8x4",
+              "8x5",
+              "8x6",
+              "8x7",
+              "8x8",
+              "8x9",
+              "8x10",
+              "9x4",
+              "9x5",
+              "9x6",
+              "9x7",
+              "9x8",
+              "9x9",
+              "9x10",
+              "10x4",
+              "10x5",
+              "10x6",
+              "10x7",
+              "10x8",
+              "10x9",
+              "10x10",
+              "11x4",
+              "11x5",
+              "11x6",
+              "11x7",
+              "11x8",
+              "11x9",
+              "11x10",
+              "12x4",
+              "12x5",
+              "12x6",
+              "12x7",
+              "12x8",
+              "12x9",
+              "12x10"
+            ],
+            "manner": "random"
+          }
+        },
+        "timeLimit": 0,
+        "timePerQuestion": 15
+      },
+      "revision": 1,
+      "startedAt": "2026-09-21T15:11:32.829Z",
+      "updatedAt": "2026-09-21T16:08:20.913Z",
+      "finishedAt": "2026-09-21T16:08:20.913Z",
+      "origin": "live_exam",
+      "official": false,
+      "deletedAt": null
+    },
+    {
+      "attemptId": "2d0ffd8d-6c64-47a3-bf51-9bfeaad982ab",
+      "testId": "8a16b773-683a-415b-9f86-88b8988facbf",
+      "accountPlayerId": "49d3ece2-8d1a-5899-99ac-8cee5ea802a7",
+      "parentAttemptId": null,
+      "status": "finished",
+      "progress": {
+        "studentSnapshot": {
+          "name": "Briana",
+          "grade": "3° Grado"
+        },
+        "examStartedAt": 1790003462966,
+        "currentIndex": 77,
+        "totalQuestions": 77,
+        "correct": 35,
+        "incorrect": 42,
+        "score": 3750
+      },
+      "configurationSnapshot": {
+        "version": 1,
+        "multiplier": 1,
+        "rewards": {
+          "aureos": 0,
+          "experience": 0,
+          "streak": {
+            "enabled": false,
+            "bonus": 0
+          },
+          "achievements": {}
+        },
+        "folio": "0002",
+        "title": "0002",
+        "description": "",
+        "createdAt": "2026-09-21T15:10:36.353Z",
+        "grade": "3° Grado",
+        "opsConfig": {
+          "mult": {
+            "tables": [
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10
+            ],
+            "qty": 4,
+            "detailMode": true,
+            "matrix": [
+              "0x4",
+              "0x5",
+              "0x6",
+              "0x7",
+              "0x8",
+              "0x9",
+              "0x10",
+              "1x4",
+              "1x5",
+              "1x6",
+              "1x7",
+              "1x8",
+              "1x9",
+              "1x10",
+              "2x4",
+              "2x5",
+              "2x6",
+              "2x7",
+              "2x8",
+              "2x9",
+              "2x10",
+              "3x4",
+              "3x5",
+              "3x6",
+              "3x7",
+              "3x8",
+              "3x9",
+              "3x10",
+              "4x4",
+              "4x5",
+              "4x6",
+              "4x7",
+              "4x8",
+              "4x9",
+              "4x10",
+              "5x4",
+              "5x5",
+              "5x6",
+              "5x7",
+              "5x8",
+              "5x9",
+              "5x10",
+              "6x4",
+              "6x5",
+              "6x6",
+              "6x7",
+              "6x8",
+              "6x9",
+              "6x10",
+              "7x4",
+              "7x5",
+              "7x6",
+              "7x7",
+              "7x8",
+              "7x9",
+              "7x10",
+              "8x4",
+              "8x5",
+              "8x6",
+              "8x7",
+              "8x8",
+              "8x9",
+              "8x10",
+              "9x4",
+              "9x5",
+              "9x6",
+              "9x7",
+              "9x8",
+              "9x9",
+              "9x10",
+              "10x4",
+              "10x5",
+              "10x6",
+              "10x7",
+              "10x8",
+              "10x9",
+              "10x10"
+            ],
+            "manner": "random"
+          }
+        },
+        "timeLimit": 0,
+        "timePerQuestion": 15
+      },
+      "revision": 1,
+      "startedAt": "2026-09-21T15:11:02.966Z",
+      "updatedAt": "2026-09-21T16:13:16.839Z",
+      "finishedAt": "2026-09-21T16:13:16.839Z",
+      "origin": "live_exam",
+      "official": false,
+      "deletedAt": null
+    },
+    {
+      "attemptId": "9cda64e7-bb4e-4271-b6d6-44e58328066b",
+      "testId": "02872762-1719-484f-8853-ef05c173e4c3",
+      "accountPlayerId": "450c3187-fd46-5aff-a9a8-c4dfa3929438",
+      "parentAttemptId": null,
+      "status": "finished",
+      "progress": {
+        "studentSnapshot": {
+          "name": "Adrian",
+          "grade": "4° Grado"
+        },
+        "examStartedAt": 1790003492829,
+        "currentIndex": 91,
+        "totalQuestions": 91,
+        "correct": 63,
+        "incorrect": 27,
+        "score": 8340
+      },
+      "configurationSnapshot": {
+        "version": 1,
+        "multiplier": 1,
+        "rewards": {
+          "aureos": 0,
+          "experience": 0,
+          "streak": {
+            "enabled": false,
+            "bonus": 0
+          },
+          "achievements": {}
+        },
+        "folio": "0003",
+        "title": "0003",
+        "description": "",
+        "createdAt": "2026-09-21T15:11:07.298Z",
+        "grade": "4° Grado",
+        "opsConfig": {
+          "mult": {
+            "tables": [
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10
+            ],
+            "qty": 4,
+            "detailMode": true,
+            "matrix": [
+              "0x4",
+              "0x5",
+              "0x6",
+              "0x7",
+              "0x8",
+              "0x9",
+              "0x10",
+              "1x4",
+              "1x5",
+              "1x6",
+              "1x7",
+              "1x8",
+              "1x9",
+              "1x10",
+              "2x4",
+              "2x5",
+              "2x6",
+              "2x7",
+              "2x8",
+              "2x9",
+              "2x10",
+              "3x4",
+              "3x5",
+              "3x6",
+              "3x7",
+              "3x8",
+              "3x9",
+              "3x10",
+              "4x4",
+              "4x5",
+              "4x6",
+              "4x7",
+              "4x8",
+              "4x9",
+              "4x10",
+              "5x4",
+              "5x5",
+              "5x6",
+              "5x7",
+              "5x8",
+              "5x9",
+              "5x10",
+              "6x4",
+              "6x5",
+              "6x6",
+              "6x7",
+              "6x8",
+              "6x9",
+              "6x10",
+              "7x4",
+              "7x5",
+              "7x6",
+              "7x7",
+              "7x8",
+              "7x9",
+              "7x10",
+              "8x4",
+              "8x5",
+              "8x6",
+              "8x7",
+              "8x8",
+              "8x9",
+              "8x10",
+              "9x4",
+              "9x5",
+              "9x6",
+              "9x7",
+              "9x8",
+              "9x9",
+              "9x10",
+              "10x4",
+              "10x5",
+              "10x6",
+              "10x7",
+              "10x8",
+              "10x9",
+              "10x10",
+              "11x4",
+              "11x5",
+              "11x6",
+              "11x7",
+              "11x8",
+              "11x9",
+              "11x10",
+              "12x4",
+              "12x5",
+              "12x6",
+              "12x7",
+              "12x8",
+              "12x9",
+              "12x10"
+            ],
+            "manner": "random"
+          }
+        },
+        "timeLimit": 0,
+        "timePerQuestion": 15
+      },
+      "revision": 1,
+      "startedAt": "2026-09-21T15:11:32.829Z",
+      "updatedAt": "2026-09-21T16:21:25.005Z",
+      "finishedAt": "2026-09-21T16:21:25.005Z",
+      "origin": "live_exam",
+      "official": false,
+      "deletedAt": null
+    },
+    {
+      "attemptId": "46c73715-aad3-46c8-909d-ead8bf111b74",
+      "testId": "8a16b773-683a-415b-9f86-88b8988facbf",
+      "accountPlayerId": "4ba2be16-9e3a-547d-89b4-cbf8906c70af",
+      "parentAttemptId": null,
+      "status": "finished",
+      "progress": {
+        "studentSnapshot": {
+          "name": "Ariel",
+          "grade": "3° Grado"
+        },
+        "examStartedAt": 1790003462966,
+        "currentIndex": 77,
+        "totalQuestions": 77,
+        "correct": 59,
+        "incorrect": 18,
+        "score": 9165
+      },
+      "configurationSnapshot": {
+        "version": 1,
+        "multiplier": 1,
+        "rewards": {
+          "aureos": 0,
+          "experience": 0,
+          "streak": {
+            "enabled": false,
+            "bonus": 0
+          },
+          "achievements": {}
+        },
+        "folio": "0002",
+        "title": "0002",
+        "description": "",
+        "createdAt": "2026-09-21T15:10:36.353Z",
+        "grade": "3° Grado",
+        "opsConfig": {
+          "mult": {
+            "tables": [
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10
+            ],
+            "qty": 4,
+            "detailMode": true,
+            "matrix": [
+              "0x4",
+              "0x5",
+              "0x6",
+              "0x7",
+              "0x8",
+              "0x9",
+              "0x10",
+              "1x4",
+              "1x5",
+              "1x6",
+              "1x7",
+              "1x8",
+              "1x9",
+              "1x10",
+              "2x4",
+              "2x5",
+              "2x6",
+              "2x7",
+              "2x8",
+              "2x9",
+              "2x10",
+              "3x4",
+              "3x5",
+              "3x6",
+              "3x7",
+              "3x8",
+              "3x9",
+              "3x10",
+              "4x4",
+              "4x5",
+              "4x6",
+              "4x7",
+              "4x8",
+              "4x9",
+              "4x10",
+              "5x4",
+              "5x5",
+              "5x6",
+              "5x7",
+              "5x8",
+              "5x9",
+              "5x10",
+              "6x4",
+              "6x5",
+              "6x6",
+              "6x7",
+              "6x8",
+              "6x9",
+              "6x10",
+              "7x4",
+              "7x5",
+              "7x6",
+              "7x7",
+              "7x8",
+              "7x9",
+              "7x10",
+              "8x4",
+              "8x5",
+              "8x6",
+              "8x7",
+              "8x8",
+              "8x9",
+              "8x10",
+              "9x4",
+              "9x5",
+              "9x6",
+              "9x7",
+              "9x8",
+              "9x9",
+              "9x10",
+              "10x4",
+              "10x5",
+              "10x6",
+              "10x7",
+              "10x8",
+              "10x9",
+              "10x10"
+            ],
+            "manner": "random"
+          }
+        },
+        "timeLimit": 0,
+        "timePerQuestion": 15
+      },
+      "revision": 1,
+      "startedAt": "2026-09-21T15:11:02.966Z",
+      "updatedAt": "2026-09-21T16:22:28.781Z",
+      "finishedAt": "2026-09-21T16:22:28.781Z",
+      "origin": "live_exam",
+      "official": false,
+      "deletedAt": null
+    },
+    {
+      "attemptId": "55723c4d-f59c-457c-b042-d49932ef4e64",
+      "testId": "666bb25c-e0df-456f-b037-f263c61b4c75",
+      "accountPlayerId": "7d3a51eb-2565-5304-8e9a-106653ba5af1",
+      "parentAttemptId": null,
+      "status": "finished",
+      "progress": {
+        "studentSnapshot": {
+          "name": "Dario",
+          "grade": "4° Grado"
+        },
+        "examStartedAt": 1790179439182,
+        "currentIndex": 60,
+        "totalQuestions": 60,
+        "correct": 50,
+        "incorrect": 10,
+        "score": 10310
+      },
+      "configurationSnapshot": {
+        "version": 1,
+        "multiplier": 1,
+        "rewards": {
+          "aureos": 0,
+          "experience": 0,
+          "streak": {
+            "enabled": false,
+            "bonus": 0
+          },
+          "achievements": {}
+        },
+        "folio": "0007",
+        "title": "0007",
+        "description": "",
+        "createdAt": "2026-09-23T16:03:34.818Z",
+        "grade": "4° Grado",
+        "opsConfig": {
+          "mult": {
+            "tables": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12
+            ],
+            "qty": 5,
+            "detailMode": false,
+            "manner": "random"
+          }
+        },
+        "timeLimit": 0,
+        "timePerQuestion": 10
+      },
+      "revision": 1,
+      "startedAt": "2026-09-23T16:03:59.182Z",
+      "updatedAt": "2026-09-23T16:08:58.656Z",
+      "finishedAt": "2026-09-23T16:08:58.656Z",
+      "origin": "live_exam",
+      "official": false,
+      "deletedAt": null
+    },
+    {
+      "attemptId": "fb32b2f0-05eb-459d-a00a-153b4b43d29e",
+      "testId": "666bb25c-e0df-456f-b037-f263c61b4c75",
+      "accountPlayerId": "142a67f0-e4ba-512f-b55d-86c2b18a9488",
+      "parentAttemptId": null,
+      "status": "finished",
+      "progress": {
+        "studentSnapshot": {
+          "name": "William",
+          "grade": "4° Grado"
+        },
+        "examStartedAt": 1790179439182,
+        "currentIndex": 60,
+        "totalQuestions": 60,
+        "correct": 52,
+        "incorrect": 8,
+        "score": 9810
+      },
+      "configurationSnapshot": {
+        "version": 1,
+        "multiplier": 1,
+        "rewards": {
+          "aureos": 0,
+          "experience": 0,
+          "streak": {
+            "enabled": false,
+            "bonus": 0
+          },
+          "achievements": {}
+        },
+        "folio": "0007",
+        "title": "0007",
+        "description": "",
+        "createdAt": "2026-09-23T16:03:34.818Z",
+        "grade": "4° Grado",
+        "opsConfig": {
+          "mult": {
+            "tables": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12
+            ],
+            "qty": 5,
+            "detailMode": false,
+            "manner": "random"
+          }
+        },
+        "timeLimit": 0,
+        "timePerQuestion": 10
+      },
+      "revision": 1,
+      "startedAt": "2026-09-23T16:03:59.182Z",
+      "updatedAt": "2026-09-23T16:09:41.856Z",
+      "finishedAt": "2026-09-23T16:09:41.856Z",
+      "origin": "live_exam",
+      "official": false,
+      "deletedAt": null
+    },
+    {
+      "attemptId": "67c0b99d-9b3e-4d08-bbf6-8aabf71ae037",
+      "testId": "666bb25c-e0df-456f-b037-f263c61b4c75",
+      "accountPlayerId": "9ea78f33-950f-4d1c-82a4-f60ca07707fc",
+      "parentAttemptId": null,
+      "status": "finished",
+      "progress": {
+        "studentSnapshot": {
+          "name": "Santiago",
+          "grade": "4° Grado"
+        },
+        "examStartedAt": 1790179439182,
+        "currentIndex": 60,
+        "totalQuestions": 60,
+        "correct": 34,
+        "incorrect": 26,
+        "score": 4155
+      },
+      "configurationSnapshot": {
+        "version": 1,
+        "multiplier": 1,
+        "rewards": {
+          "aureos": 0,
+          "experience": 0,
+          "streak": {
+            "enabled": false,
+            "bonus": 0
+          },
+          "achievements": {}
+        },
+        "folio": "0007",
+        "title": "0007",
+        "description": "",
+        "createdAt": "2026-09-23T16:03:34.818Z",
+        "grade": "4° Grado",
+        "opsConfig": {
+          "mult": {
+            "tables": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12
+            ],
+            "qty": 5,
+            "detailMode": false,
+            "manner": "random"
+          }
+        },
+        "timeLimit": 0,
+        "timePerQuestion": 10
+      },
+      "revision": 1,
+      "startedAt": "2026-09-23T16:03:59.182Z",
+      "updatedAt": "2026-09-23T16:13:15.669Z",
+      "finishedAt": "2026-09-23T16:13:15.669Z",
+      "origin": "live_exam",
+      "official": false,
+      "deletedAt": null
+    },
+    {
+      "attemptId": "b3b86e7e-984b-4c77-a6f6-d3d56b5b0a22",
+      "testId": "6e858ad2-05cf-4285-85f4-776df3618e27",
+      "accountPlayerId": "5fcc4b25-5798-56c0-bf5c-221b623860d2",
+      "parentAttemptId": null,
+      "status": "finished",
+      "progress": {
+        "studentSnapshot": {
+          "name": "Angel",
+          "grade": "3° Grado"
+        },
+        "examStartedAt": 1790179497409,
+        "currentIndex": 50,
+        "totalQuestions": 50,
+        "correct": 26,
+        "incorrect": 24,
+        "score": 3250
+      },
+      "configurationSnapshot": {
+        "version": 1,
+        "multiplier": 1,
+        "rewards": {
+          "aureos": 0,
+          "experience": 0,
+          "streak": {
+            "enabled": false,
+            "bonus": 0
+          },
+          "achievements": {}
+        },
+        "folio": "0008",
+        "title": "0008",
+        "description": "",
+        "createdAt": "2026-09-23T16:04:17.540Z",
+        "grade": "3° Grado",
+        "opsConfig": {
+          "mult": {
+            "tables": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10
+            ],
+            "qty": 5,
+            "detailMode": false,
+            "manner": "random"
+          }
+        },
+        "timeLimit": 0,
+        "timePerQuestion": 15
+      },
+      "revision": 1,
+      "startedAt": "2026-09-23T16:04:57.409Z",
+      "updatedAt": "2026-09-23T16:14:49.881Z",
+      "finishedAt": "2026-09-23T16:14:49.881Z",
+      "origin": "live_exam",
+      "official": false,
+      "deletedAt": null
+    },
+    {
+      "attemptId": "efb35d5f-c446-4ad2-8c7f-d67b05fee35f",
+      "testId": "666bb25c-e0df-456f-b037-f263c61b4c75",
+      "accountPlayerId": "450c3187-fd46-5aff-a9a8-c4dfa3929438",
+      "parentAttemptId": null,
+      "status": "finished",
+      "progress": {
+        "studentSnapshot": {
+          "name": "Adrian",
+          "grade": "4° Grado"
+        },
+        "examStartedAt": 1790179439182,
+        "currentIndex": 60,
+        "totalQuestions": 60,
+        "correct": 44,
+        "incorrect": 14,
+        "score": 7515
+      },
+      "configurationSnapshot": {
+        "version": 1,
+        "multiplier": 1,
+        "rewards": {
+          "aureos": 0,
+          "experience": 0,
+          "streak": {
+            "enabled": false,
+            "bonus": 0
+          },
+          "achievements": {}
+        },
+        "folio": "0007",
+        "title": "0007",
+        "description": "",
+        "createdAt": "2026-09-23T16:03:34.818Z",
+        "grade": "4° Grado",
+        "opsConfig": {
+          "mult": {
+            "tables": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12
+            ],
+            "qty": 5,
+            "detailMode": false,
+            "manner": "random"
+          }
+        },
+        "timeLimit": 0,
+        "timePerQuestion": 10
+      },
+      "revision": 1,
+      "startedAt": "2026-09-23T16:03:59.182Z",
+      "updatedAt": "2026-09-23T16:20:30.669Z",
+      "finishedAt": "2026-09-23T16:20:30.669Z",
+      "origin": "live_exam",
+      "official": false,
+      "deletedAt": null
+    },
+    {
+      "attemptId": "0fa3ed4c-e131-4b9a-8b32-73b3bf9f8d4a",
+      "testId": "6e858ad2-05cf-4285-85f4-776df3618e27",
+      "accountPlayerId": "9cff755e-1282-5d11-883c-fdb79ce56801",
+      "parentAttemptId": null,
+      "status": "finished",
+      "progress": {
+        "studentSnapshot": {
+          "name": "Alexia",
+          "grade": "3° Grado"
+        },
+        "examStartedAt": 1790179497409,
+        "currentIndex": 50,
+        "totalQuestions": 50,
+        "correct": 44,
+        "incorrect": 6,
+        "score": 8400
+      },
+      "configurationSnapshot": {
+        "version": 1,
+        "multiplier": 1,
+        "rewards": {
+          "aureos": 0,
+          "experience": 0,
+          "streak": {
+            "enabled": false,
+            "bonus": 0
+          },
+          "achievements": {}
+        },
+        "folio": "0008",
+        "title": "0008",
+        "description": "",
+        "createdAt": "2026-09-23T16:04:17.540Z",
+        "grade": "3° Grado",
+        "opsConfig": {
+          "mult": {
+            "tables": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10
+            ],
+            "qty": 5,
+            "detailMode": false,
+            "manner": "random"
+          }
+        },
+        "timeLimit": 0,
+        "timePerQuestion": 15
+      },
+      "revision": 1,
+      "startedAt": "2026-09-23T16:04:57.409Z",
+      "updatedAt": "2026-09-23T16:22:34.164Z",
+      "finishedAt": "2026-09-23T16:22:34.164Z",
+      "origin": "live_exam",
+      "official": false,
+      "deletedAt": null
+    },
+    {
+      "attemptId": "9cdfca1c-e97f-458a-ac26-6f6952125e17",
+      "testId": "666bb25c-e0df-456f-b037-f263c61b4c75",
+      "accountPlayerId": "4afaf2a0-1e0a-5a2e-abf8-c22cda9b5b2e",
+      "parentAttemptId": null,
+      "status": "finished",
+      "progress": {
+        "studentSnapshot": {
+          "name": "Natali",
+          "grade": "4° Grado"
+        },
+        "examStartedAt": 1790179439182,
+        "currentIndex": 60,
+        "totalQuestions": 60,
+        "correct": 58,
+        "incorrect": 2,
+        "score": 17645
+      },
+      "configurationSnapshot": {
+        "version": 1,
+        "multiplier": 1,
+        "rewards": {
+          "aureos": 0,
+          "experience": 0,
+          "streak": {
+            "enabled": false,
+            "bonus": 0
+          },
+          "achievements": {}
+        },
+        "folio": "0007",
+        "title": "0007",
+        "description": "",
+        "createdAt": "2026-09-23T16:03:34.818Z",
+        "grade": "4° Grado",
+        "opsConfig": {
+          "mult": {
+            "tables": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12
+            ],
+            "qty": 5,
+            "detailMode": false,
+            "manner": "random"
+          }
+        },
+        "timeLimit": 0,
+        "timePerQuestion": 10
+      },
+      "revision": 1,
+      "startedAt": "2026-09-23T16:03:59.182Z",
+      "updatedAt": "2026-09-23T16:27:02.210Z",
+      "finishedAt": "2026-09-23T16:27:02.210Z",
+      "origin": "live_exam",
+      "official": false,
+      "deletedAt": null
+    },
+    {
+      "attemptId": "20960bc6-3584-4a1a-b0e2-1eb321c227d4",
+      "testId": "666bb25c-e0df-456f-b037-f263c61b4c75",
+      "accountPlayerId": "bf5e9dee-f04f-47c4-a281-deb291117e9d",
+      "parentAttemptId": null,
+      "status": "finished",
+      "progress": {
+        "studentSnapshot": {
+          "name": "Marlen",
+          "grade": "4° Grado"
+        },
+        "examStartedAt": 1790179439182,
+        "currentIndex": 60,
+        "totalQuestions": 60,
+        "correct": 60,
+        "incorrect": 0,
+        "score": 19385
+      },
+      "configurationSnapshot": {
+        "version": 1,
+        "multiplier": 1,
+        "rewards": {
+          "aureos": 0,
+          "experience": 0,
+          "streak": {
+            "enabled": false,
+            "bonus": 0
+          },
+          "achievements": {}
+        },
+        "folio": "0007",
+        "title": "0007",
+        "description": "",
+        "createdAt": "2026-09-23T16:03:34.818Z",
+        "grade": "4° Grado",
+        "opsConfig": {
+          "mult": {
+            "tables": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12
+            ],
+            "qty": 5,
+            "detailMode": false,
+            "manner": "random"
+          }
+        },
+        "timeLimit": 0,
+        "timePerQuestion": 10
+      },
+      "revision": 1,
+      "startedAt": "2026-09-23T16:03:59.182Z",
+      "updatedAt": "2026-09-23T16:28:26.457Z",
+      "finishedAt": "2026-09-23T16:28:26.457Z",
+      "origin": "live_exam",
+      "official": false,
+      "deletedAt": null
+    },
+    {
+      "attemptId": "ffd7bc57-e957-46b3-911b-cd140ebdb869",
+      "testId": "666bb25c-e0df-456f-b037-f263c61b4c75",
+      "accountPlayerId": "b64af2a1-c558-41ab-ad00-59f4ea4d7061",
+      "parentAttemptId": null,
+      "status": "finished",
+      "progress": {
+        "studentSnapshot": {
+          "name": "Yuli",
+          "grade": "4° Grado"
+        },
+        "examStartedAt": 1790179439182,
+        "currentIndex": 60,
+        "totalQuestions": 60,
+        "correct": 55,
+        "incorrect": 3,
+        "score": 13890
+      },
+      "configurationSnapshot": {
+        "version": 1,
+        "multiplier": 1,
+        "rewards": {
+          "aureos": 0,
+          "experience": 0,
+          "streak": {
+            "enabled": false,
+            "bonus": 0
+          },
+          "achievements": {}
+        },
+        "folio": "0007",
+        "title": "0007",
+        "description": "",
+        "createdAt": "2026-09-23T16:03:34.818Z",
+        "grade": "4° Grado",
+        "opsConfig": {
+          "mult": {
+            "tables": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12
+            ],
+            "qty": 5,
+            "detailMode": false,
+            "manner": "random"
+          }
+        },
+        "timeLimit": 0,
+        "timePerQuestion": 10
+      },
+      "revision": 1,
+      "startedAt": "2026-09-23T16:03:59.182Z",
+      "updatedAt": "2026-09-23T16:33:32.438Z",
+      "finishedAt": "2026-09-23T16:33:32.438Z",
+      "origin": "live_exam",
+      "official": false,
+      "deletedAt": null
+    },
+    {
+      "attemptId": "1403ec9e-2a99-4d62-8b28-0ef7d6d58b67",
+      "testId": "6e858ad2-05cf-4285-85f4-776df3618e27",
+      "accountPlayerId": "5ceefd1b-4db5-5fc0-9ba0-63fae6f55180",
+      "parentAttemptId": null,
+      "status": "finished",
+      "progress": {
+        "studentSnapshot": {
+          "name": "Alexa",
+          "grade": "3° Grado"
+        },
+        "examStartedAt": 1790179497409,
+        "currentIndex": 50,
+        "totalQuestions": 50,
+        "correct": 21,
+        "incorrect": 29,
+        "score": 2395
+      },
+      "configurationSnapshot": {
+        "version": 1,
+        "multiplier": 1,
+        "rewards": {
+          "aureos": 0,
+          "experience": 0,
+          "streak": {
+            "enabled": false,
+            "bonus": 0
+          },
+          "achievements": {}
+        },
+        "folio": "0008",
+        "title": "0008",
+        "description": "",
+        "createdAt": "2026-09-23T16:04:17.540Z",
+        "grade": "3° Grado",
+        "opsConfig": {
+          "mult": {
+            "tables": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10
+            ],
+            "qty": 5,
+            "detailMode": false,
+            "manner": "random"
+          }
+        },
+        "timeLimit": 0,
+        "timePerQuestion": 15
+      },
+      "revision": 1,
+      "startedAt": "2026-09-23T16:04:57.409Z",
+      "updatedAt": "2026-09-23T16:35:20.572Z",
+      "finishedAt": "2026-09-23T16:35:20.572Z",
+      "origin": "live_exam",
+      "official": false,
+      "deletedAt": null
+    },
+    {
+      "attemptId": "ef3dc2a0-de5b-4f1d-b18b-8d5466c6e48e",
+      "testId": "6e858ad2-05cf-4285-85f4-776df3618e27",
+      "accountPlayerId": "4ba2be16-9e3a-547d-89b4-cbf8906c70af",
+      "parentAttemptId": null,
+      "status": "finished",
+      "progress": {
+        "studentSnapshot": {
+          "name": "Ariel",
+          "grade": "3° Grado"
+        },
+        "examStartedAt": 1790179497409,
+        "currentIndex": 50,
+        "totalQuestions": 50,
+        "correct": 29,
+        "incorrect": 21,
+        "score": 3595
+      },
+      "configurationSnapshot": {
+        "version": 1,
+        "multiplier": 1,
+        "rewards": {
+          "aureos": 0,
+          "experience": 0,
+          "streak": {
+            "enabled": false,
+            "bonus": 0
+          },
+          "achievements": {}
+        },
+        "folio": "0008",
+        "title": "0008",
+        "description": "",
+        "createdAt": "2026-09-23T16:04:17.540Z",
+        "grade": "3° Grado",
+        "opsConfig": {
+          "mult": {
+            "tables": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10
+            ],
+            "qty": 5,
+            "detailMode": false,
+            "manner": "random"
+          }
+        },
+        "timeLimit": 0,
+        "timePerQuestion": 15
+      },
+      "revision": 1,
+      "startedAt": "2026-09-23T16:04:57.409Z",
+      "updatedAt": "2026-09-23T16:39:29.385Z",
+      "finishedAt": "2026-09-23T16:39:29.385Z",
+      "origin": "live_exam",
+      "official": false,
+      "deletedAt": null
+    },
+    {
+      "attemptId": "4c879b60-5682-4f23-9a9f-507064a85613",
+      "testId": "6e858ad2-05cf-4285-85f4-776df3618e27",
+      "accountPlayerId": "49d3ece2-8d1a-5899-99ac-8cee5ea802a7",
+      "parentAttemptId": null,
+      "status": "finished",
+      "progress": {
+        "studentSnapshot": {
+          "name": "Briana",
+          "grade": "3° Grado"
+        },
+        "examStartedAt": 1790179497409,
+        "currentIndex": 50,
+        "totalQuestions": 50,
+        "correct": 26,
+        "incorrect": 24,
+        "score": 3195
+      },
+      "configurationSnapshot": {
+        "version": 1,
+        "multiplier": 1,
+        "rewards": {
+          "aureos": 0,
+          "experience": 0,
+          "streak": {
+            "enabled": false,
+            "bonus": 0
+          },
+          "achievements": {}
+        },
+        "folio": "0008",
+        "title": "0008",
+        "description": "",
+        "createdAt": "2026-09-23T16:04:17.540Z",
+        "grade": "3° Grado",
+        "opsConfig": {
+          "mult": {
+            "tables": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10
+            ],
+            "qty": 5,
+            "detailMode": false,
+            "manner": "random"
+          }
+        },
+        "timeLimit": 0,
+        "timePerQuestion": 15
+      },
+      "revision": 1,
+      "startedAt": "2026-09-23T16:04:57.409Z",
+      "updatedAt": "2026-09-23T16:40:25.181Z",
+      "finishedAt": "2026-09-23T16:40:25.181Z",
+      "origin": "live_exam",
+      "official": false,
+      "deletedAt": null
     }
   ],
   "checkpoints": [],
@@ -3081,6 +6851,420 @@
         "multiplier": 1
       },
       "completedAt": "2026-09-18T18:41:40.974Z",
+      "rankingPublicationId": null,
+      "settlementKey": null
+    },
+    {
+      "resultId": "fccfcd0f-a79f-40ad-90c2-7e91ef9009c0",
+      "attemptId": "5de5e085-1b7b-4d72-a9a2-4a04a8817664",
+      "testId": "02872762-1719-484f-8853-ef05c173e4c3",
+      "accountPlayerId": "142a67f0-e4ba-512f-b55d-86c2b18a9488",
+      "score": 23160,
+      "correct": 84,
+      "incorrect": 7,
+      "total": 91,
+      "complete": true,
+      "duration": 721391,
+      "breakdown": {
+        "multiplier": 1
+      },
+      "completedAt": "2026-09-21T15:23:42.207Z",
+      "rankingPublicationId": null,
+      "settlementKey": null
+    },
+    {
+      "resultId": "d36a1fbd-ee3a-4dbf-8938-ec66c9fa5980",
+      "attemptId": "2bb98cbf-594c-424f-ac87-0af0d352d15a",
+      "testId": "02872762-1719-484f-8853-ef05c173e4c3",
+      "accountPlayerId": "7d3a51eb-2565-5304-8e9a-106653ba5af1",
+      "score": 10550,
+      "correct": 67,
+      "incorrect": 24,
+      "total": 91,
+      "complete": true,
+      "duration": 1259306,
+      "breakdown": {
+        "multiplier": 1
+      },
+      "completedAt": "2026-09-21T15:32:15.364Z",
+      "rankingPublicationId": null,
+      "settlementKey": null
+    },
+    {
+      "resultId": "371204bc-4aa8-49b0-9fa8-0c7bf1e3ba74",
+      "attemptId": "daab0912-80d7-41ea-9582-d02a0b0047f5",
+      "testId": "02872762-1719-484f-8853-ef05c173e4c3",
+      "accountPlayerId": "4afaf2a0-1e0a-5a2e-abf8-c22cda9b5b2e",
+      "score": 24480,
+      "correct": 84,
+      "incorrect": 7,
+      "total": 91,
+      "complete": true,
+      "duration": 1281771,
+      "breakdown": {
+        "multiplier": 1
+      },
+      "completedAt": "2026-09-21T15:33:02.638Z",
+      "rankingPublicationId": null,
+      "settlementKey": null
+    },
+    {
+      "resultId": "d47fc888-b84a-484a-9561-11ecdb2cfdf2",
+      "attemptId": "09170cbe-067e-4bbe-aebb-d0e4aeaf6111",
+      "testId": "02872762-1719-484f-8853-ef05c173e4c3",
+      "accountPlayerId": "bf5e9dee-f04f-47c4-a281-deb291117e9d",
+      "score": 31780,
+      "correct": 90,
+      "incorrect": 1,
+      "total": 91,
+      "complete": true,
+      "duration": 1772768,
+      "breakdown": {
+        "multiplier": 1
+      },
+      "completedAt": "2026-09-21T15:40:48.872Z",
+      "rankingPublicationId": null,
+      "settlementKey": null
+    },
+    {
+      "resultId": "4ae5520b-dfed-478f-8193-a642799650a7",
+      "attemptId": "05086c1f-4962-44b7-a3c6-3c23292e7adc",
+      "testId": "02872762-1719-484f-8853-ef05c173e4c3",
+      "accountPlayerId": "b64af2a1-c558-41ab-ad00-59f4ea4d7061",
+      "score": 19705,
+      "correct": 82,
+      "incorrect": 7,
+      "total": 91,
+      "complete": true,
+      "duration": 1913442,
+      "breakdown": {
+        "multiplier": 1
+      },
+      "completedAt": "2026-09-21T15:43:34.236Z",
+      "rankingPublicationId": null,
+      "settlementKey": null
+    },
+    {
+      "resultId": "954355e4-494d-40cb-b1d7-4693b3e599b7",
+      "attemptId": "de97229c-0564-41a7-8444-dd0eda073a13",
+      "testId": "8a16b773-683a-415b-9f86-88b8988facbf",
+      "accountPlayerId": "5ceefd1b-4db5-5fc0-9ba0-63fae6f55180",
+      "score": 4985,
+      "correct": 42,
+      "incorrect": 35,
+      "total": 77,
+      "complete": true,
+      "duration": 3013911,
+      "breakdown": {
+        "multiplier": 1
+      },
+      "completedAt": "2026-09-21T16:01:24.871Z",
+      "rankingPublicationId": null,
+      "settlementKey": null
+    },
+    {
+      "resultId": "6e6e3ac2-5445-48c9-83c4-0fc7e5d0aeaf",
+      "attemptId": "97604883-ea65-4157-ba75-3017c55f3032",
+      "testId": "8a16b773-683a-415b-9f86-88b8988facbf",
+      "accountPlayerId": "9cff755e-1282-5d11-883c-fdb79ce56801",
+      "score": 12305,
+      "correct": 68,
+      "incorrect": 8,
+      "total": 77,
+      "complete": true,
+      "duration": 3206334,
+      "breakdown": {
+        "multiplier": 1
+      },
+      "completedAt": "2026-09-21T16:04:12.597Z",
+      "rankingPublicationId": null,
+      "settlementKey": null
+    },
+    {
+      "resultId": "b871158f-b74e-4fed-a8e9-b6dad9578ce5",
+      "attemptId": "92444c37-0902-4d4e-8b87-0513a9c08a41",
+      "testId": "02872762-1719-484f-8853-ef05c173e4c3",
+      "accountPlayerId": "9ea78f33-950f-4d1c-82a4-f60ca07707fc",
+      "score": 10300,
+      "correct": 63,
+      "incorrect": 28,
+      "total": 91,
+      "complete": true,
+      "duration": 3400094,
+      "breakdown": {
+        "multiplier": 1
+      },
+      "completedAt": "2026-09-21T16:08:20.914Z",
+      "rankingPublicationId": null,
+      "settlementKey": null
+    },
+    {
+      "resultId": "ed8dd1b4-4096-413d-97f5-65a8cd977454",
+      "attemptId": "2d0ffd8d-6c64-47a3-bf51-9bfeaad982ab",
+      "testId": "8a16b773-683a-415b-9f86-88b8988facbf",
+      "accountPlayerId": "49d3ece2-8d1a-5899-99ac-8cee5ea802a7",
+      "score": 3750,
+      "correct": 35,
+      "incorrect": 42,
+      "total": 77,
+      "complete": true,
+      "duration": 3750436,
+      "breakdown": {
+        "multiplier": 1
+      },
+      "completedAt": "2026-09-21T16:13:16.839Z",
+      "rankingPublicationId": null,
+      "settlementKey": null
+    },
+    {
+      "resultId": "e3194643-4e0c-43e4-98ce-f186945f309e",
+      "attemptId": "9cda64e7-bb4e-4271-b6d6-44e58328066b",
+      "testId": "02872762-1719-484f-8853-ef05c173e4c3",
+      "accountPlayerId": "450c3187-fd46-5aff-a9a8-c4dfa3929438",
+      "score": 8340,
+      "correct": 63,
+      "incorrect": 27,
+      "total": 91,
+      "complete": true,
+      "duration": 4184191,
+      "breakdown": {
+        "multiplier": 1
+      },
+      "completedAt": "2026-09-21T16:21:25.005Z",
+      "rankingPublicationId": null,
+      "settlementKey": null
+    },
+    {
+      "resultId": "821a5e5c-1f55-414d-8b98-83fce8761779",
+      "attemptId": "46c73715-aad3-46c8-909d-ead8bf111b74",
+      "testId": "8a16b773-683a-415b-9f86-88b8988facbf",
+      "accountPlayerId": "4ba2be16-9e3a-547d-89b4-cbf8906c70af",
+      "score": 9165,
+      "correct": 59,
+      "incorrect": 18,
+      "total": 77,
+      "complete": true,
+      "duration": 4302338,
+      "breakdown": {
+        "multiplier": 1
+      },
+      "completedAt": "2026-09-21T16:22:28.781Z",
+      "rankingPublicationId": null,
+      "settlementKey": null
+    },
+    {
+      "resultId": "016f2eb9-a1b5-4623-95a0-ccd239d7efd7",
+      "attemptId": "55723c4d-f59c-457c-b042-d49932ef4e64",
+      "testId": "666bb25c-e0df-456f-b037-f263c61b4c75",
+      "accountPlayerId": "7d3a51eb-2565-5304-8e9a-106653ba5af1",
+      "score": 10310,
+      "correct": 50,
+      "incorrect": 10,
+      "total": 60,
+      "complete": true,
+      "duration": 288064,
+      "breakdown": {
+        "multiplier": 1
+      },
+      "completedAt": "2026-09-23T16:08:58.656Z",
+      "rankingPublicationId": null,
+      "settlementKey": null
+    },
+    {
+      "resultId": "4cdd3729-c47b-4e0d-83f1-ea94a1d45f76",
+      "attemptId": "fb32b2f0-05eb-459d-a00a-153b4b43d29e",
+      "testId": "666bb25c-e0df-456f-b037-f263c61b4c75",
+      "accountPlayerId": "142a67f0-e4ba-512f-b55d-86c2b18a9488",
+      "score": 9810,
+      "correct": 52,
+      "incorrect": 8,
+      "total": 60,
+      "complete": true,
+      "duration": 342485,
+      "breakdown": {
+        "multiplier": 1
+      },
+      "completedAt": "2026-09-23T16:09:41.856Z",
+      "rankingPublicationId": null,
+      "settlementKey": null
+    },
+    {
+      "resultId": "22dedc80-b0f5-4046-b7d8-926399030f88",
+      "attemptId": "67c0b99d-9b3e-4d08-bbf6-8aabf71ae037",
+      "testId": "666bb25c-e0df-456f-b037-f263c61b4c75",
+      "accountPlayerId": "9ea78f33-950f-4d1c-82a4-f60ca07707fc",
+      "score": 4155,
+      "correct": 34,
+      "incorrect": 26,
+      "total": 60,
+      "complete": true,
+      "duration": 545053,
+      "breakdown": {
+        "multiplier": 1
+      },
+      "completedAt": "2026-09-23T16:13:15.669Z",
+      "rankingPublicationId": null,
+      "settlementKey": null
+    },
+    {
+      "resultId": "22634798-2b9f-40ee-ad5e-c228d7a411b0",
+      "attemptId": "b3b86e7e-984b-4c77-a6f6-d3d56b5b0a22",
+      "testId": "6e858ad2-05cf-4285-85f4-776df3618e27",
+      "accountPlayerId": "5fcc4b25-5798-56c0-bf5c-221b623860d2",
+      "score": 3250,
+      "correct": 26,
+      "incorrect": 24,
+      "total": 50,
+      "complete": true,
+      "duration": 592280,
+      "breakdown": {
+        "multiplier": 1
+      },
+      "completedAt": "2026-09-23T16:14:49.881Z",
+      "rankingPublicationId": null,
+      "settlementKey": null
+    },
+    {
+      "resultId": "b4a3c506-8b09-4cf4-a6ec-de85df84b50f",
+      "attemptId": "efb35d5f-c446-4ad2-8c7f-d67b05fee35f",
+      "testId": "666bb25c-e0df-456f-b037-f263c61b4c75",
+      "accountPlayerId": "450c3187-fd46-5aff-a9a8-c4dfa3929438",
+      "score": 7515,
+      "correct": 44,
+      "incorrect": 14,
+      "total": 60,
+      "complete": true,
+      "duration": 980106,
+      "breakdown": {
+        "multiplier": 1
+      },
+      "completedAt": "2026-09-23T16:20:30.669Z",
+      "rankingPublicationId": null,
+      "settlementKey": null
+    },
+    {
+      "resultId": "90b7cbb5-302f-430f-9096-1b887c3c276e",
+      "attemptId": "0fa3ed4c-e131-4b9a-8b32-73b3bf9f8d4a",
+      "testId": "6e858ad2-05cf-4285-85f4-776df3618e27",
+      "accountPlayerId": "9cff755e-1282-5d11-883c-fdb79ce56801",
+      "score": 8400,
+      "correct": 44,
+      "incorrect": 6,
+      "total": 50,
+      "complete": true,
+      "duration": 1056580,
+      "breakdown": {
+        "multiplier": 1
+      },
+      "completedAt": "2026-09-23T16:22:34.164Z",
+      "rankingPublicationId": null,
+      "settlementKey": null
+    },
+    {
+      "resultId": "a3018f0a-962b-409d-9ff1-0ec222ee0484",
+      "attemptId": "9cdfca1c-e97f-458a-ac26-6f6952125e17",
+      "testId": "666bb25c-e0df-456f-b037-f263c61b4c75",
+      "accountPlayerId": "4afaf2a0-1e0a-5a2e-abf8-c22cda9b5b2e",
+      "score": 17645,
+      "correct": 58,
+      "incorrect": 2,
+      "total": 60,
+      "complete": true,
+      "duration": 1371704,
+      "breakdown": {
+        "multiplier": 1
+      },
+      "completedAt": "2026-09-23T16:27:02.210Z",
+      "rankingPublicationId": null,
+      "settlementKey": null
+    },
+    {
+      "resultId": "895807b2-e651-4eae-8f11-d3b4159b80e7",
+      "attemptId": "20960bc6-3584-4a1a-b0e2-1eb321c227d4",
+      "testId": "666bb25c-e0df-456f-b037-f263c61b4c75",
+      "accountPlayerId": "bf5e9dee-f04f-47c4-a281-deb291117e9d",
+      "score": 19385,
+      "correct": 60,
+      "incorrect": 0,
+      "total": 60,
+      "complete": true,
+      "duration": 1467102,
+      "breakdown": {
+        "multiplier": 1
+      },
+      "completedAt": "2026-09-23T16:28:26.457Z",
+      "rankingPublicationId": null,
+      "settlementKey": null
+    },
+    {
+      "resultId": "5fbec988-d439-4f67-a2f5-af051fc7503d",
+      "attemptId": "ffd7bc57-e957-46b3-911b-cd140ebdb869",
+      "testId": "666bb25c-e0df-456f-b037-f263c61b4c75",
+      "accountPlayerId": "b64af2a1-c558-41ab-ad00-59f4ea4d7061",
+      "score": 13890,
+      "correct": 55,
+      "incorrect": 3,
+      "total": 60,
+      "complete": true,
+      "duration": 1761928,
+      "breakdown": {
+        "multiplier": 1
+      },
+      "completedAt": "2026-09-23T16:33:32.438Z",
+      "rankingPublicationId": null,
+      "settlementKey": null
+    },
+    {
+      "resultId": "23dd5a6c-84ed-44b2-a82f-bc31350876e7",
+      "attemptId": "1403ec9e-2a99-4d62-8b28-0ef7d6d58b67",
+      "testId": "6e858ad2-05cf-4285-85f4-776df3618e27",
+      "accountPlayerId": "5ceefd1b-4db5-5fc0-9ba0-63fae6f55180",
+      "score": 2395,
+      "correct": 21,
+      "incorrect": 29,
+      "total": 50,
+      "complete": true,
+      "duration": 1822774,
+      "breakdown": {
+        "multiplier": 1
+      },
+      "completedAt": "2026-09-23T16:35:20.572Z",
+      "rankingPublicationId": null,
+      "settlementKey": null
+    },
+    {
+      "resultId": "899ce8c5-c06a-4b63-b613-f1bb7ba36494",
+      "attemptId": "ef3dc2a0-de5b-4f1d-b18b-8d5466c6e48e",
+      "testId": "6e858ad2-05cf-4285-85f4-776df3618e27",
+      "accountPlayerId": "4ba2be16-9e3a-547d-89b4-cbf8906c70af",
+      "score": 3595,
+      "correct": 29,
+      "incorrect": 21,
+      "total": 50,
+      "complete": true,
+      "duration": 2060612,
+      "breakdown": {
+        "multiplier": 1
+      },
+      "completedAt": "2026-09-23T16:39:29.385Z",
+      "rankingPublicationId": null,
+      "settlementKey": null
+    },
+    {
+      "resultId": "ba6bbbc6-e787-4f15-8677-a2baeb60450f",
+      "attemptId": "4c879b60-5682-4f23-9a9f-507064a85613",
+      "testId": "6e858ad2-05cf-4285-85f4-776df3618e27",
+      "accountPlayerId": "49d3ece2-8d1a-5899-99ac-8cee5ea802a7",
+      "score": 3195,
+      "correct": 26,
+      "incorrect": 24,
+      "total": 50,
+      "complete": true,
+      "duration": 2127546,
+      "breakdown": {
+        "multiplier": 1
+      },
+      "completedAt": "2026-09-23T16:40:25.182Z",
       "rankingPublicationId": null,
       "settlementKey": null
     }
@@ -4263,6 +8447,987 @@
         "officialAttemptId": "f70d846b-8b34-4da5-8a18-b9088a9b13b9",
         "rankingPublicationId": "d873f82e-8bf5-459b-aa09-7af0a017b6f5"
       }
+    },
+    {
+      "eventId": "45f1f9ea-e1a4-4dfe-a93a-d5965d2d6435",
+      "testId": "8a16b773-683a-415b-9f86-88b8988facbf",
+      "attemptId": null,
+      "actor": "admin",
+      "action": "test_created",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-21T15:10:36.356Z",
+      "metadata": {}
+    },
+    {
+      "eventId": "8113e988-fe0a-4732-b1f3-8843ef3bac42",
+      "testId": "8a16b773-683a-415b-9f86-88b8988facbf",
+      "attemptId": null,
+      "actor": "admin",
+      "action": "test_updated",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-21T15:11:02.909Z",
+      "metadata": {}
+    },
+    {
+      "eventId": "6c52acf3-bc87-4a14-b86f-8ebf9defe937",
+      "testId": "8a16b773-683a-415b-9f86-88b8988facbf",
+      "attemptId": null,
+      "actor": "admin",
+      "action": "assignments_replaced",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-21T15:11:02.934Z",
+      "metadata": {
+        "assignmentCount": 6,
+        "groupExpansion": false
+      }
+    },
+    {
+      "eventId": "6710f223-6cdd-42fa-9cd4-e95fd8559b44",
+      "testId": "8a16b773-683a-415b-9f86-88b8988facbf",
+      "attemptId": null,
+      "actor": "admin",
+      "action": "test_started",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-21T15:11:02.951Z",
+      "metadata": {
+        "startedAt": "2026-09-21T15:11:02.950Z"
+      }
+    },
+    {
+      "eventId": "99a8dd02-964b-4149-81aa-70bf60e027c6",
+      "testId": "02872762-1719-484f-8853-ef05c173e4c3",
+      "attemptId": null,
+      "actor": "admin",
+      "action": "test_created",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-21T15:11:07.299Z",
+      "metadata": {}
+    },
+    {
+      "eventId": "6721706a-765a-469e-87e9-ed09d7a133f5",
+      "testId": "02872762-1719-484f-8853-ef05c173e4c3",
+      "attemptId": null,
+      "actor": "admin",
+      "action": "test_updated",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-21T15:11:32.777Z",
+      "metadata": {}
+    },
+    {
+      "eventId": "81480a79-0153-4152-a31e-923ec5721493",
+      "testId": "02872762-1719-484f-8853-ef05c173e4c3",
+      "attemptId": null,
+      "actor": "admin",
+      "action": "assignments_replaced",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-21T15:11:32.803Z",
+      "metadata": {
+        "assignmentCount": 7,
+        "groupExpansion": false
+      }
+    },
+    {
+      "eventId": "84a8c71e-f9ba-4e74-b3b5-e1aa3181d569",
+      "testId": "02872762-1719-484f-8853-ef05c173e4c3",
+      "attemptId": null,
+      "actor": "admin",
+      "action": "test_started",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-21T15:11:32.820Z",
+      "metadata": {
+        "startedAt": "2026-09-21T15:11:32.820Z"
+      }
+    },
+    {
+      "eventId": "4ad2ed40-91ea-4cd1-88b0-2cda4ceed0f3",
+      "testId": "02872762-1719-484f-8853-ef05c173e4c3",
+      "attemptId": "5de5e085-1b7b-4d72-a9a2-4a04a8817664",
+      "actor": "admin",
+      "action": "attempt_created",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-21T15:23:42.207Z",
+      "metadata": {
+        "origin": "live_exam"
+      }
+    },
+    {
+      "eventId": "96012e37-19af-4eec-a5c5-b1d89d839a1f",
+      "testId": "02872762-1719-484f-8853-ef05c173e4c3",
+      "attemptId": "5de5e085-1b7b-4d72-a9a2-4a04a8817664",
+      "actor": "admin",
+      "action": "attempt_finished",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-21T15:23:42.207Z",
+      "metadata": {
+        "resultId": "fccfcd0f-a79f-40ad-90c2-7e91ef9009c0",
+        "origin": "live_exam"
+      }
+    },
+    {
+      "eventId": "780bf153-613a-44b3-a981-26dbe440aa1a",
+      "testId": "02872762-1719-484f-8853-ef05c173e4c3",
+      "attemptId": "2bb98cbf-594c-424f-ac87-0af0d352d15a",
+      "actor": "admin",
+      "action": "attempt_created",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-21T15:32:15.364Z",
+      "metadata": {
+        "origin": "live_exam"
+      }
+    },
+    {
+      "eventId": "3405cc93-f8cd-49f3-804f-99af0695987f",
+      "testId": "02872762-1719-484f-8853-ef05c173e4c3",
+      "attemptId": "2bb98cbf-594c-424f-ac87-0af0d352d15a",
+      "actor": "admin",
+      "action": "attempt_finished",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-21T15:32:15.364Z",
+      "metadata": {
+        "resultId": "d36a1fbd-ee3a-4dbf-8938-ec66c9fa5980",
+        "origin": "live_exam"
+      }
+    },
+    {
+      "eventId": "894d6727-4d67-45ea-a314-625a344579c5",
+      "testId": "02872762-1719-484f-8853-ef05c173e4c3",
+      "attemptId": "daab0912-80d7-41ea-9582-d02a0b0047f5",
+      "actor": "admin",
+      "action": "attempt_created",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-21T15:33:02.638Z",
+      "metadata": {
+        "origin": "live_exam"
+      }
+    },
+    {
+      "eventId": "d2e3c18e-25c7-457a-9592-19b32623188c",
+      "testId": "02872762-1719-484f-8853-ef05c173e4c3",
+      "attemptId": "daab0912-80d7-41ea-9582-d02a0b0047f5",
+      "actor": "admin",
+      "action": "attempt_finished",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-21T15:33:02.638Z",
+      "metadata": {
+        "resultId": "371204bc-4aa8-49b0-9fa8-0c7bf1e3ba74",
+        "origin": "live_exam"
+      }
+    },
+    {
+      "eventId": "52df5a11-e15a-4ff0-bef6-a4d7b0c83643",
+      "testId": "02872762-1719-484f-8853-ef05c173e4c3",
+      "attemptId": "09170cbe-067e-4bbe-aebb-d0e4aeaf6111",
+      "actor": "admin",
+      "action": "attempt_created",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-21T15:40:48.872Z",
+      "metadata": {
+        "origin": "live_exam"
+      }
+    },
+    {
+      "eventId": "358a0a73-175b-4209-9e13-6b77ddf30046",
+      "testId": "02872762-1719-484f-8853-ef05c173e4c3",
+      "attemptId": "09170cbe-067e-4bbe-aebb-d0e4aeaf6111",
+      "actor": "admin",
+      "action": "attempt_finished",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-21T15:40:48.872Z",
+      "metadata": {
+        "resultId": "d47fc888-b84a-484a-9561-11ecdb2cfdf2",
+        "origin": "live_exam"
+      }
+    },
+    {
+      "eventId": "89284939-1e2b-43f2-92cd-7e0c96c4dd8f",
+      "testId": "02872762-1719-484f-8853-ef05c173e4c3",
+      "attemptId": "05086c1f-4962-44b7-a3c6-3c23292e7adc",
+      "actor": "admin",
+      "action": "attempt_created",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-21T15:43:34.236Z",
+      "metadata": {
+        "origin": "live_exam"
+      }
+    },
+    {
+      "eventId": "d81ec1cb-7f29-4ddc-871e-a196b9fe9fe0",
+      "testId": "02872762-1719-484f-8853-ef05c173e4c3",
+      "attemptId": "05086c1f-4962-44b7-a3c6-3c23292e7adc",
+      "actor": "admin",
+      "action": "attempt_finished",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-21T15:43:34.236Z",
+      "metadata": {
+        "resultId": "4ae5520b-dfed-478f-8193-a642799650a7",
+        "origin": "live_exam"
+      }
+    },
+    {
+      "eventId": "3c6fed6c-890f-4106-a132-7494d3915524",
+      "testId": "8a16b773-683a-415b-9f86-88b8988facbf",
+      "attemptId": "de97229c-0564-41a7-8444-dd0eda073a13",
+      "actor": "admin",
+      "action": "attempt_created",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-21T16:01:24.871Z",
+      "metadata": {
+        "origin": "live_exam"
+      }
+    },
+    {
+      "eventId": "a66999c1-50b8-47af-88de-6474a15a0c22",
+      "testId": "8a16b773-683a-415b-9f86-88b8988facbf",
+      "attemptId": "de97229c-0564-41a7-8444-dd0eda073a13",
+      "actor": "admin",
+      "action": "attempt_finished",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-21T16:01:24.871Z",
+      "metadata": {
+        "resultId": "954355e4-494d-40cb-b1d7-4693b3e599b7",
+        "origin": "live_exam"
+      }
+    },
+    {
+      "eventId": "f145d86a-9baf-4a36-89bc-36f27a8edda0",
+      "testId": "8a16b773-683a-415b-9f86-88b8988facbf",
+      "attemptId": "97604883-ea65-4157-ba75-3017c55f3032",
+      "actor": "admin",
+      "action": "attempt_created",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-21T16:04:12.597Z",
+      "metadata": {
+        "origin": "live_exam"
+      }
+    },
+    {
+      "eventId": "fd9c93ec-c368-472e-ad4b-9a15b8a51069",
+      "testId": "8a16b773-683a-415b-9f86-88b8988facbf",
+      "attemptId": "97604883-ea65-4157-ba75-3017c55f3032",
+      "actor": "admin",
+      "action": "attempt_finished",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-21T16:04:12.598Z",
+      "metadata": {
+        "resultId": "6e6e3ac2-5445-48c9-83c4-0fc7e5d0aeaf",
+        "origin": "live_exam"
+      }
+    },
+    {
+      "eventId": "b44b9ec6-ef65-46fa-a7a6-758544a6f677",
+      "testId": "02872762-1719-484f-8853-ef05c173e4c3",
+      "attemptId": "92444c37-0902-4d4e-8b87-0513a9c08a41",
+      "actor": "admin",
+      "action": "attempt_created",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-21T16:08:20.914Z",
+      "metadata": {
+        "origin": "live_exam"
+      }
+    },
+    {
+      "eventId": "d0b6ae85-2e41-47c9-9e19-94a1ef116749",
+      "testId": "02872762-1719-484f-8853-ef05c173e4c3",
+      "attemptId": "92444c37-0902-4d4e-8b87-0513a9c08a41",
+      "actor": "admin",
+      "action": "attempt_finished",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-21T16:08:20.914Z",
+      "metadata": {
+        "resultId": "b871158f-b74e-4fed-a8e9-b6dad9578ce5",
+        "origin": "live_exam"
+      }
+    },
+    {
+      "eventId": "b3845ff3-9b5a-435c-973f-f1817f902a59",
+      "testId": "8a16b773-683a-415b-9f86-88b8988facbf",
+      "attemptId": "2d0ffd8d-6c64-47a3-bf51-9bfeaad982ab",
+      "actor": "admin",
+      "action": "attempt_created",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-21T16:13:16.840Z",
+      "metadata": {
+        "origin": "live_exam"
+      }
+    },
+    {
+      "eventId": "434f8803-81d8-4e6d-a908-b7340453c19a",
+      "testId": "8a16b773-683a-415b-9f86-88b8988facbf",
+      "attemptId": "2d0ffd8d-6c64-47a3-bf51-9bfeaad982ab",
+      "actor": "admin",
+      "action": "attempt_finished",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-21T16:13:16.840Z",
+      "metadata": {
+        "resultId": "ed8dd1b4-4096-413d-97f5-65a8cd977454",
+        "origin": "live_exam"
+      }
+    },
+    {
+      "eventId": "4d9f8dac-4c46-44bf-a2b3-80f333a74236",
+      "testId": "02872762-1719-484f-8853-ef05c173e4c3",
+      "attemptId": "9cda64e7-bb4e-4271-b6d6-44e58328066b",
+      "actor": "admin",
+      "action": "attempt_created",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-21T16:21:25.005Z",
+      "metadata": {
+        "origin": "live_exam"
+      }
+    },
+    {
+      "eventId": "06d9df77-c4e7-4412-9985-ed36675a3996",
+      "testId": "02872762-1719-484f-8853-ef05c173e4c3",
+      "attemptId": "9cda64e7-bb4e-4271-b6d6-44e58328066b",
+      "actor": "admin",
+      "action": "attempt_finished",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-21T16:21:25.005Z",
+      "metadata": {
+        "resultId": "e3194643-4e0c-43e4-98ce-f186945f309e",
+        "origin": "live_exam"
+      }
+    },
+    {
+      "eventId": "4b7482fb-bad8-47cd-b993-08bfb56d5005",
+      "testId": "8a16b773-683a-415b-9f86-88b8988facbf",
+      "attemptId": "46c73715-aad3-46c8-909d-ead8bf111b74",
+      "actor": "admin",
+      "action": "attempt_created",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-21T16:22:28.781Z",
+      "metadata": {
+        "origin": "live_exam"
+      }
+    },
+    {
+      "eventId": "bfe3ebca-8cc3-4083-b3f0-4278becdb6de",
+      "testId": "8a16b773-683a-415b-9f86-88b8988facbf",
+      "attemptId": "46c73715-aad3-46c8-909d-ead8bf111b74",
+      "actor": "admin",
+      "action": "attempt_finished",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-21T16:22:28.781Z",
+      "metadata": {
+        "resultId": "821a5e5c-1f55-414d-8b98-83fce8761779",
+        "origin": "live_exam"
+      }
+    },
+    {
+      "eventId": "d586c427-ab65-417a-be14-d08c70dab249",
+      "testId": "02872762-1719-484f-8853-ef05c173e4c3",
+      "attemptId": null,
+      "actor": "admin",
+      "action": "test_finished",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-21T16:23:05.832Z",
+      "metadata": {}
+    },
+    {
+      "eventId": "ec1e7b9c-5991-4183-965f-2be75b7c3910",
+      "testId": "8a16b773-683a-415b-9f86-88b8988facbf",
+      "attemptId": null,
+      "actor": "admin",
+      "action": "test_finished",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-21T16:23:07.705Z",
+      "metadata": {}
+    },
+    {
+      "eventId": "dd5b74d7-23fe-48f6-9d52-a3a279c5fa56",
+      "testId": "55679956-25a0-415f-9e1b-81012aba692b",
+      "attemptId": null,
+      "actor": "admin",
+      "action": "test_created",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-23T15:53:15.386Z",
+      "metadata": {}
+    },
+    {
+      "eventId": "50f6cbc5-5003-4b0f-a5c3-16849e75724c",
+      "testId": "55679956-25a0-415f-9e1b-81012aba692b",
+      "attemptId": null,
+      "actor": "admin",
+      "action": "test_updated",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-23T15:54:04.803Z",
+      "metadata": {}
+    },
+    {
+      "eventId": "b1ff74f1-749d-443e-a247-f72a9c352566",
+      "testId": "55679956-25a0-415f-9e1b-81012aba692b",
+      "attemptId": null,
+      "actor": "admin",
+      "action": "assignments_replaced",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-23T15:54:04.840Z",
+      "metadata": {
+        "assignmentCount": 6,
+        "groupExpansion": false
+      }
+    },
+    {
+      "eventId": "b56464b5-af1e-4ec3-88d1-9492c9b53a74",
+      "testId": "55679956-25a0-415f-9e1b-81012aba692b",
+      "attemptId": null,
+      "actor": "admin",
+      "action": "test_started",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-23T15:54:04.856Z",
+      "metadata": {
+        "startedAt": "2026-09-23T15:54:04.855Z"
+      }
+    },
+    {
+      "eventId": "e1196a2c-9894-4406-a731-1bd42ea8373a",
+      "testId": "695e85fe-d80b-4113-a73e-8a9eba116557",
+      "attemptId": null,
+      "actor": "admin",
+      "action": "test_created",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-23T15:54:08.986Z",
+      "metadata": {}
+    },
+    {
+      "eventId": "57bd95b4-c51b-4859-aadf-09c0f2e349c8",
+      "testId": "695e85fe-d80b-4113-a73e-8a9eba116557",
+      "attemptId": null,
+      "actor": "admin",
+      "action": "test_updated",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-23T15:54:20.717Z",
+      "metadata": {}
+    },
+    {
+      "eventId": "90b3a19e-8983-4150-9297-33684a4eac83",
+      "testId": "695e85fe-d80b-4113-a73e-8a9eba116557",
+      "attemptId": null,
+      "actor": "admin",
+      "action": "assignments_replaced",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-23T15:54:20.743Z",
+      "metadata": {
+        "assignmentCount": 7,
+        "groupExpansion": false
+      }
+    },
+    {
+      "eventId": "92ec4d4b-88a6-43b2-890b-f7144985950b",
+      "testId": "695e85fe-d80b-4113-a73e-8a9eba116557",
+      "attemptId": null,
+      "actor": "admin",
+      "action": "test_started",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-23T15:54:20.755Z",
+      "metadata": {
+        "startedAt": "2026-09-23T15:54:20.755Z"
+      }
+    },
+    {
+      "eventId": "1928625f-a8b8-41f2-8f00-2c6c5ebf97e0",
+      "testId": "695e85fe-d80b-4113-a73e-8a9eba116557",
+      "attemptId": null,
+      "actor": "admin",
+      "action": "test_finished",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-23T16:03:29.763Z",
+      "metadata": {}
+    },
+    {
+      "eventId": "6ed5618f-0cf3-4c81-ba70-39765963625c",
+      "testId": "55679956-25a0-415f-9e1b-81012aba692b",
+      "attemptId": null,
+      "actor": "admin",
+      "action": "test_finished",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-23T16:03:31.330Z",
+      "metadata": {}
+    },
+    {
+      "eventId": "775a729e-6d1e-40b7-a192-964340843207",
+      "testId": "666bb25c-e0df-456f-b037-f263c61b4c75",
+      "attemptId": null,
+      "actor": "admin",
+      "action": "test_created",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-23T16:03:34.819Z",
+      "metadata": {}
+    },
+    {
+      "eventId": "285012fe-7bf3-46e1-b1fc-270649241b70",
+      "testId": "666bb25c-e0df-456f-b037-f263c61b4c75",
+      "attemptId": null,
+      "actor": "admin",
+      "action": "test_updated",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-23T16:03:59.125Z",
+      "metadata": {}
+    },
+    {
+      "eventId": "03149a3e-32d2-4422-8836-ed2a91d1b880",
+      "testId": "666bb25c-e0df-456f-b037-f263c61b4c75",
+      "attemptId": null,
+      "actor": "admin",
+      "action": "assignments_replaced",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-23T16:03:59.161Z",
+      "metadata": {
+        "assignmentCount": 7,
+        "groupExpansion": false
+      }
+    },
+    {
+      "eventId": "317fd6b9-7509-42f7-ad4f-f169e58e76ea",
+      "testId": "666bb25c-e0df-456f-b037-f263c61b4c75",
+      "attemptId": null,
+      "actor": "admin",
+      "action": "test_started",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-23T16:03:59.169Z",
+      "metadata": {
+        "startedAt": "2026-09-23T16:03:59.169Z"
+      }
+    },
+    {
+      "eventId": "bc621725-ea91-4247-86d1-08aff055969c",
+      "testId": "6e858ad2-05cf-4285-85f4-776df3618e27",
+      "attemptId": null,
+      "actor": "admin",
+      "action": "test_created",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-23T16:04:17.540Z",
+      "metadata": {}
+    },
+    {
+      "eventId": "752f561c-b080-4265-b64d-bdc94e160d30",
+      "testId": "6e858ad2-05cf-4285-85f4-776df3618e27",
+      "attemptId": null,
+      "actor": "admin",
+      "action": "test_updated",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-23T16:04:57.362Z",
+      "metadata": {}
+    },
+    {
+      "eventId": "693b9a75-500f-4306-b162-993d18dee0bf",
+      "testId": "6e858ad2-05cf-4285-85f4-776df3618e27",
+      "attemptId": null,
+      "actor": "admin",
+      "action": "assignments_replaced",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-23T16:04:57.391Z",
+      "metadata": {
+        "assignmentCount": 6,
+        "groupExpansion": false
+      }
+    },
+    {
+      "eventId": "1b8e7f8e-e169-40b8-99d5-ccdee459d72f",
+      "testId": "6e858ad2-05cf-4285-85f4-776df3618e27",
+      "attemptId": null,
+      "actor": "admin",
+      "action": "test_started",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-23T16:04:57.401Z",
+      "metadata": {
+        "startedAt": "2026-09-23T16:04:57.401Z"
+      }
+    },
+    {
+      "eventId": "40854cb6-606c-4d9a-9032-504ca2f753db",
+      "testId": "666bb25c-e0df-456f-b037-f263c61b4c75",
+      "attemptId": "55723c4d-f59c-457c-b042-d49932ef4e64",
+      "actor": "admin",
+      "action": "attempt_created",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-23T16:08:58.656Z",
+      "metadata": {
+        "origin": "live_exam"
+      }
+    },
+    {
+      "eventId": "f532b914-b29d-4410-a7ba-c0155b5e352a",
+      "testId": "666bb25c-e0df-456f-b037-f263c61b4c75",
+      "attemptId": "55723c4d-f59c-457c-b042-d49932ef4e64",
+      "actor": "admin",
+      "action": "attempt_finished",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-23T16:08:58.656Z",
+      "metadata": {
+        "resultId": "016f2eb9-a1b5-4623-95a0-ccd239d7efd7",
+        "origin": "live_exam"
+      }
+    },
+    {
+      "eventId": "16bd907c-9d06-434e-a839-aad899890413",
+      "testId": "666bb25c-e0df-456f-b037-f263c61b4c75",
+      "attemptId": "fb32b2f0-05eb-459d-a00a-153b4b43d29e",
+      "actor": "admin",
+      "action": "attempt_created",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-23T16:09:41.857Z",
+      "metadata": {
+        "origin": "live_exam"
+      }
+    },
+    {
+      "eventId": "32bb891b-0f09-4bd4-8c95-5a65457c804a",
+      "testId": "666bb25c-e0df-456f-b037-f263c61b4c75",
+      "attemptId": "fb32b2f0-05eb-459d-a00a-153b4b43d29e",
+      "actor": "admin",
+      "action": "attempt_finished",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-23T16:09:41.857Z",
+      "metadata": {
+        "resultId": "4cdd3729-c47b-4e0d-83f1-ea94a1d45f76",
+        "origin": "live_exam"
+      }
+    },
+    {
+      "eventId": "8092bb37-785d-4273-b27c-5db66909f020",
+      "testId": "666bb25c-e0df-456f-b037-f263c61b4c75",
+      "attemptId": "67c0b99d-9b3e-4d08-bbf6-8aabf71ae037",
+      "actor": "admin",
+      "action": "attempt_created",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-23T16:13:15.669Z",
+      "metadata": {
+        "origin": "live_exam"
+      }
+    },
+    {
+      "eventId": "4c4ab948-f380-4338-bdeb-b43348bff41e",
+      "testId": "666bb25c-e0df-456f-b037-f263c61b4c75",
+      "attemptId": "67c0b99d-9b3e-4d08-bbf6-8aabf71ae037",
+      "actor": "admin",
+      "action": "attempt_finished",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-23T16:13:15.669Z",
+      "metadata": {
+        "resultId": "22dedc80-b0f5-4046-b7d8-926399030f88",
+        "origin": "live_exam"
+      }
+    },
+    {
+      "eventId": "65bd888c-9f68-4bcc-931f-85bc9525e862",
+      "testId": "6e858ad2-05cf-4285-85f4-776df3618e27",
+      "attemptId": "b3b86e7e-984b-4c77-a6f6-d3d56b5b0a22",
+      "actor": "admin",
+      "action": "attempt_created",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-23T16:14:49.881Z",
+      "metadata": {
+        "origin": "live_exam"
+      }
+    },
+    {
+      "eventId": "ee03781c-ee1f-4fbd-98c1-a4a4bc2811a0",
+      "testId": "6e858ad2-05cf-4285-85f4-776df3618e27",
+      "attemptId": "b3b86e7e-984b-4c77-a6f6-d3d56b5b0a22",
+      "actor": "admin",
+      "action": "attempt_finished",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-23T16:14:49.881Z",
+      "metadata": {
+        "resultId": "22634798-2b9f-40ee-ad5e-c228d7a411b0",
+        "origin": "live_exam"
+      }
+    },
+    {
+      "eventId": "c1f055de-ae9d-46ad-a1de-33d0a63d2941",
+      "testId": "666bb25c-e0df-456f-b037-f263c61b4c75",
+      "attemptId": "efb35d5f-c446-4ad2-8c7f-d67b05fee35f",
+      "actor": "admin",
+      "action": "attempt_created",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-23T16:20:30.669Z",
+      "metadata": {
+        "origin": "live_exam"
+      }
+    },
+    {
+      "eventId": "341cd6c8-ea21-4d3e-84b9-0de2aff7b558",
+      "testId": "666bb25c-e0df-456f-b037-f263c61b4c75",
+      "attemptId": "efb35d5f-c446-4ad2-8c7f-d67b05fee35f",
+      "actor": "admin",
+      "action": "attempt_finished",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-23T16:20:30.669Z",
+      "metadata": {
+        "resultId": "b4a3c506-8b09-4cf4-a6ec-de85df84b50f",
+        "origin": "live_exam"
+      }
+    },
+    {
+      "eventId": "1271ab71-eaba-48b1-a0d1-c7a156cc67e2",
+      "testId": "6e858ad2-05cf-4285-85f4-776df3618e27",
+      "attemptId": "0fa3ed4c-e131-4b9a-8b32-73b3bf9f8d4a",
+      "actor": "admin",
+      "action": "attempt_created",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-23T16:22:34.164Z",
+      "metadata": {
+        "origin": "live_exam"
+      }
+    },
+    {
+      "eventId": "160ff252-61d7-4629-9474-aba2a1d66238",
+      "testId": "6e858ad2-05cf-4285-85f4-776df3618e27",
+      "attemptId": "0fa3ed4c-e131-4b9a-8b32-73b3bf9f8d4a",
+      "actor": "admin",
+      "action": "attempt_finished",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-23T16:22:34.164Z",
+      "metadata": {
+        "resultId": "90b7cbb5-302f-430f-9096-1b887c3c276e",
+        "origin": "live_exam"
+      }
+    },
+    {
+      "eventId": "66e47de6-2004-45cd-9ae8-eb63ded2ba72",
+      "testId": "666bb25c-e0df-456f-b037-f263c61b4c75",
+      "attemptId": "9cdfca1c-e97f-458a-ac26-6f6952125e17",
+      "actor": "admin",
+      "action": "attempt_created",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-23T16:27:02.210Z",
+      "metadata": {
+        "origin": "live_exam"
+      }
+    },
+    {
+      "eventId": "1888a7fd-253b-4594-bbc1-b112dcc66aed",
+      "testId": "666bb25c-e0df-456f-b037-f263c61b4c75",
+      "attemptId": "9cdfca1c-e97f-458a-ac26-6f6952125e17",
+      "actor": "admin",
+      "action": "attempt_finished",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-23T16:27:02.210Z",
+      "metadata": {
+        "resultId": "a3018f0a-962b-409d-9ff1-0ec222ee0484",
+        "origin": "live_exam"
+      }
+    },
+    {
+      "eventId": "81e8cefa-5b84-4e0a-82ac-495938e3b4ed",
+      "testId": "666bb25c-e0df-456f-b037-f263c61b4c75",
+      "attemptId": "20960bc6-3584-4a1a-b0e2-1eb321c227d4",
+      "actor": "admin",
+      "action": "attempt_created",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-23T16:28:26.457Z",
+      "metadata": {
+        "origin": "live_exam"
+      }
+    },
+    {
+      "eventId": "d32e7053-3fb1-4c52-932a-86f268ec927e",
+      "testId": "666bb25c-e0df-456f-b037-f263c61b4c75",
+      "attemptId": "20960bc6-3584-4a1a-b0e2-1eb321c227d4",
+      "actor": "admin",
+      "action": "attempt_finished",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-23T16:28:26.457Z",
+      "metadata": {
+        "resultId": "895807b2-e651-4eae-8f11-d3b4159b80e7",
+        "origin": "live_exam"
+      }
+    },
+    {
+      "eventId": "2f01fb2c-08f4-45a5-9f85-f51ff8c127a1",
+      "testId": "666bb25c-e0df-456f-b037-f263c61b4c75",
+      "attemptId": "ffd7bc57-e957-46b3-911b-cd140ebdb869",
+      "actor": "admin",
+      "action": "attempt_created",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-23T16:33:32.438Z",
+      "metadata": {
+        "origin": "live_exam"
+      }
+    },
+    {
+      "eventId": "c40a43b4-2e6a-472c-8d0d-df9735f46f48",
+      "testId": "666bb25c-e0df-456f-b037-f263c61b4c75",
+      "attemptId": "ffd7bc57-e957-46b3-911b-cd140ebdb869",
+      "actor": "admin",
+      "action": "attempt_finished",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-23T16:33:32.438Z",
+      "metadata": {
+        "resultId": "5fbec988-d439-4f67-a2f5-af051fc7503d",
+        "origin": "live_exam"
+      }
+    },
+    {
+      "eventId": "56cab042-2750-4965-94ed-ba27faf60889",
+      "testId": "6e858ad2-05cf-4285-85f4-776df3618e27",
+      "attemptId": "1403ec9e-2a99-4d62-8b28-0ef7d6d58b67",
+      "actor": "admin",
+      "action": "attempt_created",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-23T16:35:20.572Z",
+      "metadata": {
+        "origin": "live_exam"
+      }
+    },
+    {
+      "eventId": "8299539a-2231-404a-8231-1f14993e3c18",
+      "testId": "6e858ad2-05cf-4285-85f4-776df3618e27",
+      "attemptId": "1403ec9e-2a99-4d62-8b28-0ef7d6d58b67",
+      "actor": "admin",
+      "action": "attempt_finished",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-23T16:35:20.572Z",
+      "metadata": {
+        "resultId": "23dd5a6c-84ed-44b2-a82f-bc31350876e7",
+        "origin": "live_exam"
+      }
+    },
+    {
+      "eventId": "c4ae29bc-4dfe-4df8-8ec9-0eced4beb88d",
+      "testId": "6e858ad2-05cf-4285-85f4-776df3618e27",
+      "attemptId": "ef3dc2a0-de5b-4f1d-b18b-8d5466c6e48e",
+      "actor": "admin",
+      "action": "attempt_created",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-23T16:39:29.385Z",
+      "metadata": {
+        "origin": "live_exam"
+      }
+    },
+    {
+      "eventId": "62c1f953-a2c3-46ab-a705-c0083fea88b5",
+      "testId": "6e858ad2-05cf-4285-85f4-776df3618e27",
+      "attemptId": "ef3dc2a0-de5b-4f1d-b18b-8d5466c6e48e",
+      "actor": "admin",
+      "action": "attempt_finished",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-23T16:39:29.385Z",
+      "metadata": {
+        "resultId": "899ce8c5-c06a-4b63-b613-f1bb7ba36494",
+        "origin": "live_exam"
+      }
+    },
+    {
+      "eventId": "ea4bd75d-c2c4-4954-8da7-71cf683a82e1",
+      "testId": "6e858ad2-05cf-4285-85f4-776df3618e27",
+      "attemptId": "4c879b60-5682-4f23-9a9f-507064a85613",
+      "actor": "admin",
+      "action": "attempt_created",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-23T16:40:25.182Z",
+      "metadata": {
+        "origin": "live_exam"
+      }
+    },
+    {
+      "eventId": "dfcfc1f0-9948-43a5-8c6d-11e34f0aba97",
+      "testId": "6e858ad2-05cf-4285-85f4-776df3618e27",
+      "attemptId": "4c879b60-5682-4f23-9a9f-507064a85613",
+      "actor": "admin",
+      "action": "attempt_finished",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-23T16:40:25.182Z",
+      "metadata": {
+        "resultId": "ba6bbbc6-e787-4f15-8677-a2baeb60450f",
+        "origin": "live_exam"
+      }
+    },
+    {
+      "eventId": "3e6a9a1b-f5d3-4fae-8058-9cf9227c9427",
+      "testId": "6e858ad2-05cf-4285-85f4-776df3618e27",
+      "attemptId": null,
+      "actor": "admin",
+      "action": "test_finished",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-23T16:40:58.643Z",
+      "metadata": {}
+    },
+    {
+      "eventId": "d69e56c2-9903-4bd2-a8ae-84d701d8d53f",
+      "testId": "666bb25c-e0df-456f-b037-f263c61b4c75",
+      "attemptId": null,
+      "actor": "admin",
+      "action": "test_finished",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-23T16:41:00.482Z",
+      "metadata": {}
     }
   ],
   "officialAttempts": [

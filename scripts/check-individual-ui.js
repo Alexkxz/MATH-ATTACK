@@ -31,6 +31,38 @@ async function panelControls(page) {
   }));
 }
 
+async function auditSliderAlignment(page, section) {
+  const report = await page.evaluate(() => {
+    const measure = (input, labels) => {
+      if (!input || !labels) return { present: false };
+      const inputRect = input.getBoundingClientRect();
+      const labelRect = labels.getBoundingClientRect();
+      const spans = [...labels.querySelectorAll('span')];
+      const expected = spans.map(span => Number.parseFloat(span.style.left));
+      const actual = spans.map(span => {
+        const rect = span.getBoundingClientRect();
+        return ((rect.left + rect.width / 2 - labelRect.left) / labelRect.width) * 100;
+      });
+      const endpointInset = 11;
+      const endpointError = Math.max(
+        Math.abs((actual[0] ?? 0) - 0),
+        Math.abs((actual.at(-1) ?? 100) - 100),
+      );
+      const middleError = actual.slice(1, -1).reduce((max, value, index) => Math.max(max, Math.abs(value - expected[index + 1])), 0);
+      return { present: true, endpointError, middleError, expected, actual, inputWidth: inputRect.width };
+    };
+    const quantity = document.querySelector('#workspaceQptTableSlider') || document.querySelector('#workspaceQptSlider');
+    const quantityLabels = quantity?.parentElement.querySelector('.workspace-range-labels');
+    const multiplier = [...document.querySelectorAll('#workspaceMultMin, #workspaceMultMax')].map(input => measure(input, input.parentElement.querySelector('.workspace-range-labels')));
+    const ranges = [measure(quantity, quantityLabels), ...multiplier].filter(range => range.present);
+    return {
+      ranges,
+      ok: ranges.length > 0 && ranges.every(range => range.present && range.inputWidth > 0 && range.endpointError <= 4 && range.middleError <= 4),
+    };
+  });
+  result(`${section} · sliders`, report.ok, `Etiquetas alineadas al recorrido real: ${JSON.stringify(report)}`);
+}
+
 async function auditLegacyNavigationGuard(page) {
   const state = await page.evaluate(() => {
     const beforePanel = workspaceDynamicState?.panel;
@@ -105,6 +137,7 @@ async function advanceToSummary(page, visited, mode, expected) {
     if (panel && !visited.includes(panel)) visited.push(panel);
     if (panel === 'summary') return true;
     if (['specific', 'advanced', 'quantities', 'multiplierRange'].includes(panel)) compareControls(mode, await panelControls(page), expected);
+    if (panel === 'quantities' || panel === 'multiplierRange') await auditSliderAlignment(page, panel);
     const next = page.locator('#workspaceWizardHost [data-wizard-action="next"]');
     if (await next.count() !== 1 || await next.isDisabled()) return false;
     await next.click();
@@ -196,10 +229,30 @@ async function main() {
         configHidden: !shell?.classList.contains('workspace-show-config'),
         wizardReset: !shell?.classList.contains('workspace-dynamic-wizard'),
         homeNavActive: homeNav?.classList.contains('active'),
-        status: document.querySelector('#workspaceStatusText')?.textContent
+        status: document.querySelector('#workspaceStatusText')?.textContent,
+        freshConfig: {
+          gameType,
+          gameMode,
+          setupMode,
+          difficulty,
+          ansMode,
+          selectedOps: [...selectedOps],
+          tblSelMode,
+          qpt,
+          qptPerTable,
+          multMin,
+          multMax,
+          selectedCifras,
+          addSubMode,
+          visualMode,
+          player2: pName2,
+        }
       };
     });
+    const fresh = homeState.freshConfig;
+    const freshConfigOk = fresh.gameType === 'free' && fresh.gameMode === 'solo' && fresh.setupMode === 'solo' && fresh.difficulty === '' && fresh.ansMode === 'options' && JSON.stringify(fresh.selectedOps) === JSON.stringify(['×']) && fresh.tblSelMode === 'all' && fresh.qpt === 3 && fresh.qptPerTable === 3 && fresh.multMin === 1 && fresh.multMax === 12 && fresh.selectedCifras === 1 && fresh.addSubMode === 'direct' && fresh.visualMode === 'normal' && fresh.player2 === '';
     result('Retorno al inicio · pantalla limpia', homeState.activeScreens.length === 1 && homeState.activeScreens[0] === 'step1Screen' && homeState.home && homeState.configHidden && homeState.wizardReset && homeState.homeNavActive && homeState.status === 'Sesión lista', JSON.stringify(homeState));
+    result('Retorno al inicio · configuración nueva', freshConfigOk, `Valores iniciales restaurados: ${JSON.stringify(fresh)}`);
     result('Errores de ejecución', pageErrors.length === 0, pageErrors.length ? pageErrors.join(' | ') : 'Sin pageerror');
     result('Errores de consola', consoleErrors.length === 0, consoleErrors.length ? consoleErrors.join(' | ') : 'Sin errores de consola');
   } finally { await browser.close(); testServer.server.kill('SIGINT'); }

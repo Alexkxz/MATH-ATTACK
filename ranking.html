@@ -193,11 +193,11 @@ tr:hover td{background:rgba(255,255,255,.03)}
 /* Refresh indicator */
 .refresh-info{font-size:11px;color:#64748b;margin-left:auto;white-space:nowrap}
 /* Detalle por tabla */
-.tbl-detail-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px;margin:8px 0 14px}
-.tbl-cell{border-radius:10px;padding:8px 4px 6px;text-align:center;border:1px solid rgba(255,255,255,.07)}
-.tbl-cell-num{font-size:10px;font-weight:700;color:#94a3b8;margin-bottom:3px}
-.tbl-cell-pct{font-size:16px;font-weight:800;line-height:1}
-.tbl-cell-sub{font-size:9px;color:#94a3b8;margin-top:3px}
+.tbl-detail-grid{display:grid;grid-template-rows:minmax(70px,auto);grid-auto-flow:column;grid-auto-columns:minmax(78px,1fr);gap:7px;margin:9px 0 14px;overflow-x:auto;padding:2px 2px 7px}
+.tbl-cell{min-height:70px;border-radius:9px;padding:9px 6px 7px;text-align:center;border:2px solid rgba(255,255,255,.12);box-shadow:0 4px 11px rgba(2,6,23,.22)}
+.tbl-cell-num{font-size:11px;font-weight:800;color:#e2e8f0;margin-bottom:4px}
+.tbl-cell-pct{font-size:19px !important;font-weight:900;line-height:1.05;color:#fff}
+.tbl-cell-sub{font-size:10px;font-weight:700;color:#f8fafc;margin-top:4px}
 /* Partida incompleta */
 .incomplete-badge{font-size:10px;padding:2px 6px;border-radius:99px;font-weight:700;background:rgba(251,191,36,.15);color:#fbbf24;border:1px solid rgba(251,191,36,.3);vertical-align:middle}
 /* Botón eliminar partida */
@@ -239,7 +239,7 @@ tr:hover td{background:rgba(255,255,255,.03)}
   .modal-insights{grid-template-columns:1fr}
   .history-timeline::before{left:17px}
   .modal-mobile-note{display:block}
-  .tbl-detail-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .tbl-detail-grid{grid-template-columns:none;grid-template-rows:minmax(70px,auto);grid-auto-flow:column;grid-auto-columns:minmax(78px,1fr)}
 }
 
 /* Mi Salón */
@@ -504,7 +504,11 @@ tr:hover td{background:rgba(255,255,255,.03)}
   @media(max-width:700px){.exam-podium{grid-template-columns:1fr}.exam-day-grid,.exam-test-grid{grid-template-columns:1fr}.exam-detail-heading h2{font-size:16px}}
   .exam-table-grid-panel{margin:18px 0 0;padding:14px;border:1px solid rgba(148,163,184,.12);border-radius:14px;background:rgba(15,23,42,.42)}.exam-table-grid-header{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:10px}.exam-table-grid-header h3{margin:0;color:#e2e8f0;font-size:13px}.exam-table-grid-header p{margin:4px 0 0;color:#94a3b8;font-size:11px}.exam-table-grid-legend{display:flex;gap:8px;flex-wrap:wrap;color:#cbd5e1;font-size:10px}.exam-table-grid-legend span{display:inline-flex;align-items:center;gap:4px}.exam-table-grid-legend i{width:9px;height:9px;border-radius:3px;display:inline-block}.exam-table-grid-legend .good i{background:#34d399}.exam-table-grid-legend .bad i{background:#f87171}.exam-table-grid-legend .timeout i{background:#94a3b8}.exam-table-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:7px}.exam-table-cell{min-height:64px;padding:8px 6px;border:1px solid rgba(148,163,184,.18);border-radius:9px;text-align:center;background:rgba(100,116,139,.14)}.exam-table-cell.good{background:rgba(52,211,153,.14);border-color:rgba(52,211,153,.48)}.exam-table-cell.bad{background:rgba(248,113,113,.14);border-color:rgba(248,113,113,.48)}.exam-table-cell.timeout{background:rgba(100,116,139,.28);border-color:rgba(148,163,184,.45)}.exam-table-cell-label{display:block;color:#f8fafc;font-size:12px;font-weight:800}.exam-table-cell-status{display:block;margin-top:4px;color:#cbd5e1;font-size:9px}.exam-table-cell-count{display:block;margin-top:3px;color:#94a3b8;font-size:9px}.exam-student-row-selected td{box-shadow:inset 0 2px 0 rgba(103,232,249,.65),inset 0 -2px 0 rgba(103,232,249,.65)}@media(max-width:700px){.exam-table-grid-panel{padding:11px}.exam-table-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
   .exam-detail-toggle{min-width:94px;padding:7px 12px;border:1px solid rgba(167,139,250,.38);border-radius:9px;background:linear-gradient(135deg,rgba(167,139,250,.2),rgba(103,232,249,.1));color:#ddd6fe;font-size:12px;font-weight:800;cursor:pointer;box-shadow:0 4px 12px rgba(2,6,23,.18);transition:.18s}.exam-detail-toggle:hover,.exam-detail-toggle.is-open{border-color:rgba(103,232,249,.7);background:linear-gradient(135deg,rgba(167,139,250,.3),rgba(34,211,238,.18));color:#ecfeff;transform:translateY(-1px)}
-  .exam-table-operation{margin-top:12px}.exam-table-operation-title{margin:0 0 6px;color:#67e8f9;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.55px}.exam-results-matrix{display:grid;grid-template-columns:repeat(12,minmax(58px,1fr));gap:4px;min-width:720px}.exam-results-matrix-wrap{max-width:100%;overflow-x:auto;padding-bottom:4px}.exam-table-cell{min-height:70px;padding:7px 4px;border-radius:5px}.exam-table-cell-breakdown{display:block;margin-top:4px;color:#cbd5e1;font-size:8px;line-height:1.35}@media(max-width:700px){.exam-results-matrix{grid-template-columns:repeat(6,minmax(58px,1fr));min-width:390px}}
+  .exam-table-operation{margin-top:12px}.exam-table-operation-title{margin:0 0 6px;color:#67e8f9;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.55px}.exam-results-matrix{display:grid;grid-template-columns:repeat(12,minmax(58px,1fr));gap:4px;min-width:720px}.exam-results-matrix-wrap{max-width:100%;overflow-x:auto;padding-bottom:4px}.exam-table-cell{min-height:70px;padding:7px 4px;border-radius:5px}.exam-table-cell-breakdown{display:block;margin-top:4px;color:#cbd5e1;font-size:8px;line-height:1.35}.exam-table-row{display:grid;grid-template-columns:112px minmax(0,1fr);gap:8px;align-items:stretch;margin:0 0 7px;min-width:650px}.exam-table-row-summary{display:flex;min-height:72px;flex-direction:column;justify-content:center;gap:4px;padding:8px 9px;border:1px solid rgba(148,163,184,.22);border-radius:8px;background:rgba(15,23,42,.72)}.exam-table-row-summary:has(.exam-table-row-status.good){background:#047857;border-color:#34d399;box-shadow:0 0 0 1px rgba(52,211,153,.22),0 4px 12px rgba(16,185,129,.18)}.exam-table-row-summary:has(.exam-table-row-status.bad){background:#991b1b;border-color:#f87171;box-shadow:0 0 0 1px rgba(248,113,113,.22),0 4px 12px rgba(239,68,68,.18)}.exam-table-row-summary:has(.exam-table-row-status.timeout){background:#475569;border-color:#cbd5e1;box-shadow:0 0 0 1px rgba(203,213,225,.2),0 4px 12px rgba(71,85,105,.18)}.exam-table-row-label{color:#fff;font-size:12px;font-weight:900}.exam-table-row-pct{font-size:18px;font-weight:900;line-height:1;color:#fff}.exam-table-row-status{font-size:10px;font-weight:800}.exam-table-row-status.good{color:#d1fae5}.exam-table-row-status.bad{color:#fff1f2}.exam-table-row-status.timeout{color:#f8fafc}.exam-table-row-cells{display:grid;grid-template-columns:repeat(auto-fit,minmax(78px,1fr));gap:5px;align-items:stretch}.exam-table-row-cells .exam-table-cell{min-height:72px}@media(max-width:700px){.exam-table-row{grid-template-columns:96px minmax(0,1fr);min-width:570px}.exam-table-row-cells{grid-template-columns:repeat(auto-fit,minmax(72px,1fr))}}
+  .exam-table-cell.good{background:#047857;border-color:#34d399;color:#ecfdf5;box-shadow:0 0 0 1px rgba(52,211,153,.28),0 5px 14px rgba(16,185,129,.2)}.exam-table-cell.bad{background:#991b1b;border-color:#f87171;color:#fff1f2;box-shadow:0 0 0 1px rgba(248,113,113,.28),0 5px 14px rgba(239,68,68,.2)}.exam-table-cell.timeout{background:#475569;border-color:#cbd5e1;color:#f8fafc;box-shadow:0 0 0 1px rgba(203,213,225,.22),0 5px 14px rgba(71,85,105,.22)}.exam-table-cell-label{font-size:14px;color:#fff}.exam-table-cell-status{font-size:11px;color:#fff;font-weight:800}.exam-table-cell-count,.exam-table-cell-breakdown{font-size:10px;color:#f8fafc;font-weight:700}.exam-table-grid-legend .good i{background:#34d399;box-shadow:0 0 0 2px rgba(52,211,153,.22)}.exam-table-grid-legend .bad i{background:#f87171;box-shadow:0 0 0 2px rgba(248,113,113,.22)}.exam-table-grid-legend .timeout i{background:#cbd5e1;box-shadow:0 0 0 2px rgba(203,213,225,.2)}
+  .tbl-cell:has(.pct-hi){background:rgba(5,150,105,.58)!important;border-color:#34d399!important}.tbl-cell:has(.pct-mid){background:rgba(217,119,6,.62)!important;border-color:#fbbf24!important}.tbl-cell:has(.pct-lo){background:rgba(185,28,28,.62)!important;border-color:#f87171!important}.tbl-cell-pct.pct-hi{color:#6ee7b7!important}.tbl-cell-pct.pct-mid{color:#fde68a!important}.tbl-cell-pct.pct-lo{color:#fecaca!important}
+  .exam-detail-toggle{min-width:118px;min-height:38px;padding:9px 14px;font-size:13px;font-weight:900;box-shadow:0 5px 14px rgba(2,6,23,.24)}
+  @media(max-width:700px){.exam-detail-toggle{min-width:110px;padding:9px 10px;font-size:12px}}
 </style>
 </head>
 <body>
@@ -2226,9 +2230,9 @@ function buildTableDetailHtml(tblDetailAgg){
           </div>`;
         }
         const pct=Math.round((r.correct/r.total)*100);
-        const alpha=0.08+pct/100*0.25;
+        const alpha=0.28+pct/100*0.42;
         const bg=`rgba(${c.bar.replace(/[^\d,]/g,'').split(',').slice(0,3).join(',')},${alpha.toFixed(2)})`;
-        const borderAlpha=0.15+pct/100*0.5;
+        const borderAlpha=0.45+pct/100*0.45;
         const border=`rgba(${c.bar.replace(/[^\d,]/g,'').split(',').slice(0,3).join(',')},${borderAlpha.toFixed(2)})`;
         return `<div class="tbl-cell" style="background:${bg};border-color:${border}" title="Multiplicando de ${n} cifra${n!==1?'s':''}: ${r.correct}✓ ${r.wrong}✗ de ${r.total}">
           <div class="tbl-cell-num">${n} cifra${n!==1?'s':''}</div>
@@ -2269,9 +2273,9 @@ function buildTableDetailHtml(tblDetailAgg){
       const r=tableData[tbl];
       if(!r||r.total===0) return '';
       const pct=Math.round((r.correct/r.total)*100);
-      const alpha=0.08+pct/100*0.25;
+      const alpha=0.28+pct/100*0.42;
       const bg=`rgba(${c.bar.replace(/[^\d,]/g,'').split(',').slice(0,3).join(',')},${alpha.toFixed(2)})`;
-      const borderAlpha=0.15+pct/100*0.5;
+      const borderAlpha=0.45+pct/100*0.45;
       const border=`rgba(${c.bar.replace(/[^\d,]/g,'').split(',').slice(0,3).join(',')},${borderAlpha.toFixed(2)})`;
       const bucketTitle=usesDigits?`${tbl} cifra${tbl!==1?'s':''}`:`${op}${tbl}`;
       const hoverLabel=usesDigits?`${OP_NAMES[op]} de ${tbl} cifra${tbl!==1?'s':''}`:`${OP_NAMES[op]} del ${tbl}`;
@@ -3496,9 +3500,9 @@ function examTableEntries(row){
 }
 function examTableCellState(stats){
   if((stats?.timeout||0)>0) return {key:'timeout',label:'Sin tiempo'};
-  if((stats?.wrong||0)>0) return {key:'bad',label:'Con errores'};
-  if((stats?.correct||0)>0) return {key:'good',label:'Correcta'};
-  return {key:'timeout',label:'Sin respuesta'};
+  if((stats?.wrong||0)>0) return {key:'bad',label:'Incorrecto'};
+  if((stats?.correct||0)>0) return {key:'good',label:'Correcto'};
+  return {key:'timeout',label:'Sin tiempo'};
 }
 function buildExamStudentTableGrid(row){
   if(!row) return '<div class="exam-empty-note">Selecciona un alumno para consultar sus tablas.</div>';
@@ -3507,18 +3511,36 @@ function buildExamStudentTableGrid(row){
   const byOp={};
   entries.forEach(entry=>{ if(!byOp[entry.op]) byOp[entry.op]=[]; byOp[entry.op].push(entry); });
   const sections=ALL_OPS.filter(op=>byOp[op]?.length).map(op=>{
-    const cells=byOp[op].slice().sort((a,b)=>Number(a.table)-Number(b.table)||Number(a.b)-Number(b.b)||String(a.question).localeCompare(String(b.question))).map(({table,question,stats,detailed})=>{
-      const state=examTableCellState(stats);
-      const label=question?esc(question):(op==='×'?`×${esc(table)}`:`${OP_ICONS[op]||op}${esc(table)}`);
-      const count=stats.total?`${stats.correct||0}/${stats.total}`:'—';
-      const breakdown=`✓${stats.correct||0} · ✗${stats.wrong||0} · ⏱${stats.timeout||0}`;
-      return `<div class="exam-table-cell ${state.key}" title="${esc(OP_NAMES[op]||op)} ${label}: ${state.label}"><span class="exam-table-cell-label">${label}</span><span class="exam-table-cell-status">${state.label}</span><span class="exam-table-cell-count">${detailed?'1 ejercicio':count}</span><span class="exam-table-cell-breakdown">${breakdown}</span></div>`;
+    const grouped={};
+    byOp[op].forEach(entry=>{
+      const key=String(entry.table);
+      if(!grouped[key]) grouped[key]=[];
+      grouped[key].push(entry);
+    });
+    const rows=Object.keys(grouped).map(Number).sort((a,b)=>a-b).map(table=>{
+      const tableEntries=grouped[String(table)];
+      const totals=tableEntries.reduce((acc,entry)=>{
+        acc.correct+=(entry.stats?.correct||0);
+        acc.wrong+=(entry.stats?.wrong||0);
+        acc.timeout+=(entry.stats?.timeout||0);
+        acc.total+=(entry.stats?.total||0);
+        return acc;
+      },{correct:0,wrong:0,timeout:0,total:0});
+      const tableState=examTableCellState(totals);
+      const tablePct=totals.total?Math.round((totals.correct/totals.total)*100):0;
+      const tableLabel=op==='×'?`Tabla del ${esc(table)}`:`${OP_ICONS[op]||op} ${esc(table)} cifra${table!==1?'s':''}`;
+      const cells=tableEntries.slice().sort((a,b)=>Number(a.b)-Number(b.b)||String(a.question).localeCompare(String(b.question))).map(({question,stats})=>{
+        const state=examTableCellState(stats);
+        const label=question?esc(question):(op==='×'?`×${esc(table)}`:`${OP_ICONS[op]||op}${esc(table)}`);
+        return `<div class="exam-table-cell ${state.key}" title="${esc(OP_NAMES[op]||op)} ${label}: ${state.label}"><span class="exam-table-cell-label">${label}</span><span class="exam-table-cell-status">${state.label}</span></div>`;
+      }).join('');
+      return `<div class="exam-table-row"><div class="exam-table-row-summary"><span class="exam-table-row-label">${tableLabel}</span><span class="exam-table-row-pct">${tablePct}%</span><span class="exam-table-row-status ${tableState.key}">${tableState.label}</span></div><div class="exam-table-row-cells">${cells}</div></div>`;
     }).join('');
-    return `<div class="exam-table-operation"><div class="exam-table-operation-title">${OP_ICONS[op]||op} ${OP_NAMES[op]||op}</div><div class="exam-results-matrix-wrap"><div class="exam-results-matrix">${cells}</div></div></div>`;
+    return `<div class="exam-table-operation"><div class="exam-table-operation-title">${OP_ICONS[op]||op} ${OP_NAMES[op]||op}</div><div class="exam-results-matrix-wrap">${rows}</div></div>`;
   }).join('');
   const hasQuestionDetail=entries.some(entry=>entry.detailed);
   const helper=hasQuestionDetail?'Cada celda representa un ejercicio aplicado. Así puedes identificar exactamente cuáles operaciones falló el alumno.':'Este resultado solo tiene resumen por tabla; los resultados nuevos mostrarán cada ejercicio individual.';
-  return `<div class="exam-table-grid-panel"><div class="exam-table-grid-header"><div><h3>📚 Ejercicios aplicados · ${esc(row.name||'Alumno')}</h3><p>${helper} Selecciona otro alumno en la tabla para comparar.</p></div><div class="exam-table-grid-legend"><span class="good"><i></i>Correcta</span><span class="bad"><i></i>Errores</span><span class="timeout"><i></i>Sin tiempo</span></div></div>${sections}</div>`;
+  return `<div class="exam-table-grid-panel"><div class="exam-table-grid-header"><div><h3>📚 Ejercicios aplicados · ${esc(row.name||'Alumno')}</h3><p>${helper} Selecciona otro alumno en la tabla para comparar.</p></div><div class="exam-table-grid-legend"><span class="good"><i></i>Correcto</span><span class="bad"><i></i>Incorrecto</span><span class="timeout"><i></i>Sin tiempo</span></div></div>${sections}</div>`;
 }
 function selectExamStudent(id){
   const row=activeExamDetailRows.find(item=>String(item.id)===String(id));
