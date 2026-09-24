@@ -38,6 +38,8 @@ const freePort = () => new Promise(resolve => {
     await page.click('#tab-pruebas');
     await page.click('[data-pr-section-target="programming"]');
 
+    assert.strictEqual(await page.locator('#prConfig .pr-folio-value').count(), 1, 'el folio debe aparecer una sola vez en la cabecera');
+    assert(!((await page.locator('#prConfigTestId').textContent()) || '').toLowerCase().includes('folio'), 'el texto auxiliar no debe repetir el folio');
     assert.strictEqual(await page.locator('#prMultiplier').count(), 0, 'el multiplicador no debe aparecer');
     assert.strictEqual(await page.locator('.pr-test-library').isVisible(), false, 'la biblioteca no debe aparecer en configuración');
     assert.strictEqual(await page.locator('#prOpSection_mult').count(), 1, 'multiplicación debe desplegarse inicialmente');
@@ -63,6 +65,15 @@ const freePort = () => new Promise(resolve => {
     assert.strictEqual(await page.locator('#prQtyRow_mult').isVisible(), false, 'preguntas por tabla debe ocultarse con mas detalle');
     assert.strictEqual(await page.locator('#prQty_mult').isDisabled(), true, 'preguntas por tabla debe deshabilitarse con mas detalle');
     assert((await page.locator('#prMatrixDetail_mult').textContent()).includes('1 pregunta por cada casilla seleccionada'), 'el modo detallado debe indicar una pregunta por casilla');
+    await page.locator('#prDetail_mult').uncheck();
+    assert.strictEqual(await page.locator('#prQuickRange_mult').isVisible(), true, 'el rango debe aparecer en modo rapido');
+    await page.fill('#prQty_mult', '5');
+    await page.fill('#prRangeFrom_mult', '2');
+    await page.fill('#prRangeTo_mult', '4');
+    const quickConfig = await page.evaluate(() => _prCollectOpsConfig(['mult']).mult);
+    assert.deepStrictEqual(quickConfig.ranges[0], { table: 1, from: 2, to: 4 });
+    assert.strictEqual(quickConfig.ranges.length, 12, 'debe conservar todas las tablas seleccionadas');
+    assert.strictEqual(quickConfig.repeat, true, 'debe permitir repeticion para cubrir la cantidad solicitada');
     assert.deepStrictEqual(errors, []);
     console.log('OK UI del maestro: operaciones activas/apagadas, configuracion dinamica y modo detallado.');
   } finally {

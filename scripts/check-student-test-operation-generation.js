@@ -6,6 +6,11 @@ const { validateOpsConfig } = require('../src/client/maestro/tableRanges');
 
 const multiplication = generateConfiguredQuestions({ opsConfig: { mult: { tables: [4], ranges: [{ table: 4, from: 2, to: 3 }], manner: 'ordered' } } });
 assert.deepStrictEqual(multiplication.map(q => [q.a, q.b, q.answer]), [[4, 2, 8], [4, 3, 12]]);
+const repeatedOrdered = generateConfiguredQuestions({ opsConfig: { mult: { tables: [2], qty: 5, ranges: [{ table: 2, from: 2, to: 4 }], repeat: true, manner: 'ordered' } } });
+assert.deepStrictEqual(repeatedOrdered.map(q => q.b), [2, 3, 4, 2, 3]);
+const repeatedRandom = generateConfiguredQuestions({ opsConfig: { mult: { tables: [2], qty: 5, ranges: [{ table: 2, from: 2, to: 4 }], repeat: true, manner: 'random' } } }, () => 0);
+assert.strictEqual(repeatedRandom.length, 5);
+assert(repeatedRandom.every(q => q.b >= 2 && q.b <= 4), 'el modo aleatorio debe respetar el rango aun con repeticion');
 
 const division = generateConfiguredQuestions({ opsConfig: { div: { tables: [3], ranges: [{ table: 3, from: 2, to: 4 }], manner: 'ordered' } } });
 assert.deepStrictEqual(division.map(q => [q.a, q.b, q.answer]), [[6, 3, 2], [9, 3, 3], [12, 3, 4]]);

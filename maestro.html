@@ -638,7 +638,7 @@ body.proj-mode .q-display{font-size:48px;letter-spacing:4px}
           <div class="pr-section-title">01 · CONFIGURAR PRUEBA</div>
           <p>Asistente para crear, editar o duplicar una prueba.</p>
         </div>
-        <div class="pr-config-tools"><span id="prConfigTestId" class="pr-config-note">testId: sin seleccionar</span><button type="button" class="pr-tbl-mini-btn" id="prCreateNewTestFromConfig">＋ NUEVA PRUEBA</button></div>
+        <div class="pr-config-tools"><span id="prConfigTestId" class="pr-config-note">Nueva prueba</span><button type="button" class="pr-tbl-mini-btn" id="prCreateNewTestFromConfig">＋ NUEVA PRUEBA</button></div>
       </div>
       <nav class="pr-builder-steps" aria-label="Pasos de configuración"><button type="button" class="pr-builder-step active" data-pr-builder-step="1">1. Información</button><button type="button" class="pr-builder-step" data-pr-builder-step="2">2. Operaciones</button><button type="button" class="pr-builder-step" data-pr-builder-step="3">3. Detalle</button><button type="button" class="pr-builder-step" data-pr-builder-step="4">4. Tiempos y recompensas</button><button type="button" class="pr-builder-step" data-pr-builder-step="5">5. Vista previa</button></nav>
       <div class="pr-config-sections">
@@ -1351,6 +1351,10 @@ function _prOpSectionHTML(op){
           <button class="pr-mode-btn sel" data-manner="ordered" onclick="prSelManner('${op}',this)">En orden</button>
           <button class="pr-mode-btn" data-manner="random" onclick="prSelManner('${op}',this)">En desorden</button>
         </div>
+      </div><div class="pr-field pr-quick-range" id="prQuickRange_${op}" style="margin-top:10px;margin-bottom:0">
+        <label>RANGO DE FACTORES</label>
+        <div class="pr-range-pair"><label>De <input type="number" id="prRangeFrom_${op}" min="1" max="12" value="1" step="1"></label><label>A <input type="number" id="prRangeTo_${op}" min="1" max="12" value="12" step="1"></label></div>
+        <small class="pr-config-note">Se usarán factores dentro de este rango para cada tabla seleccionada. Si faltan combinaciones, se repetirán respetando el rango.</small>
       </div>`:'';
     const divExtra=op==='div'?`<div class="pr-field" style="margin-top:10px;margin-bottom:0">
         <label>CIFRAS DEL DIVIDENDO</label>
@@ -1417,6 +1421,7 @@ function prToggleOpSection(op,checked){
 function prToggleOpDetail(op,checked){
   _prDetailMode[op]=!!checked;
   document.getElementById('prQuickTables_'+op)?.classList.toggle('is-hidden',!!checked);
+  document.getElementById('prQuickRange_'+op)?.classList.toggle('is-hidden',!!checked);
   document.getElementById('prMatrixDetail_'+op)?.classList.toggle('is-hidden',!checked);
   const qtyInput=document.getElementById('prQty_'+op);
   document.getElementById('prQtyRow_'+op)?.classList.toggle('is-hidden',!!checked);
@@ -1453,6 +1458,11 @@ function prSelCarryMode(op,btn){
 function prSelManner(op,btn){
   document.querySelectorAll('#prMannerGrid_'+op+' .pr-mode-btn').forEach(b=>b.classList.remove('sel'));
   btn.classList.add('sel');
+}
+function prSetQuickRange(op,from,to){
+  const fromInput=document.getElementById('prRangeFrom_'+op),toInput=document.getElementById('prRangeTo_'+op);
+  if(fromInput&&Number.isInteger(Number(from))) fromInput.value=String(from);
+  if(toInput&&Number.isInteger(Number(to))) toInput.value=String(to);
 }
 function prMatrixCells(op){
   const grid=document.getElementById('prTablesGrid_'+op); return grid?[...grid.querySelectorAll('.em-tbl-btn[data-row][data-col]')]:[];
@@ -1509,6 +1519,13 @@ function _prCollectOpsConfig(ops){
       const completeTables=[...new Set(tables)];
       const config={tables:completeTables,qty,detailMode:!!_prDetailMode[op]};
       if(_prDetailMode[op]) config.matrix=matrix;
+      if(op==='mult'&&!_prDetailMode[op]){
+        const from=Number(document.getElementById('prRangeFrom_'+op)?.value)||1;
+        const to=Number(document.getElementById('prRangeTo_'+op)?.value)||12;
+        if(!Number.isInteger(from)||!Number.isInteger(to)||from<1||to>12||from>to) throw Error('El rango de multiplicación debe ser de 1 a 12 y De no puede superar A');
+        config.ranges=completeTables.map(table=>({table,from,to}));
+        config.repeat=true;
+      }
       opsConfig[op]=config;
       if(op==='mult'){
         const mannerBtn=document.querySelector('#prMannerGrid_'+op+' .pr-mode-btn.sel');
@@ -1538,7 +1555,8 @@ function prDescribeOp(op,cfg){
   if(op==='mult'){
     const tableCount=cfg.tables?.length||0;
     const combinations=Array.isArray(cfg.matrix)?cfg.matrix.length:tableCount*(Number(cfg.qty)||0);
-    return `${name}: ${_prDetailMode.mult?'combinaciones exactas':'tablas completas'} (${combinations}), ${cfg.manner==='random'?'en desorden':'en orden'}`;
+    const range=Array.isArray(cfg.ranges)&&cfg.ranges.length?` · factores ${cfg.ranges[0].from}–${cfg.ranges[0].to}`:'';
+    return `${name}: ${_prDetailMode.mult?'combinaciones exactas':'preguntas por tabla'} (${combinations}), ${cfg.manner==='random'?'en desorden':'en orden'}${range}`;
   }
   if(op==='div'){
     const tableCount=cfg.tables?.length||0;
@@ -1588,7 +1606,7 @@ function prLoadTestConfiguration(configuration){
   const mult=configuration?.opsConfig?.mult;
   const div=configuration?.opsConfig?.div;
   const ops=configuration?.opsConfig&&typeof configuration.opsConfig==='object'?configuration.opsConfig:{};
-  if(Object.keys(ops).length)_PR_OP_LIST.forEach(op=>{const checkbox=document.getElementById('prOp'+op.charAt(0).toUpperCase()+op.slice(1));if(!checkbox)return;checkbox.checked=!!ops[op];prToggleOpSection(op,checkbox.checked);const cfg=ops[op]||{};_prDetailMode[op]=cfg.detailMode===true||Array.isArray(cfg.matrix);const detail=document.getElementById('prDetail_'+op);if(detail)detail.checked=_prDetailMode[op];const qty=document.getElementById('prQty_'+op);if(qty&&Number.isInteger(cfg.qty))qty.value=String(cfg.qty);const digits=document.querySelector(`#prDigitsGrid_${op} .pr-digits-btn[data-d="${cfg.digits}"]`);if(digits)prSelDigits(op,digits);const mode=document.querySelector(`#prCarryGrid_${op} .pr-mode-btn[data-mode="${cfg.carryMode}"]`);if(mode)prSelCarryMode(op,mode);const manner=document.querySelector(`#prMannerGrid_${op} .pr-mode-btn[data-manner="${cfg.manner}"]`);if(manner)prSelManner(op,manner);if(cfg.matrix)prRenderMatrix(op,cfg.matrix);else if(cfg.ranges)prRenderMatrix(op,prMatrixFromRanges(cfg.ranges,cfg.tables));else if(cfg.tables)prRenderMatrix(op,prMatrixFromRanges(null,cfg.tables));prToggleOpDetail(op,_prDetailMode[op]);});
+  if(Object.keys(ops).length)_PR_OP_LIST.forEach(op=>{const checkbox=document.getElementById('prOp'+op.charAt(0).toUpperCase()+op.slice(1));if(!checkbox)return;checkbox.checked=!!ops[op];prToggleOpSection(op,checkbox.checked);const cfg=ops[op]||{};_prDetailMode[op]=cfg.detailMode===true||Array.isArray(cfg.matrix);const detail=document.getElementById('prDetail_'+op);if(detail)detail.checked=_prDetailMode[op];const qty=document.getElementById('prQty_'+op);if(qty&&Number.isInteger(cfg.qty))qty.value=String(cfg.qty);const digits=document.querySelector(`#prDigitsGrid_${op} .pr-digits-btn[data-d="${cfg.digits}"]`);if(digits)prSelDigits(op,digits);const mode=document.querySelector(`#prCarryGrid_${op} .pr-mode-btn[data-mode="${cfg.carryMode}"]`);if(mode)prSelCarryMode(op,mode);const manner=document.querySelector(`#prMannerGrid_${op} .pr-mode-btn[data-manner="${cfg.manner}"]`);if(manner)prSelManner(op,manner);if(cfg.ranges?.length&&!_prDetailMode[op])prSetQuickRange(op,cfg.ranges[0].from,cfg.ranges[0].to);if(cfg.matrix)prRenderMatrix(op,cfg.matrix);else if(cfg.ranges)prRenderMatrix(op,prMatrixFromRanges(cfg.ranges,cfg.tables));else if(cfg.tables)prRenderMatrix(op,prMatrixFromRanges(null,cfg.tables));prToggleOpDetail(op,_prDetailMode[op]);});
   prUpdateSummary();
 }
 function prGetTestConfiguration(existing={}){

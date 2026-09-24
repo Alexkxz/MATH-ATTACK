@@ -200,7 +200,7 @@
   function renderSelected(test) {
     const target = get('prSelectedTest');
     if (!target) return;
-    const configId = get('prConfigTestId'); if (configId) configId.textContent = test ? `folio: ${publicTestCode(test)}` : 'folio: sin seleccionar';
+    const configId = get('prConfigTestId'); if (configId) configId.textContent = test ? 'Prueba seleccionada' : 'Nueva prueba';
     const duplicate = get('prDuplicateFromConfig'); if (duplicate) duplicate.disabled = !test;
     const configCopy = get('prCopyConfigTestId'); if (configCopy) configCopy.disabled = !test;
     target.innerHTML = test ? `<strong>Folio ${esc(publicTestCode(test))}</strong><span>${esc(test.title || 'Prueba seleccionada')} · Estado: ${esc(statusLabel(test.status))} · ${test.attemptCount} intento(s)</span><span class="pr-internal-test-id" hidden>testId: ${esc(test.testId)}</span>` : '<span>Ninguna prueba seleccionada.</span>';
