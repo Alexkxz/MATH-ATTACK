@@ -23,6 +23,7 @@ function buildPanelState({
       avatar: player?.avatar || {}, themeColor: player?.themeColor || '',
       gameMode: session.gameMode || 'idle', mpGameMode: session.mpGameMode || '',
       gameType: session.gameType || '', difficulty: session.difficulty || '', isExam: session.isExam || false,
+      examTestId: session.examTestId || '', examStartedAt: session.examStartedAt || 0,
       score: session.score || 0, qIndex: session.qIndex || 0, totalQ: session.totalQ || 0,
       currentTable: session.currentTable || 0, currentQuestion: session.currentQuestion || '',
       correct: session.correct || 0, wrong: session.wrong || 0,

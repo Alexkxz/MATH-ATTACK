@@ -555,7 +555,7 @@ const server=http.createServer((req,res)=>{
       if(!data||typeof data!=='object'||Array.isArray(data))return sendJson(res,400,{ok:false,error:'Solicitud invalida'});
       if(!requireAdmin(req,res,data))return;
       const [testId,attemptId]=attemptActionMatch.slice(1);
-      const actions={pause:'pauseAttempt',resume:'resumeAttempt',close:'closeAttempt',allowReentry:'allowReentry',restart:'restartAttempt',markIncomplete:'markAttemptIncomplete',delete:'deleteAttemptLogically'};
+      const actions={pause:'pauseAttempt',resume:'resumeAttempt',close:'closeAttempt',allowReentry:'allowReentry',reopen:'reopenAttempt',restart:'restartAttempt',markIncomplete:'markAttemptIncomplete',delete:'deleteAttemptLogically'};
       const action=data.action;
       if(typeof action!=='string'||!Object.prototype.hasOwnProperty.call(actions,action))return sendJson(res,400,{ok:false,error:'Accion invalida'});
       if(data.testId!==undefined&&data.testId!==testId||data.attemptId!==undefined&&data.attemptId!==attemptId)return sendJson(res,400,{ok:false,error:'Identificador inconsistente'});
@@ -742,7 +742,6 @@ const server=http.createServer((req,res)=>{
         if(startedTestId&&(!configuredAudience||!configuredAudience.length)) throw Error('La prueba no tiene alumnos asignados');
         examMode={grade:grade||'',tables:tables||[],op,ops,opsConfig,timeLimit:Number(timeLimit)||0,timePerQuestion:Number(timePerQuestion)||0,total,testId:startedTestId,audienceAccountPlayerIds:configuredAudience,startedAt:Date.now()};
         examModes.set(startedTestId||String(examMode.startedAt),examMode);
-        examFinished.clear(); // Nueva sesión de examen — limpiar terminados anteriores
         const payload=JSON.stringify({type:'exam_start',config:examMode});
         gameSessions.listSessions().forEach(s=>{
           if(_examAudienceMatchesFor(examMode,s.name,s.grade)){
@@ -779,10 +778,10 @@ const server=http.createServer((req,res)=>{
           return sendJson(res,422,{ok:false,error:e.message||'No se pudo cerrar la prueba'});
         }
       }
-      examFinished.clear(); // Limpiar registro de terminados al detener el examen
       const payload=JSON.stringify({type:'exam_stop',testId:stoppedTestId||null});
       wss.clients.forEach(ws=>{
-        if(!maestroClients.has(ws)&&ws.readyState===WebSocket.OPEN&&(!stopped||_examAudienceMatchesFor(stopped,ws.playerName,ws.grade))){ws.send(payload);}
+        const shouldNotifyStop=!stoppedTestId||(stopped&&_examAudienceMatchesFor(stopped,ws.playerName,ws.grade));
+        if(!maestroClients.has(ws)&&ws.readyState===WebSocket.OPEN&&shouldNotifyStop){ws.send(payload);}
         if(!maestroClients.has(ws)&&ws._examNotifiedTests){if(stoppedTestId)ws._examNotifiedTests.delete(stoppedTestId);else ws._examNotifiedTests.clear();}
       });
       maestroClients.forEach(mc=>{ if(mc.readyState===WebSocket.OPEN) mc.send(JSON.stringify({type:'exam_state',examMode,examModes:[...examModes.values()]})); });
@@ -1000,6 +999,9 @@ const playerIdentityMessages = createPlayerIdentityMessages({
   checkExamNotify: _checkExamNotify,
   deliverPendingPotMsg: _deliverPendingPotMsg,
   schedulePanelBroadcast,
+  testService,
+  resolveAccountPlayerId,
+  buildLegacyIdentityMap,
 });
 
 const saveResultMessages = createSaveResultMessages({

@@ -1,8 +1,10 @@
 'use strict';
 
-function createPlayerIdentityMessages({ wsContext, genId, checkExamNotify, deliverPendingPotMsg, schedulePanelBroadcast }) {
+function createPlayerIdentityMessages({ wsContext, genId, checkExamNotify, deliverPendingPotMsg, schedulePanelBroadcast, testService, resolveAccountPlayerId, buildLegacyIdentityMap }) {
   const gameSessions = wsContext.gameSessions;
   const { getSessionId, findActiveSession } = wsContext.identity;
+  const { resolveAccountPlayer } = wsContext.identity;
+  const { loadPlayers } = wsContext.persistence;
 
   function reviveSession(ws, name) {
     const session = gameSessions.restoreSession(name, ws);
@@ -49,6 +51,8 @@ function createPlayerIdentityMessages({ wsContext, genId, checkExamNotify, deliv
     session.gameType = message.gameType || 'timed';
     session.difficulty = message.difficulty || '';
     session.isExam = !!message.isExam;
+    session.examTestId = message.isExam ? (message.examTestId || '') : '';
+    session.examStartedAt = message.isExam ? (message.examStartedAt || 0) : 0;
     session.score = message.score || 0;
     session.qIndex = message.qIndex || 0;
     session.totalQ = message.totalQ || 0;
@@ -69,6 +73,13 @@ function createPlayerIdentityMessages({ wsContext, genId, checkExamNotify, deliv
     session.lastResult = message.lastResult || null;
     session.lastResultTs = message.lastResultTs || 0;
     session.tblResults = message.tblResults || {};
+    if (testService && session.isExam && session.examTestId && session.examStartedAt && typeof resolveAccountPlayer === 'function' && typeof resolveAccountPlayerId === 'function') {
+      try {
+        const players = loadPlayers();
+        const player = resolveAccountPlayer(players, { name: session.name });
+        if (player) testService.recordLiveExamProgress({ testId: session.examTestId, accountPlayerId: resolveAccountPlayerId(player, buildLegacyIdentityMap(players)), studentSnapshot: { name: player.name, grade: player.grade || session.grade || '' }, message });
+      } catch (_) { /* El panel en vivo no debe interrumpir la sesión del alumno. */ }
+    }
     schedulePanelBroadcast();
     deliverPendingPotMsg(session);
   }

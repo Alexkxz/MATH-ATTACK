@@ -4,8 +4,9 @@
   const ACTIONS = {
     pause: { label: 'Pausar', states: ['started', 'in_progress', 'reconnected'] },
     resume: { label: 'Reanudar', states: ['paused'] },
-    close: { label: 'Cerrar', states: ['started', 'in_progress', 'paused', 'reconnected'] },
+    close: { label: 'Cerrar', states: ['started', 'in_progress', 'paused', 'reconnected', 'reopened'] },
     allowReentry: { label: 'Permitir reentrada', states: ['disconnected'] },
+    reopen: { label: 'Reabrir', states: ['finished', 'incomplete'] },
     restart: { label: 'Reiniciar', states: ['finished', 'incomplete'] },
     markIncomplete: { label: 'Marcar incompleto', states: ['started', 'in_progress', 'paused', 'disconnected', 'reconnected', 'reopened'] },
     delete: { label: 'Eliminar', states: ['pending', 'started', 'in_progress', 'paused', 'disconnected', 'reconnected', 'finished', 'incomplete', 'reopened'] },

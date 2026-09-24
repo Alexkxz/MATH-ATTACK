@@ -9,6 +9,6 @@ assert(html.includes('id="prExportAttempts"') && html.includes('id="prPrintAttem
 assert(html.includes('id="prOfficializeAll"') && html.includes('id="prPublishAll"') && html.includes('id="prSettleAll"'));
 assert(attempts.includes('prFilterAttempts') && attempts.includes('prExportAttemptsCsv') && attempts.includes('prPrintAttempts'));
 assert(attempts.includes('prBatchSummary') && attempts.includes('rewardEligibility'));
-assert(!attempts.includes("label: 'Reabrir'"));
+assert(attempts.includes("label: 'Reabrir'"));
 assert(library.includes("test.status === 'finished' && Number(test.attemptCount) > 0"));
 console.log('OK: Supervisión incluye filtros, resumen, exportación CSV/PDF, acciones generales y no muestra Reabrir.');
