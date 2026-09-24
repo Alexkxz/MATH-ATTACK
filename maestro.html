@@ -683,8 +683,8 @@ body.proj-mode .q-display{font-size:48px;letter-spacing:4px}
       </div>
       <div class="pr-builder-panel" data-pr-builder-panel="4">
       <div class="pr-config-grid">
-        <div class="pr-field"><label for="prTimePerQuestion">TIEMPO POR PREGUNTA</label><select id="prTimePerQuestion"><option value="0">Sin límite</option><option value="10">10 segundos</option><option value="15">15 segundos</option><option value="30" selected>30 segundos</option><option value="60">60 segundos</option><option value="120">120 segundos</option></select></div>
-        <div class="pr-field"><label for="prTime">TIEMPO GLOBAL</label><select id="prTime"><option value="0">Sin límite</option><option value="60">1 minuto</option><option value="300">5 minutos</option><option value="600">10 minutos</option><option value="1200">20 minutos</option><option value="3600">60 minutos</option></select><small class="pr-config-note">Debe cubrir la cantidad configurada cuando existe límite por pregunta.</small></div>
+        <div class="pr-field"><label for="prTimePerQuestion">TIEMPO POR PREGUNTA (SEGUNDOS)</label><input id="prTimePerQuestion" type="number" min="0" max="3600" step="1" value="30" placeholder="0 = sin límite"><small class="pr-config-note">Escribe 0 para dejarlo sin límite. Al usarlo, se bloquea el tiempo global.</small></div>
+        <div class="pr-field"><label for="prTime">TIEMPO GLOBAL (SEGUNDOS)</label><input id="prTime" type="number" min="0" max="3600" step="1" value="0" placeholder="0 = sin límite"><small class="pr-config-note">Escribe 0 para dejarlo sin límite. Es excluyente con el tiempo por pregunta.</small></div>
       </div>
       <div class="pr-field"><label>RECOMPENSAS OFICIALES</label><div class="pr-reward-grid"><label>Áureos base<input id="prRewardAureos" type="number" min="0" max="100000" step="1" value="0"></label><label>XP<input id="prRewardExperience" type="number" min="0" max="100000" step="1" value="0"></label></div><label class="pr-range-repeat"><input id="prRewardStreak" type="checkbox"> Activar racha</label><label class="pr-range-repeat"><input id="prRewardAchievements" type="checkbox"> Activar logro perfecto</label><small class="pr-config-note">XP, rachas y logros conservan su contrato actual. La liquidación es siempre explícita.</small></div>
       <div class="pr-field"><label>TRAMOS DE ÁUREOS POR ACIERTO</label><p class="pr-config-note pr-reward-tier-help">Se aplica una sola vez al porcentaje final. La pérdida nunca deja el saldo por debajo de cero.</p><div id="prRewardTiers" class="pr-reward-tiers"></div><button type="button" class="pr-tbl-mini-btn" id="prAddRewardTier">Agregar tramo</button></div>
@@ -1506,6 +1506,9 @@ const _prConfigEl=document.getElementById('prConfig');
 if(_prConfigEl){
   _prConfigEl.addEventListener('input',()=>setTimeout(prUpdateSummary,0));
   _prConfigEl.addEventListener('click',()=>setTimeout(prUpdateSummary,0));
+  document.getElementById('prTime')?.addEventListener('input',()=>prSyncTimeInputs('global'));
+  document.getElementById('prTimePerQuestion')?.addEventListener('input',()=>prSyncTimeInputs('perQuestion'));
+  prSyncTimeInputs();
   prUpdateSummary();
 }
 
@@ -1584,6 +1587,18 @@ function prUpdateSummary(){
   const state=missingTables?'FALTAN TABLAS':'LISTA PARA INICIAR';
   el.innerHTML=`<div class="pr-summary-head"><div class="pr-summary-title">RESUMEN ANTES DE INICIAR</div><span class="pr-summary-state${missingTables?' warn':''}">${state}</span></div><div class="pr-summary-metrics"><span><b>GRUPO</b>${grade}</span><span><b>REACTIVOS</b>${total}</span><span><b>RITMO</b>${time?time+' seg/pregunta':'Tiempo libre'}</span></div><div class="pr-summary-details">${details}</div>${missingTables?'<p class="pr-summary-warning">Selecciona al menos una tabla en cada operación que la requiera.</p>':''}`;
 }
+function prSyncTimeInputs(source){
+  const globalInput=document.getElementById('prTime'),perQuestionInput=document.getElementById('prTimePerQuestion');
+  if(!globalInput||!perQuestionInput) return;
+  const globalValue=Math.max(0,Number(globalInput.value)||0),perQuestionValue=Math.max(0,Number(perQuestionInput.value)||0);
+  if(source==='global'&&globalValue>0) perQuestionInput.value='0';
+  if(source==='perQuestion'&&perQuestionValue>0) globalInput.value='0';
+  const globalActive=Number(globalInput.value)>0,perQuestionActive=Number(perQuestionInput.value)>0;
+  globalInput.disabled=perQuestionActive;
+  perQuestionInput.disabled=globalActive;
+  globalInput.closest('.pr-field')?.classList.toggle('is-disabled',perQuestionActive);
+  perQuestionInput.closest('.pr-field')?.classList.toggle('is-disabled',globalActive);
+}
 let prClockTimer=null;
 function prFormatLongDate(value){const date=value.toLocaleDateString('es-MX',{day:'numeric',month:'long',year:'numeric'});const time=value.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',second:'2-digit',hour12:true});return `${date}, ${time}`;}
 function prUpdateLiveClock(){const clock=document.getElementById('prLiveClock');if(clock)clock.textContent=prFormatLongDate(new Date()).split(', ').slice(-1)[0];}
@@ -1600,8 +1615,11 @@ function prLoadTestConfiguration(configuration){
   const experience=document.getElementById('prRewardExperience'); if(experience) experience.value=Number.isInteger(rewards.experience)?rewards.experience:0;
   const streak=document.getElementById('prRewardStreak'); if(streak) streak.checked=rewards.streak?.enabled===true;
   const achievements=document.getElementById('prRewardAchievements'); if(achievements) achievements.checked=rewards.achievements?.perfect?.enabled===true;
-  const time=document.getElementById('prTime'); if(time) time.value=String(Number.isFinite(Number(configuration.timeLimit))?Number(configuration.timeLimit):0);
-  const perQuestion=document.getElementById('prTimePerQuestion'); if(perQuestion) perQuestion.value=String(Number.isFinite(Number(configuration.timePerQuestion))?Number(configuration.timePerQuestion):30);
+  const loadedTime=Number.isFinite(Number(configuration.timeLimit))?Math.max(0,Number(configuration.timeLimit)):0;
+  const loadedPerQuestion=Number.isFinite(Number(configuration.timePerQuestion))?Math.max(0,Number(configuration.timePerQuestion)):30;
+  const time=document.getElementById('prTime'); if(time) time.value=String(loadedTime>0?loadedTime:0);
+  const perQuestion=document.getElementById('prTimePerQuestion'); if(perQuestion) perQuestion.value=String(loadedTime>0?0:(loadedPerQuestion||30));
+  prSyncTimeInputs();
   prRenderRewardTiers(Array.isArray(rewards.aureosTiers)?rewards.aureosTiers:[]);
   const mult=configuration?.opsConfig?.mult;
   const div=configuration?.opsConfig?.div;
@@ -1640,8 +1658,8 @@ function prGetTestConfiguration(existing={}){
   delete div.ranges;
   if(Object.keys(div).length) opsConfig.div=div; else delete opsConfig.div;
   if(Object.keys(opsConfig).length) next.opsConfig=opsConfig; else delete next.opsConfig;
-  const timeLimit=Number(document.getElementById('prTime')?.value)||0; const timePerQuestion=Number(document.getElementById('prTimePerQuestion')?.value)||0; const total=_prCalcTotal(opsConfig);
-  if(timeLimit&&timePerQuestion&&timeLimit<total*timePerQuestion) throw Error('El tiempo global debe cubrir todas las preguntas');
+  const timeLimit=Number(document.getElementById('prTime')?.value)||0; const timePerQuestion=Number(document.getElementById('prTimePerQuestion')?.value)||0;
+  if(timeLimit&&timePerQuestion) throw Error('Selecciona tiempo global o tiempo por pregunta, no ambos');
   next.timeLimit=timeLimit; next.timePerQuestion=timePerQuestion;
   return next;
 }
@@ -1656,6 +1674,7 @@ async function startPrueba(btn){
   const startMessage=(text,ok=false)=>{if(startStatus){startStatus.textContent=text;startStatus.classList.toggle('ok',ok);startStatus.classList.toggle('error',!ok);}showMsg(text,ok);};
   const grade=document.getElementById('prGrade').value;
   const ops=_PR_OP_LIST.filter(o=>document.getElementById('prOp'+o.charAt(0).toUpperCase()+o.slice(1))?.checked);
+  prSyncTimeInputs();
   const timeLimit=Number(document.getElementById('prTime').value)||0;
   const timePerQuestion=Number(document.getElementById('prTimePerQuestion')?.value)||0;
   if(!ops.length){ startMessage('❌ No se puede iniciar: selecciona al menos una operación.'); return; }

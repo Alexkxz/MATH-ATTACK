@@ -40,6 +40,15 @@ const freePort = () => new Promise(resolve => {
 
     assert.strictEqual(await page.locator('#prConfig .pr-folio-value').count(), 1, 'el folio debe aparecer una sola vez en la cabecera');
     assert(!((await page.locator('#prConfigTestId').textContent()) || '').toLowerCase().includes('folio'), 'el texto auxiliar no debe repetir el folio');
+    assert.strictEqual(await page.locator('#prTimePerQuestion').inputValue(), '30');
+    assert.strictEqual(await page.locator('#prTime').isDisabled(), true, 'el tiempo global debe bloquearse al usar tiempo por pregunta');
+    await page.fill('#prTimePerQuestion', '0');
+    await page.fill('#prTime', '90');
+    assert.strictEqual(await page.locator('#prTimePerQuestion').isDisabled(), true, 'el tiempo por pregunta debe bloquearse al usar tiempo global');
+    assert.strictEqual(await page.locator('#prTimePerQuestion').inputValue(), '0');
+    await page.fill('#prTime', '0');
+    await page.fill('#prTimePerQuestion', '12');
+    assert.strictEqual(await page.locator('#prTime').isDisabled(), true);
     assert.strictEqual(await page.locator('#prMultiplier').count(), 0, 'el multiplicador no debe aparecer');
     assert.strictEqual(await page.locator('.pr-test-library').isVisible(), false, 'la biblioteca no debe aparecer en configuración');
     assert.strictEqual(await page.locator('#prOpSection_mult').count(), 1, 'multiplicación debe desplegarse inicialmente');

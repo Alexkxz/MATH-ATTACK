@@ -24,6 +24,7 @@ function validateTestConfiguration(configuration={}, {allowIncomplete=false}={})
   if(configuration.description!==undefined&&(typeof configuration.description!=='string'||configuration.description.length>2000)) throw new Error('configuration description invalida');
   if(configuration.total!==undefined&&(!Number.isInteger(configuration.total)||configuration.total<1||configuration.total>100)) throw new Error('configuration total invalido');
   if(configuration.timeLimit!==undefined&&(!Number.isFinite(Number(configuration.timeLimit))||Number(configuration.timeLimit)<0||Number(configuration.timeLimit)>3600)) throw new Error('configuration timeLimit invalido');
+  if(configuration.timePerQuestion!==undefined&&(!Number.isFinite(Number(configuration.timePerQuestion))||Number(configuration.timePerQuestion)<0||Number(configuration.timePerQuestion)>3600)) throw new Error('configuration timePerQuestion invalido');
   const multiplier=configuration.multiplier??1;
   if(!Number.isInteger(multiplier)||multiplier<TEST_MULTIPLIER_MIN||multiplier>TEST_MULTIPLIER_MAX) throw new Error('configuration multiplier invalido');
   if(configuration.order!==undefined&&!['ordered','random'].includes(configuration.order)) throw new Error('configuration order invalido');
