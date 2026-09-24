@@ -716,6 +716,8 @@ const server=http.createServer((req,res)=>{
             if(!cfg||typeof cfg!=='object') continue;
             const entry={qty:Math.max(1,Number(cfg.qty)||1)};
             if(Array.isArray(cfg.tables)) entry.tables=cfg.tables.map(Number).filter(n=>!isNaN(n));
+            if(Array.isArray(cfg.ranges)) entry.ranges=cfg.ranges.filter(range=>range&&Number.isInteger(Number(range.table))&&Number.isInteger(Number(range.from))&&Number.isInteger(Number(range.to))).map(range=>({table:Number(range.table),from:Number(range.from),to:Number(range.to)}));
+            if(cfg.repeat===true) entry.repeat=true;
             if(cfg.detailMode===true) entry.detailMode=true;
             if(Array.isArray(cfg.matrix)) entry.matrix=cfg.matrix.filter(value=>typeof value==='string'&&/^([0-9]|1[0-2])x([0-9]|1[0-2])$/.test(value));
             if(cfg.digits!=null) entry.digits=Math.max(1,Number(cfg.digits)||1);
@@ -770,6 +772,8 @@ const server=http.createServer((req,res)=>{
       if(stoppedTestId) examModes.delete(stoppedTestId); else examModes.clear();
       examMode=[...examModes.values()].at(-1)||null;
       if(stoppedTestId){
+        try{ testService.finishActiveExamAttempts(stoppedTestId,{reason:'exam_stopped'}); }
+        catch(e){ L.err(`No se pudieron finalizar los intentos de ${stoppedTestId}: ${e.message||e}`); return sendJson(res,422,{ok:false,error:e.message||'No se pudieron finalizar los intentos'}); }
         try{
           const persistedTest=testService.get(stoppedTestId);
           if(persistedTest.status==='active') testService.finish(stoppedTestId,Number(persistedTest.revision)+1);
@@ -779,8 +783,15 @@ const server=http.createServer((req,res)=>{
         }
       }
       const payload=JSON.stringify({type:'exam_stop',testId:stoppedTestId||null});
+      let stopAudience=stopped;
+      if(stoppedTestId&&!stopAudience){
+        try{
+          const audience=testService.listAssignments(stoppedTestId).filter(item=>item.targetType==='student'&&item.accountPlayerId).map(item=>item.accountPlayerId);
+          stopAudience={grade:'',audienceAccountPlayerIds:audience};
+        }catch(_){ stopAudience=null; }
+      }
       wss.clients.forEach(ws=>{
-        const shouldNotifyStop=!stoppedTestId||(stopped&&_examAudienceMatchesFor(stopped,ws.playerName,ws.grade));
+        const shouldNotifyStop=!stoppedTestId||(stopAudience&&_examAudienceMatchesFor(stopAudience,ws.playerName,ws.grade));
         if(!maestroClients.has(ws)&&ws.readyState===WebSocket.OPEN&&shouldNotifyStop){ws.send(payload);}
         if(!maestroClients.has(ws)&&ws._examNotifiedTests){if(stoppedTestId)ws._examNotifiedTests.delete(stoppedTestId);else ws._examNotifiedTests.clear();}
       });

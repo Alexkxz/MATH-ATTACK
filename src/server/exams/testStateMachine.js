@@ -7,8 +7,8 @@ const TEST_TRANSITIONS = Object.freeze({
   active:['paused','closed','finished'], paused:['active','closed'], closed:['finished'], finished:[], cancelled:[],
 });
 const ATTEMPT_TRANSITIONS = Object.freeze({
-  pending:['started','deleted'], started:['in_progress','paused','deleted'], in_progress:['disconnected','paused','finished','incomplete','deleted'], paused:['in_progress','deleted'],
-  disconnected:['reconnected','incomplete','deleted'], reconnected:['in_progress','finished','incomplete','deleted'],
+  pending:['started','finished','deleted'], started:['in_progress','paused','finished','deleted'], in_progress:['disconnected','paused','finished','incomplete','deleted'], paused:['in_progress','finished','deleted'],
+  disconnected:['reconnected','finished','incomplete','deleted'], reconnected:['in_progress','finished','incomplete','deleted'],
   finished:['restarted','reopened','deleted'], incomplete:['restarted','reopened','deleted'], restarted:[], reopened:['in_progress','finished','deleted'], deleted:[],
 });
 function canTransition(kind, from, to){ const map=kind==='test'?TEST_TRANSITIONS:ATTEMPT_TRANSITIONS; return !!map[from]?.includes(to); }

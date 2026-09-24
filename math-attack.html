@@ -7236,18 +7236,40 @@ function applyPrueba(){
   }
   runCountdown(()=>initGame(false));
 }
+function _finishExamImmediately(){
+  if(!_examPlaythrough||!questions.length) return;
+  clearInterval(timerIv); answered=true;
+  const seenByOp={};
+  questions.forEach(q=>{
+    const op=q.op||'×';
+    const index=seenByOp[op]||0; seenByOp[op]=index+1;
+    if(!tblResults[op]) tblResults[op]=[];
+    if(tblResults[op][index]!==undefined) return;
+    tblResults[op][index]='timeout';
+    if(q.table!=null){
+      if(!tableDetailResults[op]) tableDetailResults[op]={};
+      if(!tableDetailResults[op][q.table]) tableDetailResults[op][q.table]=[];
+      tableDetailResults[op][q.table].push('timeout');
+    }
+    setMiniDot(op,index,'timeout');
+    totalT++;
+  });
+  if($('progCorrect')) $('progCorrect').textContent=totalC;
+  if($('progWrong')) $('progWrong').textContent=totalW+totalT;
+  if($('progLabel')) $('progLabel').textContent=`${questions.length} / ${questions.length}`;
+}
 function handleExamStop(stoppedTestId=null){
   const currentTestId=_pendingExamConfig?.testId||'';
   if(stoppedTestId&&currentTestId&&stoppedTestId!==currentTestId){
     _examConfigs.delete(stoppedTestId);
     return;
   }
-  // Si el alumno está jugando esta prueba justo ahora, dejarlo terminar a su propio ritmo:
-  // su resultado final debe seguir contando como parte de la prueba (isExam, examFinished),
-  // así que _examActive/_pendingExamConfig/el checkpoint deben quedar intactos hasta que
-  // termine de verdad — showResults()/sendSaveResult() ya manejan ese caso correctamente.
-  if(_examActive&&$('gameScreen').classList.contains('active')){
-    showPowerToast('📝 El maestro detuvo la prueba — termina las preguntas que ya tienes.');
+  // La detención administrativa es inmediata: se conserva lo respondido y el resto
+  // se guarda como sin tiempo antes de mostrar el resultado final.
+  if(_examPlaythrough&&$('gameScreen').classList.contains('active')){
+    _finishExamImmediately();
+    showPowerToast('📝 El maestro finalizó la prueba. Las preguntas restantes quedaron sin tiempo.');
+    showResults();
     return;
   }
   _examConfigs.delete(stoppedTestId||currentTestId||'legacy');

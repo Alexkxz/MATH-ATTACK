@@ -103,7 +103,7 @@ function createHttpAdminRoutes(context) {
       return questions.reduce((out,q)=>{
         const answer=answersById.get(q.questionId),op=q.op||'×';
         if(!out[op]) out[op]=[];
-        out[op].push({table:q.table??q.a??null,a:q.a??null,b:q.b??null,question:`${q.a??''} ${op} ${q.b??''}`.trim(),status:answer?.corrected===true?'correct':answer?'wrong':'timeout'});
+        out[op].push({table:q.table??q.a??null,a:q.a??null,b:q.b??null,question:`${q.a??''} ${op} ${q.b??''}`.trim(),status:answer?.timeout===true||answer?.status==='timeout'?'timeout':answer?.corrected===true?'correct':answer?'wrong':'timeout'});
         return out;
       },{});
     };

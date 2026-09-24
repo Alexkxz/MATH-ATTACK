@@ -13,7 +13,7 @@ function buildQuestionDetail(result){
   const byId=new Map(answers.map(item=>[item.questionId,item]));
   return questions.reduce((out,q)=>{
     const answer=byId.get(q.questionId);
-    const status=answer?.corrected===true?'correct':answer?'wrong':'timeout';
+    const status=answer?.timeout===true||answer?.status==='timeout'?'timeout':answer?.corrected===true?'correct':answer?'wrong':'timeout';
     const op=q.op||'×';
     if(!out[op]) out[op]=[];
     out[op].push({table:q.table??q.a??null,a:q.a??null,b:q.b??null,question:`${q.a??''} ${op} ${q.b??''}`.trim(),status});
