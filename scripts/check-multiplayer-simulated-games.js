@@ -2,6 +2,7 @@
 
 const assert=require('node:assert/strict');
 const {chromium}=require('playwright');
+const {silenceTestAudio}=require('./test-browser-audio');
 
 const baseUrl=process.env.MATH_ATTACK_URL||'http://127.0.0.1:8080';
 const wait=ms=>new Promise(resolve=>setTimeout(resolve,ms));
@@ -9,6 +10,7 @@ const wait=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 async function openAgent(browser,name){
   const page=await browser.newPage({viewport:{width:1280,height:720}});
   await page.goto(`${baseUrl}/math-attack.html`,{waitUntil:'domcontentloaded'});
+  await silenceTestAudio(page);
   await page.evaluate(playerName=>_entrarAlJuego(playerName),name);
   await page.locator("#workspaceSidebar .workspace-nav-item[onclick*=\"selectWorkspaceMode(this,'online')\"]").click();
   await page.waitForFunction(()=>document.querySelector('#lanLobby')?.classList.contains('visible'),null,{timeout:10000});

@@ -1943,6 +1943,238 @@ body.frozen-cursor *{cursor:not-allowed!important;}
   .workspace-dynamic-wizard .workspace-dynamic-nav{margin-top:10px;padding-top:8px}
 }
 @media (prefers-reduced-motion:reduce){.workspace-shell *{transition:none!important;animation:none!important}}
+/* ── GAME ARENA V2 ─────────────────────────────────────
+   Capa visual reutilizable para Individual, Duelo y Multijugador.
+   Conserva los IDs del juego y no cambia su flujo de respuestas. */
+.game-shell-v2{position:relative;isolation:isolate;width:min(1180px,96vw);max-width:min(1180px,96vw)!important;min-height:min(720px,calc(100vh - 32px));
+  padding:18px 22px 22px!important;gap:14px!important;
+  background:linear-gradient(145deg,rgba(23,18,58,.92),rgba(12,19,44,.9));border:1px solid rgba(129,140,248,.24);border-radius:28px;
+  box-shadow:0 24px 70px rgba(3,7,18,.42),inset 0 1px 0 rgba(255,255,255,.06);}
+.game-shell-v2 .game-header{min-height:62px;padding:10px 12px;border:1px solid rgba(148,163,184,.16);border-radius:18px;
+  background:linear-gradient(90deg,rgba(15,23,42,.88),rgba(30,27,75,.7));box-shadow:0 8px 24px rgba(2,6,23,.2);}
+.game-profile{display:flex;align-items:center;gap:9px;min-width:0;}
+.game-avatar{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;overflow:hidden;background:rgba(167,139,250,.16);
+  border:2px solid rgba(167,139,250,.55);box-shadow:0 0 16px rgba(99,102,241,.25);font-size:20px;flex:0 0 auto;}
+.game-avatar svg{display:block;width:100%;height:100%;}
+.game-profile-copy{min-width:0;display:flex;flex-direction:column;gap:2px;}
+.game-profile-copy strong{font-family:'Baloo 2',cursive;font-size:16px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:160px;}
+.game-profile-copy small{font-size:9px;color:var(--muted);font-weight:800;letter-spacing:.8px;text-transform:uppercase;}
+.game-header-center{display:flex;align-items:center;justify-content:center;gap:12px;min-width:0;}
+.game-mode-kicker{font-size:10px;color:var(--accent);font-weight:900;letter-spacing:1.2px;text-transform:uppercase;white-space:nowrap;}
+.game-header-metrics{display:flex;align-items:center;gap:7px;margin-left:auto;}
+.game-metric{min-width:58px;padding:4px 8px;border-radius:10px;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.09);text-align:center;}
+.game-metric small{display:block;color:var(--muted);font-size:8px;text-transform:uppercase;letter-spacing:.7px;font-weight:800;}
+.game-metric strong{display:block;color:var(--accent);font-family:'Baloo 2',cursive;font-size:18px;line-height:1.05;}
+.game-metric.streak strong{color:#fbbf24;}
+.game-metric.lives strong{color:#fb7185;font-size:13px;letter-spacing:-1px;}
+.game-ranking-top{display:flex;align-items:center;gap:7px;}
+.game-shell-v2 #duelScoresEl{order:-1;min-height:58px;margin:0;padding:6px 0;background:transparent;}
+.game-shell-v2 .duel-scores .dp{padding:6px 10px;border-radius:12px;background:rgba(255,255,255,.045);}
+.game-shell-v2 .duel-scores .dp-name{font-size:9px;text-transform:uppercase;letter-spacing:.5px;}
+.game-shell-v2 .duel-scores .dp-score{font-size:20px;line-height:1.05;}
+.game-shell-v2 #scoreBar{display:none!important;}
+.game-mode-rail{position:relative;min-height:58px;display:grid;align-items:center;gap:6px;padding:0 0 2px;}
+.game-shell-v2 .mode-rail-label{min-height:42px;display:flex;align-items:center;justify-content:center;padding:8px 14px;border:1px solid rgba(129,140,248,.2);border-radius:14px;background:rgba(15,23,42,.38);color:var(--muted);font-size:11px;font-weight:800;letter-spacing:.5px;text-align:center;}
+.game-shell-v2 .mode-rail-label[hidden]{display:none!important;}
+.game-shell-v2 .game-metric.lives{display:none;}
+.game-shell-v2.show-lives-metric .game-metric.lives{display:block;}
+.game-shell-v2 .game-mode-rail .timer-shell{width:100%;}
+.game-shell-v2 .game-mode-rail .timer-row{min-height:28px;align-items:center;}
+.game-shell-v2 .game-mode-rail #timerLbl{font-size:24px;line-height:1;font-weight:900;color:var(--accent);}
+.game-shell-v2 .game-mode-rail #tableLbl{font-size:12px;font-weight:800;}
+.game-shell-v2 .game-mode-rail #globalTimerVal{font-size:32px;line-height:1.05;}
+.game-shell-v2.online-layout .game-mode-rail{grid-area:mode;}
+.game-shell-v2.online-layout .game-mode-rail > #globalTimer,
+.game-shell-v2.online-layout .game-mode-rail > #livesRow,
+.game-shell-v2.online-layout .game-mode-rail > #bombInd,
+.game-shell-v2.online-layout .game-mode-rail > #streakBanner,
+.game-shell-v2.online-layout .game-mode-rail > .timer-shell{grid-area:auto;}
+.game-mode-rail:has(.timer-shell:not(.timer-hidden)){min-height:78px;}
+.game-mode-rail:has(.timer-shell:not(.timer-hidden)) + .question-card{min-height:200px;padding-top:18px;padding-bottom:18px;}
+/* Duelo: concentra los marcadores sin sacrificar las cuatro respuestas. */
+.game-shell-v2.duel-layout{min-height:0;padding:12px 18px 16px!important;gap:8px!important;}
+.game-shell-v2.duel-layout .game-header{min-height:52px;padding:7px 10px;}
+.game-shell-v2.duel-layout #duelScoresEl{min-height:44px;padding:2px 0;gap:10px;}
+.game-shell-v2.duel-layout #duelScoresEl .dp{padding:4px 8px;}
+.game-shell-v2.duel-layout #duelScoresEl .dp-score{font-size:17px;}
+.game-shell-v2.duel-layout #duelScoresEl .dp-name{font-size:8px;}
+.game-shell-v2.duel-layout #duelScoresEl .duel-vs{min-width:28px;font-size:10px;font-weight:900;letter-spacing:.08em;}
+.game-shell-v2.duel-layout .game-mode-rail{min-height:48px;}
+.game-shell-v2.duel-layout .game-mode-rail:has(.timer-shell:not(.timer-hidden)){min-height:68px;}
+.game-shell-v2.duel-layout .turn-wrap{min-height:18px;}
+.game-shell-v2.duel-layout .question-card{min-height:190px;padding:18px 24px;}
+.game-shell-v2.duel-layout .game-mode-rail:has(.timer-shell:not(.timer-hidden)) + .question-card{min-height:170px;padding-top:14px;padding-bottom:14px;}
+.game-shell-v2.duel-layout .question-text{font-size:clamp(58px,6vw,88px);}
+.game-shell-v2.duel-layout .options-grid{gap:10px;}
+.game-shell-v2.duel-layout .opt-btn{min-height:70px;padding:12px 10px;font-size:clamp(26px,2.6vw,36px);}
+.game-shell-v2.duel-layout .progress-wrap{padding-top:1px;padding-bottom:0;}
+.game-shell-v2.online-layout #duelScoresEl.multi{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;min-height:48px;}
+.game-shell-v2.online-layout #duelScoresEl.multi .dp{min-width:0;max-width:none;padding:5px 7px;}
+.game-shell-v2.online-layout #duelScoresEl.multi .dp-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.game-shell-v2.online-layout #duelScoresEl.multi .dp-score{font-size:18px;}
+.game-shell-v2.online-layout{min-height:0;padding:12px 18px 16px!important;gap:8px!important;}
+.game-shell-v2.online-layout .game-header{min-height:52px;padding:7px 10px;}
+.game-shell-v2.online-layout #duelScoresEl{min-height:44px;padding:2px 0;}
+.game-shell-v2.online-layout .game-mode-rail{display:flex;flex-direction:column;align-items:stretch;gap:6px;min-height:48px;width:100%;}
+.game-shell-v2.online-layout .game-mode-rail > *{width:100%;}
+.game-shell-v2.online-layout .game-mode-rail:has(.timer-shell:not(.timer-hidden)){min-height:88px;}
+.game-shell-v2.online-layout .game-mode-rail:has(#bombInd.visible),
+.game-shell-v2.online-layout .game-mode-rail:has(#livesRow.visible){min-height:130px;}
+.game-shell-v2.online-layout .game-mode-rail .timer-shell{padding:8px 12px 6px;}
+.game-shell-v2.online-layout .game-mode-rail .timer-track{height:22px;}
+.game-shell-v2.online-layout .game-mode-rail #timerLbl{font-size:30px;}
+.game-shell-v2.online-layout .game-mode-rail #tableLbl{font-size:13px;}
+.game-shell-v2.online-layout .game-mode-rail #livesRow{min-height:42px;}
+.game-shell-v2.online-layout .game-mode-rail #bombInd{min-height:38px;text-align:center;align-items:center;justify-content:center;}
+.game-shell-v2.online-layout .game-mode-rail #bombInd.visible{display:flex;}
+.game-shell-v2.online-layout .game-mode-rail #bombInd:not(.visible){display:none!important;}
+.game-shell-v2.online-layout .turn-wrap{min-height:18px;}
+.game-shell-v2.online-layout .question-card{min-height:190px;padding:18px 24px;}
+.game-shell-v2.online-layout .game-mode-rail:has(.timer-shell:not(.timer-hidden)) + .question-card{min-height:170px;padding-top:14px;padding-bottom:14px;}
+.game-shell-v2.online-layout .question-text{font-size:clamp(58px,6vw,88px);}
+.game-shell-v2.online-layout .options-grid{gap:10px;}
+.game-shell-v2.online-layout .opt-btn{min-height:70px;padding:12px 10px;font-size:clamp(26px,2.6vw,36px);}
+.game-shell-v2.online-layout .progress-wrap{padding-top:1px;padding-bottom:0;}
+@media (max-width:620px){
+  .game-shell-v2.duel-layout{padding:8px 10px 12px!important;gap:7px!important;}
+  .game-shell-v2.duel-layout #duelScoresEl{gap:5px;}
+  .game-shell-v2.duel-layout #duelScoresEl .dp{min-width:0;padding:4px 5px;}
+  .game-shell-v2.duel-layout #duelScoresEl .duel-vs{min-width:18px;font-size:9px;}
+  .game-shell-v2.duel-layout .game-header{padding:6px 8px;}
+  .game-shell-v2.duel-layout .question-card{min-height:200px;padding:16px 10px;}
+  .game-shell-v2.duel-layout .opt-btn{min-height:60px;padding:10px 8px;font-size:26px;}
+  .game-shell-v2.online-layout{
+    display:grid;
+    grid-template-columns:minmax(0,1fr);
+    grid-template-areas:
+      "header"
+      "scores"
+      "turn"
+      "mode"
+      "timer"
+      "question"
+      "feedback"
+      "answers"
+      "progress"
+      "powers";
+  }
+  .game-shell-v2.online-layout .power-dock{position:relative;top:auto;right:auto;width:100%;max-height:none;}
+  .game-shell-v2.online-layout .power-panel.visible{max-height:240px;}
+  .game-shell-v2.online-layout #duelScoresEl.multi{grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;}
+  .game-shell-v2.online-layout #duelScoresEl.multi .dp{padding:4px 5px;}
+  .game-shell-v2.online-layout #duelScoresEl.multi .dp-score{font-size:16px;}
+}
+.game-shell-v2 .timer-shell{padding:8px 10px 5px;border-radius:14px;background:rgba(15,23,42,.55);border:1px solid rgba(148,163,184,.13);}
+.game-shell-v2 .timer-shell.timer-hidden{display:none;}
+.game-shell-v2 .timer-track{height:18px;border-radius:6px;border-color:rgba(129,140,248,.28);}
+.game-shell-v2 .timer-bar{gap:3px;}
+.game-shell-v2 .question-card{width:100%;min-height:clamp(230px,30vh,300px);display:flex;flex-direction:column;justify-content:center;padding:24px 28px;border-radius:24px;
+  background:radial-gradient(circle at 50% 40%,rgba(79,70,229,.22),rgba(15,23,42,.58) 68%),linear-gradient(145deg,rgba(124,58,237,.18),rgba(30,41,99,.16));
+  border-color:rgba(129,140,248,.42);box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 18px 40px rgba(2,6,23,.26);}
+.game-shell-v2 .question-text{font-size:clamp(68px,7vw,112px);letter-spacing:.03em;text-shadow:0 0 30px rgba(129,140,248,.38);}
+.game-shell-v2 .options-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:2px;}
+.game-shell-v2 .opt-btn{min-height:84px;border-radius:18px;background:rgba(15,23,42,.72);border-color:rgba(129,140,248,.32);font-size:clamp(28px,3vw,42px);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 8px 18px rgba(2,6,23,.18);}
+.game-shell-v2 .opt-btn:hover:not(:disabled){transform:translateY(-3px);box-shadow:0 10px 24px rgba(2,6,23,.3),0 0 0 2px rgba(129,140,248,.18);}
+.game-shell-v2 .feedback{min-height:24px;height:auto;font-size:16px;}
+.game-style-switcher{position:relative;display:flex;align-items:center;}
+.game-style-trigger{border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06);color:var(--muted);border-radius:10px;padding:7px 9px;cursor:pointer;font-size:13px;}
+.game-style-trigger:hover{color:var(--text);border-color:rgba(167,139,250,.55);}
+.game-style-options{display:none;position:absolute;right:0;top:calc(100% + 8px);z-index:310;min-width:190px;padding:7px;border-radius:14px;
+  background:rgba(15,23,42,.98);border:1px solid rgba(129,140,248,.34);box-shadow:0 16px 36px rgba(0,0,0,.35);}
+.game-style-switcher.open .game-style-options{display:grid;gap:5px;}
+.game-style-option{border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);color:var(--text);border-radius:9px;padding:7px 9px;text-align:left;font-size:11px;font-weight:800;cursor:pointer;}
+.game-style-option:hover,.game-style-option.active{border-color:var(--accent);background:rgba(167,139,250,.14);}
+.game-shell-v2 .power-dock{position:absolute;right:0;top:92px;z-index:250;width:min(320px,31%);display:none;gap:10px;padding:14px;
+  border:1px solid rgba(96,165,250,.45);border-radius:20px;background:linear-gradient(180deg,rgba(15,23,42,.98),rgba(30,27,75,.97));
+  box-shadow:-18px 20px 50px rgba(2,6,23,.42);transform:translateX(calc(100% - 38px));transition:transform .22s ease,opacity .22s ease;opacity:.94;}
+.game-shell-v2 .power-dock.has-powers{display:flex;}
+.game-shell-v2 .power-dock.open{transform:translateX(0);opacity:1;}
+.game-shell-v2 .power-dock-toggle{position:absolute;left:-38px;top:18px;width:38px;min-height:132px;border:1px solid rgba(96,165,250,.5);border-right:0;
+  border-radius:14px 0 0 14px;background:rgba(15,23,42,.96);color:#7dd3fc;writing-mode:vertical-rl;transform:rotate(180deg);font-weight:900;letter-spacing:.7px;cursor:pointer;}
+.game-shell-v2 .power-dock.open .power-dock-toggle{color:#fde68a;}
+.game-shell-v2 .power-panel.visible{display:grid;grid-template-columns:1fr;gap:8px;max-height:calc(100vh - 230px);overflow-y:auto;overflow-x:hidden;padding:2px 3px 4px 0;}
+.game-shell-v2 .power-btn{width:100%;min-height:58px;justify-content:flex-start;gap:10px;padding:9px 34px 9px 10px;border-radius:13px;text-align:left;}
+.game-shell-v2 .power-btn-icon{font-size:22px;width:28px;text-align:center;}
+.game-shell-v2 .power-btn-name{display:block;font-size:13px;line-height:1.05;}
+.game-shell-v2 .power-btn-meta{display:block;margin-top:2px;font-size:9px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;}
+.game-shell-v2 .power-btn-key{display:flex;position:absolute;left:6px;top:5px;width:17px;height:17px;align-items:center;justify-content:center;border-radius:5px;background:rgba(255,255,255,.12);color:#fde68a;font-size:9px;font-weight:900;}
+/* El layout online conserva una columna real para poderes; Individual/Duelo usan el cajon superpuesto. */
+.game-shell-v2.online-layout .power-dock{position:sticky;top:18px;width:auto;max-width:none;transform:none;opacity:1;}
+.game-shell-v2.online-layout .power-dock.open{transform:none;}
+.game-shell-v2.online-layout .power-dock-toggle{display:none;}
+.game-shell-v2.online-layout{align-content:start;}
+/* Multijugador: la pestaña no reserva una columna. El panel se desliza sobre el borde derecho. */
+@media (min-width:621px){
+  html:has(body.game-active){overflow:hidden;}
+  body.game-active{overflow:hidden;}
+  body.game-active #gameScreen{overflow:hidden;}
+  .game-shell-v2.online-layout{
+    grid-template-columns:minmax(0,1fr);
+    grid-template-areas:
+      "header"
+      "scores"
+      "turn"
+      "score"
+      "lives"
+      "mode"
+      "timer"
+      "question"
+      "feedback"
+      "answers"
+      "progress";
+  }
+  .game-shell-v2.online-layout #powerDock{grid-area:unset;position:absolute;right:0;top:92px;width:min(320px,31%);max-width:320px;transform:translateX(100%);opacity:.94;}
+  .game-shell-v2.online-layout #powerDock.open{transform:translateX(0);opacity:1;}
+  .game-shell-v2.online-layout #powerDock{display:none;}
+  .game-shell-v2.online-layout #powerDock.has-powers{display:flex;}
+  .game-shell-v2.online-layout #powerDock{overflow:visible;}
+  .game-shell-v2.online-layout #powerDock .power-dock-toggle{display:flex;}
+  .game-shell-v2.online-layout{overflow-x:hidden;}
+  .game-shell-v2.online-layout:not(.power-dock-open) #powerDock{
+    position:fixed;
+    right:0;
+    top:50%;
+    transform:translate(100%,-50%);
+    z-index:500;
+  }
+  .game-shell-v2.online-layout:not(.power-dock-open) #powerDock .power-dock-toggle{
+    top:50%;
+    transform:translateY(-50%) rotate(180deg);
+  }
+  .game-shell-v2.online-layout.power-dock-open{
+    grid-template-columns:minmax(0,1fr) minmax(240px,300px);
+    grid-template-areas:
+      "header header"
+      "scores powers"
+      "turn powers"
+      "score powers"
+      "lives powers"
+      "mode powers"
+      "timer powers"
+      "question powers"
+      "feedback powers"
+      "answers powers"
+      "progress powers";
+  }
+  .game-shell-v2.online-layout.power-dock-open #powerDock{grid-area:powers;position:sticky;top:18px;right:auto;width:auto;max-width:none;transform:none;opacity:1;overflow:hidden;}
+  .game-shell-v2.online-layout.power-dock-open #powerDock .power-dock-toggle{display:none;}
+}
+@media (max-width:620px){
+  .game-shell-v2.online-layout #powerDock{grid-area:powers;position:relative;right:auto;top:auto;width:100%;max-width:none;transform:none;opacity:1;display:none;}
+  .game-shell-v2.online-layout #powerDock.has-powers{display:flex;}
+  .game-shell-v2.online-layout #powerDock .power-dock-toggle{display:none;}
+}
+.game-shell-v2 .power-btn-qty{top:8px;right:8px;}
+.game-shell-v2.game-theme-arena{background:linear-gradient(145deg,rgba(57,20,42,.95),rgba(30,15,33,.94));}
+.game-shell-v2.game-theme-arena .question-card{background:radial-gradient(circle at 50% 40%,rgba(225,29,72,.22),rgba(30,15,33,.65) 70%);border-color:rgba(251,113,133,.45);}
+.game-shell-v2.game-theme-command{background:linear-gradient(145deg,rgba(7,41,55,.96),rgba(5,25,36,.95));}
+.game-shell-v2.game-theme-command .question-card{background:radial-gradient(circle at 50% 40%,rgba(6,182,212,.2),rgba(8,47,73,.6) 70%);border-color:rgba(34,211,238,.42);}
+.game-shell-v2.game-theme-classroom{background:linear-gradient(145deg,rgba(35,42,60,.96),rgba(20,29,45,.95));}
+.game-shell-v2.game-theme-classroom .question-card{background:linear-gradient(145deg,rgba(255,255,255,.1),rgba(30,41,59,.7));border-color:rgba(148,163,184,.42);}
+@media (max-width:1023px){.game-shell-v2{width:100%;max-width:min(760px,96vw)!important;min-height:0;padding:14px!important;border-radius:22px;}.game-shell-v2 .power-dock{top:82px;width:min(330px,calc(100% - 22px));}.game-shell-v2 .question-text{font-size:clamp(58px,11vw,90px);}}
+@media (max-width:620px){.game-shell-v2{width:100%;max-width:100%!important;border-radius:18px;padding:10px!important;}.game-shell-v2 .game-header{flex-wrap:wrap;gap:7px;}.game-header-center{order:3;flex:1 0 100%;justify-content:space-between;}.game-header-metrics{gap:4px;}.game-metric{min-width:48px;padding:3px 5px;}.game-profile-copy strong{max-width:110px;}.game-shell-v2 .power-dock{right:4px;top:118px;width:calc(100% - 8px);}.game-shell-v2 .question-card{min-height:220px;padding:24px 14px;}.game-shell-v2 .options-grid{gap:9px;}.game-shell-v2 .opt-btn{min-height:64px;font-size:28px;}}
+@media (prefers-reduced-motion:reduce){.game-shell-v2 *{animation:none!important;transition:none!important;}}
 </style>
 </head>
 <body>
@@ -2787,12 +3019,32 @@ body.frozen-cursor *{cursor:not-allowed!important;}
 
 <!-- Game -->
 <div class="screen" id="gameScreen">
-<div class="game-wrap" id="gameWrap">
+<div class="game-wrap game-shell-v2 game-theme-arcade" id="gameWrap">
   <div class="game-header">
-    <div class="player-tag">👤 <span id="playerNameEl">—</span></div>
-    <div class="progress-text" id="progressEl">1/36</div>
+    <div class="game-profile">
+      <div class="game-avatar" id="gameAvatar">👤</div>
+      <div class="game-profile-copy"><strong id="playerNameEl">—</strong><small id="gamePlayerStatus">Jugador</small></div>
+    </div>
+    <div class="game-header-center">
+      <span class="game-mode-kicker" id="gameModeKicker">Misión matemática</span>
+      <div class="progress-text" id="progressEl">1/36</div>
+    </div>
+    <div class="game-header-metrics">
+      <div class="game-metric"><small>Puntaje</small><strong id="gameTopScore">0</strong></div>
+      <div class="game-metric streak"><small>Racha</small><strong id="gameTopStreak">×1</strong></div>
+      <div class="game-metric lives"><small>Vidas</small><strong id="gameTopLives">—</strong></div>
+    </div>
     <div class="header-right">
       <div class="diff-tag" id="diffTagEl">Fácil</div>
+      <div class="game-style-switcher" id="gameStyleSwitcher">
+        <button class="game-style-trigger" type="button" onclick="toggleGameStyleMenu()" aria-label="Cambiar estilo visual">🎨</button>
+        <div class="game-style-options" id="gameStyleOptions">
+          <button class="game-style-option active" type="button" data-game-style="arcade" onclick="setGamePresentationStyle('arcade')">🌌 Arcade espacial</button>
+          <button class="game-style-option" type="button" data-game-style="command" onclick="setGamePresentationStyle('command')">🛰️ Centro de mando</button>
+          <button class="game-style-option" type="button" data-game-style="arena" onclick="setGamePresentationStyle('arena')">⚔️ Arena competitiva</button>
+          <button class="game-style-option" type="button" data-game-style="classroom" onclick="setGamePresentationStyle('classroom')">📘 Aula moderna</button>
+        </div>
+      </div>
       <button class="pause-btn" id="pauseBtn" onclick="togglePause()">⏸</button>
     </div>
   </div>
@@ -2804,6 +3056,8 @@ body.frozen-cursor *{cursor:not-allowed!important;}
     <div class="dp" id="dp3" style="display:none"><div class="dp-name" id="dp3name">P3</div><div class="dp-score" id="dp3score">0</div></div>
     <div class="dp" id="dp4" style="display:none"><div class="dp-name" id="dp4name">P4</div><div class="dp-score" id="dp4score">0</div></div>
   </div>
+  <div class="game-mode-rail" id="gameModeRail">
+  <div class="mode-rail-label" id="modeRailLabel">Práctica libre · responde a tu ritmo</div>
   <div class="turn-wrap" id="turnWrap"><span class="turn-lbl" id="turnLbl">Turno de —</span></div>
   <!-- Solo score bar -->
   <div class="score-bar" id="scoreBar">
@@ -2842,6 +3096,7 @@ body.frozen-cursor *{cursor:not-allowed!important;}
     <div class="timer-track" id="timerTrack"><div class="timer-bar" id="timerBar"></div></div>
     <div class="timer-row"><span id="timerLbl">—</span><span id="tableLbl">Tabla del 1</span></div>
   </div>
+  </div>
 
   <div class="question-card" id="questionCard">
     <div class="table-ind" id="tableInd">Tabla del 1 · Pregunta 1</div>
@@ -2876,10 +3131,11 @@ body.frozen-cursor *{cursor:not-allowed!important;}
   </div>
   <!-- Panel de poderes activos durante la partida -->
   <aside class="power-dock" id="powerDock" aria-label="Poderes multijugador">
+    <button class="power-dock-toggle" id="powerDockToggle" type="button" onclick="togglePowerDock()">⚡ Poderes</button>
     <div class="power-dock-hd">
       <div>
         <div class="power-dock-title">Poderes</div>
-        <div class="power-dock-sub">Multijugador</div>
+        <div class="power-dock-sub">Ventajas disponibles</div>
       </div>
       <div class="power-dock-help">1-9</div>
     </div>
@@ -5960,6 +6216,7 @@ async function buyPower(powerId,cost){
 
 // ── Panel de poderes en partida ────────────────────────
 function initPowerPanel(){
+  $('gameWrap')?.classList.remove('power-dock-open');
   // Cancelar temporizadores pendientes de la partida anterior (ej. expiración del Aura)
   // para que no terminen afectando por error el powerState de la nueva partida
   if(powerState?.auraTimer) clearTimeout(powerState.auraTimer);
@@ -5969,6 +6226,7 @@ function initPowerPanel(){
     powerState={};
     const panel=$('powerPanel');
     if(panel){ panel.classList.remove('visible'); panel.innerHTML=''; }
+    $('powerDock')?.classList.remove('has-powers','open');
     return;
   }
   // En modo examen/prueba los poderes están deshabilitados
@@ -5997,7 +6255,7 @@ function renderPowerPanel(){
   const panel=$('powerPanel');
   if(!panel) return;
   const dock=$('powerDock');
-  if(!arePowersEnabled()){ panel.classList.remove('visible'); panel.innerHTML=''; return; }
+  if(!arePowersEnabled()){ panel.classList.remove('visible'); panel.innerHTML=''; dock?.classList.remove('has-powers','open'); return; }
   const isMulti=gameMode==='online';
   const availablePowers=POWERS.filter(p=>{
     if(p.modes==='multi'&&!isMulti) return false; // ofensivos solo en multi
@@ -6005,7 +6263,7 @@ function renderPowerPanel(){
     const qty=sessionInventory[p.id]||0;
     return qty>0;
   });
-  if(availablePowers.length===0){ panel.classList.remove('visible'); panel.innerHTML=''; if(dock) dock.classList.remove('has-powers'); return; }
+  if(availablePowers.length===0){ panel.classList.remove('visible'); panel.innerHTML=''; if(dock) dock.classList.remove('has-powers','open'); return; }
   panel.classList.add('visible');
   if(dock) dock.classList.add('has-powers');
   panel.innerHTML=availablePowers.map((p,idx)=>{
@@ -7346,11 +7604,13 @@ function updateGlobalTimer(){
 function renderSoloLives(){
   const h='❤️'.repeat(currentLives)+'🖤'.repeat(Math.max(0,livesCount-currentLives));
   $('soloLivesHearts').textContent=h;
+  updateGameHeaderUI();
 }
 function updateDuelLivesUI(){
   const hearts=n=>'❤️'.repeat(Math.max(0,n))+'🖤'.repeat(Math.max(0,livesCount-n));
   $('livesH1').textContent=hearts(duelLives[0]);
   $('livesH2').textContent=hearts(duelLives[1]);
+  updateGameHeaderUI();
 }
 function loseLife(){
   if(gameMode==='duel'){
@@ -7381,6 +7641,7 @@ function loseLife(){
 }
 function updateScoreUI(){
   $('scorePts').textContent=gameScore.toLocaleString();
+  const topScore=$('gameTopScore'); if(topScore) topScore.textContent=gameScore.toLocaleString();
   updateMultBadge();
   if(isBotMode) $('dp1score').textContent=gameScore.toLocaleString();
 }
@@ -7388,8 +7649,59 @@ function updateMultBadge(){
   const mult=getMultiplier(streak);
   const badge=$('multBadge'),val=$('multValue');
   val.textContent='×'+( mult%1===0 ? mult : mult.toFixed(1) );
+  const topStreak=$('gameTopStreak'); if(topStreak) topStreak.textContent='×'+( mult%1===0 ? mult : mult.toFixed(1) );
   badge.classList.toggle('active',streak>0);
   badge.classList.remove('reset');
+}
+
+// ── Presentación reutilizable del escenario ────────────
+function updateGameHeaderUI(){
+  const wrap=$('gameWrap');
+  wrap?.classList.toggle('game-lives-mode',gameType==='lives');
+  wrap?.classList.toggle('show-lives-metric',gameMode==='solo'&&gameType==='lives');
+  const railHint=$('modeRailLabel');
+  if(railHint){
+    const hints={
+      free:'Práctica libre · responde a tu ritmo',
+      streak:'Racha · cada acierto mantiene tu progreso',
+      lives:'Vidas restantes · evita perder todas',
+      timed:'Tiempo por pregunta',
+      countdown:'Tiempo total de la misión',
+      survival:'Supervivencia · la dificultad aumenta',
+      bot:'VS Bot · supera a tu rival'
+    };
+    railHint.textContent=hints[gameType]||'Preparando la misión';
+    railHint.hidden=!['free','streak'].includes(gameType);
+  }
+  const avatar=$('gameAvatar');
+  if(avatar) avatar.innerHTML=buildAvatarSVG(currentPlayer?.avatar||{},40);
+  const kicker=$('gameModeKicker');
+  const labels={solo:'Misión individual',duel:'Duelo matemático',online:'Arena multijugador'};
+  if(kicker) kicker.textContent=labels[gameMode]||'Misión matemática';
+  const status=$('gamePlayerStatus');
+  if(status) status.textContent=gameMode==='online'?'Jugador conectado':gameMode==='duel'?'Turno actual':'Jugador';
+  const lives=$('gameTopLives');
+  if(lives){
+    let value='—';
+    if(gameMode==='solo'&&gameType==='lives') value=`${currentLives}/${livesCount}`;
+    else if(gameMode==='online'&&mpLives?.length) value=`${mpLives[mpMyIdx]??'—'}/${window.mpInitialLives||3}`;
+    lives.textContent=value;
+  }
+}
+function togglePowerDock(force){
+  const dock=$('powerDock'); if(!dock||!dock.classList.contains('has-powers')) return;
+  const open=force==null?!dock.classList.contains('open'):Boolean(force);
+  dock.classList.toggle('open',open);
+  $('gameWrap')?.classList.toggle('power-dock-open',open&&gameMode==='online');
+  const toggle=$('powerDockToggle');
+  if(toggle) toggle.setAttribute('aria-expanded',String(open));
+}
+function toggleGameStyleMenu(){ $('gameStyleSwitcher')?.classList.toggle('open'); }
+function setGamePresentationStyle(style){
+  const wrap=$('gameWrap'); if(!wrap) return;
+  ['arcade','command','arena','classroom'].forEach(name=>wrap.classList.toggle('game-theme-'+name,name===style));
+  document.querySelectorAll('[data-game-style]').forEach(btn=>btn.classList.toggle('active',btn.dataset.gameStyle===style));
+  $('gameStyleSwitcher')?.classList.remove('open');
 }
 function flashMultReset(){
   const badge=$('multBadge'),val=$('multValue');
@@ -9220,6 +9532,7 @@ function initGame(isOnline){
   // miniTablesEl visibility for countdown handled in initGame
   initScoreUI();
   applyPlayerColors();
+  updateGameHeaderUI();
   startSessionReporting();
   // Apply solo player theme immediately
   if(gameMode==='solo') applyTurnColor(true);
@@ -9234,6 +9547,7 @@ function initGame(isOnline){
   document.body.classList.add('game-active'); // ocultar botones flotantes durante la partida
   $('gameWrap').classList.toggle('wide', isOnline);
   $('gameWrap').classList.toggle('online-layout', isOnline);
+  $('gameWrap').classList.toggle('duel-layout', gameMode==='duel');
   earnedAureosThisGame=0;
   $('aureosEarnedBox').style.display='none';
   // En modo apuestas: descontar la apuesta al inicio de la partida
@@ -9843,6 +10157,7 @@ function updateDuelUI(isDuel){
     tl.className='turn-lbl '+(mpMyIdx===0?'p1':'p2');
     document.body.classList.toggle('duel-p1',mpMyIdx===0);
     document.body.classList.toggle('duel-p2',mpMyIdx!==0);
+    updateGameHeaderUI();
     return;
   }
   $('dp1score').textContent=duelScores[0].toLocaleString();
@@ -9857,6 +10172,7 @@ function updateDuelUI(isDuel){
   const tl=$('turnLbl');
   tl.textContent=`Turno de ${duelTurn===0?pName:pName2}`;
   tl.className='turn-lbl '+(duelTurn===0?'p1':'p2');
+  updateGameHeaderUI();
 }
 
 // ══════════════════════════════════════════════════════
@@ -10099,11 +10415,14 @@ function disintegrateTimerBlock(b){
 function startTimer(){
   clearInterval(timerIv);
   powerState.panicActive=false;
+  const timerShell=$('timerTrack')?.closest('.timer-shell');
   if(gameType==='free'||gameType==='lives'||gameType==='countdown'||gameType==='streak'){
+    timerShell?.classList.add('timer-hidden');
     $('timerTrack').style.visibility='hidden';
     $('timerLbl').textContent='';
     return;
   }
+  timerShell?.classList.remove('timer-hidden');
   $('timerTrack').style.visibility='visible';
   renderTimerBlocks();
   timeLeft=timeLimit+(powerState.extraTimeActive?5:0); updateTimerBar();
@@ -14418,8 +14737,10 @@ function toggleWorkspaceMusic(){
 }
 function workspaceMusicStartFromGesture(event){
   if(event?.target?.closest?.('#workspaceMusicToggle,#loginMusicToggle'))return;
-  const shell=document.getElementById('studentWorkspace'),login=document.getElementById('loginScreen');
-  const eligible=login?.classList.contains('active')||shell?.classList.contains('workspace-home-active');
+  const shell=document.getElementById('studentWorkspace'),login=document.getElementById('loginScreen'),game=document.getElementById('gameScreen');
+  // El escritorio puede conservar su clase visual de inicio durante la partida.
+  // Nunca reactivar su música ambiental por hacer clic en una respuesta o poder.
+  const eligible=!game?.classList.contains('active')&&(login?.classList.contains('active')||shell?.classList.contains('workspace-home-active'));
   if(!eligible||workspaceMusicState.playing||workspaceMusicState.userDisabled||workspaceMusicPreferenceDisabled())return;
   workspaceMusicStart();
 }

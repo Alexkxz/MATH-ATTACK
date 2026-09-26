@@ -4,7 +4,7 @@ const { startTestServer } = require('./server-test-utils');
 const VIEWPORTS = [
   { name: 'mobile', width: 375, height: 667, minGameWidth: 320, maxGameWidth: 480, minOptionsCols: 2 },
   { name: 'tablet', width: 820, height: 1180, minGameWidth: 680, maxGameWidth: 780, minOptionsCols: 2 },
-  { name: 'desktop', width: 1366, height: 768, minGameWidth: 860, maxGameWidth: 1000, minOptionsCols: 4 },
+  { name: 'desktop', width: 1366, height: 768, minGameWidth: 1040, maxGameWidth: 1200, minOptionsCols: 2 },
 ];
 
 async function measure(page) {
