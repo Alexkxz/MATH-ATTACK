@@ -23,6 +23,7 @@ function connect(){
     const d=JSON.parse(e.data);
     if(d.type==='panel_state'){
       latestSessions=d.sessions||[]; connectedNames=d.connectedNames||[];
+      if(typeof window.prUpdateLiveSessions==='function') window.prUpdateLiveSessions(latestSessions);
       if(d.examFinished!==undefined){
         latestExamFinished=d.examFinished||[];
         _notifyLateExamFinishers(latestExamFinished);
@@ -31,6 +32,12 @@ function connect(){
       updateOnlineBadges();
       if(d.examMode!==undefined) updateExamBanner(d.examMode);
       if(d.opStats) updateOpStats(d.opStats);
+    } else if(d.type==='exam_state'){
+      // El inicio y la detención llegan de inmediato, sin esperar al siguiente
+      // cambio de una sesión de alumno. La biblioteca conserva la lista completa.
+      if(d.examMode!==undefined) updateExamBanner(d.examMode);
+      if(typeof window.prLoadTestLibrary==='function') window.prLoadTestLibrary();
+      if(typeof window.prRefreshLiveTests==='function') window.prRefreshLiveTests();
     } else if(d.type==='students_updated'){
       if(d.newUser) showMsg('👤 Nuevo usuario "'+d.newUser+'" creado');
       // Solo re-renderizar si la pestaña alumnos está activa; si no, marcar como sucio

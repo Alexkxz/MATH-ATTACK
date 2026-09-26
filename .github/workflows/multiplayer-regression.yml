@@ -1,0 +1,47 @@
+name: Multiplayer regression
+
+on:
+  push:
+    paths:
+      - 'math-attack.html'
+      - 'server.js'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'scripts/check-multiplayer-*.js'
+      - '.github/workflows/multiplayer-regression.yml'
+  pull_request:
+    paths:
+      - 'math-attack.html'
+      - 'server.js'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'scripts/check-multiplayer-*.js'
+      - '.github/workflows/multiplayer-regression.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  browser-regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Descargar código
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Instalar Chromium para Playwright
+        run: npx playwright install --with-deps chromium
+
+      - name: Ejecutar regresión multiplayer
+        run: xvfb-run -a npm run check:multiplayer-regression

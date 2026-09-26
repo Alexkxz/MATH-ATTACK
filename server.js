@@ -101,6 +101,8 @@ const {
   createOperationStatsCache,
 } = require('./src/game/statistics');
 const PORT = Number(process.env.PORT) || 8080;
+const LOCAL_SHUTDOWN_TOKEN = String(process.env.MATH_ATTACK_SHUTDOWN_TOKEN || '');
+let shutdownStarted = false;
 // Poderes que SOLO deben afectar a un rival (no a toda la sala) — si el cliente
 // olvida mandar targetIdx, el servidor descarta el mensaje en vez de reenviarlo
 // a todos (eso fue exactamente el bug original de robo/drenar/inversión en 3-4p).
@@ -357,6 +359,7 @@ const panelBroadcaster=createPanelBroadcaster({
     findRoom:roomId=>rooms.get(roomId),
     isOpen:ws=>ws?.readyState===WebSocket.OPEN,
     examMode,
+    examModes:[...examModes.values()],
     opStats:operationStatsCache.get(),
     examFinished:[...examFinished.values()],
   }),
@@ -443,6 +446,24 @@ function sendMaestroFrontendAsset(res, requestPath) {
 // ── HTTP Server ──────────────────────────────────────────────
 const server=http.createServer((req,res)=>{
   const url=req.url.split('?')[0];
+
+  // Cierre solicitado únicamente por el panel local. El token se genera al
+  // arrancar el proceso y la comprobación de loopback evita exponer esta ruta
+  // a los equipos de los alumnos.
+  if(req.method==='POST'&&url==='/api/local/shutdown'){
+    const remote=req.socket.remoteAddress||'';
+    const loopback=remote==='127.0.0.1'||remote==='::1'||remote==='::ffff:127.0.0.1';
+    const token=String(req.headers['x-math-attack-shutdown']||'');
+    if(!LOCAL_SHUTDOWN_TOKEN||!loopback||token!==LOCAL_SHUTDOWN_TOKEN){
+      res.writeHead(404);
+      res.end('');
+      return;
+    }
+    res.writeHead(202,{'Content-Type':'application/json'});
+    res.end(JSON.stringify({ok:true}));
+    setImmediate(shutdown);
+    return;
+  }
 
   // ── Servir Chart.js local ──
   if(req.method==='GET'&&url==='/chart.umd.min.js'){
@@ -754,7 +775,9 @@ const server=http.createServer((req,res)=>{
             }
           }
         });
-        maestroClients.forEach(mc=>{ if(mc.readyState===WebSocket.OPEN) mc.send(JSON.stringify({type:'exam_state',examMode})); });
+        const examState={type:'exam_state',examMode,examModes:[...examModes.values()]};
+        maestroClients.forEach(mc=>{ if(mc.readyState===WebSocket.OPEN) mc.send(JSON.stringify(examState)); });
+        panelBroadcaster.scheduleBroadcast();
         L.panel(`Modo Examen activado${grade?' grado:'+grade:' todos'}`);
         res.writeHead(200,{'Content-Type':'application/json'});
         res.end(JSON.stringify({ok:true,examMode}));
@@ -790,12 +813,15 @@ const server=http.createServer((req,res)=>{
           stopAudience={grade:'',audienceAccountPlayerIds:audience};
         }catch(_){ stopAudience=null; }
       }
+      const sessionsBySocket=new Map(gameSessions.listSessions().filter(session=>session.ws).map(session=>[session.ws,session]));
       wss.clients.forEach(ws=>{
-        const shouldNotifyStop=!stoppedTestId||(stopAudience&&_examAudienceMatchesFor(stopAudience,ws.playerName,ws.grade));
+        const session=sessionsBySocket.get(ws);
+        const shouldNotifyStop=!stoppedTestId||(stopAudience&&_examAudienceMatchesFor(stopAudience,session?.name||ws.playerName,session?.grade||ws.grade));
         if(!maestroClients.has(ws)&&ws.readyState===WebSocket.OPEN&&shouldNotifyStop){ws.send(payload);}
         if(!maestroClients.has(ws)&&ws._examNotifiedTests){if(stoppedTestId)ws._examNotifiedTests.delete(stoppedTestId);else ws._examNotifiedTests.clear();}
       });
       maestroClients.forEach(mc=>{ if(mc.readyState===WebSocket.OPEN) mc.send(JSON.stringify({type:'exam_state',examMode,examModes:[...examModes.values()]})); });
+      panelBroadcaster.scheduleBroadcast();
       L.panel('Modo Examen desactivado');
       res.writeHead(200,{'Content-Type':'application/json'});
       res.end(JSON.stringify({ok:true}));
@@ -1136,8 +1162,9 @@ function handle(ws,msg){ // Procesa todos los mensajes entrantes de los clientes
       do { rid=String(Math.floor(1000+Math.random()*9000)); } while(rooms.has(rid));
       const maxP=Math.min(4,Math.max(2,msg.maxPlayers||2));
       ws.roomId=rid; ws.playerName=msg.playerName||'Jugador 1'; ws.role='host'; ws.playerIdx=0;
-      const room={name:msg.roomName||`Sala de ${ws.playerName}`,hostName:ws.playerName,maxPlayers:maxP,
-                  players:[{ws,name:ws.playerName,idx:0,role:'host'}],status:'lobby',gameStarted:false};
+       const room={name:msg.roomName||`Sala de ${ws.playerName}`,hostName:ws.playerName,maxPlayers:maxP,
+                   players:[{ws,name:ws.playerName,idx:0,role:'host'}],status:'lobby',gameStarted:false,
+                   replayVotes:new Map(),replayTimer:null};
       rooms.set(rid,room);
       L.room(`Sala creada: [${rid}] ${maxP}P por ${ws.playerName}`);
       send(ws,{type:'room_created',roomId:rid,roomName:room.name,maxPlayers:maxP,playerIdx:0,playerList:[{name:ws.playerName,idx:0}]});
@@ -1191,8 +1218,17 @@ function handle(ws,msg){ // Procesa todos los mensajes entrantes de los clientes
     case 'game_msg': {
       const room=rooms.get(ws.roomId); if(!room)return;
       const d=msg.data||{};
+      if(d.type==='want_replay'){
+        handleReplayVote(ws,room,true);
+        break;
+      }
+      if(d.type==='leave_results'||d.type==='return_to_room'){
+        handleResultsExit(ws,room);
+        break;
+      }
       if(d.type==='start'){
         room.gameStarted=true;
+        clearReplayState(room);
         const mpMode=d.cfg?.mpGameMode;
         L.game(`Partida [${ws.roomId}]: ${room.players.map(p=>p.name).join(' vs ')} modo:${mpMode||'?'}`);
         if(TWO_PLAYER_ONLY_MODES.has(mpMode)&&room.players.length!==2){
@@ -1264,6 +1300,102 @@ function _checkExamNotify(ws, grade){
       ws._examNotifiedTests.add(key);
     }
   });
+}
+
+// ── Resultado multijugador: revancha y salida ─────────────────
+function sendRoomGame(room,data,players=room.players){
+  players.forEach(player=>{ if(player.ws?.readyState===WebSocket.OPEN) send(player.ws,{type:'game_msg',data}); });
+}
+
+function clearReplayState(room){
+  if(room?.replayTimer){ clearTimeout(room.replayTimer); room.replayTimer=null; }
+  if(room) room.replayVotes=new Map();
+}
+
+function releaseRoomToLobby(room,reason='replay_cancelled'){
+  clearReplayState(room);
+  room.players.forEach(player=>{
+    if(player.ws?.readyState===WebSocket.OPEN){
+      send(player.ws,{type:'return_to_lobby',reason});
+      player.ws.roomId=null; player.ws.role=null; player.ws.playerIdx=null;
+    }
+  });
+  rooms.delete([...rooms.entries()].find(([,candidate])=>candidate===room)?.[0]);
+  broadcastRoomsList();
+}
+
+function cancelReplay(room,reason='replay_cancelled'){
+  if(!room||room.status!=='playing') return;
+  L.room(`Revancha cancelada en sala [${[...rooms.entries()].find(([,candidate])=>candidate===room)?.[0]||'?'}]: ${reason}`);
+  releaseRoomToLobby(room,reason);
+}
+
+function scheduleReplayDecision(room){
+  if(room.replayTimer) return;
+  room.replayTimer=setTimeout(()=>{
+    room.replayTimer=null;
+    if(room.status==='playing') cancelReplay(room,'replay_timeout');
+  },10000);
+}
+
+function handleReplayVote(ws,room,wantsReplay){
+  if(room.status!=='playing'||!room.gameStarted) return;
+  const player=room.players.find(candidate=>candidate.ws===ws);
+  if(!player) return;
+  scheduleReplayDecision(room);
+  room.replayVotes.set(player.idx,Boolean(wantsReplay));
+  const yes=room.players.filter(candidate=>room.replayVotes.get(candidate.idx)===true);
+  const host=room.players.find(candidate=>candidate.role==='host');
+  sendRoomGame(room,{type:'replay_status',hostConfirmed:room.replayVotes.get(host?.idx)===true,
+    confirmed:yes.length,playerCount:room.players.length});
+  if(!room.replayVotes.get(host?.idx)) return;
+  if(yes.length<2){
+    if(room.players.length<=2&&room.replayVotes.get(player.idx)===false) cancelReplay(room,'not_enough_players');
+    return;
+  }
+  const excluded=room.players.filter(candidate=>!yes.includes(candidate));
+  room.players=room.players.filter(candidate=>yes.includes(candidate));
+  room.replayVotes=new Map();
+  if(room.replayTimer){clearTimeout(room.replayTimer);room.replayTimer=null;}
+  excluded.forEach(candidate=>{
+    if(candidate.ws?.readyState===WebSocket.OPEN) send(candidate.ws,{type:'replay_excluded',reason:'not_confirmed'});
+    if(candidate.ws){candidate.ws.roomId=null;candidate.ws.role=null;candidate.ws.playerIdx=null;}
+  });
+  const playerList=room.players.map(candidate=>({name:candidate.name,idx:candidate.idx}));
+  room.players.forEach(candidate=>send(candidate.ws,{type:'replay_ready',playerList,playerCount:room.players.length}));
+  broadcastRoomsList();
+}
+
+function handleResultsExit(ws,room){
+  const player=room.players.find(candidate=>candidate.ws===ws);
+  if(!player) return;
+  L.room(`${ws.playerName||'?'} eligió salir de resultados en sala ${ws.roomId}`);
+  send(ws,{type:'leave_ack'});
+  if(player.role==='host'){
+    room.players.filter(candidate=>candidate.ws!==ws).forEach(candidate=>{
+      if(candidate.ws?.readyState===WebSocket.OPEN) send(candidate.ws,{type:'host_left'});
+      candidate.ws.roomId=null; candidate.ws.role=null; candidate.ws.playerIdx=null;
+    });
+    ws.roomId=null; ws.role=null; ws.playerIdx=null;
+    rooms.delete([...rooms.entries()].find(([,candidate])=>candidate===room)?.[0]);
+    broadcastRoomsList();
+    return;
+  }
+  room.players=room.players.filter(candidate=>candidate!==player);
+  ws.roomId=null; ws.role=null; ws.playerIdx=null;
+  clearReplayState(room);
+  if(room.players.length<2){
+    room.players.forEach(candidate=>{
+      if(candidate.ws?.readyState===WebSocket.OPEN){
+        send(candidate.ws,{type:'return_to_lobby',reason:'not_enough_players'});
+        candidate.ws.roomId=null; candidate.ws.role=null; candidate.ws.playerIdx=null;
+      }
+    });
+    rooms.delete([...rooms.entries()].find(([,candidate])=>candidate===room)?.[0]);
+  }else{
+    room.players.forEach(candidate=>send(candidate.ws,{type:'player_left',name:player.name,idx:player.idx,remaining:room.players.length}));
+  }
+  broadcastRoomsList();
 }
 
 // ── Notificación de resultado de pozo/bono pendiente ──────────
@@ -1379,12 +1511,14 @@ function getLocalIP(){
 }
 
 function _examAudienceMatchesFor(mode,name,grade){
-  if(!_examGradeMatches(mode?.grade,grade)) return false;
-  if(!Array.isArray(mode?.audienceAccountPlayerIds)) return true;
-  if(!mode.audienceAccountPlayerIds.length||!name) return false;
   const players=loadPlayers();
-  const player=resolveAccountPlayer(players,{name});
-  if(!player) return false;
+  const player=name?resolveAccountPlayer(players,{name}):null;
+  // Para cuentas registradas, el grado del perfil es la fuente de verdad. Así un
+  // selector antiguo o una sesión pendiente no puede cruzar pruebas entre grados.
+  const effectiveGrade=player?.grade||grade;
+  if(!_examGradeMatches(mode?.grade,effectiveGrade)) return false;
+  if(!Array.isArray(mode?.audienceAccountPlayerIds)) return true;
+  if(!mode.audienceAccountPlayerIds.length||!player) return false;
   try{return mode.audienceAccountPlayerIds.includes(resolveAccountPlayerId(player,buildLegacyIdentityMap(players)));}
   catch(_){return false;}
 }
@@ -1407,6 +1541,8 @@ server.listen(PORT,'0.0.0.0',()=>{
   console.log('------------------------------------------------------');
 });
 function shutdown(){
+  if(shutdownStarted) return;
+  shutdownStarted=true;
   console.log('\n  Deteniendo servidor...');
   panelBroadcaster.stop();
   clearInterval(heartbeatInterval);

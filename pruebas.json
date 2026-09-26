@@ -1871,6 +1871,562 @@
         "timeLimit": 0,
         "timePerQuestion": 15
       }
+    },
+    {
+      "testId": "831fd20b-7a82-488f-883e-114b4c73fa9e",
+      "folio": "0009",
+      "title": "0009",
+      "schemaVersion": 1,
+      "description": "",
+      "status": "finished",
+      "configuration": {
+        "version": 1,
+        "multiplier": 1,
+        "rewards": {
+          "aureos": 0,
+          "experience": 0,
+          "streak": {
+            "enabled": false,
+            "bonus": 0
+          },
+          "achievements": {}
+        },
+        "folio": "0009",
+        "title": "0009",
+        "description": "",
+        "createdAt": "2026-09-24T16:05:24.210Z",
+        "grade": "4° Grado",
+        "opsConfig": {
+          "mult": {
+            "tables": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12
+            ],
+            "qty": 3,
+            "detailMode": false,
+            "manner": "random"
+          }
+        },
+        "timeLimit": 0,
+        "timePerQuestion": 10
+      },
+      "creator": "00000000-0000-4000-8000-000000000000",
+      "createdAt": "2026-09-24T16:05:24.210Z",
+      "updatedAt": "2026-09-24T16:10:30.778Z",
+      "scheduledAt": null,
+      "startsAt": null,
+      "closesAt": null,
+      "revision": 4,
+      "configurationSnapshot": {
+        "version": 1,
+        "multiplier": 1,
+        "rewards": {
+          "aureos": 0,
+          "experience": 0,
+          "streak": {
+            "enabled": false,
+            "bonus": 0
+          },
+          "achievements": {}
+        },
+        "folio": "0009",
+        "title": "0009",
+        "description": "",
+        "createdAt": "2026-09-24T16:05:24.210Z",
+        "grade": "4° Grado",
+        "opsConfig": {
+          "mult": {
+            "tables": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12
+            ],
+            "qty": 3,
+            "detailMode": false,
+            "manner": "random"
+          }
+        },
+        "timeLimit": 0,
+        "timePerQuestion": 10
+      }
+    },
+    {
+      "testId": "3ad94937-bed2-42d3-810b-40254aa2a274",
+      "folio": "0010",
+      "title": "0010",
+      "schemaVersion": 1,
+      "description": "",
+      "status": "finished",
+      "configuration": {
+        "version": 1,
+        "multiplier": 1,
+        "rewards": {
+          "aureos": 0,
+          "experience": 0,
+          "streak": {
+            "enabled": false,
+            "bonus": 0
+          },
+          "achievements": {}
+        },
+        "folio": "0010",
+        "title": "0010",
+        "description": "",
+        "createdAt": "2026-09-24T16:06:15.057Z",
+        "grade": "3° Grado",
+        "opsConfig": {
+          "mult": {
+            "tables": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10
+            ],
+            "qty": 3,
+            "detailMode": false,
+            "manner": "random"
+          }
+        },
+        "timeLimit": 0,
+        "timePerQuestion": 10
+      },
+      "creator": "00000000-0000-4000-8000-000000000000",
+      "createdAt": "2026-09-24T16:06:15.057Z",
+      "updatedAt": "2026-09-24T16:10:28.730Z",
+      "scheduledAt": null,
+      "startsAt": null,
+      "closesAt": null,
+      "revision": 4,
+      "configurationSnapshot": {
+        "version": 1,
+        "multiplier": 1,
+        "rewards": {
+          "aureos": 0,
+          "experience": 0,
+          "streak": {
+            "enabled": false,
+            "bonus": 0
+          },
+          "achievements": {}
+        },
+        "folio": "0010",
+        "title": "0010",
+        "description": "",
+        "createdAt": "2026-09-24T16:06:15.057Z",
+        "grade": "3° Grado",
+        "opsConfig": {
+          "mult": {
+            "tables": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10
+            ],
+            "qty": 3,
+            "detailMode": false,
+            "manner": "random"
+          }
+        },
+        "timeLimit": 0,
+        "timePerQuestion": 10
+      }
+    },
+    {
+      "testId": "47fc3aff-dfbc-43f7-a74d-70d09f6e594e",
+      "folio": "0011",
+      "title": "Borrar",
+      "schemaVersion": 1,
+      "description": "",
+      "status": "finished",
+      "configuration": {
+        "version": 1,
+        "multiplier": 1,
+        "rewards": {
+          "aureos": 0,
+          "experience": 0,
+          "streak": {
+            "enabled": false,
+            "bonus": 0
+          },
+          "achievements": {}
+        },
+        "folio": "0011",
+        "title": "Borrar",
+        "description": "",
+        "createdAt": "2026-09-24T16:07:53.522Z",
+        "grade": "6° Grado",
+        "opsConfig": {
+          "mult": {
+            "tables": [
+              1,
+              2,
+              3
+            ],
+            "qty": 3,
+            "detailMode": false,
+            "manner": "random"
+          }
+        },
+        "timeLimit": 0,
+        "timePerQuestion": 30
+      },
+      "creator": "00000000-0000-4000-8000-000000000000",
+      "createdAt": "2026-09-24T16:07:53.522Z",
+      "updatedAt": "2026-09-24T16:10:27.083Z",
+      "scheduledAt": null,
+      "startsAt": null,
+      "closesAt": null,
+      "revision": 4,
+      "configurationSnapshot": {
+        "version": 1,
+        "multiplier": 1,
+        "rewards": {
+          "aureos": 0,
+          "experience": 0,
+          "streak": {
+            "enabled": false,
+            "bonus": 0
+          },
+          "achievements": {}
+        },
+        "folio": "0011",
+        "title": "Borrar",
+        "description": "",
+        "createdAt": "2026-09-24T16:07:53.522Z",
+        "grade": "6° Grado",
+        "opsConfig": {
+          "mult": {
+            "tables": [
+              1,
+              2,
+              3
+            ],
+            "qty": 3,
+            "detailMode": false,
+            "manner": "random"
+          }
+        },
+        "timeLimit": 0,
+        "timePerQuestion": 30
+      }
+    },
+    {
+      "testId": "02f44a74-e1a9-4de9-9ce2-41dc544176d2",
+      "folio": "0012",
+      "title": "Tercer grado",
+      "schemaVersion": 1,
+      "description": "",
+      "status": "finished",
+      "configuration": {
+        "version": 1,
+        "multiplier": 1,
+        "rewards": {
+          "aureos": 0,
+          "experience": 0,
+          "streak": {
+            "enabled": false,
+            "bonus": 0
+          },
+          "achievements": {}
+        },
+        "folio": "0012",
+        "title": "Tercer grado",
+        "description": "",
+        "createdAt": "2026-09-24T16:28:08.334Z",
+        "grade": "3° Grado",
+        "opsConfig": {
+          "mult": {
+            "tables": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12
+            ],
+            "qty": 4,
+            "detailMode": false,
+            "manner": "random"
+          }
+        },
+        "timeLimit": 0,
+        "timePerQuestion": 9
+      },
+      "creator": "00000000-0000-4000-8000-000000000000",
+      "createdAt": "2026-09-24T16:28:08.334Z",
+      "updatedAt": "2026-09-24T17:01:22.657Z",
+      "scheduledAt": null,
+      "startsAt": null,
+      "closesAt": null,
+      "revision": 4,
+      "configurationSnapshot": {
+        "version": 1,
+        "multiplier": 1,
+        "rewards": {
+          "aureos": 0,
+          "experience": 0,
+          "streak": {
+            "enabled": false,
+            "bonus": 0
+          },
+          "achievements": {}
+        },
+        "folio": "0012",
+        "title": "Tercer grado",
+        "description": "",
+        "createdAt": "2026-09-24T16:28:08.334Z",
+        "grade": "3° Grado",
+        "opsConfig": {
+          "mult": {
+            "tables": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12
+            ],
+            "qty": 4,
+            "detailMode": false,
+            "manner": "random"
+          }
+        },
+        "timeLimit": 0,
+        "timePerQuestion": 9
+      }
+    },
+    {
+      "testId": "26afd10c-de2d-4d0f-a767-5932afabd312",
+      "folio": "0013",
+      "title": "Cuarto grado",
+      "schemaVersion": 1,
+      "description": "",
+      "status": "finished",
+      "configuration": {
+        "version": 1,
+        "multiplier": 1,
+        "rewards": {
+          "aureos": 0,
+          "experience": 0,
+          "streak": {
+            "enabled": false,
+            "bonus": 0
+          },
+          "achievements": {}
+        },
+        "folio": "0013",
+        "title": "Cuarto grado",
+        "description": "",
+        "createdAt": "2026-09-24T17:00:26.775Z",
+        "grade": "4° Grado",
+        "opsConfig": {
+          "mult": {
+            "tables": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12
+            ],
+            "qty": 4,
+            "detailMode": false,
+            "manner": "random"
+          }
+        },
+        "timeLimit": 0,
+        "timePerQuestion": 10
+      },
+      "creator": "00000000-0000-4000-8000-000000000000",
+      "createdAt": "2026-09-24T17:00:26.775Z",
+      "updatedAt": "2026-09-24T17:36:26.173Z",
+      "scheduledAt": null,
+      "startsAt": null,
+      "closesAt": null,
+      "revision": 4,
+      "configurationSnapshot": {
+        "version": 1,
+        "multiplier": 1,
+        "rewards": {
+          "aureos": 0,
+          "experience": 0,
+          "streak": {
+            "enabled": false,
+            "bonus": 0
+          },
+          "achievements": {}
+        },
+        "folio": "0013",
+        "title": "Cuarto grado",
+        "description": "",
+        "createdAt": "2026-09-24T17:00:26.775Z",
+        "grade": "4° Grado",
+        "opsConfig": {
+          "mult": {
+            "tables": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12
+            ],
+            "qty": 4,
+            "detailMode": false,
+            "manner": "random"
+          }
+        },
+        "timeLimit": 0,
+        "timePerQuestion": 10
+      }
+    },
+    {
+      "testId": "5e1b93ce-7297-4c85-8c43-0dea90cfd5db",
+      "folio": "0014",
+      "title": "Tercer grado",
+      "schemaVersion": 1,
+      "description": "",
+      "status": "finished",
+      "configuration": {
+        "version": 1,
+        "multiplier": 1,
+        "rewards": {
+          "aureos": 0,
+          "experience": 0,
+          "streak": {
+            "enabled": false,
+            "bonus": 0
+          },
+          "achievements": {}
+        },
+        "folio": "0014",
+        "title": "Tercer grado",
+        "description": "",
+        "createdAt": "2026-09-24T17:01:31.569Z",
+        "grade": "3° Grado",
+        "opsConfig": {
+          "mult": {
+            "tables": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10
+            ],
+            "qty": 4,
+            "detailMode": false,
+            "manner": "random"
+          }
+        },
+        "timeLimit": 0,
+        "timePerQuestion": 10
+      },
+      "creator": "00000000-0000-4000-8000-000000000000",
+      "createdAt": "2026-09-24T17:01:31.569Z",
+      "updatedAt": "2026-09-24T17:36:24.520Z",
+      "scheduledAt": null,
+      "startsAt": null,
+      "closesAt": null,
+      "revision": 4,
+      "configurationSnapshot": {
+        "version": 1,
+        "multiplier": 1,
+        "rewards": {
+          "aureos": 0,
+          "experience": 0,
+          "streak": {
+            "enabled": false,
+            "bonus": 0
+          },
+          "achievements": {}
+        },
+        "folio": "0014",
+        "title": "Tercer grado",
+        "description": "",
+        "createdAt": "2026-09-24T17:01:31.569Z",
+        "grade": "3° Grado",
+        "opsConfig": {
+          "mult": {
+            "tables": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10
+            ],
+            "qty": 4,
+            "detailMode": false,
+            "manner": "random"
+          }
+        },
+        "timeLimit": 0,
+        "timePerQuestion": 10
+      }
     }
   ],
   "assignments": [
@@ -2532,6 +3088,369 @@
       "startsAt": null,
       "closesAt": null,
       "createdAt": "2026-09-23T16:04:57.391Z",
+      "revision": 1
+    },
+    {
+      "assignmentId": "edd46703-41e3-4f36-9535-8a8f8523e71e",
+      "testId": "831fd20b-7a82-488f-883e-114b4c73fa9e",
+      "targetType": "student",
+      "groupId": null,
+      "accountPlayerId": "7d3a51eb-2565-5304-8e9a-106653ba5af1",
+      "startsAt": null,
+      "closesAt": null,
+      "createdAt": "2026-09-24T16:06:09.904Z",
+      "revision": 1
+    },
+    {
+      "assignmentId": "a784667a-9470-434b-adfa-965299f8cef2",
+      "testId": "831fd20b-7a82-488f-883e-114b4c73fa9e",
+      "targetType": "student",
+      "groupId": null,
+      "accountPlayerId": "142a67f0-e4ba-512f-b55d-86c2b18a9488",
+      "startsAt": null,
+      "closesAt": null,
+      "createdAt": "2026-09-24T16:06:09.904Z",
+      "revision": 1
+    },
+    {
+      "assignmentId": "aaea9d82-21bd-454a-8060-4629885592d5",
+      "testId": "831fd20b-7a82-488f-883e-114b4c73fa9e",
+      "targetType": "student",
+      "groupId": null,
+      "accountPlayerId": "4afaf2a0-1e0a-5a2e-abf8-c22cda9b5b2e",
+      "startsAt": null,
+      "closesAt": null,
+      "createdAt": "2026-09-24T16:06:09.904Z",
+      "revision": 1
+    },
+    {
+      "assignmentId": "b93b5893-52bd-4a35-aea1-cd1ec0dd39c4",
+      "testId": "831fd20b-7a82-488f-883e-114b4c73fa9e",
+      "targetType": "student",
+      "groupId": null,
+      "accountPlayerId": "450c3187-fd46-5aff-a9a8-c4dfa3929438",
+      "startsAt": null,
+      "closesAt": null,
+      "createdAt": "2026-09-24T16:06:09.904Z",
+      "revision": 1
+    },
+    {
+      "assignmentId": "f046e87c-501b-48a7-a1b5-748aa88ec6e5",
+      "testId": "831fd20b-7a82-488f-883e-114b4c73fa9e",
+      "targetType": "student",
+      "groupId": null,
+      "accountPlayerId": "b64af2a1-c558-41ab-ad00-59f4ea4d7061",
+      "startsAt": null,
+      "closesAt": null,
+      "createdAt": "2026-09-24T16:06:09.904Z",
+      "revision": 1
+    },
+    {
+      "assignmentId": "45bc1457-dc4e-4423-a036-e378da00b94c",
+      "testId": "831fd20b-7a82-488f-883e-114b4c73fa9e",
+      "targetType": "student",
+      "groupId": null,
+      "accountPlayerId": "9ea78f33-950f-4d1c-82a4-f60ca07707fc",
+      "startsAt": null,
+      "closesAt": null,
+      "createdAt": "2026-09-24T16:06:09.904Z",
+      "revision": 1
+    },
+    {
+      "assignmentId": "1b0659e6-cc7f-4446-8296-3e25b4b60163",
+      "testId": "831fd20b-7a82-488f-883e-114b4c73fa9e",
+      "targetType": "student",
+      "groupId": null,
+      "accountPlayerId": "bf5e9dee-f04f-47c4-a281-deb291117e9d",
+      "startsAt": null,
+      "closesAt": null,
+      "createdAt": "2026-09-24T16:06:09.904Z",
+      "revision": 1
+    },
+    {
+      "assignmentId": "0b2d77d2-9219-4c01-9323-a8e6d902d7ce",
+      "testId": "3ad94937-bed2-42d3-810b-40254aa2a274",
+      "targetType": "student",
+      "groupId": null,
+      "accountPlayerId": "5ceefd1b-4db5-5fc0-9ba0-63fae6f55180",
+      "startsAt": null,
+      "closesAt": null,
+      "createdAt": "2026-09-24T16:06:39.186Z",
+      "revision": 1
+    },
+    {
+      "assignmentId": "6e14f6bb-72d9-40b2-8f1d-5ba2c3157d9e",
+      "testId": "3ad94937-bed2-42d3-810b-40254aa2a274",
+      "targetType": "student",
+      "groupId": null,
+      "accountPlayerId": "5fcc4b25-5798-56c0-bf5c-221b623860d2",
+      "startsAt": null,
+      "closesAt": null,
+      "createdAt": "2026-09-24T16:06:39.186Z",
+      "revision": 1
+    },
+    {
+      "assignmentId": "e7dc27fb-268b-4853-a889-be1cd9d12feb",
+      "testId": "3ad94937-bed2-42d3-810b-40254aa2a274",
+      "targetType": "student",
+      "groupId": null,
+      "accountPlayerId": "9cff755e-1282-5d11-883c-fdb79ce56801",
+      "startsAt": null,
+      "closesAt": null,
+      "createdAt": "2026-09-24T16:06:39.186Z",
+      "revision": 1
+    },
+    {
+      "assignmentId": "a874a755-fc93-45cc-9d0e-08d9d1c303d5",
+      "testId": "3ad94937-bed2-42d3-810b-40254aa2a274",
+      "targetType": "student",
+      "groupId": null,
+      "accountPlayerId": "4ba2be16-9e3a-547d-89b4-cbf8906c70af",
+      "startsAt": null,
+      "closesAt": null,
+      "createdAt": "2026-09-24T16:06:39.186Z",
+      "revision": 1
+    },
+    {
+      "assignmentId": "52b93b3b-903b-479e-966d-d3c87d59e808",
+      "testId": "3ad94937-bed2-42d3-810b-40254aa2a274",
+      "targetType": "student",
+      "groupId": null,
+      "accountPlayerId": "2a38286a-2b41-5e9a-bb03-d68dc1b6c281",
+      "startsAt": null,
+      "closesAt": null,
+      "createdAt": "2026-09-24T16:06:39.186Z",
+      "revision": 1
+    },
+    {
+      "assignmentId": "82af4fd5-a16d-4d51-9dd2-94713ede76e0",
+      "testId": "3ad94937-bed2-42d3-810b-40254aa2a274",
+      "targetType": "student",
+      "groupId": null,
+      "accountPlayerId": "49d3ece2-8d1a-5899-99ac-8cee5ea802a7",
+      "startsAt": null,
+      "closesAt": null,
+      "createdAt": "2026-09-24T16:06:39.186Z",
+      "revision": 1
+    },
+    {
+      "assignmentId": "6074ca9d-02d4-430f-8067-4aafb9b1191a",
+      "testId": "47fc3aff-dfbc-43f7-a74d-70d09f6e594e",
+      "targetType": "student",
+      "groupId": null,
+      "accountPlayerId": "51e29bf4-dffa-5925-a90b-2adeee2be53d",
+      "startsAt": null,
+      "closesAt": null,
+      "createdAt": "2026-09-24T16:08:29.491Z",
+      "revision": 1
+    },
+    {
+      "assignmentId": "a3f956b3-7b50-4dfd-afa2-445da746f2d6",
+      "testId": "02f44a74-e1a9-4de9-9ce2-41dc544176d2",
+      "targetType": "student",
+      "groupId": null,
+      "accountPlayerId": "5ceefd1b-4db5-5fc0-9ba0-63fae6f55180",
+      "startsAt": null,
+      "closesAt": null,
+      "createdAt": "2026-09-24T17:00:23.678Z",
+      "revision": 1
+    },
+    {
+      "assignmentId": "24d412a6-c194-49e7-886d-a8e05141bd7f",
+      "testId": "02f44a74-e1a9-4de9-9ce2-41dc544176d2",
+      "targetType": "student",
+      "groupId": null,
+      "accountPlayerId": "5fcc4b25-5798-56c0-bf5c-221b623860d2",
+      "startsAt": null,
+      "closesAt": null,
+      "createdAt": "2026-09-24T17:00:23.678Z",
+      "revision": 1
+    },
+    {
+      "assignmentId": "6329580e-11b4-426e-8408-70672b97476b",
+      "testId": "02f44a74-e1a9-4de9-9ce2-41dc544176d2",
+      "targetType": "student",
+      "groupId": null,
+      "accountPlayerId": "9cff755e-1282-5d11-883c-fdb79ce56801",
+      "startsAt": null,
+      "closesAt": null,
+      "createdAt": "2026-09-24T17:00:23.678Z",
+      "revision": 1
+    },
+    {
+      "assignmentId": "4a4f1171-cc9c-49c7-bb8b-6041459a2b9c",
+      "testId": "02f44a74-e1a9-4de9-9ce2-41dc544176d2",
+      "targetType": "student",
+      "groupId": null,
+      "accountPlayerId": "4ba2be16-9e3a-547d-89b4-cbf8906c70af",
+      "startsAt": null,
+      "closesAt": null,
+      "createdAt": "2026-09-24T17:00:23.678Z",
+      "revision": 1
+    },
+    {
+      "assignmentId": "f0f11384-04e7-4445-8a29-176be6180e04",
+      "testId": "02f44a74-e1a9-4de9-9ce2-41dc544176d2",
+      "targetType": "student",
+      "groupId": null,
+      "accountPlayerId": "2a38286a-2b41-5e9a-bb03-d68dc1b6c281",
+      "startsAt": null,
+      "closesAt": null,
+      "createdAt": "2026-09-24T17:00:23.678Z",
+      "revision": 1
+    },
+    {
+      "assignmentId": "b76722b6-5074-4cf2-847a-0227a46e6904",
+      "testId": "02f44a74-e1a9-4de9-9ce2-41dc544176d2",
+      "targetType": "student",
+      "groupId": null,
+      "accountPlayerId": "49d3ece2-8d1a-5899-99ac-8cee5ea802a7",
+      "startsAt": null,
+      "closesAt": null,
+      "createdAt": "2026-09-24T17:00:23.678Z",
+      "revision": 1
+    },
+    {
+      "assignmentId": "f5fe2ac5-e8f0-4ad2-a550-ed16f330732a",
+      "testId": "26afd10c-de2d-4d0f-a767-5932afabd312",
+      "targetType": "student",
+      "groupId": null,
+      "accountPlayerId": "7d3a51eb-2565-5304-8e9a-106653ba5af1",
+      "startsAt": null,
+      "closesAt": null,
+      "createdAt": "2026-09-24T17:01:03.288Z",
+      "revision": 1
+    },
+    {
+      "assignmentId": "949adc39-ce8d-4c07-afb1-e69579330ad1",
+      "testId": "26afd10c-de2d-4d0f-a767-5932afabd312",
+      "targetType": "student",
+      "groupId": null,
+      "accountPlayerId": "142a67f0-e4ba-512f-b55d-86c2b18a9488",
+      "startsAt": null,
+      "closesAt": null,
+      "createdAt": "2026-09-24T17:01:03.288Z",
+      "revision": 1
+    },
+    {
+      "assignmentId": "71a13886-11c6-42e9-bbdc-af6ffc93cbe3",
+      "testId": "26afd10c-de2d-4d0f-a767-5932afabd312",
+      "targetType": "student",
+      "groupId": null,
+      "accountPlayerId": "4afaf2a0-1e0a-5a2e-abf8-c22cda9b5b2e",
+      "startsAt": null,
+      "closesAt": null,
+      "createdAt": "2026-09-24T17:01:03.288Z",
+      "revision": 1
+    },
+    {
+      "assignmentId": "194dff1b-a72c-4594-b41e-46a157815f69",
+      "testId": "26afd10c-de2d-4d0f-a767-5932afabd312",
+      "targetType": "student",
+      "groupId": null,
+      "accountPlayerId": "450c3187-fd46-5aff-a9a8-c4dfa3929438",
+      "startsAt": null,
+      "closesAt": null,
+      "createdAt": "2026-09-24T17:01:03.288Z",
+      "revision": 1
+    },
+    {
+      "assignmentId": "53e4475a-d806-41c0-b0a1-ad71ac10e8ec",
+      "testId": "26afd10c-de2d-4d0f-a767-5932afabd312",
+      "targetType": "student",
+      "groupId": null,
+      "accountPlayerId": "b64af2a1-c558-41ab-ad00-59f4ea4d7061",
+      "startsAt": null,
+      "closesAt": null,
+      "createdAt": "2026-09-24T17:01:03.288Z",
+      "revision": 1
+    },
+    {
+      "assignmentId": "d99f0eba-6996-4c06-a7fe-e8473401d08f",
+      "testId": "26afd10c-de2d-4d0f-a767-5932afabd312",
+      "targetType": "student",
+      "groupId": null,
+      "accountPlayerId": "9ea78f33-950f-4d1c-82a4-f60ca07707fc",
+      "startsAt": null,
+      "closesAt": null,
+      "createdAt": "2026-09-24T17:01:03.288Z",
+      "revision": 1
+    },
+    {
+      "assignmentId": "4b52ecd0-0d57-4ee6-8670-600995b4296d",
+      "testId": "26afd10c-de2d-4d0f-a767-5932afabd312",
+      "targetType": "student",
+      "groupId": null,
+      "accountPlayerId": "bf5e9dee-f04f-47c4-a281-deb291117e9d",
+      "startsAt": null,
+      "closesAt": null,
+      "createdAt": "2026-09-24T17:01:03.288Z",
+      "revision": 1
+    },
+    {
+      "assignmentId": "93009fbf-fabd-44a1-b5e0-98f2ae916950",
+      "testId": "5e1b93ce-7297-4c85-8c43-0dea90cfd5db",
+      "targetType": "student",
+      "groupId": null,
+      "accountPlayerId": "5ceefd1b-4db5-5fc0-9ba0-63fae6f55180",
+      "startsAt": null,
+      "closesAt": null,
+      "createdAt": "2026-09-24T17:02:02.850Z",
+      "revision": 1
+    },
+    {
+      "assignmentId": "e2ae3c9c-4a45-4703-8e78-27e7beae4c90",
+      "testId": "5e1b93ce-7297-4c85-8c43-0dea90cfd5db",
+      "targetType": "student",
+      "groupId": null,
+      "accountPlayerId": "5fcc4b25-5798-56c0-bf5c-221b623860d2",
+      "startsAt": null,
+      "closesAt": null,
+      "createdAt": "2026-09-24T17:02:02.850Z",
+      "revision": 1
+    },
+    {
+      "assignmentId": "e20e3427-af50-4cc7-9746-d8d2750ff0f7",
+      "testId": "5e1b93ce-7297-4c85-8c43-0dea90cfd5db",
+      "targetType": "student",
+      "groupId": null,
+      "accountPlayerId": "9cff755e-1282-5d11-883c-fdb79ce56801",
+      "startsAt": null,
+      "closesAt": null,
+      "createdAt": "2026-09-24T17:02:02.850Z",
+      "revision": 1
+    },
+    {
+      "assignmentId": "352d31f7-8d2f-4b29-aa8e-37ae44d4a07b",
+      "testId": "5e1b93ce-7297-4c85-8c43-0dea90cfd5db",
+      "targetType": "student",
+      "groupId": null,
+      "accountPlayerId": "4ba2be16-9e3a-547d-89b4-cbf8906c70af",
+      "startsAt": null,
+      "closesAt": null,
+      "createdAt": "2026-09-24T17:02:02.850Z",
+      "revision": 1
+    },
+    {
+      "assignmentId": "47a38158-1081-43d7-bdae-31e925f0fda2",
+      "testId": "5e1b93ce-7297-4c85-8c43-0dea90cfd5db",
+      "targetType": "student",
+      "groupId": null,
+      "accountPlayerId": "2a38286a-2b41-5e9a-bb03-d68dc1b6c281",
+      "startsAt": null,
+      "closesAt": null,
+      "createdAt": "2026-09-24T17:02:02.850Z",
+      "revision": 1
+    },
+    {
+      "assignmentId": "6081ec5e-516b-49b9-9b73-fa770da58ff4",
+      "testId": "5e1b93ce-7297-4c85-8c43-0dea90cfd5db",
+      "targetType": "student",
+      "groupId": null,
+      "accountPlayerId": "49d3ece2-8d1a-5899-99ac-8cee5ea802a7",
+      "startsAt": null,
+      "closesAt": null,
+      "createdAt": "2026-09-24T17:02:02.850Z",
       "revision": 1
     }
   ],
@@ -6634,6 +7553,4910 @@
       "origin": "live_exam",
       "official": false,
       "deletedAt": null
+    },
+    {
+      "attemptId": "630b78a9-68e1-40cc-8161-d0f0621c5ac9",
+      "testId": "831fd20b-7a82-488f-883e-114b4c73fa9e",
+      "accountPlayerId": "b64af2a1-c558-41ab-ad00-59f4ea4d7061",
+      "parentAttemptId": null,
+      "status": "in_progress",
+      "progress": {
+        "studentSnapshot": {
+          "name": "Yuli",
+          "grade": "4° Grado"
+        },
+        "examStartedAt": 1790265969932,
+        "currentIndex": 0,
+        "totalQuestions": 36,
+        "correct": 0,
+        "incorrect": 0,
+        "timeout": 0,
+        "score": 0,
+        "questions": [
+          {
+            "questionId": "faa99bc4-ed30-44b2-9cf3-d9395ab739d1",
+            "op": "×",
+            "a": 4,
+            "b": 3,
+            "answer": 12
+          },
+          {
+            "questionId": "40ad12ee-3e7d-48db-9185-c3c9d45e6a7f",
+            "op": "×",
+            "a": 3,
+            "b": 8,
+            "answer": 24
+          },
+          {
+            "questionId": "da732496-77a8-472a-9aff-644eaf2d6aa8",
+            "op": "×",
+            "a": 6,
+            "b": 11,
+            "answer": 66
+          },
+          {
+            "questionId": "544769c4-0ac6-4068-9d06-2fdc1d4cab14",
+            "op": "×",
+            "a": 4,
+            "b": 2,
+            "answer": 8
+          },
+          {
+            "questionId": "7e6c5152-f9fb-4936-a55f-49318d64785b",
+            "op": "×",
+            "a": 8,
+            "b": 6,
+            "answer": 48
+          },
+          {
+            "questionId": "348aed79-5203-4d82-a3a7-ff8272c70914",
+            "op": "×",
+            "a": 3,
+            "b": 2,
+            "answer": 6
+          },
+          {
+            "questionId": "3a9caa21-9d30-419e-9702-304031e6a612",
+            "op": "×",
+            "a": 12,
+            "b": 10,
+            "answer": 120
+          },
+          {
+            "questionId": "977b2d17-3c1d-43e0-b132-6404a7292864",
+            "op": "×",
+            "a": 10,
+            "b": 7,
+            "answer": 70
+          },
+          {
+            "questionId": "78897989-6645-4b58-a1ae-46cdbd344ce3",
+            "op": "×",
+            "a": 11,
+            "b": 10,
+            "answer": 110
+          },
+          {
+            "questionId": "c2390b72-0c27-482f-a380-9a3d05662ccf",
+            "op": "×",
+            "a": 5,
+            "b": 9,
+            "answer": 45
+          },
+          {
+            "questionId": "8a02c979-74c8-4eb2-8353-326683370e81",
+            "op": "×",
+            "a": 12,
+            "b": 11,
+            "answer": 132
+          },
+          {
+            "questionId": "e271bc73-33de-422a-9c5f-4ded1f430ed0",
+            "op": "×",
+            "a": 6,
+            "b": 7,
+            "answer": 42
+          },
+          {
+            "questionId": "5e918546-cbbe-4bcf-8234-d26b7eb3d960",
+            "op": "×",
+            "a": 4,
+            "b": 5,
+            "answer": 20
+          },
+          {
+            "questionId": "b60b83fb-7799-48f4-b0a3-0416593dbf7f",
+            "op": "×",
+            "a": 11,
+            "b": 11,
+            "answer": 121
+          },
+          {
+            "questionId": "31839c81-435f-4547-891e-ffad17af80db",
+            "op": "×",
+            "a": 2,
+            "b": 11,
+            "answer": 22
+          },
+          {
+            "questionId": "fb69df60-adae-4a10-80da-b228808c4992",
+            "op": "×",
+            "a": 7,
+            "b": 10,
+            "answer": 70
+          },
+          {
+            "questionId": "22717982-5021-425a-be9f-a6ca4878d3b9",
+            "op": "×",
+            "a": 9,
+            "b": 3,
+            "answer": 27
+          },
+          {
+            "questionId": "600137f8-94eb-477f-99c0-644729eedb74",
+            "op": "×",
+            "a": 6,
+            "b": 12,
+            "answer": 72
+          },
+          {
+            "questionId": "796f84b1-6f5f-419b-9616-fb08e37333e6",
+            "op": "×",
+            "a": 3,
+            "b": 5,
+            "answer": 15
+          },
+          {
+            "questionId": "f09068ee-172a-4fb8-a036-60c2e743e0e9",
+            "op": "×",
+            "a": 1,
+            "b": 12,
+            "answer": 12
+          },
+          {
+            "questionId": "fb3b6414-24fa-48c9-830b-2e5c459562a5",
+            "op": "×",
+            "a": 10,
+            "b": 4,
+            "answer": 40
+          },
+          {
+            "questionId": "b23a5038-53ea-4978-8da2-54489dde095d",
+            "op": "×",
+            "a": 2,
+            "b": 1,
+            "answer": 2
+          },
+          {
+            "questionId": "edc78616-a2fc-443a-8a92-64e2bf126d05",
+            "op": "×",
+            "a": 5,
+            "b": 3,
+            "answer": 15
+          },
+          {
+            "questionId": "e7afe7cb-ae44-4467-a05a-3ef37265f1b2",
+            "op": "×",
+            "a": 10,
+            "b": 7,
+            "answer": 70
+          },
+          {
+            "questionId": "e5a59b22-32c6-4b04-be60-a531d81f74a8",
+            "op": "×",
+            "a": 9,
+            "b": 5,
+            "answer": 45
+          },
+          {
+            "questionId": "e69ef5c7-b663-4699-9f43-3b4db0889221",
+            "op": "×",
+            "a": 12,
+            "b": 9,
+            "answer": 108
+          },
+          {
+            "questionId": "86a61cf6-2e62-4d8e-bdda-e39ca3d225ba",
+            "op": "×",
+            "a": 8,
+            "b": 1,
+            "answer": 8
+          },
+          {
+            "questionId": "8ce6675e-4b89-4aaf-96b9-a637d03b7cc8",
+            "op": "×",
+            "a": 11,
+            "b": 8,
+            "answer": 88
+          },
+          {
+            "questionId": "f632c6f9-b9c6-4973-ab86-687f262801d4",
+            "op": "×",
+            "a": 1,
+            "b": 11,
+            "answer": 11
+          },
+          {
+            "questionId": "69b069bf-7441-43b3-b18f-7c4b949ce99c",
+            "op": "×",
+            "a": 1,
+            "b": 3,
+            "answer": 3
+          },
+          {
+            "questionId": "ed8800b5-1145-4387-866f-d3f0c5d471f1",
+            "op": "×",
+            "a": 8,
+            "b": 10,
+            "answer": 80
+          },
+          {
+            "questionId": "5d5f1417-59b3-42b2-b02b-9ad297532861",
+            "op": "×",
+            "a": 5,
+            "b": 9,
+            "answer": 45
+          },
+          {
+            "questionId": "7b20ed9d-3aa7-4697-a66a-82a5129313e8",
+            "op": "×",
+            "a": 9,
+            "b": 4,
+            "answer": 36
+          },
+          {
+            "questionId": "6d0f3f13-8a45-4d7d-a31b-fd1755f81004",
+            "op": "×",
+            "a": 2,
+            "b": 10,
+            "answer": 20
+          },
+          {
+            "questionId": "cd911e04-85ba-4c63-8b84-c00a670d184a",
+            "op": "×",
+            "a": 7,
+            "b": 9,
+            "answer": 63
+          },
+          {
+            "questionId": "723064d8-579a-4029-bd22-e62be97e2e0b",
+            "op": "×",
+            "a": 7,
+            "b": 11,
+            "answer": 77
+          }
+        ]
+      },
+      "configurationSnapshot": {
+        "version": 1,
+        "multiplier": 1,
+        "rewards": {
+          "aureos": 0,
+          "experience": 0,
+          "streak": {
+            "enabled": false,
+            "bonus": 0
+          },
+          "achievements": {}
+        },
+        "folio": "0009",
+        "title": "0009",
+        "description": "",
+        "createdAt": "2026-09-24T16:05:24.210Z",
+        "grade": "4° Grado",
+        "opsConfig": {
+          "mult": {
+            "tables": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12
+            ],
+            "qty": 3,
+            "detailMode": false,
+            "manner": "random"
+          }
+        },
+        "timeLimit": 0,
+        "timePerQuestion": 10
+      },
+      "revision": 8,
+      "startedAt": "2026-09-24T16:06:09.932Z",
+      "updatedAt": "2026-09-24T16:32:40.941Z",
+      "finishedAt": null,
+      "origin": "live_exam",
+      "official": false,
+      "deletedAt": null
+    },
+    {
+      "attemptId": "292293f6-6bca-42f0-8794-9b1fe73778e2",
+      "testId": "5e1b93ce-7297-4c85-8c43-0dea90cfd5db",
+      "accountPlayerId": "5fcc4b25-5798-56c0-bf5c-221b623860d2",
+      "parentAttemptId": null,
+      "status": "finished",
+      "progress": {
+        "studentSnapshot": {
+          "name": "Angel",
+          "grade": "3° Grado"
+        },
+        "examStartedAt": 1790269322876,
+        "currentIndex": 40,
+        "totalQuestions": 40,
+        "correct": 26,
+        "incorrect": 14,
+        "timeout": 0,
+        "score": 3640,
+        "questions": [
+          {
+            "questionId": "53420532-8395-4ffb-abf6-589d05df15b3",
+            "op": "×",
+            "a": 10,
+            "b": 6,
+            "answer": 60
+          },
+          {
+            "questionId": "b10d06b9-cba9-4194-b184-24c536feb599",
+            "op": "×",
+            "a": 4,
+            "b": 2,
+            "answer": 8
+          },
+          {
+            "questionId": "9a29c1ad-50c4-4085-a1a9-c5d0fed12c34",
+            "op": "×",
+            "a": 4,
+            "b": 9,
+            "answer": 36
+          },
+          {
+            "questionId": "f056c779-d430-4e4d-94b5-52812d217eea",
+            "op": "×",
+            "a": 6,
+            "b": 5,
+            "answer": 30
+          },
+          {
+            "questionId": "cf95552d-7c2b-4210-939f-3a949a8b6b05",
+            "op": "×",
+            "a": 5,
+            "b": 7,
+            "answer": 35
+          },
+          {
+            "questionId": "5df49074-5e01-4770-add2-2f2dc56501b4",
+            "op": "×",
+            "a": 2,
+            "b": 3,
+            "answer": 6
+          },
+          {
+            "questionId": "bdbc781b-0e3b-4f38-99e6-c9db606735ae",
+            "op": "×",
+            "a": 7,
+            "b": 3,
+            "answer": 21
+          },
+          {
+            "questionId": "147d37be-5ba9-4c70-9df8-f932868b255f",
+            "op": "×",
+            "a": 9,
+            "b": 7,
+            "answer": 63
+          },
+          {
+            "questionId": "43466cfc-70a0-4908-bb26-1d0882ce84b8",
+            "op": "×",
+            "a": 7,
+            "b": 11,
+            "answer": 77
+          },
+          {
+            "questionId": "52a5455e-cbfb-4cfc-8163-79b7849cd7cf",
+            "op": "×",
+            "a": 6,
+            "b": 5,
+            "answer": 30
+          },
+          {
+            "questionId": "4897346b-7ed6-4261-842d-1a687fb3cad3",
+            "op": "×",
+            "a": 4,
+            "b": 12,
+            "answer": 48
+          },
+          {
+            "questionId": "5de13415-b10c-455a-a953-c81f9d78adff",
+            "op": "×",
+            "a": 7,
+            "b": 9,
+            "answer": 63
+          },
+          {
+            "questionId": "621c3651-b4e3-4908-8d04-b8ff26365a14",
+            "op": "×",
+            "a": 10,
+            "b": 4,
+            "answer": 40
+          },
+          {
+            "questionId": "cfad99b2-60cc-41ea-853b-424696cd0662",
+            "op": "×",
+            "a": 3,
+            "b": 5,
+            "answer": 15
+          },
+          {
+            "questionId": "0c8d543d-4298-4d8f-8397-4f528016d00d",
+            "op": "×",
+            "a": 6,
+            "b": 3,
+            "answer": 18
+          },
+          {
+            "questionId": "d0a756c3-45a9-428e-953b-8dc9ff1cc313",
+            "op": "×",
+            "a": 2,
+            "b": 9,
+            "answer": 18
+          },
+          {
+            "questionId": "7ce7d54c-4181-4b02-bb31-f90ff6d5dd60",
+            "op": "×",
+            "a": 1,
+            "b": 10,
+            "answer": 10
+          },
+          {
+            "questionId": "b6226ba6-d039-4121-8a9a-c01434ee01de",
+            "op": "×",
+            "a": 1,
+            "b": 5,
+            "answer": 5
+          },
+          {
+            "questionId": "ac805c7b-2ee3-45ca-a9d8-1b8cc9c68110",
+            "op": "×",
+            "a": 3,
+            "b": 4,
+            "answer": 12
+          },
+          {
+            "questionId": "3f4634f4-759c-4e1e-964f-318e50ebd32e",
+            "op": "×",
+            "a": 1,
+            "b": 2,
+            "answer": 2
+          },
+          {
+            "questionId": "47b980b0-e8a0-4c85-ae12-2b278afc4d4f",
+            "op": "×",
+            "a": 2,
+            "b": 2,
+            "answer": 4
+          },
+          {
+            "questionId": "f0cd2a3e-6eaa-4d0c-9104-cc5d50825010",
+            "op": "×",
+            "a": 4,
+            "b": 12,
+            "answer": 48
+          },
+          {
+            "questionId": "62a1838a-fb12-451b-8fac-ff94256d0880",
+            "op": "×",
+            "a": 8,
+            "b": 9,
+            "answer": 72
+          },
+          {
+            "questionId": "7a7b4e95-daa3-4320-9a17-e0bfdad2c3b9",
+            "op": "×",
+            "a": 10,
+            "b": 5,
+            "answer": 50
+          },
+          {
+            "questionId": "5d050525-472f-4f1a-acbc-731d93d7a7fa",
+            "op": "×",
+            "a": 2,
+            "b": 8,
+            "answer": 16
+          },
+          {
+            "questionId": "fa863732-626e-4597-98f4-fa8c1e4aba53",
+            "op": "×",
+            "a": 3,
+            "b": 1,
+            "answer": 3
+          },
+          {
+            "questionId": "0bfe50b4-fc79-4e71-8bb1-4c84de187ea4",
+            "op": "×",
+            "a": 8,
+            "b": 11,
+            "answer": 88
+          },
+          {
+            "questionId": "6414820c-9ba3-46de-941c-894fcbead0a8",
+            "op": "×",
+            "a": 6,
+            "b": 12,
+            "answer": 72
+          },
+          {
+            "questionId": "ff805c8b-128f-45c8-a6d4-5d3833134655",
+            "op": "×",
+            "a": 9,
+            "b": 4,
+            "answer": 36
+          },
+          {
+            "questionId": "c8af22f6-f50a-4eb0-acc6-ba14da7f971d",
+            "op": "×",
+            "a": 10,
+            "b": 11,
+            "answer": 110
+          },
+          {
+            "questionId": "6c4c17f3-3be6-4df8-8281-a493f6c2de49",
+            "op": "×",
+            "a": 7,
+            "b": 12,
+            "answer": 84
+          },
+          {
+            "questionId": "190722ce-7e53-4c38-ac32-9b9295e934f2",
+            "op": "×",
+            "a": 3,
+            "b": 3,
+            "answer": 9
+          },
+          {
+            "questionId": "5da91468-07b7-4bed-8885-b7d6aaa2a491",
+            "op": "×",
+            "a": 8,
+            "b": 5,
+            "answer": 40
+          },
+          {
+            "questionId": "7508d5f4-18d5-4813-845e-e40558d18a53",
+            "op": "×",
+            "a": 9,
+            "b": 5,
+            "answer": 45
+          },
+          {
+            "questionId": "6b4d57ce-6555-4ebb-8cde-d60d5b58918f",
+            "op": "×",
+            "a": 9,
+            "b": 11,
+            "answer": 99
+          },
+          {
+            "questionId": "9bbfabe3-9dda-41e6-b0f7-357258e3745f",
+            "op": "×",
+            "a": 5,
+            "b": 8,
+            "answer": 40
+          },
+          {
+            "questionId": "3eacd378-7505-4843-99a1-61d9f6b51fd3",
+            "op": "×",
+            "a": 5,
+            "b": 11,
+            "answer": 55
+          },
+          {
+            "questionId": "596a0a09-597e-42c4-ab59-264312c4c98e",
+            "op": "×",
+            "a": 1,
+            "b": 7,
+            "answer": 7
+          },
+          {
+            "questionId": "ab9015c8-a75e-4b34-81a4-5b4fc7d638f5",
+            "op": "×",
+            "a": 5,
+            "b": 4,
+            "answer": 20
+          },
+          {
+            "questionId": "3e6505b7-b300-445f-b526-16bd684069e5",
+            "op": "×",
+            "a": 8,
+            "b": 12,
+            "answer": 96
+          }
+        ]
+      },
+      "configurationSnapshot": {
+        "version": 1,
+        "multiplier": 1,
+        "rewards": {
+          "aureos": 0,
+          "experience": 0,
+          "streak": {
+            "enabled": false,
+            "bonus": 0
+          },
+          "achievements": {}
+        },
+        "folio": "0014",
+        "title": "Tercer grado",
+        "description": "",
+        "createdAt": "2026-09-24T17:01:31.569Z",
+        "grade": "3° Grado",
+        "opsConfig": {
+          "mult": {
+            "tables": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10
+            ],
+            "qty": 4,
+            "detailMode": false,
+            "manner": "random"
+          }
+        },
+        "timeLimit": 0,
+        "timePerQuestion": 10
+      },
+      "revision": 84,
+      "startedAt": "2026-09-24T17:02:02.876Z",
+      "updatedAt": "2026-09-24T17:05:42.854Z",
+      "finishedAt": "2026-09-24T17:05:42.854Z",
+      "origin": "live_exam",
+      "official": false,
+      "deletedAt": null
+    },
+    {
+      "attemptId": "c1b4a361-4916-416c-b522-2bb171ff1555",
+      "testId": "26afd10c-de2d-4d0f-a767-5932afabd312",
+      "accountPlayerId": "450c3187-fd46-5aff-a9a8-c4dfa3929438",
+      "parentAttemptId": null,
+      "status": "finished",
+      "progress": {
+        "studentSnapshot": {
+          "name": "Adrian",
+          "grade": "4° Grado"
+        },
+        "examStartedAt": 1790269263312,
+        "currentIndex": 48,
+        "totalQuestions": 48,
+        "correct": 30,
+        "incorrect": 18,
+        "timeout": 0,
+        "score": 3585,
+        "questions": [
+          {
+            "questionId": "7d249fee-e9a8-4741-9f1f-8381b3d394c3",
+            "op": "×",
+            "a": 6,
+            "b": 6,
+            "answer": 36
+          },
+          {
+            "questionId": "c1de609c-b99d-4429-bb0e-7473c5becef4",
+            "op": "×",
+            "a": 7,
+            "b": 12,
+            "answer": 84
+          },
+          {
+            "questionId": "086e1aa6-cd0c-4cb7-afb8-bf457e3b5428",
+            "op": "×",
+            "a": 2,
+            "b": 2,
+            "answer": 4
+          },
+          {
+            "questionId": "a55caeaa-ca57-42f0-919c-2ee4a43d39a8",
+            "op": "×",
+            "a": 2,
+            "b": 3,
+            "answer": 6
+          },
+          {
+            "questionId": "0fb4c18f-35c4-45f0-817f-3d2e4bd05346",
+            "op": "×",
+            "a": 6,
+            "b": 9,
+            "answer": 54
+          },
+          {
+            "questionId": "58692363-aa7e-4859-9e55-00fb99cc384d",
+            "op": "×",
+            "a": 9,
+            "b": 9,
+            "answer": 81
+          },
+          {
+            "questionId": "3c4fe64e-7182-46e7-ad41-ccac263e6c0a",
+            "op": "×",
+            "a": 4,
+            "b": 6,
+            "answer": 24
+          },
+          {
+            "questionId": "c4b45483-44c8-429d-9d02-98a1b79c4f75",
+            "op": "×",
+            "a": 3,
+            "b": 11,
+            "answer": 33
+          },
+          {
+            "questionId": "b2f2f290-6828-4911-b7b0-0b7357a4cee2",
+            "op": "×",
+            "a": 6,
+            "b": 12,
+            "answer": 72
+          },
+          {
+            "questionId": "b4b77c3a-290c-4c38-bae6-f45df0da5345",
+            "op": "×",
+            "a": 1,
+            "b": 7,
+            "answer": 7
+          },
+          {
+            "questionId": "5a6bbcd7-bb71-42ef-8bc3-af185657078b",
+            "op": "×",
+            "a": 3,
+            "b": 3,
+            "answer": 9
+          },
+          {
+            "questionId": "b6b7c086-a634-4032-82cf-286940d54d81",
+            "op": "×",
+            "a": 1,
+            "b": 4,
+            "answer": 4
+          },
+          {
+            "questionId": "8cfb9bd2-c623-4192-972a-4bc2baee0308",
+            "op": "×",
+            "a": 9,
+            "b": 9,
+            "answer": 81
+          },
+          {
+            "questionId": "89fb4848-3706-44b4-8a70-3b1868cfcaa6",
+            "op": "×",
+            "a": 2,
+            "b": 9,
+            "answer": 18
+          },
+          {
+            "questionId": "a4e10878-7621-4a27-880d-eee57b1aa13b",
+            "op": "×",
+            "a": 12,
+            "b": 12,
+            "answer": 144
+          },
+          {
+            "questionId": "8327ad7a-da14-41da-a148-176176b3c500",
+            "op": "×",
+            "a": 8,
+            "b": 1,
+            "answer": 8
+          },
+          {
+            "questionId": "15ab232f-0c7e-4273-8ef3-a66c183d0e9e",
+            "op": "×",
+            "a": 7,
+            "b": 12,
+            "answer": 84
+          },
+          {
+            "questionId": "f2d1b1d5-629c-4e17-b6e7-e89218731f68",
+            "op": "×",
+            "a": 10,
+            "b": 2,
+            "answer": 20
+          },
+          {
+            "questionId": "42b52c2e-077a-42b2-95a5-258fd6161b72",
+            "op": "×",
+            "a": 11,
+            "b": 6,
+            "answer": 66
+          },
+          {
+            "questionId": "4d3c6e6d-9047-41e2-96aa-0fc8c13db0ea",
+            "op": "×",
+            "a": 10,
+            "b": 1,
+            "answer": 10
+          },
+          {
+            "questionId": "cbc20cdc-05b3-48ae-b687-defc263dd7d8",
+            "op": "×",
+            "a": 12,
+            "b": 3,
+            "answer": 36
+          },
+          {
+            "questionId": "4c611d49-9672-49c5-8363-d93d5ff1dfe5",
+            "op": "×",
+            "a": 7,
+            "b": 8,
+            "answer": 56
+          },
+          {
+            "questionId": "c63cd445-6273-4931-a20d-8e38be88d75f",
+            "op": "×",
+            "a": 4,
+            "b": 2,
+            "answer": 8
+          },
+          {
+            "questionId": "0cc0890e-8c2d-43b3-93ba-8cd757094ee8",
+            "op": "×",
+            "a": 7,
+            "b": 4,
+            "answer": 28
+          },
+          {
+            "questionId": "03474ac0-b417-4148-9a92-9eb69826d664",
+            "op": "×",
+            "a": 1,
+            "b": 5,
+            "answer": 5
+          },
+          {
+            "questionId": "5b9a2d10-a075-4430-ae7c-a3e5979f4332",
+            "op": "×",
+            "a": 3,
+            "b": 1,
+            "answer": 3
+          },
+          {
+            "questionId": "ea96dbdb-3a0f-40c5-a744-2a8526894b97",
+            "op": "×",
+            "a": 5,
+            "b": 5,
+            "answer": 25
+          },
+          {
+            "questionId": "4a056a77-d8b4-4f57-a61d-2ed814e06bff",
+            "op": "×",
+            "a": 9,
+            "b": 8,
+            "answer": 72
+          },
+          {
+            "questionId": "a89672a9-86e3-4a73-b265-80085fd48b85",
+            "op": "×",
+            "a": 11,
+            "b": 10,
+            "answer": 110
+          },
+          {
+            "questionId": "edce8ce2-1a96-45b0-9cda-656364299236",
+            "op": "×",
+            "a": 6,
+            "b": 1,
+            "answer": 6
+          },
+          {
+            "questionId": "f0acc660-2fe6-471c-820f-82563187aefe",
+            "op": "×",
+            "a": 4,
+            "b": 9,
+            "answer": 36
+          },
+          {
+            "questionId": "0767c22b-979e-471d-812a-f3d1036fc26e",
+            "op": "×",
+            "a": 8,
+            "b": 11,
+            "answer": 88
+          },
+          {
+            "questionId": "d4f8e0be-f1ae-459e-a62c-3427e7a06b88",
+            "op": "×",
+            "a": 8,
+            "b": 3,
+            "answer": 24
+          },
+          {
+            "questionId": "39c43739-a0ee-4207-a969-6a8b18c6ce9c",
+            "op": "×",
+            "a": 12,
+            "b": 11,
+            "answer": 132
+          },
+          {
+            "questionId": "eced6333-fafa-4042-b630-ff226006fffc",
+            "op": "×",
+            "a": 11,
+            "b": 3,
+            "answer": 33
+          },
+          {
+            "questionId": "4e0dea78-937c-40e0-a1e7-4e2ee2b6321e",
+            "op": "×",
+            "a": 2,
+            "b": 1,
+            "answer": 2
+          },
+          {
+            "questionId": "f87f5a65-a1d4-4950-9bab-bd7c27d5fbe9",
+            "op": "×",
+            "a": 12,
+            "b": 4,
+            "answer": 48
+          },
+          {
+            "questionId": "ef48b6d5-60ad-4377-bc69-1e6fea7b188b",
+            "op": "×",
+            "a": 5,
+            "b": 7,
+            "answer": 35
+          },
+          {
+            "questionId": "36ffa2bf-8a6b-49e7-b0fb-364274b594aa",
+            "op": "×",
+            "a": 10,
+            "b": 1,
+            "answer": 10
+          },
+          {
+            "questionId": "4e3dd79b-f86d-40ab-a212-017e80f30305",
+            "op": "×",
+            "a": 8,
+            "b": 4,
+            "answer": 32
+          },
+          {
+            "questionId": "1d3efbed-569b-48ed-b584-7afca24b57f3",
+            "op": "×",
+            "a": 1,
+            "b": 6,
+            "answer": 6
+          },
+          {
+            "questionId": "62a8792c-83bf-4c27-ba30-81434bcdcabe",
+            "op": "×",
+            "a": 9,
+            "b": 6,
+            "answer": 54
+          },
+          {
+            "questionId": "01be1070-f134-43a0-be1c-d6dc3eceac9d",
+            "op": "×",
+            "a": 10,
+            "b": 8,
+            "answer": 80
+          },
+          {
+            "questionId": "41592d6e-2976-4a19-a420-97ace3041bbc",
+            "op": "×",
+            "a": 5,
+            "b": 2,
+            "answer": 10
+          },
+          {
+            "questionId": "eb35ff0e-199d-491e-9e2f-746c8a4e0c0a",
+            "op": "×",
+            "a": 11,
+            "b": 10,
+            "answer": 110
+          },
+          {
+            "questionId": "30594a25-5504-4a45-997d-caf493140f62",
+            "op": "×",
+            "a": 3,
+            "b": 2,
+            "answer": 6
+          },
+          {
+            "questionId": "0ad100d7-655c-4b8a-a74a-c21569f02121",
+            "op": "×",
+            "a": 5,
+            "b": 5,
+            "answer": 25
+          },
+          {
+            "questionId": "d0bf62a4-78d1-4c5d-9d49-36d7b1ce9741",
+            "op": "×",
+            "a": 4,
+            "b": 9,
+            "answer": 36
+          }
+        ]
+      },
+      "configurationSnapshot": {
+        "version": 1,
+        "multiplier": 1,
+        "rewards": {
+          "aureos": 0,
+          "experience": 0,
+          "streak": {
+            "enabled": false,
+            "bonus": 0
+          },
+          "achievements": {}
+        },
+        "folio": "0013",
+        "title": "Cuarto grado",
+        "description": "",
+        "createdAt": "2026-09-24T17:00:26.775Z",
+        "grade": "4° Grado",
+        "opsConfig": {
+          "mult": {
+            "tables": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12
+            ],
+            "qty": 4,
+            "detailMode": false,
+            "manner": "random"
+          }
+        },
+        "timeLimit": 0,
+        "timePerQuestion": 10
+      },
+      "revision": 126,
+      "startedAt": "2026-09-24T17:01:03.312Z",
+      "updatedAt": "2026-09-24T17:07:32.272Z",
+      "finishedAt": "2026-09-24T17:07:32.272Z",
+      "origin": "live_exam",
+      "official": false,
+      "deletedAt": null
+    },
+    {
+      "attemptId": "3e0fbea7-d05c-4ce3-b1e8-2edf64d6f719",
+      "testId": "5e1b93ce-7297-4c85-8c43-0dea90cfd5db",
+      "accountPlayerId": "5ceefd1b-4db5-5fc0-9ba0-63fae6f55180",
+      "parentAttemptId": null,
+      "status": "finished",
+      "progress": {
+        "studentSnapshot": {
+          "name": "Alexa",
+          "grade": "3° Grado"
+        },
+        "examStartedAt": 1790269322876,
+        "currentIndex": 40,
+        "totalQuestions": 40,
+        "correct": 22,
+        "incorrect": 17,
+        "timeout": 1,
+        "score": 2365,
+        "questions": [
+          {
+            "questionId": "c7ff4cf3-1f9b-4640-8643-138e134e4a93",
+            "op": "×",
+            "a": 2,
+            "b": 1,
+            "answer": 2
+          },
+          {
+            "questionId": "12229b28-bbd2-4cb3-8fbe-ad33d2e2a72e",
+            "op": "×",
+            "a": 5,
+            "b": 3,
+            "answer": 15
+          },
+          {
+            "questionId": "0892bc6d-ad16-4f84-82d9-8dc41f5e168d",
+            "op": "×",
+            "a": 6,
+            "b": 10,
+            "answer": 60
+          },
+          {
+            "questionId": "370803d1-d9d9-49b3-bf49-308f4751fcea",
+            "op": "×",
+            "a": 8,
+            "b": 12,
+            "answer": 96
+          },
+          {
+            "questionId": "d953d5e0-4d84-4289-844a-3345def8e8cb",
+            "op": "×",
+            "a": 9,
+            "b": 2,
+            "answer": 18
+          },
+          {
+            "questionId": "aeef8ed3-e84d-44b5-8f2d-53beb25ca14b",
+            "op": "×",
+            "a": 2,
+            "b": 7,
+            "answer": 14
+          },
+          {
+            "questionId": "a00115e2-fcf7-4222-9c30-f831ee2acc06",
+            "op": "×",
+            "a": 3,
+            "b": 10,
+            "answer": 30
+          },
+          {
+            "questionId": "9f2f97b3-7ca4-4890-a688-bee49975f06f",
+            "op": "×",
+            "a": 4,
+            "b": 8,
+            "answer": 32
+          },
+          {
+            "questionId": "aeef5909-c9d9-473c-bea2-bbd25f91f228",
+            "op": "×",
+            "a": 5,
+            "b": 2,
+            "answer": 10
+          },
+          {
+            "questionId": "4d60fb69-8384-411f-8d23-25b33241db58",
+            "op": "×",
+            "a": 1,
+            "b": 2,
+            "answer": 2
+          },
+          {
+            "questionId": "426e018e-ed32-40e0-a86f-be8b859429ab",
+            "op": "×",
+            "a": 4,
+            "b": 9,
+            "answer": 36
+          },
+          {
+            "questionId": "36fa92d3-0469-4312-b11a-d6099d04fd71",
+            "op": "×",
+            "a": 8,
+            "b": 3,
+            "answer": 24
+          },
+          {
+            "questionId": "392e828c-d479-4cdd-9661-65a3786ee4ff",
+            "op": "×",
+            "a": 7,
+            "b": 4,
+            "answer": 28
+          },
+          {
+            "questionId": "45e4bef1-59b0-4578-a3aa-9023239c4d7c",
+            "op": "×",
+            "a": 2,
+            "b": 2,
+            "answer": 4
+          },
+          {
+            "questionId": "ab32fe19-35b3-4c03-a613-49c62f68d52b",
+            "op": "×",
+            "a": 10,
+            "b": 6,
+            "answer": 60
+          },
+          {
+            "questionId": "72cd3162-1750-406d-9602-fc0c469e7a9e",
+            "op": "×",
+            "a": 10,
+            "b": 7,
+            "answer": 70
+          },
+          {
+            "questionId": "996e4681-00d1-481a-912d-af6e9277dbab",
+            "op": "×",
+            "a": 1,
+            "b": 11,
+            "answer": 11
+          },
+          {
+            "questionId": "bb6301e7-9382-4f82-ba94-7e108445783a",
+            "op": "×",
+            "a": 10,
+            "b": 12,
+            "answer": 120
+          },
+          {
+            "questionId": "b6b84d06-b0ab-446f-a956-149c888de917",
+            "op": "×",
+            "a": 4,
+            "b": 8,
+            "answer": 32
+          },
+          {
+            "questionId": "8f268962-710e-4d40-8833-e74bb0213bb5",
+            "op": "×",
+            "a": 8,
+            "b": 7,
+            "answer": 56
+          },
+          {
+            "questionId": "85e946a5-f8c3-4360-b799-d17947629da9",
+            "op": "×",
+            "a": 3,
+            "b": 3,
+            "answer": 9
+          },
+          {
+            "questionId": "796ca28f-c67c-4da8-81b7-d2f0601cebd7",
+            "op": "×",
+            "a": 1,
+            "b": 10,
+            "answer": 10
+          },
+          {
+            "questionId": "f28f01a4-867c-4f69-a404-229e4c9845b1",
+            "op": "×",
+            "a": 8,
+            "b": 7,
+            "answer": 56
+          },
+          {
+            "questionId": "9b9ba3f2-c033-4c59-a9c4-43d130336f64",
+            "op": "×",
+            "a": 9,
+            "b": 2,
+            "answer": 18
+          },
+          {
+            "questionId": "828708b9-1636-4c02-8234-60fb232fe13c",
+            "op": "×",
+            "a": 3,
+            "b": 6,
+            "answer": 18
+          },
+          {
+            "questionId": "24b2677a-a488-422d-bbb1-a10eb4d3d1f3",
+            "op": "×",
+            "a": 7,
+            "b": 3,
+            "answer": 21
+          },
+          {
+            "questionId": "b84ae2ec-fd1d-4887-b9af-1cff12a0e03b",
+            "op": "×",
+            "a": 6,
+            "b": 10,
+            "answer": 60
+          },
+          {
+            "questionId": "85a2ed6d-2c54-435b-a43e-e0ce6cf38593",
+            "op": "×",
+            "a": 10,
+            "b": 6,
+            "answer": 60
+          },
+          {
+            "questionId": "3dff80db-f3f5-42fd-ac1d-c49026ed8b9b",
+            "op": "×",
+            "a": 9,
+            "b": 6,
+            "answer": 54
+          },
+          {
+            "questionId": "0a3943b2-f0ca-4c83-a945-89d10e4764ef",
+            "op": "×",
+            "a": 9,
+            "b": 3,
+            "answer": 27
+          },
+          {
+            "questionId": "6bd1b025-1780-4408-9621-d136953a2d51",
+            "op": "×",
+            "a": 5,
+            "b": 7,
+            "answer": 35
+          },
+          {
+            "questionId": "d9754946-c08f-4251-85cc-107b444bdf34",
+            "op": "×",
+            "a": 4,
+            "b": 6,
+            "answer": 24
+          },
+          {
+            "questionId": "e9f5b9e0-d471-46fb-a612-6b3e924f346e",
+            "op": "×",
+            "a": 1,
+            "b": 10,
+            "answer": 10
+          },
+          {
+            "questionId": "ef77e019-44d7-447c-9743-b19cfa6eeebb",
+            "op": "×",
+            "a": 2,
+            "b": 7,
+            "answer": 14
+          },
+          {
+            "questionId": "4b937494-0803-428f-a4cb-c5c1f9691512",
+            "op": "×",
+            "a": 6,
+            "b": 1,
+            "answer": 6
+          },
+          {
+            "questionId": "2192258b-2242-4128-a2eb-9a3df59cc73d",
+            "op": "×",
+            "a": 6,
+            "b": 7,
+            "answer": 42
+          },
+          {
+            "questionId": "ac0042b6-3006-4307-b0a8-9eb2d80beaef",
+            "op": "×",
+            "a": 7,
+            "b": 10,
+            "answer": 70
+          },
+          {
+            "questionId": "69d7e40d-1833-4528-912d-c1714e58b1d8",
+            "op": "×",
+            "a": 3,
+            "b": 8,
+            "answer": 24
+          },
+          {
+            "questionId": "2664ee28-190d-4622-8055-e8e9079ccfea",
+            "op": "×",
+            "a": 7,
+            "b": 2,
+            "answer": 14
+          },
+          {
+            "questionId": "18f061cf-4d83-4555-8245-2bac113e53b7",
+            "op": "×",
+            "a": 5,
+            "b": 4,
+            "answer": 20
+          }
+        ]
+      },
+      "configurationSnapshot": {
+        "version": 1,
+        "multiplier": 1,
+        "rewards": {
+          "aureos": 0,
+          "experience": 0,
+          "streak": {
+            "enabled": false,
+            "bonus": 0
+          },
+          "achievements": {}
+        },
+        "folio": "0014",
+        "title": "Tercer grado",
+        "description": "",
+        "createdAt": "2026-09-24T17:01:31.569Z",
+        "grade": "3° Grado",
+        "opsConfig": {
+          "mult": {
+            "tables": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10
+            ],
+            "qty": 4,
+            "detailMode": false,
+            "manner": "random"
+          }
+        },
+        "timeLimit": 0,
+        "timePerQuestion": 10
+      },
+      "revision": 119,
+      "startedAt": "2026-09-24T17:02:02.876Z",
+      "updatedAt": "2026-09-24T17:10:41.731Z",
+      "finishedAt": "2026-09-24T17:10:41.731Z",
+      "origin": "live_exam",
+      "official": false,
+      "deletedAt": null
+    },
+    {
+      "attemptId": "e1789895-2fde-4de4-bec4-c871425bf501",
+      "testId": "26afd10c-de2d-4d0f-a767-5932afabd312",
+      "accountPlayerId": "bf5e9dee-f04f-47c4-a281-deb291117e9d",
+      "parentAttemptId": null,
+      "status": "finished",
+      "progress": {
+        "studentSnapshot": {
+          "name": "marlen",
+          "grade": "4° Grado"
+        },
+        "examStartedAt": 1790269263312,
+        "currentIndex": 48,
+        "totalQuestions": 48,
+        "correct": 47,
+        "incorrect": 1,
+        "timeout": 0,
+        "score": 14290,
+        "questions": [
+          {
+            "questionId": "c0b81e23-1e1b-45c8-b65f-ae21732d4b43",
+            "op": "×",
+            "a": 9,
+            "b": 3,
+            "answer": 27
+          },
+          {
+            "questionId": "b23c1c88-ff36-487b-93fe-e6c1f7e3722d",
+            "op": "×",
+            "a": 6,
+            "b": 2,
+            "answer": 12
+          },
+          {
+            "questionId": "4700fe78-a22c-4a78-971b-91a219490f9f",
+            "op": "×",
+            "a": 4,
+            "b": 6,
+            "answer": 24
+          },
+          {
+            "questionId": "f1074b1b-bd52-41d2-bb76-525db15cbf42",
+            "op": "×",
+            "a": 9,
+            "b": 5,
+            "answer": 45
+          },
+          {
+            "questionId": "07fc6f8b-83b8-468e-8935-9238f9fa7464",
+            "op": "×",
+            "a": 11,
+            "b": 8,
+            "answer": 88
+          },
+          {
+            "questionId": "c57ac8f1-fcc3-4c71-9e5f-b8e4fa3c0162",
+            "op": "×",
+            "a": 9,
+            "b": 8,
+            "answer": 72
+          },
+          {
+            "questionId": "ca851c0c-4917-41b4-a80b-09e2818dbd14",
+            "op": "×",
+            "a": 3,
+            "b": 4,
+            "answer": 12
+          },
+          {
+            "questionId": "fb348962-35de-4c52-b43b-299d541930d7",
+            "op": "×",
+            "a": 1,
+            "b": 11,
+            "answer": 11
+          },
+          {
+            "questionId": "2b2cde38-d331-4d30-b0b9-da99738f3da0",
+            "op": "×",
+            "a": 7,
+            "b": 12,
+            "answer": 84
+          },
+          {
+            "questionId": "8e04dd27-9a77-467b-8a7b-5065eb9b12a1",
+            "op": "×",
+            "a": 10,
+            "b": 6,
+            "answer": 60
+          },
+          {
+            "questionId": "79c56915-568b-4d5d-91be-051167ab37de",
+            "op": "×",
+            "a": 3,
+            "b": 12,
+            "answer": 36
+          },
+          {
+            "questionId": "1276d144-d43b-470d-9579-8abbf5665ffc",
+            "op": "×",
+            "a": 10,
+            "b": 6,
+            "answer": 60
+          },
+          {
+            "questionId": "703a392a-357c-4fa3-8d41-22691d86708e",
+            "op": "×",
+            "a": 5,
+            "b": 9,
+            "answer": 45
+          },
+          {
+            "questionId": "f50d0bdf-9cc2-4708-b70f-772daee5ddf2",
+            "op": "×",
+            "a": 4,
+            "b": 2,
+            "answer": 8
+          },
+          {
+            "questionId": "3ef79643-2738-456f-aa2d-a69595cb5cc3",
+            "op": "×",
+            "a": 6,
+            "b": 10,
+            "answer": 60
+          },
+          {
+            "questionId": "7b7b12dd-3757-4839-9c4d-71083d764f1f",
+            "op": "×",
+            "a": 9,
+            "b": 12,
+            "answer": 108
+          },
+          {
+            "questionId": "3ccda0e6-e4c2-44dc-ba4a-c68ac061da47",
+            "op": "×",
+            "a": 6,
+            "b": 4,
+            "answer": 24
+          },
+          {
+            "questionId": "aec0df96-0360-49a4-877a-d3cccbc78218",
+            "op": "×",
+            "a": 5,
+            "b": 2,
+            "answer": 10
+          },
+          {
+            "questionId": "c3384fd7-0114-419f-947b-4d5198e74995",
+            "op": "×",
+            "a": 3,
+            "b": 4,
+            "answer": 12
+          },
+          {
+            "questionId": "44f2b2db-142b-4ac9-b28b-a38730b9e8fe",
+            "op": "×",
+            "a": 8,
+            "b": 10,
+            "answer": 80
+          },
+          {
+            "questionId": "64e89231-a67d-42f9-9625-2f38a372fab6",
+            "op": "×",
+            "a": 10,
+            "b": 8,
+            "answer": 80
+          },
+          {
+            "questionId": "40b8537b-1a58-421e-ac75-510b0880918c",
+            "op": "×",
+            "a": 3,
+            "b": 6,
+            "answer": 18
+          },
+          {
+            "questionId": "2eae0294-a282-4999-ba5f-4853061db590",
+            "op": "×",
+            "a": 12,
+            "b": 3,
+            "answer": 36
+          },
+          {
+            "questionId": "2f6cfec6-c44a-43c3-8169-096ef913b905",
+            "op": "×",
+            "a": 1,
+            "b": 7,
+            "answer": 7
+          },
+          {
+            "questionId": "a16d2b3c-f19b-4c9b-a7d3-ca01812a038b",
+            "op": "×",
+            "a": 8,
+            "b": 8,
+            "answer": 64
+          },
+          {
+            "questionId": "f9d245bd-fa67-472c-b816-fabd2a809dca",
+            "op": "×",
+            "a": 12,
+            "b": 4,
+            "answer": 48
+          },
+          {
+            "questionId": "bc05c16d-3149-4ac1-8fc2-dff7fc2c9fad",
+            "op": "×",
+            "a": 7,
+            "b": 12,
+            "answer": 84
+          },
+          {
+            "questionId": "038fdf73-2c86-4f17-98e0-628bd6d414bb",
+            "op": "×",
+            "a": 6,
+            "b": 2,
+            "answer": 12
+          },
+          {
+            "questionId": "e1136ae2-4e8e-4360-ba7c-81afbca13b32",
+            "op": "×",
+            "a": 12,
+            "b": 3,
+            "answer": 36
+          },
+          {
+            "questionId": "3ecbe940-efe4-4d69-a489-2c2738bc43ff",
+            "op": "×",
+            "a": 11,
+            "b": 10,
+            "answer": 110
+          },
+          {
+            "questionId": "252c2385-ca86-4048-b314-81f338afb84c",
+            "op": "×",
+            "a": 2,
+            "b": 3,
+            "answer": 6
+          },
+          {
+            "questionId": "7c01bd77-7e99-4a24-bc85-cf2b5c8beaf3",
+            "op": "×",
+            "a": 2,
+            "b": 9,
+            "answer": 18
+          },
+          {
+            "questionId": "850472ac-fcda-433a-8396-bee9c9331ae1",
+            "op": "×",
+            "a": 11,
+            "b": 1,
+            "answer": 11
+          },
+          {
+            "questionId": "b741db1f-a546-4d24-9973-80f157c9c8e2",
+            "op": "×",
+            "a": 11,
+            "b": 3,
+            "answer": 33
+          },
+          {
+            "questionId": "aa92d509-0da3-476c-8310-b52756b09d86",
+            "op": "×",
+            "a": 2,
+            "b": 9,
+            "answer": 18
+          },
+          {
+            "questionId": "adbf5295-12a8-41fc-bfcc-084817f80a72",
+            "op": "×",
+            "a": 7,
+            "b": 12,
+            "answer": 84
+          },
+          {
+            "questionId": "68c1e07f-2a73-459e-9b58-e3cf14fcbbb3",
+            "op": "×",
+            "a": 2,
+            "b": 4,
+            "answer": 8
+          },
+          {
+            "questionId": "8654a8e0-f351-4b0b-922f-1fc81b36ca20",
+            "op": "×",
+            "a": 8,
+            "b": 5,
+            "answer": 40
+          },
+          {
+            "questionId": "c436db34-6008-4382-a744-56d40bb78d75",
+            "op": "×",
+            "a": 4,
+            "b": 5,
+            "answer": 20
+          },
+          {
+            "questionId": "cb7f2f62-71d5-45ef-b195-52dabca17c42",
+            "op": "×",
+            "a": 10,
+            "b": 6,
+            "answer": 60
+          },
+          {
+            "questionId": "90ebebce-1de5-4ae6-8e6c-792f39c49406",
+            "op": "×",
+            "a": 5,
+            "b": 6,
+            "answer": 30
+          },
+          {
+            "questionId": "ac48e224-c823-4d31-aa16-20c61ca5e0de",
+            "op": "×",
+            "a": 1,
+            "b": 9,
+            "answer": 9
+          },
+          {
+            "questionId": "157fbc6b-4b3b-4710-ae4a-f3bcff5b2884",
+            "op": "×",
+            "a": 7,
+            "b": 11,
+            "answer": 77
+          },
+          {
+            "questionId": "0a800364-0f15-4221-93a3-cc81afa437b6",
+            "op": "×",
+            "a": 12,
+            "b": 2,
+            "answer": 24
+          },
+          {
+            "questionId": "08947bac-71df-4360-9bdf-b3e38024cbe0",
+            "op": "×",
+            "a": 4,
+            "b": 3,
+            "answer": 12
+          },
+          {
+            "questionId": "bfe7bbb1-88c4-47be-8c3e-1f1ed0925dfc",
+            "op": "×",
+            "a": 8,
+            "b": 10,
+            "answer": 80
+          },
+          {
+            "questionId": "c0a3a168-b64e-49ad-83d2-575fc3482e87",
+            "op": "×",
+            "a": 5,
+            "b": 12,
+            "answer": 60
+          },
+          {
+            "questionId": "af38a1bd-434e-4959-a66b-1740518c411f",
+            "op": "×",
+            "a": 1,
+            "b": 9,
+            "answer": 9
+          }
+        ]
+      },
+      "configurationSnapshot": {
+        "version": 1,
+        "multiplier": 1,
+        "rewards": {
+          "aureos": 0,
+          "experience": 0,
+          "streak": {
+            "enabled": false,
+            "bonus": 0
+          },
+          "achievements": {}
+        },
+        "folio": "0013",
+        "title": "Cuarto grado",
+        "description": "",
+        "createdAt": "2026-09-24T17:00:26.775Z",
+        "grade": "4° Grado",
+        "opsConfig": {
+          "mult": {
+            "tables": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12
+            ],
+            "qty": 4,
+            "detailMode": false,
+            "manner": "random"
+          }
+        },
+        "timeLimit": 0,
+        "timePerQuestion": 10
+      },
+      "revision": 99,
+      "startedAt": "2026-09-24T17:01:03.312Z",
+      "updatedAt": "2026-09-24T17:11:41.220Z",
+      "finishedAt": "2026-09-24T17:11:41.220Z",
+      "origin": "live_exam",
+      "official": false,
+      "deletedAt": null
+    },
+    {
+      "attemptId": "d350d41a-b5b8-4cf4-9a7c-ab4fd586dde4",
+      "testId": "26afd10c-de2d-4d0f-a767-5932afabd312",
+      "accountPlayerId": "4afaf2a0-1e0a-5a2e-abf8-c22cda9b5b2e",
+      "parentAttemptId": null,
+      "status": "finished",
+      "progress": {
+        "studentSnapshot": {
+          "name": "Natali",
+          "grade": "4° Grado"
+        },
+        "examStartedAt": 1790269263312,
+        "currentIndex": 48,
+        "totalQuestions": 48,
+        "correct": 46,
+        "incorrect": 2,
+        "timeout": 0,
+        "score": 13435,
+        "questions": [
+          {
+            "questionId": "e6386fbe-afd2-42ed-8cff-b32873fd1f12",
+            "op": "×",
+            "a": 5,
+            "b": 5,
+            "answer": 25
+          },
+          {
+            "questionId": "66e831da-786b-4b05-89ed-cea29bda556e",
+            "op": "×",
+            "a": 2,
+            "b": 6,
+            "answer": 12
+          },
+          {
+            "questionId": "0eeabfa0-369a-4fe9-bc2f-9e26cc2027e3",
+            "op": "×",
+            "a": 10,
+            "b": 6,
+            "answer": 60
+          },
+          {
+            "questionId": "5aba1dbc-bba8-4643-bb5c-2a7a5a58b028",
+            "op": "×",
+            "a": 9,
+            "b": 12,
+            "answer": 108
+          },
+          {
+            "questionId": "aec709f2-3bac-4cc3-929a-96c6dcc7846c",
+            "op": "×",
+            "a": 10,
+            "b": 2,
+            "answer": 20
+          },
+          {
+            "questionId": "c4a9e33c-4203-4cec-ac57-4959a923e9a8",
+            "op": "×",
+            "a": 2,
+            "b": 11,
+            "answer": 22
+          },
+          {
+            "questionId": "2fc391d6-695c-43db-ba97-c476f6aa767f",
+            "op": "×",
+            "a": 6,
+            "b": 10,
+            "answer": 60
+          },
+          {
+            "questionId": "f5bd7ee9-9eb4-4b68-bfa4-5481927b1a40",
+            "op": "×",
+            "a": 3,
+            "b": 1,
+            "answer": 3
+          },
+          {
+            "questionId": "ccb72b88-36d9-4a1e-bbb2-a1be1c6321b1",
+            "op": "×",
+            "a": 4,
+            "b": 7,
+            "answer": 28
+          },
+          {
+            "questionId": "18238b44-e9bf-4677-83b5-95dbe2e769d5",
+            "op": "×",
+            "a": 1,
+            "b": 9,
+            "answer": 9
+          },
+          {
+            "questionId": "cc89c9ba-4c64-4862-be01-b75d8e18da3b",
+            "op": "×",
+            "a": 11,
+            "b": 2,
+            "answer": 22
+          },
+          {
+            "questionId": "5e7761ec-6122-4cef-90a9-45c0443a1722",
+            "op": "×",
+            "a": 6,
+            "b": 1,
+            "answer": 6
+          },
+          {
+            "questionId": "7c341c1f-a823-4704-958e-63d7489a003a",
+            "op": "×",
+            "a": 8,
+            "b": 12,
+            "answer": 96
+          },
+          {
+            "questionId": "0367ca5b-b657-47a0-8fd1-123075f2c07c",
+            "op": "×",
+            "a": 7,
+            "b": 12,
+            "answer": 84
+          },
+          {
+            "questionId": "da223cc5-aea2-4ef6-8a65-05edd3128eb8",
+            "op": "×",
+            "a": 7,
+            "b": 1,
+            "answer": 7
+          },
+          {
+            "questionId": "f8ba4653-5da7-4335-a605-89eedc80da53",
+            "op": "×",
+            "a": 5,
+            "b": 7,
+            "answer": 35
+          },
+          {
+            "questionId": "6bb034ca-2311-43ce-8e6e-1264bcdf01d9",
+            "op": "×",
+            "a": 5,
+            "b": 9,
+            "answer": 45
+          },
+          {
+            "questionId": "fc9c4662-2659-4506-a95d-3a072a9dcb91",
+            "op": "×",
+            "a": 3,
+            "b": 9,
+            "answer": 27
+          },
+          {
+            "questionId": "233ac7cc-1966-4a7d-a72a-58ff4187c9d5",
+            "op": "×",
+            "a": 8,
+            "b": 3,
+            "answer": 24
+          },
+          {
+            "questionId": "e769c673-e633-4202-b270-0c732b36ae3d",
+            "op": "×",
+            "a": 12,
+            "b": 3,
+            "answer": 36
+          },
+          {
+            "questionId": "aab9b87d-2549-4dbb-8b0b-4ee89e8693b9",
+            "op": "×",
+            "a": 8,
+            "b": 10,
+            "answer": 80
+          },
+          {
+            "questionId": "420dc385-a2cd-4174-b171-2371cdaaadd5",
+            "op": "×",
+            "a": 6,
+            "b": 10,
+            "answer": 60
+          },
+          {
+            "questionId": "93bde101-ba66-47f0-bc3b-4e1b30e37e2d",
+            "op": "×",
+            "a": 4,
+            "b": 6,
+            "answer": 24
+          },
+          {
+            "questionId": "f3211d87-a79a-4c03-95a6-c582face5238",
+            "op": "×",
+            "a": 4,
+            "b": 9,
+            "answer": 36
+          },
+          {
+            "questionId": "9a590902-b2c8-4e39-968a-77e22a1b79ec",
+            "op": "×",
+            "a": 1,
+            "b": 1,
+            "answer": 1
+          },
+          {
+            "questionId": "e8a49822-0552-4b51-8dab-2e341844d9d4",
+            "op": "×",
+            "a": 8,
+            "b": 10,
+            "answer": 80
+          },
+          {
+            "questionId": "c22424e8-6a5f-481a-8800-9e1550e6ef08",
+            "op": "×",
+            "a": 1,
+            "b": 1,
+            "answer": 1
+          },
+          {
+            "questionId": "420dd307-ee5c-46bb-9742-39532807d7c8",
+            "op": "×",
+            "a": 7,
+            "b": 6,
+            "answer": 42
+          },
+          {
+            "questionId": "8420b756-8c93-47f5-b72e-1830f6be5fdc",
+            "op": "×",
+            "a": 9,
+            "b": 2,
+            "answer": 18
+          },
+          {
+            "questionId": "70050c53-d2ff-4b7b-8982-8cf670507a9d",
+            "op": "×",
+            "a": 7,
+            "b": 9,
+            "answer": 63
+          },
+          {
+            "questionId": "d5b5ff17-9804-460b-9c67-e433aacb7c4e",
+            "op": "×",
+            "a": 6,
+            "b": 5,
+            "answer": 30
+          },
+          {
+            "questionId": "59b3691c-3225-4976-a087-c0b0f34c9c32",
+            "op": "×",
+            "a": 12,
+            "b": 2,
+            "answer": 24
+          },
+          {
+            "questionId": "0e7dff52-5827-45de-bdc3-a2813edad1c2",
+            "op": "×",
+            "a": 11,
+            "b": 9,
+            "answer": 99
+          },
+          {
+            "questionId": "7946e428-884b-4ca8-9e0d-45010b9e23fd",
+            "op": "×",
+            "a": 12,
+            "b": 7,
+            "answer": 84
+          },
+          {
+            "questionId": "512ceacf-1b00-4045-af0d-ee73175a548e",
+            "op": "×",
+            "a": 1,
+            "b": 10,
+            "answer": 10
+          },
+          {
+            "questionId": "8e71e5ea-2a73-4c6a-bd75-5a9d97c992b3",
+            "op": "×",
+            "a": 11,
+            "b": 4,
+            "answer": 44
+          },
+          {
+            "questionId": "06e0bb51-80be-494b-a5ce-517423a58164",
+            "op": "×",
+            "a": 2,
+            "b": 1,
+            "answer": 2
+          },
+          {
+            "questionId": "55025be8-0836-4e24-a775-5b350a65391d",
+            "op": "×",
+            "a": 3,
+            "b": 11,
+            "answer": 33
+          },
+          {
+            "questionId": "7c4deca8-f5f5-4f69-8cde-f99677b44c0a",
+            "op": "×",
+            "a": 4,
+            "b": 10,
+            "answer": 40
+          },
+          {
+            "questionId": "76d8a5d3-f1b5-46c7-ae9f-a684cd980448",
+            "op": "×",
+            "a": 11,
+            "b": 5,
+            "answer": 55
+          },
+          {
+            "questionId": "456949bf-b463-49d9-bd5e-1ce5601d1c3d",
+            "op": "×",
+            "a": 10,
+            "b": 2,
+            "answer": 20
+          },
+          {
+            "questionId": "55086ff4-7621-4bef-8c95-ce7b4777e27f",
+            "op": "×",
+            "a": 2,
+            "b": 4,
+            "answer": 8
+          },
+          {
+            "questionId": "b14d08e6-9fbe-4ec2-81e7-a1bd13dc1ae7",
+            "op": "×",
+            "a": 9,
+            "b": 12,
+            "answer": 108
+          },
+          {
+            "questionId": "d7e748a8-89d0-4650-b99b-cac2de7afc47",
+            "op": "×",
+            "a": 3,
+            "b": 8,
+            "answer": 24
+          },
+          {
+            "questionId": "d8409874-fa6a-411d-a82a-d9efec1dd8c3",
+            "op": "×",
+            "a": 10,
+            "b": 5,
+            "answer": 50
+          },
+          {
+            "questionId": "d9f0326a-9a6a-4c98-9f6e-3eb8f02ddd05",
+            "op": "×",
+            "a": 5,
+            "b": 3,
+            "answer": 15
+          },
+          {
+            "questionId": "c501f828-7883-4435-972d-d68559148344",
+            "op": "×",
+            "a": 12,
+            "b": 9,
+            "answer": 108
+          },
+          {
+            "questionId": "d9144374-a8b8-4982-89fc-8a66598db8fc",
+            "op": "×",
+            "a": 9,
+            "b": 6,
+            "answer": 54
+          }
+        ]
+      },
+      "configurationSnapshot": {
+        "version": 1,
+        "multiplier": 1,
+        "rewards": {
+          "aureos": 0,
+          "experience": 0,
+          "streak": {
+            "enabled": false,
+            "bonus": 0
+          },
+          "achievements": {}
+        },
+        "folio": "0013",
+        "title": "Cuarto grado",
+        "description": "",
+        "createdAt": "2026-09-24T17:00:26.775Z",
+        "grade": "4° Grado",
+        "opsConfig": {
+          "mult": {
+            "tables": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12
+            ],
+            "qty": 4,
+            "detailMode": false,
+            "manner": "random"
+          }
+        },
+        "timeLimit": 0,
+        "timePerQuestion": 10
+      },
+      "revision": 81,
+      "startedAt": "2026-09-24T17:01:03.312Z",
+      "updatedAt": "2026-09-24T17:15:09.707Z",
+      "finishedAt": "2026-09-24T17:15:09.707Z",
+      "origin": "live_exam",
+      "official": false,
+      "deletedAt": null
+    },
+    {
+      "attemptId": "ee456259-d253-4c04-bbc1-9c2a8a9d9c61",
+      "testId": "5e1b93ce-7297-4c85-8c43-0dea90cfd5db",
+      "accountPlayerId": "9cff755e-1282-5d11-883c-fdb79ce56801",
+      "parentAttemptId": null,
+      "status": "finished",
+      "progress": {
+        "studentSnapshot": {
+          "name": "Alexia",
+          "grade": "3° Grado"
+        },
+        "examStartedAt": 1790269322876,
+        "currentIndex": 40,
+        "totalQuestions": 40,
+        "correct": 34,
+        "incorrect": 6,
+        "timeout": 0,
+        "score": 4895,
+        "questions": [
+          {
+            "questionId": "6a57e220-d10d-4ed3-b821-de8799bfcc97",
+            "op": "×",
+            "a": 9,
+            "b": 3,
+            "answer": 27
+          },
+          {
+            "questionId": "572e9dbf-c773-4c8a-9fb1-72437e6654e8",
+            "op": "×",
+            "a": 2,
+            "b": 7,
+            "answer": 14
+          },
+          {
+            "questionId": "08f911f4-d359-4898-92a0-0116bee4aecd",
+            "op": "×",
+            "a": 3,
+            "b": 6,
+            "answer": 18
+          },
+          {
+            "questionId": "1f9c8e11-5a23-4bb0-800c-a825775e14ff",
+            "op": "×",
+            "a": 4,
+            "b": 7,
+            "answer": 28
+          },
+          {
+            "questionId": "7655f7e6-02fa-4d56-ba41-dd5c22bc3ef7",
+            "op": "×",
+            "a": 1,
+            "b": 10,
+            "answer": 10
+          },
+          {
+            "questionId": "a68f0c07-6283-433a-acbb-1f19afd5b55e",
+            "op": "×",
+            "a": 10,
+            "b": 10,
+            "answer": 100
+          },
+          {
+            "questionId": "ad9ec76c-4a0a-4eae-af8f-867a3901b86e",
+            "op": "×",
+            "a": 2,
+            "b": 4,
+            "answer": 8
+          },
+          {
+            "questionId": "c9230277-a8be-4bf2-a1eb-3edd5d1d6261",
+            "op": "×",
+            "a": 3,
+            "b": 1,
+            "answer": 3
+          },
+          {
+            "questionId": "fd4227a4-94fb-41ba-8756-0d019e72f5fd",
+            "op": "×",
+            "a": 5,
+            "b": 2,
+            "answer": 10
+          },
+          {
+            "questionId": "d36a0c4c-0665-4d88-9f10-361dabd2ea1a",
+            "op": "×",
+            "a": 9,
+            "b": 6,
+            "answer": 54
+          },
+          {
+            "questionId": "28449d04-435a-442c-abc3-fa6d53049f2d",
+            "op": "×",
+            "a": 1,
+            "b": 9,
+            "answer": 9
+          },
+          {
+            "questionId": "37774a80-62e8-4ea8-9342-39b06d4fee9e",
+            "op": "×",
+            "a": 1,
+            "b": 10,
+            "answer": 10
+          },
+          {
+            "questionId": "4ab6768b-11dd-47f6-be2f-bc710be295e5",
+            "op": "×",
+            "a": 8,
+            "b": 10,
+            "answer": 80
+          },
+          {
+            "questionId": "8b3aee97-38b9-42dc-a526-d35d667b5d9d",
+            "op": "×",
+            "a": 9,
+            "b": 3,
+            "answer": 27
+          },
+          {
+            "questionId": "69e03f55-5b4b-4189-bb12-b320fa3d9af8",
+            "op": "×",
+            "a": 3,
+            "b": 9,
+            "answer": 27
+          },
+          {
+            "questionId": "d3d93029-58b2-49d8-83d0-bd508e1a14f9",
+            "op": "×",
+            "a": 6,
+            "b": 8,
+            "answer": 48
+          },
+          {
+            "questionId": "065ba60d-05bf-4aa1-a0bb-18c03f8d2930",
+            "op": "×",
+            "a": 3,
+            "b": 11,
+            "answer": 33
+          },
+          {
+            "questionId": "762863b4-aed9-42c8-9d8f-68bce778f9df",
+            "op": "×",
+            "a": 8,
+            "b": 1,
+            "answer": 8
+          },
+          {
+            "questionId": "5478684e-fa13-464e-a322-aa2a9ddee1e9",
+            "op": "×",
+            "a": 8,
+            "b": 5,
+            "answer": 40
+          },
+          {
+            "questionId": "68431b8c-7902-46a7-a354-33cdaf7f2237",
+            "op": "×",
+            "a": 10,
+            "b": 1,
+            "answer": 10
+          },
+          {
+            "questionId": "f50d5171-ff0c-411c-bbf1-a09a21412e28",
+            "op": "×",
+            "a": 4,
+            "b": 5,
+            "answer": 20
+          },
+          {
+            "questionId": "4cda564c-07ad-405b-abbb-1fdc44a5a604",
+            "op": "×",
+            "a": 10,
+            "b": 9,
+            "answer": 90
+          },
+          {
+            "questionId": "26a2e34d-a678-40cc-b606-1dd2edb2be88",
+            "op": "×",
+            "a": 10,
+            "b": 2,
+            "answer": 20
+          },
+          {
+            "questionId": "79cc8cd7-efe9-4e48-8706-6af4b07e681c",
+            "op": "×",
+            "a": 7,
+            "b": 5,
+            "answer": 35
+          },
+          {
+            "questionId": "2b1cee35-be43-4354-b35d-cd13273c0a4b",
+            "op": "×",
+            "a": 4,
+            "b": 11,
+            "answer": 44
+          },
+          {
+            "questionId": "adfbd7ac-d16c-4782-9760-bc201fc1deca",
+            "op": "×",
+            "a": 8,
+            "b": 7,
+            "answer": 56
+          },
+          {
+            "questionId": "4a8b3df1-28ac-4885-9464-d0bc5c50239c",
+            "op": "×",
+            "a": 6,
+            "b": 7,
+            "answer": 42
+          },
+          {
+            "questionId": "f8a45007-7b35-4430-9609-124f762284ad",
+            "op": "×",
+            "a": 6,
+            "b": 7,
+            "answer": 42
+          },
+          {
+            "questionId": "c6e07603-dca9-4b6e-9b0a-2df7dd66ceb0",
+            "op": "×",
+            "a": 5,
+            "b": 9,
+            "answer": 45
+          },
+          {
+            "questionId": "b4481820-ac69-4c34-9a77-733853cf1179",
+            "op": "×",
+            "a": 4,
+            "b": 10,
+            "answer": 40
+          },
+          {
+            "questionId": "1dde6538-244c-455f-a6e4-10a580a78730",
+            "op": "×",
+            "a": 7,
+            "b": 3,
+            "answer": 21
+          },
+          {
+            "questionId": "d92f2b66-7bee-4f56-8483-27ec14453027",
+            "op": "×",
+            "a": 9,
+            "b": 12,
+            "answer": 108
+          },
+          {
+            "questionId": "3ed15dab-89ce-4d27-861c-af75fbf21039",
+            "op": "×",
+            "a": 5,
+            "b": 8,
+            "answer": 40
+          },
+          {
+            "questionId": "c0f54e4f-6063-402d-b810-f69739c17951",
+            "op": "×",
+            "a": 5,
+            "b": 9,
+            "answer": 45
+          },
+          {
+            "questionId": "ca29c661-0adf-476e-ad55-76e2fc72bb1a",
+            "op": "×",
+            "a": 7,
+            "b": 3,
+            "answer": 21
+          },
+          {
+            "questionId": "c1fd9a33-c848-42aa-92d7-f77e3fd6420f",
+            "op": "×",
+            "a": 2,
+            "b": 12,
+            "answer": 24
+          },
+          {
+            "questionId": "5541860e-51a6-4832-9a19-efe1cf766b09",
+            "op": "×",
+            "a": 7,
+            "b": 9,
+            "answer": 63
+          },
+          {
+            "questionId": "b88a2617-bc6a-44d9-aaa1-94ebbf729056",
+            "op": "×",
+            "a": 6,
+            "b": 7,
+            "answer": 42
+          },
+          {
+            "questionId": "aa51e3b9-3413-4fd7-82e0-30ff25973711",
+            "op": "×",
+            "a": 2,
+            "b": 7,
+            "answer": 14
+          },
+          {
+            "questionId": "44e024f9-a902-422b-ac83-655bb6149d99",
+            "op": "×",
+            "a": 1,
+            "b": 8,
+            "answer": 8
+          }
+        ]
+      },
+      "configurationSnapshot": {
+        "version": 1,
+        "multiplier": 1,
+        "rewards": {
+          "aureos": 0,
+          "experience": 0,
+          "streak": {
+            "enabled": false,
+            "bonus": 0
+          },
+          "achievements": {}
+        },
+        "folio": "0014",
+        "title": "Tercer grado",
+        "description": "",
+        "createdAt": "2026-09-24T17:01:31.569Z",
+        "grade": "3° Grado",
+        "opsConfig": {
+          "mult": {
+            "tables": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10
+            ],
+            "qty": 4,
+            "detailMode": false,
+            "manner": "random"
+          }
+        },
+        "timeLimit": 0,
+        "timePerQuestion": 10
+      },
+      "revision": 105,
+      "startedAt": "2026-09-24T17:02:02.876Z",
+      "updatedAt": "2026-09-24T17:17:10.641Z",
+      "finishedAt": "2026-09-24T17:17:10.641Z",
+      "origin": "live_exam",
+      "official": false,
+      "deletedAt": null
+    },
+    {
+      "attemptId": "355cf9b1-a69a-4254-ab5f-89c5f16a3306",
+      "testId": "26afd10c-de2d-4d0f-a767-5932afabd312",
+      "accountPlayerId": "7d3a51eb-2565-5304-8e9a-106653ba5af1",
+      "parentAttemptId": null,
+      "status": "finished",
+      "progress": {
+        "studentSnapshot": {
+          "name": "Dario",
+          "grade": "4° Grado"
+        },
+        "examStartedAt": 1790269263312,
+        "currentIndex": 48,
+        "totalQuestions": 48,
+        "correct": 35,
+        "incorrect": 13,
+        "timeout": 0,
+        "score": 4475,
+        "questions": [
+          {
+            "questionId": "b7494bb4-7519-4493-9039-a45fcb99d6c0",
+            "op": "×",
+            "a": 5,
+            "b": 9,
+            "answer": 45
+          },
+          {
+            "questionId": "2c4a7afb-f057-4cba-b8fc-5bda0612a57f",
+            "op": "×",
+            "a": 6,
+            "b": 10,
+            "answer": 60
+          },
+          {
+            "questionId": "99f2b7fc-b07c-4476-a621-83dc5c9338e9",
+            "op": "×",
+            "a": 5,
+            "b": 8,
+            "answer": 40
+          },
+          {
+            "questionId": "ecfeefb0-be9f-40d8-a073-0a80e70999a1",
+            "op": "×",
+            "a": 3,
+            "b": 3,
+            "answer": 9
+          },
+          {
+            "questionId": "9adf9f17-147a-41a1-a2e7-27152d5e2546",
+            "op": "×",
+            "a": 7,
+            "b": 12,
+            "answer": 84
+          },
+          {
+            "questionId": "be5e76f6-2883-4cf4-a7ed-6a7c3028f1de",
+            "op": "×",
+            "a": 5,
+            "b": 10,
+            "answer": 50
+          },
+          {
+            "questionId": "90191cb4-c91b-47b5-8fdb-5293a4790cac",
+            "op": "×",
+            "a": 2,
+            "b": 1,
+            "answer": 2
+          },
+          {
+            "questionId": "fa032c79-c506-4fd7-9890-fc71b8e360d9",
+            "op": "×",
+            "a": 8,
+            "b": 4,
+            "answer": 32
+          },
+          {
+            "questionId": "674240de-43fc-4e2c-8dec-82f0033cb0ed",
+            "op": "×",
+            "a": 4,
+            "b": 6,
+            "answer": 24
+          },
+          {
+            "questionId": "b2bfe9a4-752f-48cd-bc9e-f337a363c2c3",
+            "op": "×",
+            "a": 7,
+            "b": 3,
+            "answer": 21
+          },
+          {
+            "questionId": "a4d6e6a1-80ab-4661-a409-8c353896ed75",
+            "op": "×",
+            "a": 5,
+            "b": 9,
+            "answer": 45
+          },
+          {
+            "questionId": "dbd2a69e-417e-4f0e-8b72-bc5539b1300f",
+            "op": "×",
+            "a": 1,
+            "b": 8,
+            "answer": 8
+          },
+          {
+            "questionId": "b63b6eea-d93a-4069-9586-2e48def52d68",
+            "op": "×",
+            "a": 3,
+            "b": 7,
+            "answer": 21
+          },
+          {
+            "questionId": "ef223e0f-f16f-4ddc-8019-6c782fcc5a89",
+            "op": "×",
+            "a": 9,
+            "b": 11,
+            "answer": 99
+          },
+          {
+            "questionId": "6a2d1540-4016-4654-8f0f-cc6e5bc47f61",
+            "op": "×",
+            "a": 6,
+            "b": 12,
+            "answer": 72
+          },
+          {
+            "questionId": "956a16a0-17e6-4fc4-b571-35c91682b576",
+            "op": "×",
+            "a": 10,
+            "b": 10,
+            "answer": 100
+          },
+          {
+            "questionId": "0dac2654-3545-4b21-8fc6-0fea74c05f80",
+            "op": "×",
+            "a": 4,
+            "b": 11,
+            "answer": 44
+          },
+          {
+            "questionId": "894ad2b6-3a34-42b4-870c-6eab6646b5fd",
+            "op": "×",
+            "a": 8,
+            "b": 11,
+            "answer": 88
+          },
+          {
+            "questionId": "5ce7767e-0e98-48d4-b76b-fa71a21ce733",
+            "op": "×",
+            "a": 11,
+            "b": 5,
+            "answer": 55
+          },
+          {
+            "questionId": "d1463108-b876-417d-9193-4d8e695e2a04",
+            "op": "×",
+            "a": 4,
+            "b": 7,
+            "answer": 28
+          },
+          {
+            "questionId": "8ede7ba7-7f79-4392-a830-da14bd188a14",
+            "op": "×",
+            "a": 12,
+            "b": 9,
+            "answer": 108
+          },
+          {
+            "questionId": "7bae8055-83b0-4a61-a824-0649c9156ccb",
+            "op": "×",
+            "a": 2,
+            "b": 2,
+            "answer": 4
+          },
+          {
+            "questionId": "81e9c37d-da51-4478-a3f6-a3c026238a77",
+            "op": "×",
+            "a": 9,
+            "b": 12,
+            "answer": 108
+          },
+          {
+            "questionId": "99d11f72-8047-4882-9bed-e93870f3a7ad",
+            "op": "×",
+            "a": 7,
+            "b": 11,
+            "answer": 77
+          },
+          {
+            "questionId": "a5412bf9-57b9-42c6-863d-f210708d6a1a",
+            "op": "×",
+            "a": 12,
+            "b": 8,
+            "answer": 96
+          },
+          {
+            "questionId": "a2752c5f-52ab-46dd-acf9-69c00098e71b",
+            "op": "×",
+            "a": 9,
+            "b": 10,
+            "answer": 90
+          },
+          {
+            "questionId": "92a72235-9bd7-4d80-8d3c-264d82cb5b2b",
+            "op": "×",
+            "a": 1,
+            "b": 7,
+            "answer": 7
+          },
+          {
+            "questionId": "716bf7be-b33a-4ff5-a24e-fa53a8e3bc37",
+            "op": "×",
+            "a": 4,
+            "b": 8,
+            "answer": 32
+          },
+          {
+            "questionId": "60c1359b-bbd1-4bc7-99c0-66c4e774fb6d",
+            "op": "×",
+            "a": 1,
+            "b": 8,
+            "answer": 8
+          },
+          {
+            "questionId": "ef1d3f8a-ba47-4b84-9ee8-64f8fa12d482",
+            "op": "×",
+            "a": 11,
+            "b": 11,
+            "answer": 121
+          },
+          {
+            "questionId": "c5359b25-0e2d-4483-bac5-527a40f657ef",
+            "op": "×",
+            "a": 10,
+            "b": 7,
+            "answer": 70
+          },
+          {
+            "questionId": "d3531806-5e74-486a-8181-9b9bcf683c9d",
+            "op": "×",
+            "a": 8,
+            "b": 8,
+            "answer": 64
+          },
+          {
+            "questionId": "da2b2535-c673-443a-8231-4e9708d1dfc9",
+            "op": "×",
+            "a": 11,
+            "b": 5,
+            "answer": 55
+          },
+          {
+            "questionId": "528a858b-da34-4b31-be0c-e99a2e63b2f0",
+            "op": "×",
+            "a": 8,
+            "b": 4,
+            "answer": 32
+          },
+          {
+            "questionId": "896a9615-4565-402f-a52d-cfe94409e682",
+            "op": "×",
+            "a": 12,
+            "b": 7,
+            "answer": 84
+          },
+          {
+            "questionId": "24ae6e31-78da-4d02-9e86-1a1d09ef3423",
+            "op": "×",
+            "a": 6,
+            "b": 5,
+            "answer": 30
+          },
+          {
+            "questionId": "0fe73b57-7643-4be8-a490-efbb02c54c37",
+            "op": "×",
+            "a": 2,
+            "b": 11,
+            "answer": 22
+          },
+          {
+            "questionId": "55829802-3416-4c17-9d93-252b4d40b824",
+            "op": "×",
+            "a": 2,
+            "b": 10,
+            "answer": 20
+          },
+          {
+            "questionId": "60a0ce87-b70d-44ac-b7c1-5a7950b71ad4",
+            "op": "×",
+            "a": 1,
+            "b": 3,
+            "answer": 3
+          },
+          {
+            "questionId": "ae82d773-2661-4ce4-bb64-1afb25ae34a0",
+            "op": "×",
+            "a": 12,
+            "b": 2,
+            "answer": 24
+          },
+          {
+            "questionId": "94e1e631-0620-454e-91c9-cf95cdab4c5b",
+            "op": "×",
+            "a": 7,
+            "b": 10,
+            "answer": 70
+          },
+          {
+            "questionId": "28cef41a-8b16-4a18-9d5f-f752792eeb4d",
+            "op": "×",
+            "a": 3,
+            "b": 7,
+            "answer": 21
+          },
+          {
+            "questionId": "6b2fac07-8c2d-4833-ac08-e36c15378bfc",
+            "op": "×",
+            "a": 3,
+            "b": 12,
+            "answer": 36
+          },
+          {
+            "questionId": "d4cc3452-d780-46d6-8cf3-dcbee301f884",
+            "op": "×",
+            "a": 10,
+            "b": 4,
+            "answer": 40
+          },
+          {
+            "questionId": "fbb579a0-5df1-44f3-a243-e270309d950f",
+            "op": "×",
+            "a": 6,
+            "b": 9,
+            "answer": 54
+          },
+          {
+            "questionId": "b619d220-dedb-4034-bfa1-0fa5d1dc1b3a",
+            "op": "×",
+            "a": 11,
+            "b": 5,
+            "answer": 55
+          },
+          {
+            "questionId": "70cd0045-3bc4-4d28-9191-8f5fd36722f1",
+            "op": "×",
+            "a": 10,
+            "b": 7,
+            "answer": 70
+          },
+          {
+            "questionId": "e972ba43-c46c-46e0-95bd-962415b99ce5",
+            "op": "×",
+            "a": 9,
+            "b": 11,
+            "answer": 99
+          }
+        ]
+      },
+      "configurationSnapshot": {
+        "version": 1,
+        "multiplier": 1,
+        "rewards": {
+          "aureos": 0,
+          "experience": 0,
+          "streak": {
+            "enabled": false,
+            "bonus": 0
+          },
+          "achievements": {}
+        },
+        "folio": "0013",
+        "title": "Cuarto grado",
+        "description": "",
+        "createdAt": "2026-09-24T17:00:26.775Z",
+        "grade": "4° Grado",
+        "opsConfig": {
+          "mult": {
+            "tables": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12
+            ],
+            "qty": 4,
+            "detailMode": false,
+            "manner": "random"
+          }
+        },
+        "timeLimit": 0,
+        "timePerQuestion": 10
+      },
+      "revision": 101,
+      "startedAt": "2026-09-24T17:01:03.312Z",
+      "updatedAt": "2026-09-24T17:19:59.087Z",
+      "finishedAt": "2026-09-24T17:19:59.087Z",
+      "origin": "live_exam",
+      "official": false,
+      "deletedAt": null
+    },
+    {
+      "attemptId": "e631103e-88f2-45ec-9430-4852889dafa9",
+      "testId": "5e1b93ce-7297-4c85-8c43-0dea90cfd5db",
+      "accountPlayerId": "49d3ece2-8d1a-5899-99ac-8cee5ea802a7",
+      "parentAttemptId": null,
+      "status": "finished",
+      "progress": {
+        "studentSnapshot": {
+          "name": "Briana",
+          "grade": "3° Grado"
+        },
+        "examStartedAt": 1790269322876,
+        "currentIndex": 40,
+        "totalQuestions": 40,
+        "correct": 19,
+        "incorrect": 21,
+        "timeout": 0,
+        "score": 2495,
+        "questions": [
+          {
+            "questionId": "52d876ad-d4d0-47e2-9175-24e26e951f42",
+            "op": "×",
+            "a": 7,
+            "b": 12,
+            "answer": 84
+          },
+          {
+            "questionId": "a61e4e0a-0031-49f9-9be3-9835e419c522",
+            "op": "×",
+            "a": 2,
+            "b": 10,
+            "answer": 20
+          },
+          {
+            "questionId": "75c72d6e-bfa8-4986-ac79-fb5e612cc383",
+            "op": "×",
+            "a": 5,
+            "b": 7,
+            "answer": 35
+          },
+          {
+            "questionId": "a04a8a1e-3aa6-4aca-aec0-1b87a23c4c83",
+            "op": "×",
+            "a": 10,
+            "b": 6,
+            "answer": 60
+          },
+          {
+            "questionId": "883925b5-2133-48cf-8731-4a59c378b7b3",
+            "op": "×",
+            "a": 7,
+            "b": 8,
+            "answer": 56
+          },
+          {
+            "questionId": "91c74457-8c23-485e-9b01-7524b205a642",
+            "op": "×",
+            "a": 9,
+            "b": 2,
+            "answer": 18
+          },
+          {
+            "questionId": "a4e8dd92-7c66-408f-85f8-13c7b1d09540",
+            "op": "×",
+            "a": 10,
+            "b": 8,
+            "answer": 80
+          },
+          {
+            "questionId": "22a5dece-02fc-49c0-b363-54da0533a43f",
+            "op": "×",
+            "a": 6,
+            "b": 4,
+            "answer": 24
+          },
+          {
+            "questionId": "9d4ed0e9-5176-46ae-9101-f284eabd6bb7",
+            "op": "×",
+            "a": 8,
+            "b": 8,
+            "answer": 64
+          },
+          {
+            "questionId": "d73b14cd-433d-49f1-bb3b-de25dfddbaac",
+            "op": "×",
+            "a": 2,
+            "b": 12,
+            "answer": 24
+          },
+          {
+            "questionId": "b75a8ad1-c37f-4849-a025-84f3124a4642",
+            "op": "×",
+            "a": 5,
+            "b": 11,
+            "answer": 55
+          },
+          {
+            "questionId": "d9458848-1003-452e-8440-0f7e45caf10a",
+            "op": "×",
+            "a": 3,
+            "b": 10,
+            "answer": 30
+          },
+          {
+            "questionId": "e0bb2e6c-06c1-4fba-ad11-1b8c5d7ae0ee",
+            "op": "×",
+            "a": 8,
+            "b": 4,
+            "answer": 32
+          },
+          {
+            "questionId": "66e9bb9b-6ed2-4ebe-82a6-b7e9a7bd9521",
+            "op": "×",
+            "a": 1,
+            "b": 11,
+            "answer": 11
+          },
+          {
+            "questionId": "99b9ad09-e2c8-4d17-a042-31d5bf4b4467",
+            "op": "×",
+            "a": 6,
+            "b": 5,
+            "answer": 30
+          },
+          {
+            "questionId": "15892180-dc20-48a5-bb7b-8203e58c9aab",
+            "op": "×",
+            "a": 4,
+            "b": 8,
+            "answer": 32
+          },
+          {
+            "questionId": "cbf54ea6-c0ae-4d09-abcf-d48fc05c4c3f",
+            "op": "×",
+            "a": 2,
+            "b": 12,
+            "answer": 24
+          },
+          {
+            "questionId": "11ae43e6-8197-47b0-ab27-88bf1b6a3968",
+            "op": "×",
+            "a": 9,
+            "b": 8,
+            "answer": 72
+          },
+          {
+            "questionId": "71e268b0-cd11-48db-88c6-c2fd4f53280e",
+            "op": "×",
+            "a": 1,
+            "b": 8,
+            "answer": 8
+          },
+          {
+            "questionId": "40f02aba-76a8-4311-82cc-29f62e7a4c3e",
+            "op": "×",
+            "a": 9,
+            "b": 7,
+            "answer": 63
+          },
+          {
+            "questionId": "94224bac-cf5b-44f1-8f54-54d022216940",
+            "op": "×",
+            "a": 6,
+            "b": 10,
+            "answer": 60
+          },
+          {
+            "questionId": "b43bb403-2b90-41e8-a932-bfbd6620024e",
+            "op": "×",
+            "a": 4,
+            "b": 12,
+            "answer": 48
+          },
+          {
+            "questionId": "6c0fbb10-f29e-4f82-b574-8b9c9e6570be",
+            "op": "×",
+            "a": 7,
+            "b": 12,
+            "answer": 84
+          },
+          {
+            "questionId": "86ecdaa2-6ec5-4904-955a-9820aabe268f",
+            "op": "×",
+            "a": 2,
+            "b": 1,
+            "answer": 2
+          },
+          {
+            "questionId": "3da97516-7a24-444b-b429-f485e7abb92f",
+            "op": "×",
+            "a": 7,
+            "b": 2,
+            "answer": 14
+          },
+          {
+            "questionId": "cae12e2b-7c4d-4acc-a3c2-f8e4e1b08039",
+            "op": "×",
+            "a": 6,
+            "b": 9,
+            "answer": 54
+          },
+          {
+            "questionId": "b99d0eab-78e7-4564-a022-68a68dbd8bbc",
+            "op": "×",
+            "a": 3,
+            "b": 10,
+            "answer": 30
+          },
+          {
+            "questionId": "e29e9220-70bf-45c6-b4b3-fb987066c682",
+            "op": "×",
+            "a": 10,
+            "b": 9,
+            "answer": 90
+          },
+          {
+            "questionId": "50953258-8610-4408-8bd1-f231baeca567",
+            "op": "×",
+            "a": 3,
+            "b": 7,
+            "answer": 21
+          },
+          {
+            "questionId": "6ce8848e-7a35-42c5-ba95-14e944b79d5b",
+            "op": "×",
+            "a": 5,
+            "b": 6,
+            "answer": 30
+          },
+          {
+            "questionId": "4f57303b-8309-4d0b-a721-b89991f61dec",
+            "op": "×",
+            "a": 4,
+            "b": 1,
+            "answer": 4
+          },
+          {
+            "questionId": "189c6f5b-ab1a-418b-b411-9061ff409a37",
+            "op": "×",
+            "a": 1,
+            "b": 12,
+            "answer": 12
+          },
+          {
+            "questionId": "d05ceb46-1a50-419f-adb8-bf45593494ef",
+            "op": "×",
+            "a": 8,
+            "b": 6,
+            "answer": 48
+          },
+          {
+            "questionId": "5382fcac-36b2-4d9e-b7c9-70241f5ec7eb",
+            "op": "×",
+            "a": 9,
+            "b": 4,
+            "answer": 36
+          },
+          {
+            "questionId": "09751cea-acb3-49da-921f-5afd2aca0ccd",
+            "op": "×",
+            "a": 8,
+            "b": 6,
+            "answer": 48
+          },
+          {
+            "questionId": "151ac99a-2182-4914-ad96-49347d19cfda",
+            "op": "×",
+            "a": 4,
+            "b": 9,
+            "answer": 36
+          },
+          {
+            "questionId": "99e6c69e-06c2-48ae-b9ce-f8492affa2ff",
+            "op": "×",
+            "a": 1,
+            "b": 3,
+            "answer": 3
+          },
+          {
+            "questionId": "63f3d3ad-26e0-4635-846b-c2a5c9cb4b5f",
+            "op": "×",
+            "a": 5,
+            "b": 10,
+            "answer": 50
+          },
+          {
+            "questionId": "3ea61b92-122f-4715-99ea-409697f9f135",
+            "op": "×",
+            "a": 10,
+            "b": 11,
+            "answer": 110
+          },
+          {
+            "questionId": "bfcd4c8b-41a6-44fb-a711-4efc4df61a11",
+            "op": "×",
+            "a": 3,
+            "b": 10,
+            "answer": 30
+          }
+        ]
+      },
+      "configurationSnapshot": {
+        "version": 1,
+        "multiplier": 1,
+        "rewards": {
+          "aureos": 0,
+          "experience": 0,
+          "streak": {
+            "enabled": false,
+            "bonus": 0
+          },
+          "achievements": {}
+        },
+        "folio": "0014",
+        "title": "Tercer grado",
+        "description": "",
+        "createdAt": "2026-09-24T17:01:31.569Z",
+        "grade": "3° Grado",
+        "opsConfig": {
+          "mult": {
+            "tables": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10
+            ],
+            "qty": 4,
+            "detailMode": false,
+            "manner": "random"
+          }
+        },
+        "timeLimit": 0,
+        "timePerQuestion": 10
+      },
+      "revision": 78,
+      "startedAt": "2026-09-24T17:02:02.876Z",
+      "updatedAt": "2026-09-24T17:21:15.897Z",
+      "finishedAt": "2026-09-24T17:21:15.897Z",
+      "origin": "live_exam",
+      "official": false,
+      "deletedAt": null
+    },
+    {
+      "attemptId": "1e478db4-8fa5-4c48-9525-258b62dd70a4",
+      "testId": "26afd10c-de2d-4d0f-a767-5932afabd312",
+      "accountPlayerId": "142a67f0-e4ba-512f-b55d-86c2b18a9488",
+      "parentAttemptId": null,
+      "status": "finished",
+      "progress": {
+        "studentSnapshot": {
+          "name": "William",
+          "grade": "4° Grado"
+        },
+        "examStartedAt": 1790269263312,
+        "currentIndex": 48,
+        "totalQuestions": 48,
+        "correct": 44,
+        "incorrect": 4,
+        "timeout": 0,
+        "score": 10955,
+        "questions": [
+          {
+            "questionId": "50c6676c-ed86-4458-bcd5-8ae4ac47c30c",
+            "op": "×",
+            "a": 4,
+            "b": 7,
+            "answer": 28
+          },
+          {
+            "questionId": "8853f34f-e7a5-4dae-bff9-5937da4695f3",
+            "op": "×",
+            "a": 1,
+            "b": 12,
+            "answer": 12
+          },
+          {
+            "questionId": "62acd629-b34d-41ac-92b0-b4f0f97875bf",
+            "op": "×",
+            "a": 12,
+            "b": 6,
+            "answer": 72
+          },
+          {
+            "questionId": "568c4eb9-3c75-497d-aa8e-ca21e9dd0df4",
+            "op": "×",
+            "a": 9,
+            "b": 4,
+            "answer": 36
+          },
+          {
+            "questionId": "e1a70aa7-a362-4cfe-bb94-722ba90c4c54",
+            "op": "×",
+            "a": 9,
+            "b": 8,
+            "answer": 72
+          },
+          {
+            "questionId": "1d2d9ce3-d9f3-4bd3-bfba-5b97edb9a8cc",
+            "op": "×",
+            "a": 9,
+            "b": 3,
+            "answer": 27
+          },
+          {
+            "questionId": "27d4f8de-13eb-46ec-8653-ffc2ab75874e",
+            "op": "×",
+            "a": 4,
+            "b": 8,
+            "answer": 32
+          },
+          {
+            "questionId": "793288e0-ece3-4e09-9ee3-3d6a8ba74e46",
+            "op": "×",
+            "a": 6,
+            "b": 11,
+            "answer": 66
+          },
+          {
+            "questionId": "148690b5-3559-40e0-b35e-94615041a741",
+            "op": "×",
+            "a": 5,
+            "b": 1,
+            "answer": 5
+          },
+          {
+            "questionId": "eb98be03-9349-4618-b28b-9e42a483aeb4",
+            "op": "×",
+            "a": 3,
+            "b": 7,
+            "answer": 21
+          },
+          {
+            "questionId": "6d932074-08d6-49de-a1b3-69db5245332e",
+            "op": "×",
+            "a": 11,
+            "b": 12,
+            "answer": 132
+          },
+          {
+            "questionId": "2910765f-e8c2-43bd-9305-72427d193d44",
+            "op": "×",
+            "a": 1,
+            "b": 7,
+            "answer": 7
+          },
+          {
+            "questionId": "b27db964-e220-4a5f-9f37-3e9d62d55fbf",
+            "op": "×",
+            "a": 3,
+            "b": 11,
+            "answer": 33
+          },
+          {
+            "questionId": "ace34c90-3277-4195-b317-197f1f28a0f4",
+            "op": "×",
+            "a": 4,
+            "b": 9,
+            "answer": 36
+          },
+          {
+            "questionId": "400c9c08-d233-420f-9f77-16f5666707ec",
+            "op": "×",
+            "a": 2,
+            "b": 8,
+            "answer": 16
+          },
+          {
+            "questionId": "d156ad54-b604-4894-aa07-216a2c2ca8c6",
+            "op": "×",
+            "a": 12,
+            "b": 10,
+            "answer": 120
+          },
+          {
+            "questionId": "79eccd62-8555-4c59-951a-935f91ed170d",
+            "op": "×",
+            "a": 6,
+            "b": 1,
+            "answer": 6
+          },
+          {
+            "questionId": "42d30c35-9c6d-44b4-8214-0ff9baf367da",
+            "op": "×",
+            "a": 5,
+            "b": 3,
+            "answer": 15
+          },
+          {
+            "questionId": "0937e6d1-057f-418c-b94a-0b5f6a017690",
+            "op": "×",
+            "a": 10,
+            "b": 12,
+            "answer": 120
+          },
+          {
+            "questionId": "5aa6a910-9bdd-43ab-b07f-50e4bfb4d64d",
+            "op": "×",
+            "a": 5,
+            "b": 5,
+            "answer": 25
+          },
+          {
+            "questionId": "c7c55289-ab45-4787-aca0-78b3b3f7f3c1",
+            "op": "×",
+            "a": 12,
+            "b": 1,
+            "answer": 12
+          },
+          {
+            "questionId": "40c6cf4f-4db7-4b76-ab50-b15ae9bfa36e",
+            "op": "×",
+            "a": 4,
+            "b": 11,
+            "answer": 44
+          },
+          {
+            "questionId": "79b33edd-4c98-445a-bcf1-fc2e42af230d",
+            "op": "×",
+            "a": 12,
+            "b": 3,
+            "answer": 36
+          },
+          {
+            "questionId": "da99f969-e6d7-450c-9369-d7d2f0d76ec2",
+            "op": "×",
+            "a": 10,
+            "b": 2,
+            "answer": 20
+          },
+          {
+            "questionId": "11837b20-f514-4ad6-bef7-9115157d12be",
+            "op": "×",
+            "a": 5,
+            "b": 12,
+            "answer": 60
+          },
+          {
+            "questionId": "bf0ca977-14b1-4837-b053-9eba9481031a",
+            "op": "×",
+            "a": 6,
+            "b": 9,
+            "answer": 54
+          },
+          {
+            "questionId": "b3a45d22-bb44-4616-a67e-987e98a3ee6c",
+            "op": "×",
+            "a": 2,
+            "b": 1,
+            "answer": 2
+          },
+          {
+            "questionId": "9ede75d2-a900-4eeb-ac31-64d4310ad47b",
+            "op": "×",
+            "a": 11,
+            "b": 10,
+            "answer": 110
+          },
+          {
+            "questionId": "107260df-540f-494e-b911-d5b1817620cf",
+            "op": "×",
+            "a": 8,
+            "b": 3,
+            "answer": 24
+          },
+          {
+            "questionId": "3d757ec7-d1c9-4b09-8eb9-2fe6b038d391",
+            "op": "×",
+            "a": 11,
+            "b": 11,
+            "answer": 121
+          },
+          {
+            "questionId": "6e9f9f6e-a677-455c-954b-230bdc6575ea",
+            "op": "×",
+            "a": 8,
+            "b": 5,
+            "answer": 40
+          },
+          {
+            "questionId": "81f15e2a-75ec-4f73-9731-a0814c7c1330",
+            "op": "×",
+            "a": 11,
+            "b": 1,
+            "answer": 11
+          },
+          {
+            "questionId": "495ea15f-da90-4d44-a235-0f58db48e11b",
+            "op": "×",
+            "a": 1,
+            "b": 1,
+            "answer": 1
+          },
+          {
+            "questionId": "fc058e61-6ca6-4bcd-82fb-f2ff7e841ed9",
+            "op": "×",
+            "a": 7,
+            "b": 4,
+            "answer": 28
+          },
+          {
+            "questionId": "08771611-f09e-4843-9e25-eba5d0badc59",
+            "op": "×",
+            "a": 9,
+            "b": 6,
+            "answer": 54
+          },
+          {
+            "questionId": "9ca9d7ce-7027-4077-a8cf-cb5e8e075092",
+            "op": "×",
+            "a": 1,
+            "b": 1,
+            "answer": 1
+          },
+          {
+            "questionId": "15460b86-aff1-40c8-bbe5-c9b8f27520c1",
+            "op": "×",
+            "a": 2,
+            "b": 3,
+            "answer": 6
+          },
+          {
+            "questionId": "93de6f6b-c646-4317-affb-b3c409c42395",
+            "op": "×",
+            "a": 8,
+            "b": 4,
+            "answer": 32
+          },
+          {
+            "questionId": "40383f7d-9c00-473d-99f8-872307a3be7c",
+            "op": "×",
+            "a": 8,
+            "b": 11,
+            "answer": 88
+          },
+          {
+            "questionId": "a0cae42d-ae14-494b-a9c8-8441e210659c",
+            "op": "×",
+            "a": 6,
+            "b": 4,
+            "answer": 24
+          },
+          {
+            "questionId": "2f163ee9-6b0c-4dfa-b7ed-31ca7003c446",
+            "op": "×",
+            "a": 7,
+            "b": 10,
+            "answer": 70
+          },
+          {
+            "questionId": "7149526a-b99d-49b1-a168-3d6315cc6a83",
+            "op": "×",
+            "a": 10,
+            "b": 2,
+            "answer": 20
+          },
+          {
+            "questionId": "4185ed79-0cf3-40af-b62b-58b467c6b218",
+            "op": "×",
+            "a": 7,
+            "b": 10,
+            "answer": 70
+          },
+          {
+            "questionId": "bfda6db6-c22b-46bf-8a88-fa840ea2f0a1",
+            "op": "×",
+            "a": 3,
+            "b": 8,
+            "answer": 24
+          },
+          {
+            "questionId": "f509125a-b3de-44ad-a6f5-a8b6096d8293",
+            "op": "×",
+            "a": 10,
+            "b": 8,
+            "answer": 80
+          },
+          {
+            "questionId": "9038cb54-89e4-4207-a0e8-49aa905b915a",
+            "op": "×",
+            "a": 7,
+            "b": 4,
+            "answer": 28
+          },
+          {
+            "questionId": "1b99d2f7-e631-429b-b7f0-cce91316f6f2",
+            "op": "×",
+            "a": 2,
+            "b": 2,
+            "answer": 4
+          },
+          {
+            "questionId": "883f1250-c8ec-4e8e-be3c-48ae615c8ebe",
+            "op": "×",
+            "a": 3,
+            "b": 6,
+            "answer": 18
+          }
+        ]
+      },
+      "configurationSnapshot": {
+        "version": 1,
+        "multiplier": 1,
+        "rewards": {
+          "aureos": 0,
+          "experience": 0,
+          "streak": {
+            "enabled": false,
+            "bonus": 0
+          },
+          "achievements": {}
+        },
+        "folio": "0013",
+        "title": "Cuarto grado",
+        "description": "",
+        "createdAt": "2026-09-24T17:00:26.775Z",
+        "grade": "4° Grado",
+        "opsConfig": {
+          "mult": {
+            "tables": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12
+            ],
+            "qty": 4,
+            "detailMode": false,
+            "manner": "random"
+          }
+        },
+        "timeLimit": 0,
+        "timePerQuestion": 10
+      },
+      "revision": 112,
+      "startedAt": "2026-09-24T17:01:03.312Z",
+      "updatedAt": "2026-09-24T17:25:23.269Z",
+      "finishedAt": "2026-09-24T17:25:23.269Z",
+      "origin": "live_exam",
+      "official": false,
+      "deletedAt": null
+    },
+    {
+      "attemptId": "905abbd5-ac92-400b-89c9-4fd3cede1073",
+      "testId": "5e1b93ce-7297-4c85-8c43-0dea90cfd5db",
+      "accountPlayerId": "4ba2be16-9e3a-547d-89b4-cbf8906c70af",
+      "parentAttemptId": null,
+      "status": "finished",
+      "progress": {
+        "studentSnapshot": {
+          "name": "Ariel",
+          "grade": "3° Grado"
+        },
+        "examStartedAt": 1790269322876,
+        "currentIndex": 40,
+        "totalQuestions": 40,
+        "correct": 34,
+        "incorrect": 6,
+        "timeout": 0,
+        "score": 6375,
+        "questions": [
+          {
+            "questionId": "14d8020a-7a23-4942-8fa8-e91b982b4464",
+            "op": "×",
+            "a": 4,
+            "b": 6,
+            "answer": 24
+          },
+          {
+            "questionId": "1db30f16-9c3f-4ef0-9acb-254bbf234e40",
+            "op": "×",
+            "a": 7,
+            "b": 3,
+            "answer": 21
+          },
+          {
+            "questionId": "fbcc43ca-cc68-4406-a877-32ac3529e363",
+            "op": "×",
+            "a": 9,
+            "b": 1,
+            "answer": 9
+          },
+          {
+            "questionId": "2f6c81ef-3052-4e74-ba80-1ece4de1dafa",
+            "op": "×",
+            "a": 6,
+            "b": 11,
+            "answer": 66
+          },
+          {
+            "questionId": "10800ea9-9458-4705-a830-797e35fd7071",
+            "op": "×",
+            "a": 3,
+            "b": 9,
+            "answer": 27
+          },
+          {
+            "questionId": "f6f2109a-2d2c-47ce-8ed5-7d28b2d32018",
+            "op": "×",
+            "a": 1,
+            "b": 2,
+            "answer": 2
+          },
+          {
+            "questionId": "12e96377-a9ba-4c37-89b8-0205fab47e05",
+            "op": "×",
+            "a": 3,
+            "b": 9,
+            "answer": 27
+          },
+          {
+            "questionId": "8da69159-ef80-432b-842b-c0ee78bb0a69",
+            "op": "×",
+            "a": 10,
+            "b": 11,
+            "answer": 110
+          },
+          {
+            "questionId": "886ec78b-24d4-4123-acad-ac819ecb6def",
+            "op": "×",
+            "a": 10,
+            "b": 4,
+            "answer": 40
+          },
+          {
+            "questionId": "5fed1624-6e4d-4ce0-982b-01fd29bf0416",
+            "op": "×",
+            "a": 5,
+            "b": 5,
+            "answer": 25
+          },
+          {
+            "questionId": "3bcee50b-1d7f-471e-b75b-c17fc7557fca",
+            "op": "×",
+            "a": 8,
+            "b": 7,
+            "answer": 56
+          },
+          {
+            "questionId": "194e547f-6a7a-49b3-b1a3-43e931ccb128",
+            "op": "×",
+            "a": 2,
+            "b": 7,
+            "answer": 14
+          },
+          {
+            "questionId": "5d23da89-722c-488c-ad85-54fa9d068539",
+            "op": "×",
+            "a": 6,
+            "b": 9,
+            "answer": 54
+          },
+          {
+            "questionId": "301e3af4-d8ae-4f35-9845-07b5bca9e4a4",
+            "op": "×",
+            "a": 6,
+            "b": 9,
+            "answer": 54
+          },
+          {
+            "questionId": "ecf193ed-41f9-4aa4-a044-4dd9f462a04d",
+            "op": "×",
+            "a": 1,
+            "b": 2,
+            "answer": 2
+          },
+          {
+            "questionId": "22a8cdfd-be8c-41ef-8373-991b19684459",
+            "op": "×",
+            "a": 5,
+            "b": 4,
+            "answer": 20
+          },
+          {
+            "questionId": "c45f7077-684a-4cc1-9597-2ae8c29e0637",
+            "op": "×",
+            "a": 10,
+            "b": 5,
+            "answer": 50
+          },
+          {
+            "questionId": "344d1409-1b66-4870-9d96-b09f5eb8934c",
+            "op": "×",
+            "a": 1,
+            "b": 9,
+            "answer": 9
+          },
+          {
+            "questionId": "2f7f425f-b5c0-437a-8a4e-b7b4670aeacc",
+            "op": "×",
+            "a": 6,
+            "b": 8,
+            "answer": 48
+          },
+          {
+            "questionId": "0dd6626c-cb51-4a98-acdb-2124c7b1a88f",
+            "op": "×",
+            "a": 2,
+            "b": 8,
+            "answer": 16
+          },
+          {
+            "questionId": "d8806566-afb6-4012-97cb-2255e11115ef",
+            "op": "×",
+            "a": 1,
+            "b": 10,
+            "answer": 10
+          },
+          {
+            "questionId": "3bb5846d-8eeb-41b3-a4aa-8b2b6de44dd6",
+            "op": "×",
+            "a": 4,
+            "b": 8,
+            "answer": 32
+          },
+          {
+            "questionId": "642e3417-150e-4d04-afdf-9700e6e64a02",
+            "op": "×",
+            "a": 4,
+            "b": 12,
+            "answer": 48
+          },
+          {
+            "questionId": "a4b1be26-41aa-4ab6-8a29-cbb7a91a4f35",
+            "op": "×",
+            "a": 9,
+            "b": 9,
+            "answer": 81
+          },
+          {
+            "questionId": "7c6ef5e6-d93c-4479-adf8-e2deccaecf62",
+            "op": "×",
+            "a": 2,
+            "b": 7,
+            "answer": 14
+          },
+          {
+            "questionId": "97d1a6b8-adcd-46df-a6fd-3f8c4423f281",
+            "op": "×",
+            "a": 3,
+            "b": 10,
+            "answer": 30
+          },
+          {
+            "questionId": "13673dcf-cdd9-4593-901e-c9c234f64f4d",
+            "op": "×",
+            "a": 2,
+            "b": 3,
+            "answer": 6
+          },
+          {
+            "questionId": "0c9f43a1-d79f-4b0a-b307-bb5dd1862115",
+            "op": "×",
+            "a": 5,
+            "b": 6,
+            "answer": 30
+          },
+          {
+            "questionId": "a48f34b0-c88f-4f2c-b6a4-4e36f9183fda",
+            "op": "×",
+            "a": 7,
+            "b": 1,
+            "answer": 7
+          },
+          {
+            "questionId": "3980a2af-dbb7-427a-8891-6bcf1c33de1e",
+            "op": "×",
+            "a": 8,
+            "b": 4,
+            "answer": 32
+          },
+          {
+            "questionId": "3c6960c7-fe5e-4be8-b422-9cbc32600ffa",
+            "op": "×",
+            "a": 9,
+            "b": 11,
+            "answer": 99
+          },
+          {
+            "questionId": "a39e82ae-4352-4a48-a390-c08d6d5a26c7",
+            "op": "×",
+            "a": 9,
+            "b": 11,
+            "answer": 99
+          },
+          {
+            "questionId": "67713229-2256-4a37-989b-41eefaf67a87",
+            "op": "×",
+            "a": 7,
+            "b": 7,
+            "answer": 49
+          },
+          {
+            "questionId": "dc8e7587-e8c2-4fc4-8776-6892456045af",
+            "op": "×",
+            "a": 8,
+            "b": 5,
+            "answer": 40
+          },
+          {
+            "questionId": "2c4d99ee-9e59-4978-b5d1-2397c1458c2f",
+            "op": "×",
+            "a": 4,
+            "b": 6,
+            "answer": 24
+          },
+          {
+            "questionId": "dc5984f7-1306-4407-9386-068208f2c5f0",
+            "op": "×",
+            "a": 7,
+            "b": 6,
+            "answer": 42
+          },
+          {
+            "questionId": "32ac4a34-35a7-4f70-a062-6c3c54d4b1db",
+            "op": "×",
+            "a": 10,
+            "b": 7,
+            "answer": 70
+          },
+          {
+            "questionId": "525c4af6-b06b-41a4-8d70-b8fd70e59f77",
+            "op": "×",
+            "a": 8,
+            "b": 8,
+            "answer": 64
+          },
+          {
+            "questionId": "21ca51be-e545-4c81-97e8-035a1c283c3e",
+            "op": "×",
+            "a": 5,
+            "b": 12,
+            "answer": 60
+          },
+          {
+            "questionId": "8ef82d8d-ed6e-4077-8753-1f03448967ac",
+            "op": "×",
+            "a": 3,
+            "b": 12,
+            "answer": 36
+          }
+        ]
+      },
+      "configurationSnapshot": {
+        "version": 1,
+        "multiplier": 1,
+        "rewards": {
+          "aureos": 0,
+          "experience": 0,
+          "streak": {
+            "enabled": false,
+            "bonus": 0
+          },
+          "achievements": {}
+        },
+        "folio": "0014",
+        "title": "Tercer grado",
+        "description": "",
+        "createdAt": "2026-09-24T17:01:31.569Z",
+        "grade": "3° Grado",
+        "opsConfig": {
+          "mult": {
+            "tables": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10
+            ],
+            "qty": 4,
+            "detailMode": false,
+            "manner": "random"
+          }
+        },
+        "timeLimit": 0,
+        "timePerQuestion": 10
+      },
+      "revision": 99,
+      "startedAt": "2026-09-24T17:02:02.876Z",
+      "updatedAt": "2026-09-24T17:25:50.936Z",
+      "finishedAt": "2026-09-24T17:25:50.936Z",
+      "origin": "live_exam",
+      "official": false,
+      "deletedAt": null
+    },
+    {
+      "attemptId": "2df48578-bb44-468f-ba9d-738af533c4e3",
+      "testId": "26afd10c-de2d-4d0f-a767-5932afabd312",
+      "accountPlayerId": "9ea78f33-950f-4d1c-82a4-f60ca07707fc",
+      "parentAttemptId": null,
+      "status": "finished",
+      "progress": {
+        "studentSnapshot": {
+          "name": "Santiago",
+          "grade": "4° Grado"
+        },
+        "examStartedAt": 1790269263312,
+        "currentIndex": 48,
+        "totalQuestions": 48,
+        "correct": 30,
+        "incorrect": 18,
+        "timeout": 0,
+        "score": 4680,
+        "questions": [
+          {
+            "questionId": "19cf241f-1915-414d-a900-e5b72a53b495",
+            "op": "×",
+            "a": 9,
+            "b": 5,
+            "answer": 45
+          },
+          {
+            "questionId": "2d238379-7697-4ef6-96c6-7a93a2b18633",
+            "op": "×",
+            "a": 8,
+            "b": 6,
+            "answer": 48
+          },
+          {
+            "questionId": "e2829951-8a77-4065-a8d8-a2a57b27ecf8",
+            "op": "×",
+            "a": 1,
+            "b": 1,
+            "answer": 1
+          },
+          {
+            "questionId": "dc18c884-a3c6-416a-8d58-6897cbf86207",
+            "op": "×",
+            "a": 1,
+            "b": 1,
+            "answer": 1
+          },
+          {
+            "questionId": "75af08ae-d09c-4cc8-9d29-52d4f9cc2c47",
+            "op": "×",
+            "a": 5,
+            "b": 8,
+            "answer": 40
+          },
+          {
+            "questionId": "d1bb7cc7-db76-4344-8417-0883d5bd1148",
+            "op": "×",
+            "a": 2,
+            "b": 5,
+            "answer": 10
+          },
+          {
+            "questionId": "99fe4235-8c63-48fd-b7ad-52c4ca9361c2",
+            "op": "×",
+            "a": 9,
+            "b": 2,
+            "answer": 18
+          },
+          {
+            "questionId": "b64388c0-9e4b-46c7-8b75-0763e1ab8f2b",
+            "op": "×",
+            "a": 10,
+            "b": 5,
+            "answer": 50
+          },
+          {
+            "questionId": "eb82f882-811c-47d7-86c9-4d9f4f99a847",
+            "op": "×",
+            "a": 4,
+            "b": 3,
+            "answer": 12
+          },
+          {
+            "questionId": "ba9e9203-7e13-4bf2-8b85-f1808a075f92",
+            "op": "×",
+            "a": 5,
+            "b": 12,
+            "answer": 60
+          },
+          {
+            "questionId": "57208522-1375-48f4-bbba-4544cc277ddc",
+            "op": "×",
+            "a": 4,
+            "b": 4,
+            "answer": 16
+          },
+          {
+            "questionId": "0a9f9b0d-f526-40fd-950e-05739016f588",
+            "op": "×",
+            "a": 2,
+            "b": 4,
+            "answer": 8
+          },
+          {
+            "questionId": "56ffe718-f469-4968-a5d1-1e14e97d8632",
+            "op": "×",
+            "a": 9,
+            "b": 11,
+            "answer": 99
+          },
+          {
+            "questionId": "9478071e-0e46-4c63-8cbb-929acbe962a0",
+            "op": "×",
+            "a": 4,
+            "b": 10,
+            "answer": 40
+          },
+          {
+            "questionId": "3eadc31d-7f22-4bb4-b170-8b63416dc68c",
+            "op": "×",
+            "a": 6,
+            "b": 4,
+            "answer": 24
+          },
+          {
+            "questionId": "98475a38-7547-496c-8790-983fc4d5b35b",
+            "op": "×",
+            "a": 7,
+            "b": 8,
+            "answer": 56
+          },
+          {
+            "questionId": "50103b60-ad0c-41ea-b91f-47d9bdaa2762",
+            "op": "×",
+            "a": 7,
+            "b": 8,
+            "answer": 56
+          },
+          {
+            "questionId": "d9b8154e-d4b3-42ee-8137-5ad7cc76219b",
+            "op": "×",
+            "a": 4,
+            "b": 10,
+            "answer": 40
+          },
+          {
+            "questionId": "0a5ecd47-a196-4490-ba87-022f620610f0",
+            "op": "×",
+            "a": 1,
+            "b": 8,
+            "answer": 8
+          },
+          {
+            "questionId": "e1fb198e-e297-4a98-91e8-299fcfaf5c01",
+            "op": "×",
+            "a": 8,
+            "b": 2,
+            "answer": 16
+          },
+          {
+            "questionId": "428638e0-f371-43d6-a65a-8fafc9f7dc6b",
+            "op": "×",
+            "a": 7,
+            "b": 9,
+            "answer": 63
+          },
+          {
+            "questionId": "262e4383-3877-4618-a47c-00d52550003f",
+            "op": "×",
+            "a": 5,
+            "b": 4,
+            "answer": 20
+          },
+          {
+            "questionId": "c01f8f57-6ebb-4b85-bd5d-b050c13cf068",
+            "op": "×",
+            "a": 11,
+            "b": 1,
+            "answer": 11
+          },
+          {
+            "questionId": "02b347ab-9647-417f-9fb0-9cac126d7766",
+            "op": "×",
+            "a": 3,
+            "b": 10,
+            "answer": 30
+          },
+          {
+            "questionId": "620911c3-0b9a-4032-bc9f-05dbdef3d1d4",
+            "op": "×",
+            "a": 7,
+            "b": 4,
+            "answer": 28
+          },
+          {
+            "questionId": "e36628a3-b754-40d3-8e50-d7027039ddeb",
+            "op": "×",
+            "a": 6,
+            "b": 8,
+            "answer": 48
+          },
+          {
+            "questionId": "f50bffd4-40ed-409a-b615-3164904cbef1",
+            "op": "×",
+            "a": 3,
+            "b": 7,
+            "answer": 21
+          },
+          {
+            "questionId": "1ef96505-0296-4fd4-852a-6574bc1a6143",
+            "op": "×",
+            "a": 12,
+            "b": 1,
+            "answer": 12
+          },
+          {
+            "questionId": "9d3b02a4-8599-4265-a10d-4ccff1a9d88d",
+            "op": "×",
+            "a": 10,
+            "b": 11,
+            "answer": 110
+          },
+          {
+            "questionId": "dac65895-da9a-4db1-912d-41e59bc798f1",
+            "op": "×",
+            "a": 6,
+            "b": 8,
+            "answer": 48
+          },
+          {
+            "questionId": "7c86885c-5338-4637-8e3f-7b8ab65be166",
+            "op": "×",
+            "a": 2,
+            "b": 10,
+            "answer": 20
+          },
+          {
+            "questionId": "1b0f533d-f35c-44ac-b87e-cc3ceea51eb7",
+            "op": "×",
+            "a": 3,
+            "b": 4,
+            "answer": 12
+          },
+          {
+            "questionId": "0948e4d5-ad7d-44a1-803d-6f7368fb1c6b",
+            "op": "×",
+            "a": 10,
+            "b": 7,
+            "answer": 70
+          },
+          {
+            "questionId": "497089d2-9053-488b-8b14-a2da97705cfc",
+            "op": "×",
+            "a": 11,
+            "b": 10,
+            "answer": 110
+          },
+          {
+            "questionId": "0fa71b2f-a801-4d1e-9d8c-739663dbe176",
+            "op": "×",
+            "a": 5,
+            "b": 10,
+            "answer": 50
+          },
+          {
+            "questionId": "f70baf63-b2dc-4ca7-95bb-8ab4d06b2510",
+            "op": "×",
+            "a": 10,
+            "b": 6,
+            "answer": 60
+          },
+          {
+            "questionId": "8dfd0a43-1de2-44e6-a000-1311647d9719",
+            "op": "×",
+            "a": 12,
+            "b": 12,
+            "answer": 144
+          },
+          {
+            "questionId": "4286f2b0-de14-4079-abbd-a462a15ef8bc",
+            "op": "×",
+            "a": 11,
+            "b": 12,
+            "answer": 132
+          },
+          {
+            "questionId": "3ca5ae5e-7cec-48d8-a19b-f4d1aeea6586",
+            "op": "×",
+            "a": 11,
+            "b": 10,
+            "answer": 110
+          },
+          {
+            "questionId": "fbfe6215-7e0d-4158-9c96-010eb65046d1",
+            "op": "×",
+            "a": 8,
+            "b": 10,
+            "answer": 80
+          },
+          {
+            "questionId": "1ffa3ce8-74a3-4b22-a8f5-96f44afe8f11",
+            "op": "×",
+            "a": 12,
+            "b": 9,
+            "answer": 108
+          },
+          {
+            "questionId": "7414e144-a47c-4cc4-829c-b5799de1c2f2",
+            "op": "×",
+            "a": 9,
+            "b": 5,
+            "answer": 45
+          },
+          {
+            "questionId": "d24d941e-397d-4987-8fa5-e5b4a1597987",
+            "op": "×",
+            "a": 2,
+            "b": 7,
+            "answer": 14
+          },
+          {
+            "questionId": "eca6bb27-c705-4aa1-bb68-7cedbb5f59a0",
+            "op": "×",
+            "a": 12,
+            "b": 1,
+            "answer": 12
+          },
+          {
+            "questionId": "70a31574-b284-4ff2-93c0-ea076a996898",
+            "op": "×",
+            "a": 1,
+            "b": 1,
+            "answer": 1
+          },
+          {
+            "questionId": "c03b0d29-3e97-44ab-82de-830374d4ce6a",
+            "op": "×",
+            "a": 3,
+            "b": 10,
+            "answer": 30
+          },
+          {
+            "questionId": "5b9759bc-3d12-4a7d-90d5-014e39c8c435",
+            "op": "×",
+            "a": 8,
+            "b": 6,
+            "answer": 48
+          },
+          {
+            "questionId": "c1968129-1123-4d0e-8180-4a80286ff449",
+            "op": "×",
+            "a": 6,
+            "b": 5,
+            "answer": 30
+          }
+        ]
+      },
+      "configurationSnapshot": {
+        "version": 1,
+        "multiplier": 1,
+        "rewards": {
+          "aureos": 0,
+          "experience": 0,
+          "streak": {
+            "enabled": false,
+            "bonus": 0
+          },
+          "achievements": {}
+        },
+        "folio": "0013",
+        "title": "Cuarto grado",
+        "description": "",
+        "createdAt": "2026-09-24T17:00:26.775Z",
+        "grade": "4° Grado",
+        "opsConfig": {
+          "mult": {
+            "tables": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12
+            ],
+            "qty": 4,
+            "detailMode": false,
+            "manner": "random"
+          }
+        },
+        "timeLimit": 0,
+        "timePerQuestion": 10
+      },
+      "revision": 93,
+      "startedAt": "2026-09-24T17:01:03.312Z",
+      "updatedAt": "2026-09-24T17:29:10.635Z",
+      "finishedAt": "2026-09-24T17:29:10.635Z",
+      "origin": "live_exam",
+      "official": false,
+      "deletedAt": null
+    },
+    {
+      "attemptId": "820e21a5-ad6a-4c78-8ecc-813ba8d248ff",
+      "testId": "26afd10c-de2d-4d0f-a767-5932afabd312",
+      "accountPlayerId": "b64af2a1-c558-41ab-ad00-59f4ea4d7061",
+      "parentAttemptId": null,
+      "status": "finished",
+      "progress": {
+        "studentSnapshot": {
+          "name": "Yuli",
+          "grade": "4° Grado"
+        },
+        "examStartedAt": 1790269263312,
+        "currentIndex": 48,
+        "totalQuestions": 48,
+        "correct": 48,
+        "incorrect": 0,
+        "timeout": 0,
+        "score": 14655,
+        "questions": [
+          {
+            "questionId": "e29a9f4a-439f-44ed-9212-fbeba13b8296",
+            "op": "×",
+            "a": 9,
+            "b": 8,
+            "answer": 72
+          },
+          {
+            "questionId": "4f128b74-f3d7-435b-8e33-940854ebdb8c",
+            "op": "×",
+            "a": 5,
+            "b": 9,
+            "answer": 45
+          },
+          {
+            "questionId": "f5df78e3-3230-4a18-aede-66409e238c7a",
+            "op": "×",
+            "a": 4,
+            "b": 7,
+            "answer": 28
+          },
+          {
+            "questionId": "e02e5b15-655d-4320-a5a4-d2ed7e38af49",
+            "op": "×",
+            "a": 6,
+            "b": 9,
+            "answer": 54
+          },
+          {
+            "questionId": "f14a54cf-b792-41ed-b257-f527125d06bf",
+            "op": "×",
+            "a": 12,
+            "b": 10,
+            "answer": 120
+          },
+          {
+            "questionId": "84f1f9df-d0d2-4f9e-8eb6-a9da2fc6df04",
+            "op": "×",
+            "a": 2,
+            "b": 5,
+            "answer": 10
+          },
+          {
+            "questionId": "69dca6e0-3a9c-4651-8ddd-af410c87ba52",
+            "op": "×",
+            "a": 8,
+            "b": 7,
+            "answer": 56
+          },
+          {
+            "questionId": "81b304a0-976c-4d01-8565-dc3ff0193887",
+            "op": "×",
+            "a": 9,
+            "b": 8,
+            "answer": 72
+          },
+          {
+            "questionId": "92987908-8f9c-4afa-9fbf-1bae0cb41868",
+            "op": "×",
+            "a": 7,
+            "b": 10,
+            "answer": 70
+          },
+          {
+            "questionId": "a5b9a583-4063-43a4-a71c-0a0b103d874c",
+            "op": "×",
+            "a": 7,
+            "b": 4,
+            "answer": 28
+          },
+          {
+            "questionId": "3ad8d391-0f61-4d00-a3f1-58458d469122",
+            "op": "×",
+            "a": 5,
+            "b": 2,
+            "answer": 10
+          },
+          {
+            "questionId": "ebbd4610-e98e-4937-82f5-821014da2128",
+            "op": "×",
+            "a": 2,
+            "b": 9,
+            "answer": 18
+          },
+          {
+            "questionId": "4e2c87a6-9436-4b19-9c7a-9b8015f7648a",
+            "op": "×",
+            "a": 6,
+            "b": 6,
+            "answer": 36
+          },
+          {
+            "questionId": "4d093ff5-2a1f-496f-9828-685f40773bef",
+            "op": "×",
+            "a": 1,
+            "b": 6,
+            "answer": 6
+          },
+          {
+            "questionId": "0ddb9ef3-180f-4302-a21c-b81805478e2d",
+            "op": "×",
+            "a": 3,
+            "b": 2,
+            "answer": 6
+          },
+          {
+            "questionId": "620e6249-05d9-462c-8d72-c4f685812d10",
+            "op": "×",
+            "a": 4,
+            "b": 2,
+            "answer": 8
+          },
+          {
+            "questionId": "f2d484ad-42a6-4aa7-8445-a3a0d5f71824",
+            "op": "×",
+            "a": 6,
+            "b": 7,
+            "answer": 42
+          },
+          {
+            "questionId": "387a3870-1e39-41a2-9d35-1b16c3409b4a",
+            "op": "×",
+            "a": 6,
+            "b": 6,
+            "answer": 36
+          },
+          {
+            "questionId": "899e362a-ded8-4def-aca8-7b3c8c3481b1",
+            "op": "×",
+            "a": 12,
+            "b": 12,
+            "answer": 144
+          },
+          {
+            "questionId": "140a222d-7e1d-4286-9c02-0a193622d4de",
+            "op": "×",
+            "a": 2,
+            "b": 10,
+            "answer": 20
+          },
+          {
+            "questionId": "a9c006c7-45ab-4fe6-b671-d95a31d138d8",
+            "op": "×",
+            "a": 8,
+            "b": 10,
+            "answer": 80
+          },
+          {
+            "questionId": "639fee84-145d-492d-960c-b02a53ca940f",
+            "op": "×",
+            "a": 9,
+            "b": 12,
+            "answer": 108
+          },
+          {
+            "questionId": "6ddf0cda-697f-4f22-b3e5-402040cf5d50",
+            "op": "×",
+            "a": 1,
+            "b": 1,
+            "answer": 1
+          },
+          {
+            "questionId": "2e48d204-35f2-456a-8573-1c26eed7952d",
+            "op": "×",
+            "a": 10,
+            "b": 1,
+            "answer": 10
+          },
+          {
+            "questionId": "700e2e8d-cd97-4ee5-9f7a-67ebc695200f",
+            "op": "×",
+            "a": 8,
+            "b": 4,
+            "answer": 32
+          },
+          {
+            "questionId": "faef6682-22d9-42b2-a5fc-0adf123f2932",
+            "op": "×",
+            "a": 11,
+            "b": 9,
+            "answer": 99
+          },
+          {
+            "questionId": "feaba59a-9930-4d12-b069-81eeccf33ec1",
+            "op": "×",
+            "a": 11,
+            "b": 9,
+            "answer": 99
+          },
+          {
+            "questionId": "58eda2b0-e00a-41dc-bca6-275a5a1a4178",
+            "op": "×",
+            "a": 12,
+            "b": 3,
+            "answer": 36
+          },
+          {
+            "questionId": "da97e7db-3b66-42db-b3d5-1beade7b338b",
+            "op": "×",
+            "a": 10,
+            "b": 12,
+            "answer": 120
+          },
+          {
+            "questionId": "5b883399-0d2b-46fb-8eb8-37cc4aec9f28",
+            "op": "×",
+            "a": 12,
+            "b": 7,
+            "answer": 84
+          },
+          {
+            "questionId": "0c0ec708-ea09-4280-a34d-3b66a265a8ca",
+            "op": "×",
+            "a": 3,
+            "b": 11,
+            "answer": 33
+          },
+          {
+            "questionId": "8d8c2125-ca15-496c-b53d-d264ba7e1f2a",
+            "op": "×",
+            "a": 11,
+            "b": 3,
+            "answer": 33
+          },
+          {
+            "questionId": "9f96f29a-1f1f-458a-9bf8-74c690b656f6",
+            "op": "×",
+            "a": 1,
+            "b": 2,
+            "answer": 2
+          },
+          {
+            "questionId": "278b9b9f-fdba-4a8a-88ac-d79b17377a8f",
+            "op": "×",
+            "a": 7,
+            "b": 1,
+            "answer": 7
+          },
+          {
+            "questionId": "f950b42c-8ee9-47d7-9cf3-a6a4115b1f6c",
+            "op": "×",
+            "a": 5,
+            "b": 8,
+            "answer": 40
+          },
+          {
+            "questionId": "a96a34b4-213c-4069-8450-061cccf00cdd",
+            "op": "×",
+            "a": 4,
+            "b": 2,
+            "answer": 8
+          },
+          {
+            "questionId": "b49a23ff-0334-4908-93b4-0c093bbce731",
+            "op": "×",
+            "a": 8,
+            "b": 9,
+            "answer": 72
+          },
+          {
+            "questionId": "89ea3d09-05c3-4208-999a-0f7760dcc3ac",
+            "op": "×",
+            "a": 9,
+            "b": 3,
+            "answer": 27
+          },
+          {
+            "questionId": "d077951b-7223-4132-a139-dbeef07668ed",
+            "op": "×",
+            "a": 5,
+            "b": 8,
+            "answer": 40
+          },
+          {
+            "questionId": "ec471db5-2557-4696-a839-e4f500726e3f",
+            "op": "×",
+            "a": 3,
+            "b": 2,
+            "answer": 6
+          },
+          {
+            "questionId": "aacef119-8de8-4e87-bb4d-b7e5e2e6a80c",
+            "op": "×",
+            "a": 2,
+            "b": 3,
+            "answer": 6
+          },
+          {
+            "questionId": "8dee835b-8ac0-4480-a4bd-cb11d1b274ad",
+            "op": "×",
+            "a": 7,
+            "b": 6,
+            "answer": 42
+          },
+          {
+            "questionId": "33c933bd-4726-412d-8b1b-f6615853e81c",
+            "op": "×",
+            "a": 10,
+            "b": 8,
+            "answer": 80
+          },
+          {
+            "questionId": "eb305904-6f7f-4d7e-a9bf-0cecfe4e429a",
+            "op": "×",
+            "a": 1,
+            "b": 6,
+            "answer": 6
+          },
+          {
+            "questionId": "71040ef2-5638-429a-956f-32bfeacc1333",
+            "op": "×",
+            "a": 11,
+            "b": 12,
+            "answer": 132
+          },
+          {
+            "questionId": "58121b63-6831-4727-afc1-c7b993e222af",
+            "op": "×",
+            "a": 10,
+            "b": 5,
+            "answer": 50
+          },
+          {
+            "questionId": "58be6b9b-6f34-4672-a3bf-dc2c49636d10",
+            "op": "×",
+            "a": 4,
+            "b": 10,
+            "answer": 40
+          },
+          {
+            "questionId": "15d1526a-3422-46a5-851f-63f251ec87f8",
+            "op": "×",
+            "a": 3,
+            "b": 7,
+            "answer": 21
+          }
+        ]
+      },
+      "configurationSnapshot": {
+        "version": 1,
+        "multiplier": 1,
+        "rewards": {
+          "aureos": 0,
+          "experience": 0,
+          "streak": {
+            "enabled": false,
+            "bonus": 0
+          },
+          "achievements": {}
+        },
+        "folio": "0013",
+        "title": "Cuarto grado",
+        "description": "",
+        "createdAt": "2026-09-24T17:00:26.775Z",
+        "grade": "4° Grado",
+        "opsConfig": {
+          "mult": {
+            "tables": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12
+            ],
+            "qty": 4,
+            "detailMode": false,
+            "manner": "random"
+          }
+        },
+        "timeLimit": 0,
+        "timePerQuestion": 10
+      },
+      "revision": 113,
+      "startedAt": "2026-09-24T17:01:03.312Z",
+      "updatedAt": "2026-09-24T17:31:06.428Z",
+      "finishedAt": "2026-09-24T17:31:06.428Z",
+      "origin": "live_exam",
+      "official": false,
+      "deletedAt": null
     }
   ],
   "checkpoints": [],
@@ -7265,6 +13088,234 @@
         "multiplier": 1
       },
       "completedAt": "2026-09-23T16:40:25.182Z",
+      "rankingPublicationId": null,
+      "settlementKey": null
+    },
+    {
+      "resultId": "6d17d181-a237-4578-bee3-cdcdb437b420",
+      "attemptId": "292293f6-6bca-42f0-8794-9b1fe73778e2",
+      "testId": "5e1b93ce-7297-4c85-8c43-0dea90cfd5db",
+      "accountPlayerId": "5fcc4b25-5798-56c0-bf5c-221b623860d2",
+      "score": 3640,
+      "correct": 26,
+      "incorrect": 14,
+      "timeout": 0,
+      "total": 40,
+      "complete": true,
+      "duration": 219693,
+      "breakdown": {
+        "multiplier": 1
+      },
+      "completedAt": "2026-09-24T17:05:42.854Z",
+      "rankingPublicationId": null,
+      "settlementKey": null
+    },
+    {
+      "resultId": "a22b224d-fc28-42af-a9f6-4d4a69b75af2",
+      "attemptId": "c1b4a361-4916-416c-b522-2bb171ff1555",
+      "testId": "26afd10c-de2d-4d0f-a767-5932afabd312",
+      "accountPlayerId": "450c3187-fd46-5aff-a9a8-c4dfa3929438",
+      "score": 3585,
+      "correct": 30,
+      "incorrect": 18,
+      "timeout": 0,
+      "total": 48,
+      "complete": true,
+      "duration": 376813,
+      "breakdown": {
+        "multiplier": 1
+      },
+      "completedAt": "2026-09-24T17:07:32.272Z",
+      "rankingPublicationId": null,
+      "settlementKey": null
+    },
+    {
+      "resultId": "a27104cc-989a-4eff-9a52-7c265a2015e1",
+      "attemptId": "3e0fbea7-d05c-4ce3-b1e8-2edf64d6f719",
+      "testId": "5e1b93ce-7297-4c85-8c43-0dea90cfd5db",
+      "accountPlayerId": "5ceefd1b-4db5-5fc0-9ba0-63fae6f55180",
+      "score": 2365,
+      "correct": 22,
+      "incorrect": 17,
+      "timeout": 1,
+      "total": 40,
+      "complete": true,
+      "duration": 518589,
+      "breakdown": {
+        "multiplier": 1
+      },
+      "completedAt": "2026-09-24T17:10:41.731Z",
+      "rankingPublicationId": null,
+      "settlementKey": null
+    },
+    {
+      "resultId": "12357cfc-a419-4921-ad61-05d05ea8d3e3",
+      "attemptId": "e1789895-2fde-4de4-bec4-c871425bf501",
+      "testId": "26afd10c-de2d-4d0f-a767-5932afabd312",
+      "accountPlayerId": "bf5e9dee-f04f-47c4-a281-deb291117e9d",
+      "score": 14290,
+      "correct": 47,
+      "incorrect": 1,
+      "timeout": 0,
+      "total": 48,
+      "complete": true,
+      "duration": 625677,
+      "breakdown": {
+        "multiplier": 1
+      },
+      "completedAt": "2026-09-24T17:11:41.220Z",
+      "rankingPublicationId": null,
+      "settlementKey": null
+    },
+    {
+      "resultId": "ceca3d7d-785a-41c0-9782-81a3c37e8c20",
+      "attemptId": "d350d41a-b5b8-4cf4-9a7c-ab4fd586dde4",
+      "testId": "26afd10c-de2d-4d0f-a767-5932afabd312",
+      "accountPlayerId": "4afaf2a0-1e0a-5a2e-abf8-c22cda9b5b2e",
+      "score": 13435,
+      "correct": 46,
+      "incorrect": 2,
+      "timeout": 0,
+      "total": 48,
+      "complete": true,
+      "duration": 834170,
+      "breakdown": {
+        "multiplier": 1
+      },
+      "completedAt": "2026-09-24T17:15:09.707Z",
+      "rankingPublicationId": null,
+      "settlementKey": null
+    },
+    {
+      "resultId": "3555b576-4af1-48cc-8f65-cd42f49eec34",
+      "attemptId": "ee456259-d253-4c04-bbc1-9c2a8a9d9c61",
+      "testId": "5e1b93ce-7297-4c85-8c43-0dea90cfd5db",
+      "accountPlayerId": "9cff755e-1282-5d11-883c-fdb79ce56801",
+      "score": 4895,
+      "correct": 34,
+      "incorrect": 6,
+      "timeout": 0,
+      "total": 40,
+      "complete": true,
+      "duration": 907444,
+      "breakdown": {
+        "multiplier": 1
+      },
+      "completedAt": "2026-09-24T17:17:10.641Z",
+      "rankingPublicationId": null,
+      "settlementKey": null
+    },
+    {
+      "resultId": "ab40f88f-a0ea-4731-b83e-518042ee9f07",
+      "attemptId": "355cf9b1-a69a-4254-ab5f-89c5f16a3306",
+      "testId": "26afd10c-de2d-4d0f-a767-5932afabd312",
+      "accountPlayerId": "7d3a51eb-2565-5304-8e9a-106653ba5af1",
+      "score": 4475,
+      "correct": 35,
+      "incorrect": 13,
+      "timeout": 0,
+      "total": 48,
+      "complete": true,
+      "duration": 1123602,
+      "breakdown": {
+        "multiplier": 1
+      },
+      "completedAt": "2026-09-24T17:19:59.087Z",
+      "rankingPublicationId": null,
+      "settlementKey": null
+    },
+    {
+      "resultId": "71798943-a3db-483b-a46a-c9bd07b86941",
+      "attemptId": "e631103e-88f2-45ec-9430-4852889dafa9",
+      "testId": "5e1b93ce-7297-4c85-8c43-0dea90cfd5db",
+      "accountPlayerId": "49d3ece2-8d1a-5899-99ac-8cee5ea802a7",
+      "score": 2495,
+      "correct": 19,
+      "incorrect": 21,
+      "timeout": 0,
+      "total": 40,
+      "complete": true,
+      "duration": 1152732,
+      "breakdown": {
+        "multiplier": 1
+      },
+      "completedAt": "2026-09-24T17:21:15.897Z",
+      "rankingPublicationId": null,
+      "settlementKey": null
+    },
+    {
+      "resultId": "48d60650-cf28-4f00-8d2d-e0773e023828",
+      "attemptId": "1e478db4-8fa5-4c48-9525-258b62dd70a4",
+      "testId": "26afd10c-de2d-4d0f-a767-5932afabd312",
+      "accountPlayerId": "142a67f0-e4ba-512f-b55d-86c2b18a9488",
+      "score": 10955,
+      "correct": 44,
+      "incorrect": 4,
+      "timeout": 0,
+      "total": 48,
+      "complete": true,
+      "duration": 1447752,
+      "breakdown": {
+        "multiplier": 1
+      },
+      "completedAt": "2026-09-24T17:25:23.270Z",
+      "rankingPublicationId": null,
+      "settlementKey": null
+    },
+    {
+      "resultId": "a3665222-e6d8-4491-a800-8faf84630886",
+      "attemptId": "905abbd5-ac92-400b-89c9-4fd3cede1073",
+      "testId": "5e1b93ce-7297-4c85-8c43-0dea90cfd5db",
+      "accountPlayerId": "4ba2be16-9e3a-547d-89b4-cbf8906c70af",
+      "score": 6375,
+      "correct": 34,
+      "incorrect": 6,
+      "timeout": 0,
+      "total": 40,
+      "complete": true,
+      "duration": 1427732,
+      "breakdown": {
+        "multiplier": 1
+      },
+      "completedAt": "2026-09-24T17:25:50.936Z",
+      "rankingPublicationId": null,
+      "settlementKey": null
+    },
+    {
+      "resultId": "e7c96c7c-40f6-40bb-b2c3-55e2671b69f1",
+      "attemptId": "2df48578-bb44-468f-ba9d-738af533c4e3",
+      "testId": "26afd10c-de2d-4d0f-a767-5932afabd312",
+      "accountPlayerId": "9ea78f33-950f-4d1c-82a4-f60ca07707fc",
+      "score": 4680,
+      "correct": 30,
+      "incorrect": 18,
+      "timeout": 0,
+      "total": 48,
+      "complete": true,
+      "duration": 1675144,
+      "breakdown": {
+        "multiplier": 1
+      },
+      "completedAt": "2026-09-24T17:29:10.635Z",
+      "rankingPublicationId": null,
+      "settlementKey": null
+    },
+    {
+      "resultId": "1949497b-8f41-429a-9290-120d9f33e415",
+      "attemptId": "820e21a5-ad6a-4c78-8ecc-813ba8d248ff",
+      "testId": "26afd10c-de2d-4d0f-a767-5932afabd312",
+      "accountPlayerId": "b64af2a1-c558-41ab-ad00-59f4ea4d7061",
+      "score": 14655,
+      "correct": 48,
+      "incorrect": 0,
+      "timeout": 0,
+      "total": 48,
+      "complete": true,
+      "duration": 1802886,
+      "breakdown": {
+        "multiplier": 1
+      },
+      "completedAt": "2026-09-24T17:31:06.428Z",
       "rankingPublicationId": null,
       "settlementKey": null
     }
@@ -9427,6 +15478,716 @@
       "reason": "",
       "revision": 1,
       "occurredAt": "2026-09-23T16:41:00.482Z",
+      "metadata": {}
+    },
+    {
+      "eventId": "7329a36f-e3fb-41a8-9912-318db8f6398d",
+      "testId": "831fd20b-7a82-488f-883e-114b4c73fa9e",
+      "attemptId": null,
+      "actor": "admin",
+      "action": "test_created",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-24T16:05:24.213Z",
+      "metadata": {}
+    },
+    {
+      "eventId": "0fcee68e-fb45-40a8-9552-badf65f7039a",
+      "testId": "831fd20b-7a82-488f-883e-114b4c73fa9e",
+      "attemptId": null,
+      "actor": "admin",
+      "action": "test_updated",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-24T16:06:09.884Z",
+      "metadata": {}
+    },
+    {
+      "eventId": "3a2f5bbc-2b83-4e50-94df-acaf7151e542",
+      "testId": "831fd20b-7a82-488f-883e-114b4c73fa9e",
+      "attemptId": null,
+      "actor": "admin",
+      "action": "assignments_replaced",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-24T16:06:09.904Z",
+      "metadata": {
+        "assignmentCount": 7,
+        "groupExpansion": false
+      }
+    },
+    {
+      "eventId": "bf2f9a5f-4db0-43ed-a1ac-6a63158982a6",
+      "testId": "831fd20b-7a82-488f-883e-114b4c73fa9e",
+      "attemptId": null,
+      "actor": "admin",
+      "action": "test_started",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-24T16:06:09.921Z",
+      "metadata": {
+        "startedAt": "2026-09-24T16:06:09.920Z"
+      }
+    },
+    {
+      "eventId": "550ee9ac-21d1-4cbb-8883-6c7f65d07ef0",
+      "testId": "3ad94937-bed2-42d3-810b-40254aa2a274",
+      "attemptId": null,
+      "actor": "admin",
+      "action": "test_created",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-24T16:06:15.057Z",
+      "metadata": {}
+    },
+    {
+      "eventId": "84f600c0-a072-433c-9cb4-80ec56c3cf74",
+      "testId": "3ad94937-bed2-42d3-810b-40254aa2a274",
+      "attemptId": null,
+      "actor": "admin",
+      "action": "test_updated",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-24T16:06:39.154Z",
+      "metadata": {}
+    },
+    {
+      "eventId": "9739429c-3a52-4a3a-8602-bdc727406533",
+      "testId": "3ad94937-bed2-42d3-810b-40254aa2a274",
+      "attemptId": null,
+      "actor": "admin",
+      "action": "assignments_replaced",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-24T16:06:39.186Z",
+      "metadata": {
+        "assignmentCount": 6,
+        "groupExpansion": false
+      }
+    },
+    {
+      "eventId": "d6a42a16-211e-432d-9f65-920b33b69e8e",
+      "testId": "3ad94937-bed2-42d3-810b-40254aa2a274",
+      "attemptId": null,
+      "actor": "admin",
+      "action": "test_started",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-24T16:06:39.193Z",
+      "metadata": {
+        "startedAt": "2026-09-24T16:06:39.193Z"
+      }
+    },
+    {
+      "eventId": "0c67000b-7fb4-40f6-99c2-edae94d632f6",
+      "testId": "47fc3aff-dfbc-43f7-a74d-70d09f6e594e",
+      "attemptId": null,
+      "actor": "admin",
+      "action": "test_created",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-24T16:07:53.522Z",
+      "metadata": {}
+    },
+    {
+      "eventId": "66ef46fb-51b6-497e-ab16-ae61969b471c",
+      "testId": "47fc3aff-dfbc-43f7-a74d-70d09f6e594e",
+      "attemptId": null,
+      "actor": "admin",
+      "action": "test_updated",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-24T16:08:29.461Z",
+      "metadata": {}
+    },
+    {
+      "eventId": "271364eb-99cf-46fc-ac3a-ce87fa315f03",
+      "testId": "47fc3aff-dfbc-43f7-a74d-70d09f6e594e",
+      "attemptId": null,
+      "actor": "admin",
+      "action": "assignments_replaced",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-24T16:08:29.491Z",
+      "metadata": {
+        "assignmentCount": 1,
+        "groupExpansion": false
+      }
+    },
+    {
+      "eventId": "d5cd9d64-74b5-4eba-acdb-cdd68e49dd93",
+      "testId": "47fc3aff-dfbc-43f7-a74d-70d09f6e594e",
+      "attemptId": null,
+      "actor": "admin",
+      "action": "test_started",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-24T16:08:29.506Z",
+      "metadata": {
+        "startedAt": "2026-09-24T16:08:29.506Z"
+      }
+    },
+    {
+      "eventId": "3ed1297b-07bb-4754-a9e2-1f691a102198",
+      "testId": "47fc3aff-dfbc-43f7-a74d-70d09f6e594e",
+      "attemptId": null,
+      "actor": "admin",
+      "action": "test_finished",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-24T16:10:27.083Z",
+      "metadata": {}
+    },
+    {
+      "eventId": "72889f9c-c4a1-4e4a-b1d7-ec62cdf3149d",
+      "testId": "3ad94937-bed2-42d3-810b-40254aa2a274",
+      "attemptId": null,
+      "actor": "admin",
+      "action": "test_finished",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-24T16:10:28.730Z",
+      "metadata": {}
+    },
+    {
+      "eventId": "d4195ef0-9da8-476b-a160-0ce03325a898",
+      "testId": "831fd20b-7a82-488f-883e-114b4c73fa9e",
+      "attemptId": null,
+      "actor": "admin",
+      "action": "test_finished",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-24T16:10:30.778Z",
+      "metadata": {}
+    },
+    {
+      "eventId": "15a774f8-2219-475d-8891-46ac73deaf05",
+      "testId": "02f44a74-e1a9-4de9-9ce2-41dc544176d2",
+      "attemptId": null,
+      "actor": "admin",
+      "action": "test_created",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-24T16:28:08.336Z",
+      "metadata": {}
+    },
+    {
+      "eventId": "3d236bf0-dc4e-4d26-ab94-eeed922dd8f8",
+      "testId": "831fd20b-7a82-488f-883e-114b4c73fa9e",
+      "attemptId": "630b78a9-68e1-40cc-8161-d0f0621c5ac9",
+      "actor": "admin",
+      "action": "attempt_created",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-24T16:32:27.019Z",
+      "metadata": {
+        "origin": "live_exam",
+        "live": true
+      }
+    },
+    {
+      "eventId": "6cd7d933-d222-4610-8913-38f016819beb",
+      "testId": "02f44a74-e1a9-4de9-9ce2-41dc544176d2",
+      "attemptId": null,
+      "actor": "admin",
+      "action": "test_updated",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-24T17:00:23.639Z",
+      "metadata": {}
+    },
+    {
+      "eventId": "df4078e4-8c66-4f79-9e31-60c45530bb24",
+      "testId": "02f44a74-e1a9-4de9-9ce2-41dc544176d2",
+      "attemptId": null,
+      "actor": "admin",
+      "action": "assignments_replaced",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-24T17:00:23.678Z",
+      "metadata": {
+        "assignmentCount": 6,
+        "groupExpansion": false
+      }
+    },
+    {
+      "eventId": "d8e4aecb-a29f-4069-aa7e-8334b38c877f",
+      "testId": "02f44a74-e1a9-4de9-9ce2-41dc544176d2",
+      "attemptId": null,
+      "actor": "admin",
+      "action": "test_started",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-24T17:00:23.692Z",
+      "metadata": {
+        "startedAt": "2026-09-24T17:00:23.691Z"
+      }
+    },
+    {
+      "eventId": "bb8c0fda-27d1-4bab-9132-05a021a1d034",
+      "testId": "26afd10c-de2d-4d0f-a767-5932afabd312",
+      "attemptId": null,
+      "actor": "admin",
+      "action": "test_created",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-24T17:00:26.775Z",
+      "metadata": {}
+    },
+    {
+      "eventId": "f1642d40-19d2-483d-a773-4e04e4bf2fce",
+      "testId": "26afd10c-de2d-4d0f-a767-5932afabd312",
+      "attemptId": null,
+      "actor": "admin",
+      "action": "test_updated",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-24T17:01:03.247Z",
+      "metadata": {}
+    },
+    {
+      "eventId": "1adaf00f-27fb-42e8-b610-f8ec9eed7292",
+      "testId": "26afd10c-de2d-4d0f-a767-5932afabd312",
+      "attemptId": null,
+      "actor": "admin",
+      "action": "assignments_replaced",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-24T17:01:03.288Z",
+      "metadata": {
+        "assignmentCount": 7,
+        "groupExpansion": false
+      }
+    },
+    {
+      "eventId": "fe253d22-d70d-4c12-bc49-3b3b92fdcf75",
+      "testId": "26afd10c-de2d-4d0f-a767-5932afabd312",
+      "attemptId": null,
+      "actor": "admin",
+      "action": "test_started",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-24T17:01:03.299Z",
+      "metadata": {
+        "startedAt": "2026-09-24T17:01:03.298Z"
+      }
+    },
+    {
+      "eventId": "f337862b-a57a-499a-8e23-62bb6f4df3da",
+      "testId": "02f44a74-e1a9-4de9-9ce2-41dc544176d2",
+      "attemptId": null,
+      "actor": "admin",
+      "action": "test_finished",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-24T17:01:22.657Z",
+      "metadata": {}
+    },
+    {
+      "eventId": "3ab6aa5a-96c4-4a6a-9842-a97acab914ee",
+      "testId": "5e1b93ce-7297-4c85-8c43-0dea90cfd5db",
+      "attemptId": null,
+      "actor": "admin",
+      "action": "test_created",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-24T17:01:31.570Z",
+      "metadata": {}
+    },
+    {
+      "eventId": "e3d91cf5-2e79-4e9c-94c7-1395152aace3",
+      "testId": "5e1b93ce-7297-4c85-8c43-0dea90cfd5db",
+      "attemptId": null,
+      "actor": "admin",
+      "action": "test_updated",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-24T17:02:02.816Z",
+      "metadata": {}
+    },
+    {
+      "eventId": "a321c65d-ab92-413f-9c72-d328bd0c6807",
+      "testId": "5e1b93ce-7297-4c85-8c43-0dea90cfd5db",
+      "attemptId": null,
+      "actor": "admin",
+      "action": "assignments_replaced",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-24T17:02:02.850Z",
+      "metadata": {
+        "assignmentCount": 6,
+        "groupExpansion": false
+      }
+    },
+    {
+      "eventId": "207a11cf-2f8f-45a2-ab9a-9c95308549da",
+      "testId": "5e1b93ce-7297-4c85-8c43-0dea90cfd5db",
+      "attemptId": null,
+      "actor": "admin",
+      "action": "test_started",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-24T17:02:02.862Z",
+      "metadata": {
+        "startedAt": "2026-09-24T17:02:02.862Z"
+      }
+    },
+    {
+      "eventId": "240b946c-0ff3-4f83-9725-afd0f7cae1e4",
+      "testId": "5e1b93ce-7297-4c85-8c43-0dea90cfd5db",
+      "attemptId": "292293f6-6bca-42f0-8794-9b1fe73778e2",
+      "actor": "admin",
+      "action": "attempt_created",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-24T17:02:58.659Z",
+      "metadata": {
+        "origin": "live_exam",
+        "live": true
+      }
+    },
+    {
+      "eventId": "0d08d785-7780-4f74-a871-ddf923d38e86",
+      "testId": "26afd10c-de2d-4d0f-a767-5932afabd312",
+      "attemptId": "c1b4a361-4916-416c-b522-2bb171ff1555",
+      "actor": "admin",
+      "action": "attempt_created",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-24T17:03:22.477Z",
+      "metadata": {
+        "origin": "live_exam",
+        "live": true
+      }
+    },
+    {
+      "eventId": "2cb3ef0c-6af7-471f-b3b3-aba125f498a5",
+      "testId": "5e1b93ce-7297-4c85-8c43-0dea90cfd5db",
+      "attemptId": "292293f6-6bca-42f0-8794-9b1fe73778e2",
+      "actor": "admin",
+      "action": "attempt_finished",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-24T17:05:42.854Z",
+      "metadata": {
+        "resultId": "6d17d181-a237-4578-bee3-cdcdb437b420",
+        "origin": "live_exam"
+      }
+    },
+    {
+      "eventId": "a8c146cb-b965-4881-854a-4728875c3166",
+      "testId": "5e1b93ce-7297-4c85-8c43-0dea90cfd5db",
+      "attemptId": "3e0fbea7-d05c-4ce3-b1e8-2edf64d6f719",
+      "actor": "admin",
+      "action": "attempt_created",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-24T17:06:46.809Z",
+      "metadata": {
+        "origin": "live_exam",
+        "live": true
+      }
+    },
+    {
+      "eventId": "d2305235-fe8e-4091-9554-3f249a00e45d",
+      "testId": "26afd10c-de2d-4d0f-a767-5932afabd312",
+      "attemptId": "c1b4a361-4916-416c-b522-2bb171ff1555",
+      "actor": "admin",
+      "action": "attempt_finished",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-24T17:07:32.272Z",
+      "metadata": {
+        "resultId": "a22b224d-fc28-42af-a9f6-4d4a69b75af2",
+        "origin": "live_exam"
+      }
+    },
+    {
+      "eventId": "e9e7d25c-0d42-4871-99d7-b9dac7725c0f",
+      "testId": "26afd10c-de2d-4d0f-a767-5932afabd312",
+      "attemptId": "e1789895-2fde-4de4-bec4-c871425bf501",
+      "actor": "admin",
+      "action": "attempt_created",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-24T17:08:26.541Z",
+      "metadata": {
+        "origin": "live_exam",
+        "live": true
+      }
+    },
+    {
+      "eventId": "8a7c0093-4d99-4029-b27f-5fb4f7801099",
+      "testId": "5e1b93ce-7297-4c85-8c43-0dea90cfd5db",
+      "attemptId": "3e0fbea7-d05c-4ce3-b1e8-2edf64d6f719",
+      "actor": "admin",
+      "action": "attempt_finished",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-24T17:10:41.731Z",
+      "metadata": {
+        "resultId": "a27104cc-989a-4eff-9a52-7c265a2015e1",
+        "origin": "live_exam"
+      }
+    },
+    {
+      "eventId": "c8880031-69ea-4ac8-ad46-b1df01c2f064",
+      "testId": "26afd10c-de2d-4d0f-a767-5932afabd312",
+      "attemptId": "e1789895-2fde-4de4-bec4-c871425bf501",
+      "actor": "admin",
+      "action": "attempt_finished",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-24T17:11:41.220Z",
+      "metadata": {
+        "resultId": "12357cfc-a419-4921-ad61-05d05ea8d3e3",
+        "origin": "live_exam"
+      }
+    },
+    {
+      "eventId": "85a4cff7-85b3-4f00-9b18-93c5b9d22fa8",
+      "testId": "26afd10c-de2d-4d0f-a767-5932afabd312",
+      "attemptId": "d350d41a-b5b8-4cf4-9a7c-ab4fd586dde4",
+      "actor": "admin",
+      "action": "attempt_created",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-24T17:12:31.071Z",
+      "metadata": {
+        "origin": "live_exam",
+        "live": true
+      }
+    },
+    {
+      "eventId": "34116199-cdbe-4241-a224-3bb93ca23312",
+      "testId": "5e1b93ce-7297-4c85-8c43-0dea90cfd5db",
+      "attemptId": "ee456259-d253-4c04-bbc1-9c2a8a9d9c61",
+      "actor": "admin",
+      "action": "attempt_created",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-24T17:13:43.067Z",
+      "metadata": {
+        "origin": "live_exam",
+        "live": true
+      }
+    },
+    {
+      "eventId": "7f8e1ee1-7695-4249-9804-2f8dc1516d03",
+      "testId": "26afd10c-de2d-4d0f-a767-5932afabd312",
+      "attemptId": "d350d41a-b5b8-4cf4-9a7c-ab4fd586dde4",
+      "actor": "admin",
+      "action": "attempt_finished",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-24T17:15:09.707Z",
+      "metadata": {
+        "resultId": "ceca3d7d-785a-41c0-9782-81a3c37e8c20",
+        "origin": "live_exam"
+      }
+    },
+    {
+      "eventId": "6db9e898-cc7b-40ac-b8fa-5422d6b07cf6",
+      "testId": "26afd10c-de2d-4d0f-a767-5932afabd312",
+      "attemptId": "355cf9b1-a69a-4254-ab5f-89c5f16a3306",
+      "actor": "admin",
+      "action": "attempt_created",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-24T17:16:40.312Z",
+      "metadata": {
+        "origin": "live_exam",
+        "live": true
+      }
+    },
+    {
+      "eventId": "950ebafd-6e7f-4dac-b323-f732c93eb6c8",
+      "testId": "5e1b93ce-7297-4c85-8c43-0dea90cfd5db",
+      "attemptId": "ee456259-d253-4c04-bbc1-9c2a8a9d9c61",
+      "actor": "admin",
+      "action": "attempt_finished",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-24T17:17:10.641Z",
+      "metadata": {
+        "resultId": "3555b576-4af1-48cc-8f65-cd42f49eec34",
+        "origin": "live_exam"
+      }
+    },
+    {
+      "eventId": "9465f0fa-8d9c-40b9-94cd-3c658dbbbe5a",
+      "testId": "5e1b93ce-7297-4c85-8c43-0dea90cfd5db",
+      "attemptId": "e631103e-88f2-45ec-9430-4852889dafa9",
+      "actor": "admin",
+      "action": "attempt_created",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-24T17:18:43.398Z",
+      "metadata": {
+        "origin": "live_exam",
+        "live": true
+      }
+    },
+    {
+      "eventId": "231ddda7-8b09-46ec-aed8-de0ea5b61140",
+      "testId": "26afd10c-de2d-4d0f-a767-5932afabd312",
+      "attemptId": "355cf9b1-a69a-4254-ab5f-89c5f16a3306",
+      "actor": "admin",
+      "action": "attempt_finished",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-24T17:19:59.087Z",
+      "metadata": {
+        "resultId": "ab40f88f-a0ea-4731-b83e-518042ee9f07",
+        "origin": "live_exam"
+      }
+    },
+    {
+      "eventId": "d3d485c9-ba9e-4297-9781-581a7998b1ea",
+      "testId": "5e1b93ce-7297-4c85-8c43-0dea90cfd5db",
+      "attemptId": "e631103e-88f2-45ec-9430-4852889dafa9",
+      "actor": "admin",
+      "action": "attempt_finished",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-24T17:21:15.898Z",
+      "metadata": {
+        "resultId": "71798943-a3db-483b-a46a-c9bd07b86941",
+        "origin": "live_exam"
+      }
+    },
+    {
+      "eventId": "e1112614-aec3-4fa9-b03d-bb511fb821d6",
+      "testId": "26afd10c-de2d-4d0f-a767-5932afabd312",
+      "attemptId": "1e478db4-8fa5-4c48-9525-258b62dd70a4",
+      "actor": "admin",
+      "action": "attempt_created",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-24T17:21:42.394Z",
+      "metadata": {
+        "origin": "live_exam",
+        "live": true
+      }
+    },
+    {
+      "eventId": "55d81f4f-dba6-4f3b-9a81-6c3f5c1c21b8",
+      "testId": "5e1b93ce-7297-4c85-8c43-0dea90cfd5db",
+      "attemptId": "905abbd5-ac92-400b-89c9-4fd3cede1073",
+      "actor": "admin",
+      "action": "attempt_created",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-24T17:22:36.471Z",
+      "metadata": {
+        "origin": "live_exam",
+        "live": true
+      }
+    },
+    {
+      "eventId": "c01c3682-c780-4fc2-9c14-2f6a9b0b9781",
+      "testId": "26afd10c-de2d-4d0f-a767-5932afabd312",
+      "attemptId": "1e478db4-8fa5-4c48-9525-258b62dd70a4",
+      "actor": "admin",
+      "action": "attempt_finished",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-24T17:25:23.270Z",
+      "metadata": {
+        "resultId": "48d60650-cf28-4f00-8d2d-e0773e023828",
+        "origin": "live_exam"
+      }
+    },
+    {
+      "eventId": "ffc58bf6-b254-43c7-b10f-6ab1a74310f0",
+      "testId": "5e1b93ce-7297-4c85-8c43-0dea90cfd5db",
+      "attemptId": "905abbd5-ac92-400b-89c9-4fd3cede1073",
+      "actor": "admin",
+      "action": "attempt_finished",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-24T17:25:50.936Z",
+      "metadata": {
+        "resultId": "a3665222-e6d8-4491-a800-8faf84630886",
+        "origin": "live_exam"
+      }
+    },
+    {
+      "eventId": "23d53559-98a7-4d6d-a04d-9e25fc533440",
+      "testId": "26afd10c-de2d-4d0f-a767-5932afabd312",
+      "attemptId": "2df48578-bb44-468f-ba9d-738af533c4e3",
+      "actor": "admin",
+      "action": "attempt_created",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-24T17:26:08.024Z",
+      "metadata": {
+        "origin": "live_exam",
+        "live": true
+      }
+    },
+    {
+      "eventId": "7ee81fed-7745-488f-ad4d-df9e18e2e282",
+      "testId": "26afd10c-de2d-4d0f-a767-5932afabd312",
+      "attemptId": "820e21a5-ad6a-4c78-8ecc-813ba8d248ff",
+      "actor": "admin",
+      "action": "attempt_created",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-24T17:27:22.875Z",
+      "metadata": {
+        "origin": "live_exam",
+        "live": true
+      }
+    },
+    {
+      "eventId": "221d904c-ed35-4379-9e5e-8feec6d0a60c",
+      "testId": "26afd10c-de2d-4d0f-a767-5932afabd312",
+      "attemptId": "2df48578-bb44-468f-ba9d-738af533c4e3",
+      "actor": "admin",
+      "action": "attempt_finished",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-24T17:29:10.635Z",
+      "metadata": {
+        "resultId": "e7c96c7c-40f6-40bb-b2c3-55e2671b69f1",
+        "origin": "live_exam"
+      }
+    },
+    {
+      "eventId": "9dd798df-c6c6-463b-9928-5ea8088fac8b",
+      "testId": "26afd10c-de2d-4d0f-a767-5932afabd312",
+      "attemptId": "820e21a5-ad6a-4c78-8ecc-813ba8d248ff",
+      "actor": "admin",
+      "action": "attempt_finished",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-24T17:31:06.428Z",
+      "metadata": {
+        "resultId": "1949497b-8f41-429a-9290-120d9f33e415",
+        "origin": "live_exam"
+      }
+    },
+    {
+      "eventId": "0b15299a-c3c5-4bc6-a1c8-1890f253374c",
+      "testId": "5e1b93ce-7297-4c85-8c43-0dea90cfd5db",
+      "attemptId": null,
+      "actor": "admin",
+      "action": "test_finished",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-24T17:36:24.520Z",
+      "metadata": {}
+    },
+    {
+      "eventId": "5c1443dd-ae55-40c8-abd9-be957859c056",
+      "testId": "26afd10c-de2d-4d0f-a767-5932afabd312",
+      "attemptId": null,
+      "actor": "admin",
+      "action": "test_finished",
+      "reason": "",
+      "revision": 1,
+      "occurredAt": "2026-09-24T17:36:26.173Z",
       "metadata": {}
     }
   ],

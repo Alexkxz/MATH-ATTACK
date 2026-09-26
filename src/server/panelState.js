@@ -9,6 +9,7 @@ function buildPanelState({
   isOpen = () => false,
   now = Date.now(),
   examMode = null,
+  examModes = [],
   opStats,
   examFinished = [],
 }) {
@@ -19,7 +20,7 @@ function buildPanelState({
     const room = roomId ? findRoom(roomId) : null;
     const roomPlayers = room?.players || [];
     return {
-      id: session.id, name: session.name, grade: session.grade,
+      id: session.id, accountPlayerId: player?.accountPlayerId || player?.id || '', name: session.name, grade: session.grade,
       avatar: player?.avatar || {}, themeColor: player?.themeColor || '',
       gameMode: session.gameMode || 'idle', mpGameMode: session.mpGameMode || '',
       gameType: session.gameType || '', difficulty: session.difficulty || '', isExam: session.isExam || false,
@@ -35,6 +36,7 @@ function buildPanelState({
       lives: session.lives || 0, livesTotal: session.livesTotal || 0,
       streak: session.streak || 0,
       timeLeft: session.timeLeft || 0, timeLimit: session.timeLimit || 0,
+      questionElapsedMs: session.questionElapsedMs || 0,
       lastResult: session.lastResult || null, lastResultTs: session.lastResultTs || 0,
       tblResults: session.tblResults || {},
       disconnected: !!session.disconnected,
@@ -62,6 +64,7 @@ function buildPanelState({
     connectedNames,
     ts: now,
     examMode: examMode || null,
+    examModes: Array.isArray(examModes) ? examModes : [],
     opStats,
     examFinished,
   };

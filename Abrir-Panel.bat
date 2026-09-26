@@ -75,6 +75,30 @@ call :stage 5/6 "Validando runtime y dependencias"
 %NODE_CMD% --version >nul
 >>"%BOOTSTRAP_LOG%" %NODE_CMD% --version
 
+:: Algunas politicas de Windows pueden impedir que Node portable resuelva
+:: la ruta de esta carpeta. Si falla la prueba real, usar Node del sistema.
+%NODE_CMD% -e "require('fs').realpathSync(process.cwd())" >nul 2>&1
+if errorlevel 1 (
+    where node.exe >nul 2>&1
+    if errorlevel 1 (
+        color 0C
+        echo  Error: la runtime portable de Node.js no puede ejecutarse en esta PC.
+        echo  Tampoco se encontro Node.js instalado en el sistema.
+        echo.
+        >>"%BOOTSTRAP_LOG%" echo [Error] Runtime portable no ejecutable y Node del sistema ausente
+        pause
+        exit /b 1
+    )
+    echo  La runtime portable no pudo ejecutarse; usando Node.js del sistema.
+    >>"%BOOTSTRAP_LOG%" echo [Aviso] Se usara Node.js del sistema como respaldo
+    set "NODE_CMD=node.exe"
+    set "NPM_CMD=npm.cmd"
+    set "MATH_ATTACK_USE_SYSTEM_NODE=1"
+    set "MATH_ATTACK_NODE_DIR="
+    set "MATH_ATTACK_NODE_EXE="
+    set "MATH_ATTACK_NPM_CMD="
+)
+
 call :ensure_dependency_ws
 if errorlevel 1 goto :fail
 

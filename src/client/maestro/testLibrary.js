@@ -6,6 +6,7 @@
   const configurations = new Map();
   let groups = []; let selectedGroupId = ''; let registeredStudents = [];
   let audienceMode = 'all'; let audienceGroupId = ''; let audienceStudentIds = new Set();
+  let selectionRequestId = 0;
   const busy = new Set();
   const esc = value => String(value ?? '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
   const statusLabels = { draft: 'Borrador', scheduled: 'Programada', active: 'Activa', paused: 'Pausada', closed: 'Cerrada', finished: 'Finalizada', cancelled: 'Cancelada', unknown: 'Estado desconocido' };
@@ -116,7 +117,7 @@
   }
   const groupStatus = message => { const node = get('prGroupsStatus'); if (node) node.textContent = message || ''; };
   function renderAssignments(assignments = []) { const target = get('prAssignmentsList'); if (!target) return; target.innerHTML = assignments.length ? `<div class="pr-assignment-table-wrap"><table class="pr-assignment-table"><thead><tr><th>Tipo</th><th>Destino</th><th>Origen</th><th>Acción</th></tr></thead><tbody>${assignments.map(item => `<tr><td>${item.targetType === 'group' ? 'Grupo' : 'Alumno'}</td><td><code>${esc(item.targetType === 'group' ? item.groupId : item.accountPlayerId)}</code></td><td>${item.sourceGroupId ? `<code>${esc(item.sourceGroupId)}</code>` : '—'}</td><td><button type="button" class="pr-assignment-remove" data-assignment-id="${esc(item.assignmentId)}" data-source-group-id="${esc(item.sourceGroupId || item.groupId || '')}" data-group-id="${esc(item.groupId || '')}">Retirar</button></td></tr>`).join('')}</tbody></table></div>` : '<p class="pr-attempts-empty">La prueba no tiene asignaciones.</p>'; }
-  async function loadAssignments(testId = selectedTestId) { const status = get('prAssignmentsStatus'); if (!testId) { renderAssignments([]); if (status) status.textContent = ''; return; } try { const response = await fetch(adminUrl(`/api/exams/${encodeURIComponent(testId)}/assignments`), { headers: { 'X-Admin-Password': _adminPass } }); const data = await response.json(); if (!response.ok) throw Error(data.error || 'No se pudieron cargar asignaciones'); renderAssignments(data.assignments || []); if (status) status.textContent = `${(data.assignments || []).length} asignación(es)`; } catch (error) { renderAssignments([]); if (status) status.textContent = error.message; } }
+  async function loadAssignments(testId = selectedTestId, requestId = selectionRequestId) { const status = get('prAssignmentsStatus'); if (!testId) { renderAssignments([]); if (status) status.textContent = ''; return; } try { const response = await fetch(adminUrl(`/api/exams/${encodeURIComponent(testId)}/assignments`), { headers: { 'X-Admin-Password': _adminPass } }); const data = await response.json(); if (requestId !== selectionRequestId || testId !== selectedTestId) return; if (!response.ok) throw Error(data.error || 'No se pudieron cargar asignaciones'); renderAssignments(data.assignments || []); if (status) status.textContent = `${(data.assignments || []).length} asignación(es)`; } catch (error) { if (requestId !== selectionRequestId || testId !== selectedTestId) return; renderAssignments([]); if (status) status.textContent = error.message; } }
   async function removeAssignment(assignmentId, sourceGroupId, groupId) { if (!selectedTestId || !window.confirm('¿Retirar esta asignación de la prueba?')) return; const currentResponse = await fetch(adminUrl(`/api/exams/${encodeURIComponent(selectedTestId)}/assignments`), { headers: { 'X-Admin-Password': _adminPass } }); const currentData = await currentResponse.json(); if (!currentResponse.ok) throw Error(currentData.error || 'No se pudieron consultar asignaciones'); const current = currentData.assignments || []; const assignments = current.filter(item => item.assignmentId !== assignmentId && !(sourceGroupId && item.sourceGroupId === sourceGroupId) && !(groupId && item.targetType === 'group' && item.groupId === groupId)).map(item => ({ targetType: item.targetType, groupId: item.groupId, accountPlayerId: item.accountPlayerId, sourceGroupId: item.sourceGroupId, startsAt: item.startsAt, closesAt: item.closesAt })); const response = await fetch(`/api/exams/${encodeURIComponent(selectedTestId)}/assignments`, { method: 'PUT', headers: { 'Content-Type': 'application/json', 'X-Admin-Password': _adminPass }, body: JSON.stringify({ assignments }) }); const data = await response.json(); if (!response.ok) throw Error(data.error || 'No se pudo retirar la asignación'); await load(); await loadAssignments(); }
   function renderGroups() {
     const list = get('prGroupsList'); if (list) list.innerHTML = groups.length ? groups.map(group => `<div class="pr-group-card${group.groupId === selectedGroupId ? ' selected' : ''}" data-group-id="${esc(group.groupId)}"><button type="button" class="pr-group-select">${esc(group.name)} · ${esc(group.groupId)}</button><span>${group.memberAccountPlayerIds.length} miembro(s)</span></div>`).join('') : '<p class="pr-attempts-empty">No hay grupos disponibles.</p>';
@@ -125,36 +126,40 @@
     renderStudentPicker();
   }
   function gradeKey(value) { return String(value || '').match(/[1-6]/)?.[0] || ''; }
-  function audienceGrade() { return gradeKey(get('prGrade')?.value || ''); }
-  function audienceStudents() { const grade = audienceGrade(); return registeredStudents.filter(student => !grade || gradeKey(student.grade) === grade); }
-  function renderAudience() {
+  function audienceGrade(value) { return gradeKey(value === undefined ? (get('prGrade')?.value || '') : value); }
+  function audienceStudents(grade = audienceGrade()) { return registeredStudents.filter(student => !grade || gradeKey(student.grade) === grade); }
+  function renderAudience(expectedGrade) {
     const mode = get('prAudienceMode'); const groupSelect = get('prAudienceGroup'); const grid = get('prAudienceStudentsGrid'); const status = get('prAudienceStatus');
     if (!mode || !groupSelect || !grid) return;
     mode.value = audienceMode;
-    const grade = audienceGrade();
+    const grade = audienceGrade(expectedGrade);
     const validGroups = groups.filter(group => !grade || gradeKey(group.grade) === grade);
     groupSelect.innerHTML = `<option value="">Selecciona un grupo</option>${validGroups.map(group => `<option value="${esc(group.groupId)}">${esc(group.name)} · ${group.memberAccountPlayerIds.length} alumno(s)</option>`).join('')}`;
     groupSelect.value = audienceGroupId;
     groupSelect.hidden = true;
     grid.hidden = false;
-    grid.innerHTML = audienceStudents().length ? audienceStudents().map(student => { const selected = audienceStudentIds.has(student.id); return `<button type="button" class="pr-audience-student${selected ? ' selected' : ''}" data-audience-student="${esc(student.id)}" aria-pressed="${String(selected)}"><strong>${esc(student.name)}</strong><small>${esc(student.grade || 'Sin grado')}</small></button>`; }).join('') : '<p class="pr-attempts-empty">No hay alumnos registrados para este grado.</p>';
-    if (status) status.textContent = audienceMode === 'group' ? (audienceGroupId ? 'Se asignará el grupo completo seleccionado.' : 'Selecciona un grupo.') : audienceMode === 'custom' ? `${audienceStudents().filter(student => audienceStudentIds.has(student.id)).length} alumno(s) seleccionado(s).` : `Se asignará a todos los alumnos${grade ? ` de ${get('prGrade').value}` : ''}.`;
+    const students = audienceStudents(grade);
+    grid.innerHTML = students.length ? students.map(student => { const selected = audienceStudentIds.has(student.id); return `<button type="button" class="pr-audience-student${selected ? ' selected' : ''}" data-audience-student="${esc(student.id)}" aria-pressed="${String(selected)}"><strong>${esc(student.name)}</strong><small>${esc(student.grade || 'Sin grado')}</small></button>`; }).join('') : '<p class="pr-attempts-empty">No hay alumnos registrados para este grado.</p>';
+    if (status) status.textContent = audienceMode === 'group' ? (audienceGroupId ? 'Se asignará el grupo completo seleccionado.' : 'Selecciona un grupo.') : audienceMode === 'custom' ? `${students.filter(student => audienceStudentIds.has(student.id)).length} alumno(s) seleccionado(s).` : `Se asignará a todos los alumnos${grade ? ` de ${get('prGrade').value}` : ''}.`;
   }
-  async function loadAudience() {
+  async function loadAudience(testId = selectedTestId, requestId = selectionRequestId) {
     await loadGroups();
-    if (!selectedTestId) { renderAudience(); return; }
+    if (requestId !== selectionRequestId || testId !== selectedTestId) return;
+    if (!testId) { renderAudience(); return; }
     try {
-      const response = await fetch(adminUrl(`/api/exams/${encodeURIComponent(selectedTestId)}/assignments`), { headers: { 'X-Admin-Password': _adminPass } });
+      const response = await fetch(adminUrl(`/api/exams/${encodeURIComponent(testId)}/assignments`), { headers: { 'X-Admin-Password': _adminPass } });
       const data = await response.json(); const assignments = response.ok && Array.isArray(data.assignments) ? data.assignments : [];
+      if (requestId !== selectionRequestId || testId !== selectedTestId) return;
       const groupAssignment = assignments.find(item => item.targetType === 'group');
       audienceGroupId = groupAssignment?.groupId || '';
       audienceStudentIds = new Set(assignments.filter(item => item.targetType === 'student').map(item => item.accountPlayerId));
       audienceMode = groupAssignment ? 'group' : audienceStudentIds.size ? 'custom' : 'all';
-    } catch (_) { audienceMode = 'all'; audienceGroupId = ''; audienceStudentIds = new Set(); }
-    renderAudience();
+    } catch (_) { if (requestId !== selectionRequestId || testId !== selectedTestId) return; audienceMode = 'all'; audienceGroupId = ''; audienceStudentIds = new Set(); }
+    renderAudience(configurations.get(testId)?.grade);
   }
   async function saveAudienceAssignments() {
     if (!selectedTestId) throw Error('Selecciona o crea una prueba antes de asignar alumnos');
+    const testId = selectedTestId;
     let assignments = [];
     if (audienceMode === 'group') {
       if (!audienceGroupId) throw Error('Selecciona un grupo completo');
@@ -166,7 +171,7 @@
       if (!students.length) throw Error('No hay alumnos seleccionados para la prueba');
       assignments = students.map(student => ({ targetType: 'student', accountPlayerId: student.id }));
     }
-    const response = await fetch(`/api/exams/${encodeURIComponent(selectedTestId)}/assignments`, { method: 'PUT', headers: { 'Content-Type': 'application/json', 'X-Admin-Password': _adminPass }, body: JSON.stringify({ assignments }) });
+    const response = await fetch(`/api/exams/${encodeURIComponent(testId)}/assignments`, { method: 'PUT', headers: { 'Content-Type': 'application/json', 'X-Admin-Password': _adminPass }, body: JSON.stringify({ assignments }) });
     const data = await response.json(); if (!response.ok) throw Error(data.error || 'No se pudieron guardar los alumnos asignados');
     const status = get('prAudienceStatus'); if (status) status.textContent = `${assignments.length} asignación(es) guardada(s).`;
     return data.assignments || assignments;
@@ -247,7 +252,11 @@
         if (selectedTestId) sessionStorage.setItem('maestroSelectedTestId', selectedTestId);
       }
       render();
-      if (selectedTestId) { loadConfiguration(selectedTestId); loadAssignments(selectedTestId); loadAudience(); }
+      if (selectedTestId) {
+        const requestId = ++selectionRequestId;
+        await loadConfiguration(selectedTestId);
+        if (requestId === selectionRequestId) { loadAssignments(selectedTestId, requestId); loadAudience(selectedTestId, requestId); }
+      }
       if (status) status.textContent = `${tests.length} prueba(s) disponibles`;
     } catch (error) {
       tests = [];
@@ -255,18 +264,20 @@
       if (status) status.textContent = error.message || 'Error al cargar la biblioteca';
     }
   }
-  function select(testId) {
+  async function select(testId) {
     const test = tests.find(item => item.testId === testId);
     if (!test) return;
     selectedTestId = testId;
+    const requestId = ++selectionRequestId;
     sessionStorage.setItem('maestroSelectedTestId', testId);
-    loadConfiguration(testId);
     const input = get('prAttemptTestId');
     if (input) input.value = testId;
     render();
     if (typeof window.prLoadAttempts === 'function') window.prLoadAttempts();
-    loadAssignments(testId);
-    loadAudience();
+    await loadConfiguration(testId);
+    if (requestId !== selectionRequestId || testId !== selectedTestId) return;
+    loadAssignments(testId, requestId);
+    loadAudience(testId, requestId);
   }
   async function loadConfiguration(testId) {
     try {
@@ -277,8 +288,10 @@
       const test = tests.find(item => item.testId === testId);
       if (test) test.configuration = configurations.get(testId);
       if (selectedTestId === testId && typeof window.prLoadTestConfiguration === 'function') window.prLoadTestConfiguration(configurations.get(testId));
+      return configurations.get(testId);
     } catch (error) {
       if (selectedTestId === testId) { const status = get('prTestLibraryStatus'); if (status) status.textContent = error.message; }
+      return null;
     }
   }
   async function copy(testId) {

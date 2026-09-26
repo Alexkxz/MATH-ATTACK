@@ -307,7 +307,9 @@ exit /b 0
 :: Subrutina: libera el puerto 8080 si ya esta ocupado
 :liberar_puerto
 set "_algun_pid=0"
-for /f "tokens=5" %%P in ('netstat -ano 2^>nul ^| findstr ":8080"') do (
+:: Solo se cierran procesos Node que pertenezcan a esta copia de Math Attack.
+:: No se mata cualquier proceso que casualmente use el puerto 8080.
+for /f "tokens=*" %%P in ('powershell -NoProfile -ExecutionPolicy Bypass -Command "$root=(Get-Location).Path; Get-CimInstance Win32_Process ^| Where-Object { $_.Name -eq 'node.exe' -and $_.CommandLine -match '(?i)server\.js' -and $_.CommandLine -like ('*' + $root + '*') } ^| Select-Object -ExpandProperty ProcessId"') do (
     if not "%%P"=="0" if not "%%P"=="" (
         echo  Puerto 8080 ocupado (PID %%P^), cerrando proceso...
         taskkill /PID %%P /F >nul 2>&1

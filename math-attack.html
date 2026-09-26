@@ -7,16 +7,6 @@
 <script src="/src/client/maestro/tableRanges.js"></script>
 <link rel="preload" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&family=Quicksand:wght@600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&family=Quicksand:wght@600;700&display=swap"></noscript>
-<script>
-// PeerJS loader — async so it never blocks the game from loading
-(function(){
-  var s=document.createElement('script');
-  s.src='https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js';
-  s.async=true;
-  s.onerror=function(){ window._peerJSFailed=true; };
-  document.head.appendChild(s);
-})();
-</script>
 <style>
 :root{
   --bg:#1a1033;--card:#2e1f57;--accent:#fbbf24;--accent2:#a78bfa;
@@ -3102,57 +3092,6 @@ body.frozen-cursor *{cursor:not-allowed!important;}
     <button class="settings-x" onclick="closeMP()">✕</button>
   </div>
 
-  <!-- MODE TABS -->
-  <div class="mp-tabs">
-    <button class="mp-tab active" id="tabPeer" onclick="switchMPTab('peer')">
-      <span class="mti"><svg width="22" height="22" viewBox="0 0 28 28" fill="none" style="display:block;margin:0 auto"><defs><clipPath id="tpc"><circle cx="14" cy="14" r="11"/></clipPath></defs><circle cx="14" cy="14" r="11" stroke="#34d399" stroke-width="2" fill="none"/><line x1="4" y1="11" x2="24" y2="11" stroke="#34d399" stroke-width="1.2" opacity=".5" clip-path="url(#tpc)"/><line x1="3" y1="14" x2="25" y2="14" stroke="#34d399" stroke-width="1.2" opacity=".6"/><line x1="4" y1="17" x2="24" y2="17" stroke="#34d399" stroke-width="1.2" opacity=".5" clip-path="url(#tpc)"/><ellipse cx="14" cy="14" rx="5.5" ry="11" stroke="#34d399" stroke-width="1.2" fill="none"><animate attributeName="rx" values="5.5;0;5.5" dur="2s" repeatCount="indefinite"/></ellipse></svg></span>
-      <span class="mtn">Con código</span>
-      <span class="mtd">Necesita internet</span>
-    </button>
-    <button class="mp-tab" id="tabLan" onclick="switchMPTab('lan')">
-      <span class="mti"><svg width="22" height="22" viewBox="0 0 28 28" fill="none" style="display:block;margin:0 auto"><style>@keyframes _tl1{0%,100%{opacity:.3}50%{opacity:1}}._tl1{animation:_tl1 1.4s ease-in-out infinite}._tl2{animation:_tl1 1.4s ease-in-out .35s infinite}._tl3{animation:_tl1 1.4s ease-in-out .7s infinite}</style><rect x="3" y="4" width="22" height="14" rx="2.5" stroke="#a78bfa" stroke-width="2" fill="none"/><line x1="14" y1="18" x2="14" y2="22" stroke="#a78bfa" stroke-width="2" stroke-linecap="round"/><line x1="9" y1="22" x2="19" y2="22" stroke="#a78bfa" stroke-width="2" stroke-linecap="round"/><circle cx="9" cy="11" r="1.8" class="_tl1" fill="#a78bfa"/><circle cx="14" cy="11" r="1.8" class="_tl2" fill="#a78bfa"/><circle cx="19" cy="11" r="1.8" class="_tl3" fill="#a78bfa"/></svg></span>
-      <span class="mtn">Red local</span>
-      <span class="mtd">100% offline</span>
-    </button>
-  </div>
-
-  <!-- ═══ PANEL PEERJS ═══ -->
-  <div class="mp-panel visible" id="panelPeer">
-    <!-- role choice -->
-    <div id="peerChoice">
-      <div class="mp-hint">El anfitrión crea la sala y comparte un código de 4 dígitos. El alumno lo escribe y listo.</div>
-      <div class="mp-choice-grid">
-        <button class="mp-choice" onclick="peerHost()"><span class="mci">🏠</span><span class="mcn">Crear sala</span><span class="mcd">Soy el anfitrión</span></button>
-        <button class="mp-choice" onclick="peerGuest()"><span class="mci">🚪</span><span class="mcn">Unirse</span><span class="mcd">Tengo un código</span></button>
-      </div>
-    </div>
-    <!-- host waiting -->
-    <div class="mp-step" id="peerHostWait">
-      <div class="mp-status info">🏠 Sala creada — comparte este código</div>
-      <div class="mp-code-big" id="peerCodeDisplay">····</div>
-      <div class="mp-waiting"><div class="mp-spinner"></div>Esperando que alguien se una...</div>
-      <button class="mp-btn mp-btn-full mp-btn-sec" onclick="peerCancel()">Cancelar</button>
-    </div>
-    <!-- guest join -->
-    <div class="mp-step" id="peerGuestJoin">
-      <div class="mp-status info">🚪 Escribe el código del anfitrión</div>
-      <div class="mp-digits">
-        <input class="mp-digit" id="d0" maxlength="1" inputmode="numeric" type="text"/>
-        <input class="mp-digit" id="d1" maxlength="1" inputmode="numeric" type="text"/>
-        <input class="mp-digit" id="d2" maxlength="1" inputmode="numeric" type="text"/>
-        <input class="mp-digit" id="d3" maxlength="1" inputmode="numeric" type="text"/>
-      </div>
-      <div class="mp-btn-row">
-        <button class="mp-btn" onclick="peerJoin()">Unirse →</button>
-        <button class="mp-btn-sec" onclick="peerCancel()">Cancelar</button>
-      </div>
-    </div>
-    <!-- connected → goes to shared mode selector -->
-    <div class="mp-step" id="peerConnected">
-      <div class="mp-status ok">✅ Conectados — elige el modo de juego</div>
-    </div>
-  </div>
-
   <!-- ═══ PANEL RED LOCAL ═══ -->
   <div class="mp-panel" id="panelLan">
     <!-- not connected to server -->
@@ -4630,7 +4569,7 @@ function syncOpsMultDigitButtons(){
   });
 }
 let questions=[],qIndex=0,tblResults={},tableDetailResults={},stepDetailResults={};
-let timerIv=null,timeLeft=0,answered=false,correctAns=0;
+let timerIv=null,timeLeft=0,answered=false,correctAns=0,questionStartedAt=0;
 let totalC=0,totalW=0,totalT=0;
 let lastResult=null,lastResultTs=0;
 let gameScore=0,bestScore=0;
@@ -7730,7 +7669,7 @@ function goStep2(){
       mpCard.classList.add('embedded');
     }
     mpEmbedded=true;
-    // Resetea el estado interno del panel (peerChoice, lanConnect, etc.) si no hay conexión activa
+    // Resetea el estado interno del panel LAN si no hay conexión activa
     if(!mpConnected) openMP(); else switchMPTab(mpCurrentMode||'lan');
   } else {
     soloOnly.style.display='';
@@ -7924,6 +7863,7 @@ function sendSessionUpdate(){
     inventory:_inv,
     lives:currentLives, livesTotal:livesCount,
     streak, timeLeft:Math.round(timeLeft||0), timeLimit:timeLimit||0,
+    questionElapsedMs:questionStartedAt?Math.max(0,Date.now()-questionStartedAt):0,
     lastResult, lastResultTs,
     tblResults:_tblSnap
   }));
@@ -10120,6 +10060,7 @@ function loadQuestion(){
     setTimeout(()=>{ if(!answered) disableInputs(false); },3000);
     if(left===0) renderPowerPanel();
   }
+  questionStartedAt=Date.now();
   startTimer();
 }
 
@@ -11293,6 +11234,7 @@ let mpPeerWantsReplay=false;
 let mpIWantReplay=false;
 let mpReturnToRoomReady=false;
 let mpPeerReturnReady=false;
+let mpLeaveTimer=null;
 
 function showFinalOnlineResults(iAmLastFinisher=false){
   // Cancelar el watchdog para que no vuelva a disparar esta función si ya se resolvió
@@ -11528,18 +11470,14 @@ function onlineRequestReplay(){
 }
 
 function onlineLeaveGame(){
-  mpSendGame({type:'peer_left_results'});
-  mpDisconnect();
-  goStart();
+  if(mpLeaveTimer) clearTimeout(mpLeaveTimer);
+  if(lanWS&&lanWS.readyState===WebSocket.OPEN) lanWS.send(JSON.stringify({type:'game_msg',data:{type:'leave_results'}}));
+  // Esperar el acuse del servidor garantiza que los demás clientes reciban host_left/player_left.
+  mpLeaveTimer=setTimeout(()=>{ mpLeaveTimer=null; mpDisconnect(); goStart(); },1500);
 }
 
 function returnToRoom(){
-  if(mpReturnToRoomReady) return;
-  mpReturnToRoomReady=true;
-  $('returnRoomBtn').textContent='⏳ Esperando a los demás...';
-  $('returnRoomBtn').disabled=true;
-  mpSendGame({type:'return_to_room'});
-  if(mpPeerReturnReady||mpPlayerCount<=1) doReturnToRoom();
+  onlineLeaveGame();
 }
 
 function doReturnToRoom(){
@@ -12498,9 +12436,7 @@ function s3ApplyConfig(cfg){
 }
 // ══════════════════════════════════════════════════════
 let mpConnected=false,mpRole=null,mpSeed=null,mpMyIdx=0;
-let mpCurrentMode='peer'; // 'peer' | 'lan'
-// PeerJS
-let peer=null,peerConn=null;
+let mpCurrentMode='lan'; // WebSocket/LAN is the canonical multiplayer transport
 // LAN WebSocket
 let lanWS=null,lanRoomId=null;
 let mpEmbedded=false; // true cuando mp-card está embebido en step2 en lugar del overlay
@@ -12556,8 +12492,6 @@ setTimeout(()=>{ if(!_serverCheckDone) onServerResult(false); },3000);
 
 function openMP(){
   // ── Full UI reset before opening ──
-  $('peerChoice').style.display='block';
-  document.querySelectorAll('#panelPeer .mp-step').forEach(s=>s.classList.remove('visible'));
   $('lanConnect').style.display='block';
   $('lanLobby').classList.remove('visible');
   $('lanHosting').classList.remove('visible');
@@ -12578,11 +12512,8 @@ function closeMP(){
 }
 
 function switchMPTab(mode){
-  mpCurrentMode=mode;
-  $('tabPeer').classList.toggle('active',mode==='peer');
-  $('tabLan').classList.toggle('active',mode==='lan');
-  $('panelPeer').classList.toggle('visible',mode==='peer');
-  $('panelLan').classList.toggle('visible',mode==='lan');
+  mpCurrentMode='lan';
+  $('panelLan').classList.add('visible');
   // Siempre actualizar la IP con la dirección actual del servidor
   if(mode==='lan') $('lanIpInput').value=window.location.hostname;
   // Conectar automáticamente si no hay conexión activa (sin esperar detección de servidor)
@@ -12648,12 +12579,37 @@ function resetLanRoomState(){
   window.mpILocallyFinished=false;
 }
 
+function mpReturnToLobby(reason){
+  if(mpLeaveTimer){ clearTimeout(mpLeaveTimer); mpLeaveTimer=null; }
+  clearMpWatchdog();
+  clearMpRaceAdvance();
+  clearInterval(timerIv); clearInterval(countdownIv);
+  if($('raceLock')) $('raceLock').className='race-lock';
+  if($('feedbackEl')){ $('feedbackEl').textContent=''; $('feedbackEl').className='feedback'; }
+  if(typeof disableInputs==='function') disableInputs(false);
+  mpRaceAnswered=false; mpRaceAnsweredOk=false; mpRacePeerCorrect=false; mpRaceAnsweredCount=0;
+  resetLanRoomState();
+  stopVoiceCapture(false); stopBgMusic();
+  $('gameScreen').classList.remove('active');
+  $('resultsScreen').classList.remove('active');
+  $('step3Screen').classList.remove('active');
+  $('step3bScreen').classList.remove('active');
+  $('step2Screen').classList.add('active');
+  document.querySelectorAll('.mp-step').forEach(s=>s.classList.remove('visible'));
+  $('lanConnect').style.display='none';
+  $('lanLobby').classList.add('visible');
+  const st=$('lanServerOk');
+  if(st){ st.className='mp-status warn'; st.textContent=reason==='host_left'?'⚠️ El anfitrión abandonó la sala.':reason==='replay_timeout'?'⚠️ La revancha expiró. Elige de nuevo.':'⚠️ La partida terminó. Elige de nuevo.'; }
+  if(lanWS&&lanWS.readyState===WebSocket.OPEN) lanWS.send(JSON.stringify({type:'list_rooms'}));
+}
+
 // ══════════════════════════════════════════════════════
 // MP MODE STATE
 // ══════════════════════════════════════════════════════
 let mpGameMode=null; // race|rounds|bomb|steal|survival|apuestas
 let mpBetAmount=50;  // Áureos apostados por jugador en modo apuestas
 let mpOriginalPlayerCount=2; // número de jugadores al inicio (no cambia si alguien se desconecta)
+window.mpFinishedPlayers=window.mpFinishedPlayers||{};
 const MP_MODE_NAMES={race:'⚡ Carrera',rounds:'🎯 Duelo de Rondas',bomb:'💣 Bomba',steal:'🃏 Robo de Puntos',survival:'🌊 Supervivencia',apuestas:'🎰 Apuestas'};
 // survival
 let mpLives=[3,3];
@@ -12666,6 +12622,17 @@ let mpBombSent=false;    // yo fui quien pasó la bomba (espero respuesta del ri
 let mpRaceAnswered=false;     // I submitted an answer this question
 let mpRaceAnsweredOk=false;   // My answer was correct (already advanced)
 let mpRacePeerCorrect=false;  // Peer answered correctly before me
+let mpRaceAdvanceTimer=null;
+function scheduleMpRaceAdvance(callback,delay){
+  clearMpRaceAdvance();
+  mpRaceAdvanceTimer=setTimeout(()=>{
+    mpRaceAdvanceTimer=null;
+    if(gameMode==='online'&&$('gameScreen').classList.contains('active')) callback();
+  },delay);
+}
+function clearMpRaceAdvance(){
+  if(mpRaceAdvanceTimer){ clearTimeout(mpRaceAdvanceTimer); mpRaceAdvanceTimer=null; }
+}
 // pausa multijugador
 let mpPauseOwner=-1;          // índice del jugador que puso la pausa (-1=nadie)
 let mpRestartConfirms=[];     // jugadores que confirmaron el reinicio
@@ -12720,15 +12687,6 @@ function _mpUpdateModeAvailability(){
 
 function mpOnDisconnected(){
   mpConnected=false; mpRole=null;
-  // Limpiar el estado visual del panel peer para que peerChoice quede visible la próxima vez
-  if(mpCurrentMode==='peer'){
-    try{if(peerConn){peerConn.close();peerConn=null;}}catch(e){}
-    try{if(peer){peer.destroy();peer=null;}}catch(e){}
-    $('peerHostWait').classList.remove('visible');
-    $('peerGuestJoin').classList.remove('visible');
-    $('peerConnected').classList.remove('visible');
-    $('peerChoice').style.display='block';
-  }
   updateMPBar();
   if($('gameScreen').classList.contains('active')||$('step3Screen').classList.contains('active')||$('resultsScreen').classList.contains('active')){
     stopBgMusic(); document.body.classList.remove('duel-p1','duel-p2');
@@ -12938,6 +12896,19 @@ function mpHandleGameMsg(data){
         answered=true; setTimeout(()=>showResults(), 800);
       }
     }
+  } else if(data.type==='replay_status'){
+    if(data.hostConfirmed===false){
+      $('onlineReplayWaitTxt').textContent='Esperando confirmación del anfitrión...';
+      $('onlineReplayWait').style.display='flex';
+    }
+  } else if(data.type==='replay_ready'){
+    mpPlayers=data.playerList||mpPlayers;
+    mpPlayerCount=data.playerCount||mpPlayers.length;
+    if(mpRole==='host'&&mpIWantReplay) doOnlineReplay();
+    else if(mpIWantReplay){
+      $('onlineReplayWaitTxt').textContent='✅ Revancha confirmada. Esperando al anfitrión...';
+      $('onlineReplayWait').style.display='flex';
+    }
   } else if(data.type==='want_replay'){
     mpPeerWantsReplay=true;
     if($('resultsScreen').classList.contains('active')){
@@ -12972,7 +12943,7 @@ function mpHandleGameMsg(data){
       _showCoinDelta(data.stolen,'+');
       showPowerToast(`💴 ¡Robaste ${data.stolen} 🪙 de ${rivalName||'un rival'}!`,3000);
     }
-  } else if(data.type==='peer_left_results'){
+  } else if(data.type==='peer_left_results'||data.type==='peer_left_results_legacy'){
     if($('resultsScreen').classList.contains('active')){
       $('onlineReplayWaitTxt').textContent=`${pName2} salió de la partida`;
       $('onlineReplayWait').style.display='flex';
@@ -13065,13 +13036,11 @@ function mpHandleGameMsg(data){
   }
 }
 
-function mpSendGame(obj){
-  if(mpCurrentMode==='peer') peerSend(obj);
-  else lanSend(obj);
-}
+function mpSendGame(obj){lanSend(obj);}
 
 // handle peer's answer across all modes
 function mpHandlePeerAns(data){
+  if(!$('gameScreen').classList.contains('active')) return;
   LOG.mp(`peerAns - type:${data.type||'ans'} res:${data.res} q:${data.q} myQ:${qIndex} streak:${data.streak}`);
   // Question sync guard
   // For race and bomb modes, ignore any message that doesn't match
@@ -13106,10 +13075,10 @@ function mpHandlePeerAns(data){
         $('raceLock').className='race-lock visible';
         $('raceLock').textContent=`⚡ ¡${mpPlayers.find(p=>p.idx===data.player)?.name||pName2} respondió primero!`;
         qIndex++;
-        setTimeout(()=>{
-          mpRaceAnswered=false; mpRaceAnsweredOk=false; mpRacePeerCorrect=false;
-          loadQuestion();
-        }, 900);
+         scheduleMpRaceAdvance(()=>{
+           mpRaceAnswered=false; mpRaceAnsweredOk=false; mpRacePeerCorrect=false;
+           loadQuestion();
+         }, 900);
       }
       // If mpRaceAnsweredOk=true: I also answered correctly → I already advanced, ignore
     } else {
@@ -13275,7 +13244,7 @@ function mpForceUnstick(){
       $('raceLock').className='race-lock visible';
       $('raceLock').textContent='⏰ Sin respuesta del rival — avanzando...';
       const expectedQ=qIndex; qIndex++;
-      setTimeout(()=>{
+      scheduleMpRaceAdvance(()=>{
         if(qIndex!==expectedQ+1) return; // ya avanzo por otra via, ignorar
         mpRaceAnswered=false;mpRaceAnsweredOk=false;mpRacePeerCorrect=false;mpRaceAnsweredCount=0;
         answered=false;disableInputs(false);$('raceLock').className='race-lock';loadQuestion();
@@ -13376,11 +13345,11 @@ function mpAfterWrong(q){
     // Si todos los peers ya fallaron antes que yo, no hay que esperar mas
     if(mpRaceAnsweredCount >= mpPlayerCount - 1){
       $('raceLock').textContent='🔒 Todos fallaron — siguiente pregunta';
-      setTimeout(()=>{
-        qIndex++;
-        mpRaceAnswered=false; mpRaceAnsweredOk=false; mpRacePeerCorrect=false; mpRaceAnsweredCount=0;
-        answered=false; disableInputs(false); $('raceLock').className='race-lock'; loadQuestion();
-      }, 1300);
+       scheduleMpRaceAdvance(()=>{
+         qIndex++;
+         mpRaceAnswered=false; mpRaceAnsweredOk=false; mpRacePeerCorrect=false; mpRaceAnsweredCount=0;
+         answered=false; disableInputs(false); $('raceLock').className='race-lock'; loadQuestion();
+       }, 1300);
       return 'RACE_WAITING';
     }
     $('raceLock').textContent='🔒 Fallaste — esperando a tu rival...';
@@ -13419,11 +13388,11 @@ function mpAfterTimeout(q){
     // Si todos los peers ya fallaron antes que se agotara mi tiempo, avanzar de inmediato
     if(mpRaceAnsweredCount >= mpPlayerCount - 1){
       $('raceLock').textContent='🔒 Todos fallaron — siguiente pregunta';
-      setTimeout(()=>{
-        qIndex++;
-        mpRaceAnswered=false; mpRaceAnsweredOk=false; mpRacePeerCorrect=false; mpRaceAnsweredCount=0;
-        answered=false; disableInputs(false); $('raceLock').className='race-lock'; loadQuestion();
-      }, 1300);
+       scheduleMpRaceAdvance(()=>{
+         qIndex++;
+         mpRaceAnswered=false; mpRaceAnsweredOk=false; mpRacePeerCorrect=false; mpRaceAnsweredCount=0;
+         answered=false; disableInputs(false); $('raceLock').className='race-lock'; loadQuestion();
+       }, 1300);
       return 'RACE_WAITING';
     }
     $('raceLock').textContent='⏰ Tiempo agotado — esperando a tu rival...';
@@ -13431,83 +13400,6 @@ function mpAfterTimeout(q){
     return 'RACE_WAITING';
   }
   return null;
-}
-
-// ========================================================
-// MULTIPLAYER - PeerJS (codigo 4 digitos)
-// ========================================================
-function peerHost(){
-  if(typeof Peer==='undefined'||window._peerJSFailed){
-    alert('PeerJS no está disponible. Verifica tu conexión a internet e intenta de nuevo.');
-    return;
-  }
-  $('peerChoice').style.display='none';
-  $('peerHostWait').classList.add('visible');
-  const code=(1000+Math.floor(Math.random()*9000)).toString();
-  $('peerCodeDisplay').textContent=code;
-  mpSeed=Date.now();
-  try{
-    peer=new Peer('tablas-'+code);
-    peer.on('open',()=>{});
-    peer.on('connection',conn=>{
-      peerConn=conn;
-      conn.on('open',()=>{
-        peerConn.send(JSON.stringify({type:'hello',name:pName,seed:mpSeed}));
-        $('peerHostWait').classList.remove('visible');
-        $('peerConnected').classList.add('visible');
-        mpOnConnected('host','');
-      });
-      conn.on('data',raw=>{ const d=JSON.parse(raw); if(d.type==='hello')mpOnConnected('host',d.name); else mpHandleGameMsg(d); });
-      conn.on('close',()=>mpOnDisconnected());
-    });
-    peer.on('error',e=>{ $('peerHostWait').classList.remove('visible'); $('peerChoice').style.display='block'; alert('Error PeerJS: '+e.type+'. ¿Hay internet?'); });
-  }catch(e){ alert('PeerJS no disponible: '+e.message); peerCancel(); }
-}
-function peerGuest(){
-  if(typeof Peer==='undefined'||window._peerJSFailed){
-    alert('PeerJS no está disponible. Verifica tu conexión a internet e intenta de nuevo.');
-    return;
-  }
-  $('peerChoice').style.display='none';
-  $('peerGuestJoin').classList.add('visible');
-  // setup digit jump
-  ['d0','d1','d2','d3'].forEach((id,i,arr)=>{
-    const el=$(id);
-    el.value='';
-    el.oninput=()=>{ if(el.value&&i<arr.length-1) $(arr[i+1]).focus(); };
-    el.onkeydown=e=>{ if(e.key==='Backspace'&&!el.value&&i>0) $(arr[i-1]).focus(); };
-  });
-  setTimeout(()=>$('d0').focus(),100);
-}
-function peerJoin(){
-  const code=[$('d0'),$('d1'),$('d2'),$('d3')].map(e=>e.value).join('');
-  if(code.length<4){ $('d0').focus(); return; }
-  try{
-    peer=new Peer();
-    peer.on('open',()=>{
-      peerConn=peer.connect('tablas-'+code);
-      peerConn.on('open',()=>{
-        peerConn.send(JSON.stringify({type:'hello',name:pName}));
-        $('peerGuestJoin').classList.remove('visible');
-        $('peerConnected').classList.add('visible');
-        mpOnConnected('guest','');
-      });
-      peerConn.on('data',raw=>{ const d=JSON.parse(raw); if(d.type==='hello'){mpSeed=d.seed;mpOnConnected('guest',d.name);} else mpHandleGameMsg(d); });
-      peerConn.on('close',()=>mpOnDisconnected());
-    });
-    peer.on('error',e=>{ alert('No se encontró la sala "'+code+'". Verifica el código.'); peerCancel(); });
-  }catch(e){ alert('PeerJS no disponible: '+e.message); peerCancel(); }
-}
-function peerSend(obj){ if(peerConn&&peerConn.open) try{ peerConn.send(JSON.stringify(obj)); }catch(e){} }
-function peerCancel(){
-  try{if(peerConn){peerConn.close();peerConn=null;}}catch(e){}
-  try{if(peer){peer.destroy();peer=null;}}catch(e){}
-  mpConnected=false; mpRole=null;
-  $('peerHostWait').classList.remove('visible');
-  $('peerGuestJoin').classList.remove('visible');
-  $('peerConnected').classList.remove('visible');
-  $('peerChoice').style.display='block';
-  updateMPBar();
 }
 
 // ══════════════════════════════════════════════════════
@@ -13698,6 +13590,11 @@ function lanConnectServer(){
         }
         updateMPBar();
       }
+      else if(msg.type==='leave_ack'){ if(mpLeaveTimer){ clearTimeout(mpLeaveTimer); mpLeaveTimer=null; } mpDisconnect(); goStart(); }
+      else if(msg.type==='return_to_lobby') mpReturnToLobby(msg.reason);
+      else if(msg.type==='replay_excluded') mpReturnToLobby('not_confirmed');
+      else if(msg.type==='replay_ready') mpHandleGameMsg({type:'replay_ready',playerList:msg.playerList,playerCount:msg.playerCount});
+      else if(msg.type==='replay_status') mpHandleGameMsg({type:'replay_status',hostConfirmed:msg.hostConfirmed,confirmed:msg.confirmed,playerCount:msg.playerCount});
       else if(msg.type==='game_msg') mpHandleGameMsg(msg.data);
       else if(msg.type==='player_left'){
         // Si habia un reinicio multijugador pendiente (esperando confirmaciones), cancelarlo:
@@ -13737,10 +13634,10 @@ function lanConnectServer(){
                 $('raceLock').className='race-lock visible';
                 $('raceLock').textContent='🔒 Todos fallaron — siguiente pregunta';
                 qIndex++;
-                setTimeout(()=>{
-                  mpRaceAnswered=false;mpRaceAnsweredOk=false;mpRacePeerCorrect=false;mpRaceAnsweredCount=0;
-                  answered=false;disableInputs(false);$('raceLock').className='race-lock';loadQuestion();
-                },1300);
+                 scheduleMpRaceAdvance(()=>{
+                   mpRaceAnswered=false;mpRaceAnsweredOk=false;mpRacePeerCorrect=false;mpRaceAnsweredCount=0;
+                   answered=false;disableInputs(false);$('raceLock').className='race-lock';loadQuestion();
+                 },1300);
               }
             }
           } else if(mpIFinished){
@@ -13781,15 +13678,8 @@ function lanConnectServer(){
         }
       }
       else if(msg.type==='host_left'){
-        // El anfitrion abandono la sala - regresar al listado sin cerrar la conexion
-        resetLanRoomState();
-        $('step3Screen').classList.remove('active');
-        $('step3bScreen').classList.remove('active');
-        $('step2Screen').classList.add('active');
-        document.querySelectorAll('.mp-step').forEach(s=>s.classList.remove('visible'));
-        $('lanLobby').classList.add('visible');
-        const st=$('lanServerOk'); if(st){ st.className='mp-status warn'; st.textContent='⚠️ El anfitrión abandonó la sala.'; setTimeout(()=>{ st.className='mp-status ok'; st.textContent='✅ Servidor conectado'; },3000); }
-        if(lanWS&&lanWS.readyState===WebSocket.OPEN) lanWS.send(JSON.stringify({type:'list_rooms'}));
+        // El anfitrión abandonó la sala: limpiar también juego, resultados y avisos de Carrera.
+        mpReturnToLobby('host_left');
       }
       else if(msg.type==='maestro_cmd'){
         // El maestro pausa/reanuda directamente todos los clientes a la vez — no usar el sistema peer
@@ -13914,7 +13804,7 @@ function lanSend(obj){
   if(!lanWS||lanWS.readyState!==WebSocket.OPEN)return;
   try{ lanWS.send(JSON.stringify({type:'game_msg', data:obj})); }catch(e){}
 }
-function mpDisconnect(){ if(mpCurrentMode==='peer') peerCancel(); else lanDisconnect(); }
+function mpDisconnect(){lanDisconnect();}
 
 // ══════════════════════════════════════════════════════
 // AUDIO
@@ -14450,7 +14340,7 @@ function showWorkspaceView(view){
   const data={tests:['▣','PRUEBAS','Pruebas','Ingresa el TestID proporcionado por tu maestro para comenzar.'],missions:['◇','MISIONES','Misiones','Este centro está preparado para organizar tus próximos desafíos.'],ranking:['♜','PROGRESO PERSONAL','Ranking personal','Tu evolución y tus mejores marcas aparecerán aquí.']}[view]||['◇','MÓDULO PREPARADO','Próximamente','Este espacio está preparado para una futura expansión del centro de operaciones.'];
   $('workspaceModuleIcon')&&($('workspaceModuleIcon').textContent=data[0]);$('workspaceModuleEyebrow')&&($('workspaceModuleEyebrow').textContent=data[1]);$('workspaceModuleTitle')&&($('workspaceModuleTitle').textContent=data[2]);$('workspaceModuleCopy')&&($('workspaceModuleCopy').textContent=data[3]);shell.classList.add('workspace-show-module');
 }
-function selectWorkspaceMode(btn,mode){document.querySelectorAll('#workspaceSidebar .workspace-nav-item').forEach(item=>item.classList.remove('active'));btn?.classList.add('active');const target=document.querySelector(`#step1Screen [data-mode="${mode}"]`);if(target)target.click();$('workspaceStatusText')&&($('workspaceStatusText').textContent=mode==='solo'?'Modo individual listo':mode==='duel'?'Duelo listo':'Multijugador listo');workspaceDynamicStart(mode);}
+function selectWorkspaceMode(btn,mode){document.querySelectorAll('#workspaceSidebar .workspace-nav-item').forEach(item=>item.classList.remove('active'));btn?.classList.add('active');const target=document.querySelector(`#step1Screen [data-mode="${mode}"]`);if(target)target.click();$('workspaceStatusText')&&($('workspaceStatusText').textContent=mode==='solo'?'Modo individual listo':mode==='duel'?'Duelo listo':'Multijugador listo');if(mode==='online'){mpCurrentMode='lan';goStep2();return;}workspaceDynamicStart(mode);}
 // Los iconos se definen explícitamente en el HTML y JavaScript.
 </script>
 

@@ -59,6 +59,7 @@ $script:stderrReader    = $null
 $script:stdoutTask      = $null
 $script:stderrTask      = $null
 $script:serverStartTime = $null   # para el temporizador de actividad
+$script:serverShutdownToken = $null
 $script:intentionalStop = $false  # distingue stop manual vs crash
 $script:hotspotActivo   = $false
 $script:hotspotSSID     = "MathAttack"
@@ -252,9 +253,36 @@ function Clear-Port8080 {
     $pids  = $lines | ForEach-Object { ($_ -split '\s+')[-1] } |
              Where-Object { $_ -match '^\d+$' -and $_ -ne '0' } | Sort-Object -Unique
     foreach ($p in $pids) {
-        try { Stop-Process -Id ([int]$p) -Force -ErrorAction Stop
-              Write-Log "Puerto 8080 liberado (PID $p)`n" $C.YELLOW } catch {}
+        try {
+            $processInfo = Get-CimInstance Win32_Process -Filter "ProcessId=$p" -ErrorAction Stop
+            $isMathAttackNode = $processInfo -and $processInfo.Name -eq 'node.exe' -and
+                $processInfo.CommandLine -match '(?i)(^|[\\/\s])server\.js([\s"]|$)' -and
+                $processInfo.CommandLine -like "*$scriptDir*"
+            if ($isMathAttackNode) {
+                Stop-Process -Id ([int]$p) -Force -ErrorAction Stop
+                Write-Log "Puerto 8080 liberado (PID $p)`n" $C.YELLOW
+            } else {
+                Write-Log "Se dejo intacto el proceso PID ${p}: no parece ser Math Attack.`n" $C.DIM
+            }
+        } catch {}
     }
+}
+
+function Request-GracefulServerStop {
+    if ($null -eq $global:serverProcess -or $global:serverProcess.HasExited) { return $true }
+    if ([string]::IsNullOrWhiteSpace($script:serverShutdownToken)) { return $false }
+    try {
+        $headers = @{ 'X-Math-Attack-Shutdown' = $script:serverShutdownToken }
+        Invoke-WebRequest -Uri 'http://127.0.0.1:8080/api/local/shutdown' -Method Post -Headers $headers -TimeoutSec 3 -UseBasicParsing | Out-Null
+        if ($global:serverProcess.WaitForExit(4000)) {
+            Write-Log "Servidor confirmo cierre ordenado y guardo sus datos.`n" $C.GREEN
+            return $true
+        }
+        Write-Log "El servidor no termino a tiempo; se usara cierre forzado.`n" $C.YELLOW
+    } catch {
+        Write-Log "No se pudo solicitar cierre ordenado: $($_.Exception.Message)`n" $C.YELLOW
+    }
+    return $false
 }
 
 # ---- Verificaciones y bootstrap local para la copia portable ----
@@ -272,6 +300,7 @@ function Test-NodeInstalled {
 }
 
 function Get-PortableNodeDir {
+    if ($env:MATH_ATTACK_USE_SYSTEM_NODE -eq '1') { return $null }
     if ($env:MATH_ATTACK_NODE_DIR -and (Test-Path $env:MATH_ATTACK_NODE_DIR)) {
         return Get-Item $env:MATH_ATTACK_NODE_DIR
     }
@@ -283,7 +312,7 @@ function Get-PortableNodeDir {
 }
 
 function Get-PreferredNodePath {
-    if ($env:MATH_ATTACK_NODE_EXE -and (Test-Path $env:MATH_ATTACK_NODE_EXE)) {
+    if ($env:MATH_ATTACK_USE_SYSTEM_NODE -ne '1' -and $env:MATH_ATTACK_NODE_EXE -and (Test-Path $env:MATH_ATTACK_NODE_EXE)) {
         return $env:MATH_ATTACK_NODE_EXE
     }
     $portable = Get-PortableNodeDir
@@ -299,7 +328,7 @@ function Get-PreferredNodePath {
 }
 
 function Get-PreferredNpmPath {
-    if ($env:MATH_ATTACK_NPM_CMD -and (Test-Path $env:MATH_ATTACK_NPM_CMD)) {
+    if ($env:MATH_ATTACK_USE_SYSTEM_NODE -ne '1' -and $env:MATH_ATTACK_NPM_CMD -and (Test-Path $env:MATH_ATTACK_NPM_CMD)) {
         return $env:MATH_ATTACK_NPM_CMD
     }
     $portable = Get-PortableNodeDir
@@ -729,6 +758,8 @@ function Start-Server {
     $psi.RedirectStandardError  = $true
     $psi.StandardOutputEncoding = [System.Text.Encoding]::UTF8
     $psi.StandardErrorEncoding  = [System.Text.Encoding]::UTF8
+    $shutdownToken = [guid]::NewGuid().ToString('N')
+    $psi.EnvironmentVariables['MATH_ATTACK_SHUTDOWN_TOKEN'] = $shutdownToken
 
     try {
         $proc = New-Object System.Diagnostics.Process
@@ -741,6 +772,7 @@ function Start-Server {
         $script:stdoutTask          = $script:stdoutReader.ReadLineAsync()
         $script:stderrTask          = $script:stderrReader.ReadLineAsync()
         $script:serverStartTime     = [datetime]::Now
+        $script:serverShutdownToken = $shutdownToken
         $script:intentionalStop     = $false
 
         $script:btnStart.Enabled    = $false
@@ -771,6 +803,7 @@ function Set-ServerStopped {
     $script:stdoutTask          = $null
     $script:stderrTask          = $null
     $script:serverStartTime     = $null
+    $script:serverShutdownToken = $null
     $script:btnStart.Enabled    = $true
     $script:btnStop.Enabled     = $false
     $script:pnlStatus.BackColor = $C.RED
@@ -1267,7 +1300,9 @@ $script:btnStop.add_Click({
         $script:intentionalStop = $true
         $script:restartTimer.Stop()
         Write-Log "Deteniendo servidor...`n" $C.YELLOW
-        try { $global:serverProcess.Kill() } catch {}
+        if (-not (Request-GracefulServerStop)) {
+            try { $global:serverProcess.Kill() } catch {}
+        }
     }
 })
 
@@ -1370,7 +1405,9 @@ $form.add_FormClosing({
             [System.Windows.Forms.MessageBoxIcon]::Warning)
         if ($res -eq [System.Windows.Forms.DialogResult]::Yes) {
             $script:intentionalStop = $true
-            try { $global:serverProcess.Kill() } catch {}
+            if (-not (Request-GracefulServerStop)) {
+                try { $global:serverProcess.Kill() } catch {}
+            }
         } else {
             $_.Cancel = $true
             return

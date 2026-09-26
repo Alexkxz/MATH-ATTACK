@@ -41,7 +41,39 @@ const { chromium } = require('playwright');
     assert.equal(await page.locator('#prLiveTestSelect').inputValue(), 'test-previo');
     const fetches = await page.evaluate(() => window.__liveResultFetches);
     assert(fetches.some(url => url.includes('/api/maestro/tests/test-previo/attempts')), 'debe cargar resultados de la prueba previa');
-    console.log('OK resultados live: dos pruebas activas visibles y seleccionables');
+
+    await page.evaluate(() => {
+      window.__pendingAttempts = [];
+      window.fetch = url => new Promise(resolve => window.__pendingAttempts.push({ url: String(url), resolve }));
+    });
+    await page.selectOption('#prLiveTestSelect', 'test-previo');
+    await page.selectOption('#prLiveTestSelect', 'test-ultima');
+    await page.waitForFunction(() => window.__pendingAttempts.length === 2);
+    await page.evaluate(() => {
+      const latest = window.__pendingAttempts.find(item => item.url.includes('test-ultima'));
+      latest.resolve(new Response(JSON.stringify({ attempts: [{ name: 'Alumno actual', grade: '5A', status: 'in_progress', index: 2, totalQuestions: 5, correct: 2, incorrect: 0, updatedAt: new Date().toISOString() }] }), { status: 200 }));
+    });
+    await page.waitForFunction(() => document.getElementById('prLiveResultsCards').textContent.includes('Alumno actual'));
+    await page.evaluate(() => {
+      const previous = window.__pendingAttempts.find(item => item.url.includes('test-previo'));
+      previous.resolve(new Response(JSON.stringify({ attempts: [{ name: 'Alumno anterior', grade: '5A', status: 'in_progress', index: 4, totalQuestions: 5, correct: 4, incorrect: 0, updatedAt: new Date().toISOString() }] }), { status: 200 }));
+    });
+    await page.waitForTimeout(20);
+    const cards = await page.locator('#prLiveResultsCards').textContent();
+    assert(cards.includes('Alumno actual') && !cards.includes('Alumno anterior'), 'una respuesta tardía no debe reemplazar las tarjetas del folio seleccionado');
+    await page.evaluate(() => window.prUpdateLiveSessions([{
+      isExam: true, examTestId: 'test-ultima', examStartedAt: Date.now() - 65000,
+      accountPlayerId: 'alumno-vivo', name: 'Alumno en vivo', grade: '6° Grado',
+      correct: 3, wrong: 1, totalQ: 8, currentQuestion: '7 × 8', questionElapsedMs: 4200,
+      timeLeft: 6, timeLimit: 10, paused: false
+    }]));
+    await page.waitForFunction(() => document.getElementById('prLiveResultsCards').textContent.includes('Alumno en vivo'));
+    const liveCard = await page.locator('#prLiveResultsCards').textContent();
+    assert(liveCard.includes('7 × 8') && liveCard.includes('ACIERTOS') && liveCard.includes('ERRORES') && liveCard.includes('Pregunta 0:04') && liveCard.includes('Sesión 1:05'), 'la tarjeta viva debe mostrar pregunta, aciertos, errores y tiempos');
+    const css = fs.readFileSync('src/client/maestro/pruebas.css', 'utf8');
+    assert(css.includes('.pr-live-result-foot{flex-direction:column}'), 'el pie de tarjeta debe apilarse en móvil');
+    assert(css.includes('.pr-live-result-question'), 'la pregunta actual debe conservar estilo de tarjeta');
+    console.log('OK resultados live: selector, tarjetas, estado de sesión y respuestas tardías aisladas por folio');
   } finally {
     await browser.close();
   }

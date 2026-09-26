@@ -121,7 +121,7 @@ async function main() {
     await Promise.all(clients.map(client => client.open()));
 
     const panelInitial = await maestro.next(message => message.type === 'panel_state');
-    assert.deepEqual(Object.keys(panelInitial).sort(), ['connectedNames', 'examFinished', 'examMode', 'opStats', 'sessions', 'ts', 'type'].sort());
+    assert.deepEqual(Object.keys(panelInitial).sort(), ['connectedNames', 'examFinished', 'examMode', 'examModes', 'opStats', 'sessions', 'ts', 'type'].sort());
     await live.next(message => message.type === 'live_scores');
     ana.send({ type: 'player_identify', name: 'Ana', grade: '3' });
     ana.send({ type: 'session_update', name: 'Ana', grade: '3', gameMode: 'solo', score: 12, status: 'playing' });

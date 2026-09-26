@@ -12,6 +12,7 @@ function createPlayerIdentityMessages({ wsContext, genId, checkExamNotify, deliv
     ws.playerId = session.id;
     ws._uid = session.id;
     ws.playerName = name;
+    ws.grade = session.grade || '';
     return session;
   }
 
@@ -33,6 +34,8 @@ function createPlayerIdentityMessages({ wsContext, genId, checkExamNotify, deliv
     session.id = ws.playerId;
     session.name = message.name || session.name || '?';
     session.grade = message.grade || session.grade || '';
+    ws.playerName = session.name;
+    ws.grade = session.grade;
     if (!session.gameMode) session.gameMode = 'idle';
     checkExamNotify(ws, session.grade);
     deliverPendingPotMsg(session);
@@ -41,11 +44,13 @@ function createPlayerIdentityMessages({ wsContext, genId, checkExamNotify, deliv
   function handleSessionUpdate(ws, message) {
     const session = getOrCreateSession(ws, message);
     if (message.name) ws.playerName = message.name;
-    checkExamNotify(ws, message.grade);
     session.ws = ws;
     session.id = getSessionId(ws);
     session.name = message.name || ws.playerName || '?';
     session.grade = message.grade || '';
+    ws.playerName = session.name;
+    ws.grade = session.grade;
+    checkExamNotify(ws, session.grade);
     session.gameMode = message.gameMode || 'solo';
     session.mpGameMode = message.mpGameMode || '';
     session.gameType = message.gameType || 'timed';
@@ -70,6 +75,7 @@ function createPlayerIdentityMessages({ wsContext, genId, checkExamNotify, deliv
     session.streak = message.streak || 0;
     session.timeLeft = message.timeLeft || 0;
     session.timeLimit = message.timeLimit || 0;
+    session.questionElapsedMs = Math.max(0, Number(message.questionElapsedMs) || 0);
     session.lastResult = message.lastResult || null;
     session.lastResultTs = message.lastResultTs || 0;
     session.tblResults = message.tblResults || {};
