@@ -13,6 +13,9 @@ ultima-ip.txt
 backups/
 evidencias/
 artifacts/
+output/*
+!output/pdf/
+!output/pdf/**
 
 players.json
 ranking.json
