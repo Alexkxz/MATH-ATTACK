@@ -143,7 +143,7 @@ function createOfficialRewardService({
     return {
       aureos: tierAmount === null ? (rewardsConfig.aureos === undefined ? (legacyRewards ? Math.max(0, Number(game.earnedAureos) || 0) : 0) : rewardsConfig.aureos) : tierAmount,
       experience: rewardsConfig.experience === undefined ? (legacyRewards ? Math.max(0, Number(game.earnedExperience) || 0) : 0) : rewardsConfig.experience,
-      streak: streak ? { ...clone(streak), bonus: legacyRewards ? (Number(streak.bonus) || 0) : (streakRule.bonus === undefined ? 0 : streakRule.bonus) } : null,
+      streak: streak ? { ...clone(streak), bonus: 0 } : null,
       achievements: (legacyRewards ? detectedAchievements : detectedAchievements.filter(id => enabledAchievements.has(id))).map(id => ({
         id,
         bonus: legacyRewards ? (Number(definitionById.get(id)?.bonus) || 0) : (Number(rewardsConfig.achievements[id].bonus ?? definitionById.get(id)?.bonus) || 0),
@@ -284,8 +284,6 @@ function createOfficialRewardService({
     });
     if (settlement.rewards.streak) applyType(settlement, 'streak', player, players, () => {
       player.dailyStreak = clone(settlement.rewards.streak.dailyStreak);
-      addAureos(settlement.rewards.streak.bonus || 0);
-      if (settlement.rewards.streak.bonus) logAureosTx(player, settlement.rewards.streak.bonus, 'racha_oficial');
     });
     for (const achievement of settlement.rewards.achievements) {
       applyType(settlement, `achievement:${achievement.id}`, player, players, () => {

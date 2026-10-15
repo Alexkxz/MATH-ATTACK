@@ -49,10 +49,10 @@ const step = 0.25;
 const arpeggio = [0, 1, 2, 1, 0, 1, 2, 1, 2, 1, 0, 1, 2, 1, 0, 1];
 chords.forEach((chord, chordIndex) => {
   const start = chordIndex * 4;
-  arpeggio.forEach((noteIndex, stepIndex) => addNote(start + stepIndex * step, 0.2, chord[noteIndex], 0.09, 'soft-square', stepIndex % 2 ? 0.12 : -0.12, 0.08));
+  arpeggio.forEach((noteIndex, stepIndex) => addNote(start + stepIndex * step, 0.24, chord[noteIndex], 0.045, 'sine', stepIndex % 2 ? 0.08 : -0.08, 0.04));
   for (let beat = 0; beat < 4; beat += 1) {
-    addNote(start + beat, 0.32, chord[0] / 2, 0.13, 'square', 0, 0.12);
-    addNote(start + beat + 0.5, 0.18, chord[0], 0.045, 'triangle', 0, 0.1);
+    addNote(start + beat, 0.28, chord[0] / 2, 0.07, 'sine', 0, 0.06);
+    addNote(start + beat + 0.5, 0.22, chord[0], 0.035, 'sine', 0, 0.05);
   }
 });
 
@@ -62,17 +62,17 @@ const melody = [
   [8.0, 440], [8.5, 523.25], [9.0, 659.25], [9.5, 523.25], [10.0, 440], [10.75, 329.63],
   [12.0, 392], [12.5, 493.88], [13.0, 587.33], [13.5, 659.25], [14.0, 587.33], [14.75, 493.88]
 ];
-melody.forEach(([start, frequency], index) => addNote(start, 0.36, frequency, 0.16, 'triangle', index % 2 ? 0.18 : -0.18, 0.22));
+melody.forEach(([start, frequency], index) => addNote(start, 0.42, frequency, 0.06, 'triangle', index % 2 ? 0.1 : -0.1, 0.1));
 
 // Pulso grave discreto para que la pista tenga movimiento sin competir con el juego.
-for (let start = 0; start < duration; start += 1) addNote(start, 0.12, 82.41, 0.14, 'soft-square', 0, 0.2);
+for (let start = 0; start < duration; start += 1) addNote(start, 0.16, 82.41, 0.055, 'sine', 0, 0.08);
 
 // Entrada y salida cortas para evitar clics al repetir la pista.
 for (let index = 0; index < frames; index += 1) {
   const time = index / sampleRate;
   const edge = Math.min(1, time / 0.12, (duration - time) / 0.12);
-  left[index] = clamp(left[index] * edge * 1.8);
-  right[index] = clamp(right[index] * edge * 1.8);
+  left[index] = clamp(left[index] * edge * 1.45);
+  right[index] = clamp(right[index] * edge * 1.45);
 }
 
 const dataSize = frames * 4;

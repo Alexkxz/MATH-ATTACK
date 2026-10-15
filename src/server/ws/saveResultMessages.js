@@ -58,30 +58,22 @@ function createSaveResultMessages({
       player.gamesPlayed = (player.gamesPlayed || 0) + 1;
       const dailyStreak = calculateDailyStreak(player.dailyStreak);
       player.dailyStreak = dailyStreak.dailyStreak;
-      const streakBonus = dailyStreak.bonus;
-      if (streakBonus > 0) {
-        player.aureos += streakBonus;
-        player.experiencia += streakBonus;
-        logAureosTx(player, streakBonus, 'racha_diaria');
-      }
       const newAchievements = checkNewAchievements(player, { ...message, tblResults: message.tblResults || {} }, loadRanking());
-      let bonusTotal = earnedAureos + streakBonus;
       if (newAchievements.length) {
         newAchievements.forEach(achievementId => {
           const definition = ACHIEVEMENTS_DEF.find(achievement => achievement.id === achievementId);
           if (definition) {
             player.aureos += definition.bonus;
             player.experiencia += definition.bonus;
-            bonusTotal += definition.bonus;
             logAureosTx(player, definition.bonus, `logro:${achievementId}`);
           }
         });
       }
       savePlayers(players);
-      if (earnedAureos > 0 || streakBonus > 0 || newAchievements.length) {
+      if (earnedAureos > 0 || newAchievements.length) {
         send(ws, {
           type: 'aureos_earned', amount: earnedAureos, total: player.aureos,
-          experiencia: player.experiencia, experience: player.experiencia, streakBonus,
+          experiencia: player.experiencia, experience: player.experiencia, streakBonus: 0,
           streak: player.dailyStreak.current, newAchievements, varietyMult,
           magnetBonus: !!message.aureosBonus,
         });

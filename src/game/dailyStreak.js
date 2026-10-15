@@ -22,9 +22,7 @@ function calculateDailyStreak(dailyStreak, controlledDate){
   streak.current=(streak.lastDate===yesterdayText)?streak.current+1:1;
   streak.best=Math.max(streak.best,streak.current);
   streak.lastDate=today;
-  const current=streak.current;
-  const bonus=current>=30?200:current>=7?50:current>=3?15:5;
-  return {dailyStreak:streak,bonus};
+  return {dailyStreak:streak,bonus:0};
 }
 
 module.exports = { calculateDailyStreak };

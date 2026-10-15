@@ -47,6 +47,9 @@ function createHttpAdminRoutes(context) {
 
   function handle(req, res) {
     const url = req.url.split('?')[0];
+  if(req.method==='POST'&&url==='/api/players/coinrob'){
+    return sendJson(res,410,{ok:false,error:'El robo de monedas se liquida desde la partida.'});
+  }
   if(req.method==='POST'&&url==='/api/ranking/exam-pdf'){
     return readBody(req,res,async body=>{
       let data={};try{data=JSON.parse(body||'{}');}catch(_){return sendJson(res,400,{ok:false,error:'Solicitud invalida'});}
@@ -438,12 +441,13 @@ function createHttpAdminRoutes(context) {
       try{
         // Catálogo de precios en el servidor — el cliente nunca dicta el costo
         const POWER_COSTS={
-          shield:60, magnifier:160, extratime:75, fifty:35, secondchance:40,
-          streaksafe:45, doublepts:110, skip:40, blind:120, chaos:80,
-          freeze:105, steal:150, bomb2:100, mirror:185, hardq:70,
-          drainlife:90, timethief:85, sabotage:110, fog:75, curse:80, inversion:130,
-          bounce:140, doubleornothing:60, slow:65, confusion:95, coinrob:100,
-          aureosmagnet:120, streakbreak:85, blackout:140, aura:200, sticker:25,
+          shield:55, magnifier:150, extratime:100, fifty:60, secondchance:60,
+          streaksafe:50, doublepts:130, skip:85, blind:95, chaos:110,
+          freeze:85, steal:140, mirror:150, hardq:45,
+          drainlife:140, timethief:70, sabotage:105, fog:55, curse:60, inversion:170,
+          bounce:110, doubleornothing:55, coinrob:90,
+          aureosmagnet:30, streakbreak:50, aura:130, sticker:20,
+          hint:35, antidote:35, mirrorchallenge:55,
         };
         const {id,powerId}=JSON.parse(body);
         const cost=POWER_COSTS[powerId];
@@ -772,26 +776,6 @@ function createHttpAdminRoutes(context) {
     }); return;
   }
 
-  // ── Registrar robo de monedas (coinrob) en ambos jugadores ──
-  if(req.method==='POST'&&url==='/api/players/coinrob'){
-    readBody(req,res,body=>{
-      try{
-        const {attackerId,attackerName,victimName,stolen}=JSON.parse(body);
-        const amount=Math.max(0,Math.floor(stolen||0));
-        if(!amount){ res.writeHead(200,{'Content-Type':'application/json'}); res.end(JSON.stringify({ok:true})); return; }
-        const players=loadPlayers();
-        const attacker=resolveAccountPlayer(players,{accountPlayerId:attackerId,name:attackerName||''});
-        const victim=findPlayerByName(players,victimName||'');
-        if(attacker){ ensurePlayerExperience(attacker); attacker.aureos=(attacker.aureos||0)+amount; logAureosTx(attacker,amount,'robo_realizado'); }
-        if(victim){ ensurePlayerExperience(victim); victim.aureos=Math.max(0,(victim.aureos||0)-amount); logAureosTx(victim,-amount,'robo_recibido'); }
-        if(attacker||victim){ savePlayers(players); L.game(`Coinrob: ${attackerName||'?'} robó ${amount} 🪙 a ${victimName||'?'}`); }
-        res.writeHead(200,{'Content-Type':'application/json'});
-        res.end(JSON.stringify({ok:true}));
-      }catch(e){ res.writeHead(400); res.end('{}'); }
-    }); return;
-  }
-
-  // ── Guardar avatar personalizado del alumno ──
   if(req.method==='POST'&&url==='/api/players/set-avatar'){
     readBody(req, res, body=>{
       try{

@@ -44,7 +44,14 @@ const { chromium } = require('playwright');
 
     await page.evaluate(() => {
       window.__pendingAttempts = [];
-      window.fetch = url => new Promise(resolve => window.__pendingAttempts.push({ url: String(url), resolve }));
+      window.fetch = url => {
+        const value = String(url);
+        // El refresco de resultados también consulta el roster. Esas respuestas
+        // auxiliares no forman parte de la carrera que este test quiere comparar.
+        if (value.includes('/assignments')) return Promise.resolve(new Response(JSON.stringify({ assignments: [] }), { status: 200 }));
+        if (value.endsWith('/api/players')) return Promise.resolve(new Response(JSON.stringify([]), { status: 200 }));
+        return new Promise(resolve => window.__pendingAttempts.push({ url: value, resolve }));
+      };
     });
     await page.selectOption('#prLiveTestSelect', 'test-previo');
     await page.selectOption('#prLiveTestSelect', 'test-ultima');
@@ -69,9 +76,9 @@ const { chromium } = require('playwright');
     }]));
     await page.waitForFunction(() => document.getElementById('prLiveResultsCards').textContent.includes('Alumno en vivo'));
     const liveCard = await page.locator('#prLiveResultsCards').textContent();
-    assert(liveCard.includes('7 × 8') && liveCard.includes('ACIERTOS') && liveCard.includes('ERRORES') && liveCard.includes('Pregunta 0:04') && liveCard.includes('Sesión 1:05'), 'la tarjeta viva debe mostrar pregunta, aciertos, errores y tiempos');
+    assert(liveCard.includes('7 × 8') && liveCard.includes('ACIERTOS') && liveCard.includes('ERRORES') && liveCard.includes('Pregunta 0:04') && liveCard.includes('Restan 0:06'), `la tarjeta viva debe mostrar pregunta, aciertos, errores y tiempos. Actual: ${liveCard}`);
     const css = fs.readFileSync('src/client/maestro/pruebas.css', 'utf8');
-    assert(css.includes('.pr-live-result-foot{flex-direction:column}'), 'el pie de tarjeta debe apilarse en móvil');
+    assert(css.includes('.pr-live-result-foot{align-items:flex-start;flex-direction:column'), 'el pie de tarjeta debe apilarse en móvil');
     assert(css.includes('.pr-live-result-question'), 'la pregunta actual debe conservar estilo de tarjeta');
     console.log('OK resultados live: selector, tarjetas, estado de sesión y respuestas tardías aisladas por folio');
   } finally {

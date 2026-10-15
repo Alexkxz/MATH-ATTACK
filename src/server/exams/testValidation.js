@@ -23,6 +23,8 @@ function validateTestConfiguration(configuration={}, {allowIncomplete=false}={})
   if(!allowIncomplete&&configuration.title!==undefined&&(typeof configuration.title!=='string'||configuration.title.length>200)) throw new Error('configuration title invalido');
   if(configuration.description!==undefined&&(typeof configuration.description!=='string'||configuration.description.length>2000)) throw new Error('configuration description invalida');
   if(configuration.total!==undefined&&(!Number.isInteger(configuration.total)||configuration.total<1||configuration.total>100)) throw new Error('configuration total invalido');
+  if(configuration.allowedAttempts!==undefined&&(!Number.isInteger(configuration.allowedAttempts)||configuration.allowedAttempts<1||configuration.allowedAttempts>3)) throw new Error('configuration allowedAttempts invalido');
+  if(configuration.answerMode!==undefined&&!['options','write','voice'].includes(configuration.answerMode)) throw new Error('configuration answerMode invalido');
   if(configuration.timeLimit!==undefined&&(!Number.isFinite(Number(configuration.timeLimit))||Number(configuration.timeLimit)<0||Number(configuration.timeLimit)>3600)) throw new Error('configuration timeLimit invalido');
   if(configuration.timePerQuestion!==undefined&&(!Number.isFinite(Number(configuration.timePerQuestion))||Number(configuration.timePerQuestion)<0||Number(configuration.timePerQuestion)>3600)) throw new Error('configuration timePerQuestion invalido');
   const multiplier=configuration.multiplier??1;

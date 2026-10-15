@@ -19,7 +19,15 @@ async function enterDuel(page) {
 }
 
 async function panelState(page) {
-  return page.evaluate(() => workspaceDynamicState?.panel || null);
+  const state = await page.evaluate(() => {
+    const root=document.querySelector('#step1Screen');
+    const main=document.querySelector('#studentWorkspace .workspace-main');
+    const panel=document.querySelector('#workspaceWizardHost .workspace-dynamic-panel');
+    const panelRect=panel?.getBoundingClientRect(),mainRect=main?.getBoundingClientRect();
+    return {name:workspaceDynamicState?.panel||null,documentScroll:document.documentElement.scrollHeight>innerHeight+1,rootOverflow:getComputedStyle(root).overflowY,mainOverflow:getComputedStyle(main).overflowY,panelInside:!panelRect||(panelRect.top>=mainRect.top-1&&panelRect.bottom<=mainRect.bottom+1),panelHeight:panelRect?.height,mainHeight:mainRect?.height};
+  });
+  if(state.name)result(`Duelo ${state.name} · panel sin scroll`,!state.documentScroll&&state.rootOverflow==='hidden'&&state.mainOverflow==='hidden'&&state.panelInside,JSON.stringify(state));
+  return state.name;
 }
 
 async function auditDuelLegacyGuard(page) {
@@ -144,6 +152,20 @@ async function main() {
   page.on('console', message => { if (message.type() === 'error' && !/favicon|Failed to load resource/i.test(message.text())) consoleErrors.push(message.text()); });
   try {
     await enterDuel(page);
+    const fixedPage = await page.evaluate(() => {
+      const root = document.querySelector('#step1Screen');
+      const shell = document.querySelector('#studentWorkspace');
+      return {
+        viewport: innerHeight,
+        documentHeight: document.documentElement.scrollHeight,
+        rootHeight: root?.clientHeight,
+        rootScrollHeight: root?.scrollHeight,
+        rootOverflowY: getComputedStyle(root).overflowY,
+        shellHeight: shell?.clientHeight,
+        mainOverflowY: getComputedStyle(shell.querySelector('.workspace-main')).overflowY,
+      };
+    });
+    result('Escritorio fijo · Duelo', fixedPage.documentHeight <= fixedPage.viewport + 1 && fixedPage.rootOverflowY === 'hidden' && fixedPage.mainOverflowY === 'hidden', `Documento y panel central fijos, sin barras de desplazamiento: ${JSON.stringify(fixedPage)}`);
     const types = await page.locator('#workspaceWizardHost [data-wizard-action="type"]').evaluateAll(nodes => nodes.map(node => node.dataset.value));
     result('Catálogo Duelo', JSON.stringify(types) === JSON.stringify(DUEL_TYPES), `Modos disponibles: ${types.join(', ')}`);
     result('Catálogo Duelo', !types.includes('bot'), 'VS Bot no aparece dentro de Duelo');

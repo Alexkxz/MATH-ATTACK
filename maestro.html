@@ -593,6 +593,7 @@ body.proj-mode .q-display{font-size:48px;letter-spacing:4px}
 
     <nav class="pr-test-nav" aria-label="Secciones de la prueba" role="tablist">
       <button type="button" class="pr-test-nav-btn active" role="tab" aria-selected="true" data-pr-section-target="summary">Resumen</button>
+      <button type="button" class="pr-test-nav-btn" role="tab" aria-selected="false" data-pr-section-target="library">Biblioteca de pruebas</button>
       <button type="button" class="pr-test-nav-btn" role="tab" aria-selected="false" data-pr-section-target="programming">Configuración</button>
       <button type="button" class="pr-test-nav-btn" role="tab" aria-selected="false" data-pr-section-target="supervision">Supervisión</button>
       <button type="button" class="pr-test-nav-btn" role="tab" aria-selected="false" data-pr-section-target="results">Resultados</button>
@@ -677,6 +678,15 @@ body.proj-mode .q-display{font-size:48px;letter-spacing:4px}
           <label class="pr-op-chk"><input type="checkbox" id="prOpDiv" onchange="prToggleOpSection('div',this.checked);prUpdateSummary()"> ➗ División</label>
         </div>
       </div>
+      <div class="pr-field">
+        <label for="prAnswerMode">MODO DE RESPUESTA</label>
+        <select id="prAnswerMode" aria-label="Modo de respuesta de la prueba">
+          <option value="options">Opciones</option>
+          <option value="write">Escrito</option>
+          <option value="voice">Voz</option>
+        </select>
+        <small class="pr-config-note">Define cómo responderán los alumnos durante esta prueba.</small>
+      </div>
       </div>
       <div class="pr-builder-panel" data-pr-builder-panel="3">
       <div id="prOpSections"></div>
@@ -685,6 +695,7 @@ body.proj-mode .q-display{font-size:48px;letter-spacing:4px}
       <div class="pr-config-grid">
         <div class="pr-field"><label for="prTimePerQuestion">TIEMPO POR PREGUNTA (SEGUNDOS)</label><input id="prTimePerQuestion" type="number" min="0" max="3600" step="1" value="30" placeholder="0 = sin límite"><small class="pr-config-note">Escribe 0 para dejarlo sin límite. Al usarlo, se bloquea el tiempo global.</small></div>
         <div class="pr-field"><label for="prTime">TIEMPO GLOBAL (SEGUNDOS)</label><input id="prTime" type="number" min="0" max="3600" step="1" value="0" placeholder="0 = sin límite"><small class="pr-config-note">Escribe 0 para dejarlo sin límite. Es excluyente con el tiempo por pregunta.</small></div>
+        <div class="pr-field"><label for="prAllowedAttempts">INTENTOS PERMITIDOS</label><select id="prAllowedAttempts"><option value="1">1 intento</option><option value="2">2 intentos</option><option value="3">3 intentos</option></select></div>
       </div>
       <div class="pr-field"><label>RECOMPENSAS OFICIALES</label><div class="pr-reward-grid"><label>Áureos base<input id="prRewardAureos" type="number" min="0" max="100000" step="1" value="0"></label><label>XP<input id="prRewardExperience" type="number" min="0" max="100000" step="1" value="0"></label></div><label class="pr-range-repeat"><input id="prRewardStreak" type="checkbox"> Activar racha</label><label class="pr-range-repeat"><input id="prRewardAchievements" type="checkbox"> Activar logro perfecto</label><small class="pr-config-note">XP, rachas y logros conservan su contrato actual. La liquidación es siempre explícita.</small></div>
       <div class="pr-field"><label>TRAMOS DE ÁUREOS POR ACIERTO</label><p class="pr-config-note pr-reward-tier-help">Se aplica una sola vez al porcentaje final. La pérdida nunca deja el saldo por debajo de cero.</p><div id="prRewardTiers" class="pr-reward-tiers"></div><button type="button" class="pr-tbl-mini-btn" id="prAddRewardTier">Agregar tramo</button></div>
@@ -743,7 +754,7 @@ body.proj-mode .q-display{font-size:48px;letter-spacing:4px}
       </div>
     </div>
 
-    <section class="pr-test-library" data-pr-section="summary" aria-labelledby="prTestLibraryTitle">
+    <section class="pr-test-library" data-pr-section="library" aria-labelledby="prTestLibraryTitle">
       <div class="pr-results-hdr">
         <span id="prTestLibraryTitle">03 · BIBLIOTECA DE PRUEBAS</span>
         <div class="pr-library-header-actions"><span id="prTestLibraryStatus" class="pr-attempts-status" aria-live="polite"></span><button id="prCreateNewTest" class="pr-test-create" type="button">＋ NUEVA PRUEBA</button></div>
@@ -978,6 +989,7 @@ const POWERS_DEF=[
   {id:'doublepts',       icon:'\ud83d\udcaf', name:'Doble Pts'},
   {id:'skip',            icon:'\u23ed\ufe0f', name:'Saltar'},
   {id:'aureosmagnet',    icon:'\ud83e\uddf2', name:'Im.Aureos'},
+  {id:'hint',            icon:'\ud83e\udde9', name:'Pista'},
   {id:'blind',           icon:'\ud83d\ude48', name:'Ceguera'},
   {id:'chaos',           icon:'\ud83c\udf00', name:'Caos'},
   {id:'freeze',          icon:'\ud83e\uddca', name:'Congelar'},
@@ -999,6 +1011,8 @@ const POWERS_DEF=[
   {id:'streakbreak',     icon:'\ud83d\udc94', name:'Rompe R.'},
   {id:'blackout',        icon:'\ud83c\udf11', name:'Apagon'},
   {id:'aura',            icon:'\u2728', name:'Aura'},
+  {id:'antidote',        icon:'\ud83e\uddea', name:'Antidoto'},
+  {id:'mirrorchallenge', icon:'\ud83c\udfaf', name:'Reto Espejo'},
   {id:'sticker',         icon:'\ud83c\udff7\ufe0f', name:'Pegatina'},
 ];
 
@@ -1609,6 +1623,8 @@ function prLoadTestConfiguration(configuration){
   prUpdateLiveClock(); if(prClockTimer)clearInterval(prClockTimer); prClockTimer=setInterval(prUpdateLiveClock,1000);
   const grade=document.getElementById('prGrade'); if(grade) grade.value=configuration?.grade||'';
   const description=document.getElementById('prTestDescription'); if(description) description.value=configuration?.description||'';
+  const allowedAttempts=document.getElementById('prAllowedAttempts'); if(allowedAttempts) allowedAttempts.value=String([1,2,3].includes(Number(configuration?.allowedAttempts))?Number(configuration.allowedAttempts):1);
+  const answerMode=document.getElementById('prAnswerMode'); if(answerMode) answerMode.value=['options','write','voice'].includes(configuration?.answerMode)?configuration.answerMode:'options';
   const multiplier=document.getElementById('prMultiplier'); if(multiplier) multiplier.value=Number.isInteger(configuration?.multiplier)?configuration.multiplier:1;
   const rewards=configuration?.rewards||{};
   const aureos=document.getElementById('prRewardAureos'); if(aureos) aureos.value=Number.isInteger(rewards.aureos)?rewards.aureos:0;
@@ -1630,6 +1646,9 @@ function prLoadTestConfiguration(configuration){
 function prGetTestConfiguration(existing={}){
   const next=JSON.parse(JSON.stringify(existing||{}));
   next.version=1;
+  next.allowedAttempts=Number(document.getElementById('prAllowedAttempts')?.value)||1;
+  const answerMode=document.getElementById('prAnswerMode')?.value||existing.answerMode||'options';
+  next.answerMode=['options','write','voice'].includes(answerMode)?answerMode:'options';
   const multiplierInput=document.getElementById('prMultiplier');
   const multiplier=multiplierInput?Number(multiplierInput.value):(Number.isInteger(next.multiplier)?next.multiplier:1);
   if(!Number.isInteger(multiplier)||multiplier<1||multiplier>5) throw Error('El multiplicador debe ser un entero entre 1 y 5');
@@ -1707,6 +1726,10 @@ async function startPrueba(btn){
       sessionStorage.setItem('pruebaConfig',JSON.stringify(_pruebaConfig));
       _updatePruebasUI();
       startMessage('📊 Prueba iniciada',true);
+      const modal=document.createElement('div'); modal.className='pr-start-confirm-modal'; modal.setAttribute('role','dialog'); modal.setAttribute('aria-modal','true');
+      const folio=activeTest?.folio||activeTest?.title||'—'; const testName=activeTest?.configuration?.title||document.getElementById('prTestName')?.value.trim()||'Prueba sin nombre';
+      modal.innerHTML=`<div class="pr-start-confirm-card"><span class="pr-eyebrow">PRUEBA INICIADA</span><h2>Folio ${String(folio).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}</h2><p>${String(testName).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}</p><button type="button" class="pr-start-btn">Continuar</button></div>`;
+      document.body.appendChild(modal); modal.querySelector('button').addEventListener('click',()=>{modal.remove();if(typeof window.prSetTestSection==='function')window.prSetTestSection('summary');});
     } else startMessage('❌ No se pudo iniciar: '+(d.error||'el servidor rechazó la solicitud.'));
   }catch(e){ startMessage('❌ No se pudo iniciar: '+(e.message||'error de red')); }
   finally{ if(btn) btn.disabled=false; }

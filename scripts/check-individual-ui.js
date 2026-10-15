@@ -13,7 +13,17 @@ async function enterIndividual(page) {
   await page.waitForSelector('#workspaceWizardHost [data-wizard-action="type"]');
 }
 
-async function panelState(page) { return page.evaluate(() => workspaceDynamicState?.panel || null); }
+async function panelState(page) {
+  const state = await page.evaluate(() => {
+    const root=document.querySelector('#step1Screen');
+    const main=document.querySelector('#studentWorkspace .workspace-main');
+    const panel=document.querySelector('#workspaceWizardHost .workspace-dynamic-panel');
+    const panelRect=panel?.getBoundingClientRect(),mainRect=main?.getBoundingClientRect();
+    return {name:workspaceDynamicState?.panel||null,documentScroll:document.documentElement.scrollHeight>innerHeight+1,rootOverflow:getComputedStyle(root).overflowY,mainOverflow:getComputedStyle(main).overflowY,panelInside:!panelRect||(panelRect.top>=mainRect.top-1&&panelRect.bottom<=mainRect.bottom+1),panelBounds:panelRect&&{top:panelRect.top,bottom:panelRect.bottom},mainBounds:mainRect&&{top:mainRect.top,bottom:mainRect.bottom},panelHeight:panelRect?.height,mainHeight:mainRect?.height};
+  });
+  if(state.name)result(`${state.name} · panel sin scroll`,!state.documentScroll&&state.rootOverflow==='hidden'&&state.mainOverflow==='hidden'&&state.panelInside,JSON.stringify(state));
+  return state.name;
+}
 
 async function panelControls(page) {
   return page.evaluate(() => ({
@@ -214,6 +224,20 @@ async function main() {
   page.on('console', message => { if (message.type() === 'error' && !/favicon|Failed to load resource/i.test(message.text())) consoleErrors.push(message.text()); });
   try {
     await enterIndividual(page);
+    const fixedPage = await page.evaluate(() => {
+      const root = document.querySelector('#step1Screen');
+      const shell = document.querySelector('#studentWorkspace');
+      return {
+        viewport: innerHeight,
+        documentHeight: document.documentElement.scrollHeight,
+        rootHeight: root?.clientHeight,
+        rootScrollHeight: root?.scrollHeight,
+        rootOverflowY: getComputedStyle(root).overflowY,
+        shellHeight: shell?.clientHeight,
+        mainOverflowY: getComputedStyle(shell.querySelector('.workspace-main')).overflowY,
+      };
+    });
+    result('Escritorio fijo · Individual', fixedPage.documentHeight <= fixedPage.viewport + 1 && fixedPage.rootOverflowY === 'hidden' && fixedPage.mainOverflowY === 'hidden', `Documento y panel central fijos, sin barras de desplazamiento: ${JSON.stringify(fixedPage)}`);
     await auditLegacyNavigationGuard(page);
     const types = await page.locator('#workspaceWizardHost [data-wizard-action="type"]').evaluateAll(nodes => nodes.map(node => node.dataset.value));
     result('Catálogo de modos', types.length === 7, `Modos: ${types.join(', ')}`);

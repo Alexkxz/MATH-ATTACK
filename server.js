@@ -93,6 +93,7 @@ const { createPotDrawMessages } = require('./src/server/ws/potDrawMessages');
 const { createMpWinnerBonusMessages } = require('./src/server/ws/mpWinnerBonusMessages');
 const { createEconomicIdempotency } = require('./src/server/ws/economicIdempotency');
 const { createStealPower } = require('./src/server/ws/stealPower');
+const { createCoinRobMessages } = require('./src/server/ws/coinRobMessages');
 const { createMaestroAnnouncementMessages } = require('./src/server/ws/maestroAnnouncementMessages');
 const { createKickPlayerMessages } = require('./src/server/ws/kickPlayerMessages');
 const {
@@ -106,7 +107,7 @@ let shutdownStarted = false;
 // Poderes que SOLO deben afectar a un rival (no a toda la sala) — si el cliente
 // olvida mandar targetIdx, el servidor descarta el mensaje en vez de reenviarlo
 // a todos (eso fue exactamente el bug original de robo/drenar/inversión en 3-4p).
-const SINGLE_TARGET_POWERS = new Set(['steal','drainlife','inversion']);
+const SINGLE_TARGET_POWERS = new Set(['steal','drainlife','inversion','mirrorchallenge']);
 // Modos LAN cuya lógica depende de que la sala tenga exactamente 2 jugadores
 // (usan aritmética binaria 1-idx). El cliente ya restringe esto en el selector,
 // esta es la verificación de respaldo del lado del servidor.
@@ -306,6 +307,7 @@ for(const stream of [process.stdout, process.stderr]){
 // El playerId externo se conserva por compatibilidad y no es el ID persistente
 // de la cuenta en players.json (accountPlayerId).
 const rooms       = new Map();
+const MP_ROOM_COLORS = ['#a78bfa','#60a5fa','#22d3ee','#34d399','#a3e635','#fbbf24','#fb923c','#f87171','#f472b6','#f1f5f9','#16a34a','#1e1e2e'];
 const gameSessions = createSessionStore({ onExpire: () => schedulePanelBroadcast() });
 const pendingPotMsgs = new Map(); // nombre (lowercase) → mensaje pot_result pendiente de entregar
 const _awardedPotGames = new Set(); // roomId_gameId ya liquidados — evita doble crédito por condición de carrera
@@ -1089,6 +1091,14 @@ const mpWinnerBonusMessages = createMpWinnerBonusMessages({
   L,
 });
 const stealPower = createStealPower({ send, L });
+const coinRobMessages = createCoinRobMessages({
+  wsContext,
+  findPlayerByName,
+  consumePlayerInventoryItem,
+  logAureosTx,
+  send,
+  L,
+});
 const maestroAnnouncementMessages = createMaestroAnnouncementMessages({
   ADMIN_PASSWORD,
   gameSessions,
@@ -1111,6 +1121,14 @@ function handle(ws,msg){ // Procesa todos los mensajes entrantes de los clientes
   switch(msg.type){
 
     case 'ping': break; // keepalive del cliente para mantener la conexión NAT activa
+
+    case 'client_closing':
+      // El navegador avisó que la página se está cerrando. La conexión seguirá
+      // pasando por onDisconnect, pero ya no necesita la ventana de reconexión
+      // de la sesión individual.
+      ws._clientClosing=true;
+      try{ ws.close(1000,'client closing'); }catch(_){ }
+      break;
 
     case 'game_checkpoint': {
       handleGameCheckpoint({
@@ -1162,12 +1180,13 @@ function handle(ws,msg){ // Procesa todos los mensajes entrantes de los clientes
       do { rid=String(Math.floor(1000+Math.random()*9000)); } while(rooms.has(rid));
       const maxP=Math.min(4,Math.max(2,msg.maxPlayers||2));
       ws.roomId=rid; ws.playerName=msg.playerName||'Jugador 1'; ws.role='host'; ws.playerIdx=0;
-       const room={name:msg.roomName||`Sala de ${ws.playerName}`,hostName:ws.playerName,maxPlayers:maxP,
-                   players:[{ws,name:ws.playerName,idx:0,role:'host'}],status:'lobby',gameStarted:false,
-                   replayVotes:new Map(),replayTimer:null};
+      const hostColor=MP_ROOM_COLORS.includes(String(msg.color||'').toLowerCase())?String(msg.color).toLowerCase():MP_ROOM_COLORS[0];
+      const room={name:msg.roomName||`Sala de ${ws.playerName}`,hostName:ws.playerName,maxPlayers:maxP,
+                  players:[{ws,name:ws.playerName,idx:0,role:'host',color:hostColor}],status:'lobby',gameStarted:false,
+                  replayVotes:new Map(),replayTimer:null};
       rooms.set(rid,room);
       L.room(`Sala creada: [${rid}] ${maxP}P por ${ws.playerName}`);
-      send(ws,{type:'room_created',roomId:rid,roomName:room.name,maxPlayers:maxP,playerIdx:0,playerList:[{name:ws.playerName,idx:0}]});
+      send(ws,{type:'room_created',roomId:rid,roomName:room.name,maxPlayers:maxP,playerIdx:0,playerList:[{name:ws.playerName,idx:0}],colorList:[{playerId:'0',color:hostColor,name:ws.playerName}]});
       broadcastRoomsList(); break;
     }
     case 'update_room_maxplayers': {
@@ -1195,10 +1214,11 @@ function handle(ws,msg){ // Procesa todos los mensajes entrantes de los clientes
       }
       ws.roomId=msg.roomId; ws.playerName=msg.playerName||('Jugador '+(room.players.length+1));
       ws.role='guest'; ws.playerIdx=room.players.length;
-      room.players.push({ws,name:ws.playerName,idx:ws.playerIdx,role:'guest'});
+      room.players.push({ws,name:ws.playerName,idx:ws.playerIdx,role:'guest',color:null});
       L.room(`${ws.playerName} se unio [${msg.roomId}] (${room.players.length}/${room.maxPlayers})`);
       const playerList=room.players.map(p=>({name:p.name,idx:p.idx}));
-      send(ws,{type:'joined',roomId:msg.roomId,hostName:room.hostName,playerIdx:ws.playerIdx,playerList,maxPlayers:room.maxPlayers});
+      const colorList=room.players.filter(player=>player.color).map(player=>({playerId:String(player.idx),color:player.color,name:player.name}));
+      send(ws,{type:'joined',roomId:msg.roomId,hostName:room.hostName,playerIdx:ws.playerIdx,playerList,maxPlayers:room.maxPlayers,colorList});
       room.players.filter(p=>p.ws!==ws).forEach(p=>send(p.ws,{type:'player_joined',name:ws.playerName,idx:ws.playerIdx,playerList,maxPlayers:room.maxPlayers}));
       broadcastRoomsList(); break;
     }
@@ -1218,6 +1238,20 @@ function handle(ws,msg){ // Procesa todos los mensajes entrantes de los clientes
     case 'game_msg': {
       const room=rooms.get(ws.roomId); if(!room)return;
       const d=msg.data||{};
+      if(d.type==='color_update'){
+        const player=room.players.find(candidate=>candidate.ws===ws);
+        if(!player)break;
+        const requested=String(d.color||'').toLowerCase();
+        const taken=room.players.filter(candidate=>candidate!==player).map(candidate=>candidate.color).filter(Boolean);
+        const color=MP_ROOM_COLORS.includes(requested)&&!taken.includes(requested)
+          ?requested
+          :MP_ROOM_COLORS.find(candidate=>!taken.includes(candidate));
+        if(!color)break;
+        player.color=color;
+        const update={type:'color_update',color,name:player.name,playerId:String(player.idx),assigned:true};
+        room.players.forEach(candidate=>send(candidate.ws,{type:'game_msg',data:update}));
+        break;
+      }
       if(d.type==='want_replay'){
         handleReplayVote(ws,room,true);
         break;
@@ -1227,6 +1261,16 @@ function handle(ws,msg){ // Procesa todos los mensajes entrantes de los clientes
         break;
       }
       if(d.type==='start'){
+        if(ws.role!=='host'){
+          send(ws,{type:'error',message:'Solo el anfitrión puede iniciar la partida'});
+          return;
+        }
+        const nextGameId=String(d.cfg?.seed||'');
+        if(!room.gameStarted||room.gameId!==nextGameId){
+          room.gameId=nextGameId||String(Date.now());
+          room.coinRobUses=new Set();
+          room.coinRobSettled=new Set();
+        }
         room.gameStarted=true;
         clearReplayState(room);
         const mpMode=d.cfg?.mpGameMode;
@@ -1241,6 +1285,7 @@ function handle(ws,msg){ // Procesa todos los mensajes entrantes de los clientes
         }
       }
       else if(d.type==='peer_finished') L.game(`${ws.playerName} termino`);
+      if(coinRobMessages.handle(ws,room,msg)) break;
       if(stealPower.handleStealPower(ws, room, msg)) break;
       if(d.type==='power_use'&&SINGLE_TARGET_POWERS.has(d.powerId)&&d.targetIdx==null&&!d.area){
         // Salvaguarda: este poder debe traer targetIdx sí o sí — sin él, reenviarlo
@@ -1425,7 +1470,11 @@ function onDisconnect(ws){ // Marca la sesión como desconectada; la borra en 15
   if(sessionId){
     const s=findActiveSession(gameSessions,sessionId);
     if(s&&s.name&&s.name!=='?'&&!ws._kicked){
-      gameSessions.markDisconnected(sessionId);
+      if(ws._clientClosing){
+        gameSessions.removeSession(sessionId);
+      }else{
+        gameSessions.markDisconnected(sessionId);
+      }
       schedulePanelBroadcast();
     } else {
       gameSessions.removeSession(sessionId);
