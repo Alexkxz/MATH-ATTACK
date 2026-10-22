@@ -306,6 +306,25 @@ render();
     }
   }
 
+  function sendMaestroLegacy(req, res) {
+    try {
+      let html = fs.readFileSync(path.join(baseDir, 'maestro-legacy.html'), 'utf8');
+      const requestUrl = new URL(String(req.url || '/'), 'http://localhost');
+      if (requestUrl.searchParams.get('tab') === 'pruebas') {
+        if (requestUrl.searchParams.get('embed') === 'arcade') {
+          html = html.replace('</head>', '<link rel="stylesheet" href="/src/client/maestro/pruebasArcade.css"></head>');
+        }
+        const embeddedClass = requestUrl.searchParams.get('embed') === 'arcade' ? 'document.body.classList.add("pruebas-embed");' : '';
+        html = html.replace('</body>', `<script>window.addEventListener("load",()=>{try{${embeddedClass}if(typeof switchTab==="function")switchTab("pruebas");}catch(e){}});</script></body>`);
+      }
+      res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+      res.end(html);
+    } catch (_) {
+      res.writeHead(404);
+      res.end('Panel clásico no disponible');
+    }
+  }
+
   function sendRanking(req, res) {
     try {
       const html = fs.readFileSync(path.join(baseDir, 'ranking.html'), 'utf8');
@@ -338,6 +357,7 @@ render();
     sendChart,
     sendGame,
     sendMaestro,
+    sendMaestroLegacy,
     sendRanking,
     sendRankingLive,
   };

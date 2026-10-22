@@ -12,8 +12,10 @@ function createConnectionLifecycle({ wsContext, WebSocket, nextConnectionId, get
     ws._pingTs = null;
     ws._ip = (req.headers['x-forwarded-for'] || '').split(',')[0].trim() || req.socket.remoteAddress || '?';
     ws.isAlive = true;
+    ws._lastPongAt = Date.now();
     ws.on('pong', () => {
       ws.isAlive = true;
+      ws._lastPongAt = Date.now();
       if (ws._pingTs != null) {
         ws._latency = Date.now() - ws._pingTs;
         ws._pingTs = null;

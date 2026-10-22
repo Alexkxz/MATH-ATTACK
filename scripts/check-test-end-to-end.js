@@ -36,7 +36,7 @@ const freePort = () => new Promise(resolve => {
 function startServer(dir, port) {
   const child = spawn(process.execPath, ['server.js'], {
     cwd: process.cwd(), windowsHide: true, stdio: 'ignore',
-    env: { ...process.env, PORT: String(port), MATH_ATTACK_DATA_PATH: dir, MATH_ATTACK_TESTS_PATH: path.join(dir, 'pruebas.json') },
+    env: { ...process.env, PORT: String(port), MATH_ATTACK_DATA_PATH: dir, MATH_ATTACK_TESTS_PATH: path.join(dir, 'pruebas.json'), MATH_ATTACK_LOG_PATH: path.join(dir, 'server.log') },
   });
   const base = `http://127.0.0.1:${port}`;
   return (async () => {
@@ -116,7 +116,7 @@ async function main() {
 
     root = store.load();
     const result = createResult({ resultId: '66666666-6666-4666-8666-666666666666', testId: ids.test, attemptId: attempt.attemptId, accountPlayerId: ids.student, score: 500, correct: 5, incorrect: 0 });
-    Object.assign(result, { name: 'Alumno integral', grade: '5A', total: 5, pct: 100, complete: true, streak: 0, gameType: 'timed', op: '×', tblResults: {}, progress: { studentSnapshot: { name: 'Alumno integral', grade: '5A' } } });
+    Object.assign(result, { name: 'Alumno integral', grade: '5A', total: 5, pct: 100, complete: true, streak: 0, gameType: 'timed', op: '×', tables: [5], tblResults: { '+': { correct: 5, total: 5 } }, progress: { studentSnapshot: { name: 'Alumno integral', grade: '5A' }, questions: [{ questionId: 'q1', op: '+', table: 5, a: 5, b: 1 }], answers: [{ questionId: 'q1', corrected: true }] } });
     root.results.push(result);
     store.save(root);
 
@@ -165,6 +165,8 @@ async function main() {
     assert(generalCsv.includes('Partida normal'));
     assert(generalCsv.includes('Alumno integral'));
     assert(generalCsv.includes('500'));
+    assert(generalCsv.includes('Prueba integral editada'));
+    assert(generalCsv.includes(ids.test));
     server = await startServer(dir, await freePort());
     const admin = { 'X-Admin-Password': 'admin' };
     assert.equal((await fetch(`${server.base}/api/maestro/tests`)).status, 401);
@@ -180,11 +182,28 @@ async function main() {
     const rankingRows = await rankingResponse.json();
     assert(rankingRows.some(row => row.testId === ids.test));
     assert(rankingRows.some(row => row.officialAttemptId === officialized.officialAttempt.officialAttemptId));
+    const publishedRow = rankingRows.find(row => row.testId === ids.test);
+    assert.equal(publishedRow.testTitle, 'Prueba integral editada');
+    assert.equal(publishedRow.testFolio, '0000');
+    assert.equal(publishedRow.questionDetail['+'][0].status, 'correct');
     const rankingExport = await fetch(`${server.base}/api/ranking/export`, { headers: admin });
     assert.equal(rankingExport.status, 200);
     const csv = await rankingExport.text();
     assert(csv.includes('Alumno integral'));
     assert(csv.includes('500'));
+    assert(csv.includes('Prueba integral editada'));
+    assert(csv.includes(ids.test));
+    const finishResponse = await fetch(`${server.base}/api/exams/${ids.test}/state`, { method: 'POST', headers: { ...admin, 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'finish', revision: 5 }) });
+    assert.equal(finishResponse.status, 200);
+    const purgeResponse = await fetch(`${server.base}/api/maestro/tests/purge-finished`, { method: 'DELETE', headers: { ...admin, 'Content-Type': 'application/json' }, body: JSON.stringify({ confirmation: 'DELETE_FINISHED_TESTS' }) });
+    assert.equal(purgeResponse.status, 200);
+    assert.equal((await purgeResponse.json()).deletedTests, 1);
+    const rankingAfterPurge = await (await fetch(`${server.base}/api/ranking`)).json();
+    const preservedPublishedRow = rankingAfterPurge.find(row => row.rankingPublicationId === published.publication.rankingPublicationId);
+    assert(preservedPublishedRow);
+    assert.equal(preservedPublishedRow.testTitle, 'Prueba integral editada');
+    assert.equal(preservedPublishedRow.testFolio, '0000');
+    assert.equal(preservedPublishedRow.questionDetail['+'][0].status, 'correct');
     assert(!JSON.stringify(await testsResponse.json()).match(/password|token|cookie|session/i));
     console.log('OK: flujo integral temporal draft→scheduled→active→intento→checkpoint→recuperación→finished→oficialización→publicación→recompensas, reinicio, autenticación, Ranking y exportación.');
   } finally {

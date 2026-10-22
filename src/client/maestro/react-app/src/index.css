@@ -1,0 +1,177 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --font-arcade: 'Press Start 2P', monospace;
+    --font-terminal: 'VT323', monospace;
+    --font-chakra: 'Chakra Petch', sans-serif;
+  }
+
+  body {
+    font-family: var(--font-chakra);
+    background-color: #06040e;
+    color: #e2e8f0;
+  }
+}
+
+/* ══════════════════════════════════════════════════
+   ARCADE & CRT VISUAL EFFECTS
+   ══════════════════════════════════════════════════ */
+
+/* CRT Scanlines */
+.crt-scanlines {
+  position: relative;
+}
+.crt-scanlines::after {
+  content: " ";
+  display: block;
+  position: fixed;
+  top: 0; left: 0; bottom: 0; right: 0;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+  z-index: 999;
+  background-size: 100% 3px, 6px 100%;
+  pointer-events: none;
+  opacity: 0.85;
+}
+
+/* CRT Vignette / Screen Curvature */
+.crt-vignette::before {
+  content: " ";
+  display: block;
+  position: fixed;
+  top: 0; left: 0; bottom: 0; right: 0;
+  background: radial-gradient(circle at center, transparent 60%, rgba(2, 2, 7, 0.8) 100%);
+  pointer-events: none;
+  z-index: 998;
+}
+
+/* Retro Perspective Grid Background */
+.retro-grid-bg {
+  background-image:
+    linear-gradient(to right, rgba(0, 229, 255, 0.07) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 0, 128, 0.07) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* Arcade Neon Glows */
+.neon-glow-cyan {
+  text-shadow: 0 0 6px #00e5ff, 0 0 16px rgba(0, 229, 255, 0.7);
+}
+.neon-glow-fuchsia {
+  text-shadow: 0 0 6px #ff007f, 0 0 16px rgba(255, 0, 127, 0.7);
+}
+.neon-glow-lime {
+  text-shadow: 0 0 6px #39ff14, 0 0 16px rgba(57, 255, 20, 0.7);
+}
+.neon-glow-yellow {
+  text-shadow: 0 0 6px #ffe600, 0 0 16px rgba(255, 230, 0, 0.7);
+}
+
+.box-glow-cyan {
+  box-shadow: 0 0 15px rgba(0, 229, 255, 0.25), inset 0 0 15px rgba(0, 229, 255, 0.1);
+}
+.box-glow-fuchsia {
+  box-shadow: 0 0 15px rgba(255, 0, 127, 0.25), inset 0 0 15px rgba(255, 0, 127, 0.1);
+}
+.box-glow-lime {
+  box-shadow: 0 0 15px rgba(57, 255, 20, 0.25), inset 0 0 15px rgba(57, 255, 20, 0.1);
+}
+
+/* Arcade Push Buttons (3D Bevel with physical bounce) */
+.arcade-btn {
+  position: relative;
+  transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.6), 0 6px 12px rgba(0, 0, 0, 0.5);
+}
+.arcade-btn:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.6), 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.arcade-btn-cyan {
+  background: linear-gradient(180deg, #00f0ff 0%, #0099cc 100%);
+  border: 2px solid #a5f3fc;
+  color: #03131e;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+.arcade-btn-cyan:hover {
+  background: linear-gradient(180deg, #38f4ff 0%, #00bfff 100%);
+  box-shadow: 0 0 18px rgba(0, 229, 255, 0.5), 0 4px 0 #005f7f;
+}
+
+.arcade-btn-pink {
+  background: linear-gradient(180deg, #ff2a85 0%, #b80053 100%);
+  border: 2px solid #fbcfe8;
+  color: #ffffff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+}
+.arcade-btn-pink:hover {
+  background: linear-gradient(180deg, #ff4d99 0%, #d60064 100%);
+  box-shadow: 0 0 18px rgba(255, 42, 133, 0.5), 0 4px 0 #6e0031;
+}
+
+.arcade-btn-lime {
+  background: linear-gradient(180deg, #39ff14 0%, #059669 100%);
+  border: 2px solid #bbf7d0;
+  color: #022c22;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+.arcade-btn-lime:hover {
+  background: linear-gradient(180deg, #5cff3d 0%, #10b981 100%);
+  box-shadow: 0 0 18px rgba(57, 255, 20, 0.5), 0 4px 0 #064e3b;
+}
+
+.arcade-btn-amber {
+  background: linear-gradient(180deg, #fbbf24 0%, #d97706 100%);
+  border: 2px solid #fef08a;
+  color: #451a03;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+.arcade-btn-amber:hover {
+  background: linear-gradient(180deg, #fcd34d 0%, #f59e0b 100%);
+  box-shadow: 0 0 18px rgba(251, 191, 36, 0.5), 0 4px 0 #78350f;
+}
+
+/* Custom Scrollbar for arcade look */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #080614;
+  border: 1px solid rgba(0, 229, 255, 0.1);
+}
+::-webkit-scrollbar-thumb {
+  background: #00e5ff;
+  border-radius: 2px;
+  box-shadow: 0 0 6px #00e5ff;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #ff007f;
+  box-shadow: 0 0 8px #ff007f;
+}
+
+/* Animations */
+@keyframes arcadeFlicker {
+  0%, 100% { opacity: 1; }
+  41.99% { opacity: 1; }
+  42% { opacity: 0.85; }
+  43% { opacity: 1; }
+  45% { opacity: 0.7; }
+  46% { opacity: 1; }
+  92% { opacity: 1; }
+  92.5% { opacity: 0.8; }
+  93% { opacity: 1; }
+}
+
+.arcade-flicker {
+  animation: arcadeFlicker 7s infinite;
+}
+
+@keyframes coinPulse {
+  0%, 100% { transform: scale(1); filter: drop-shadow(0 0 4px #fbbf24); }
+  50% { transform: scale(1.1); filter: drop-shadow(0 0 12px #fbbf24); }
+}
+.animate-coin {
+  animation: coinPulse 2s infinite ease-in-out;
+}

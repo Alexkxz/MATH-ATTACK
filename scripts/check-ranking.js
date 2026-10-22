@@ -77,6 +77,12 @@ assert.deepStrictEqual(imported.ranking.map(r=>r.id),[2,'imp-1788811500000-3',1]
 
 const csv=buildRankingCsv([completed]);
 assert.ok(csv.startsWith('\uFEFFNombre,Grado'),'CSV debe conservar BOM y encabezado');
-assert.ok(csv.includes('"Ana","4A",120,90,9,1'),'CSV debe conservar sus campos actuales');
+const csvRow=csv.split('\n')[1].split(',');
+assert.strictEqual(csvRow[0],'"Ana"','CSV debe conservar el nombre');
+assert.strictEqual(csvRow[1],'"4A"','CSV debe conservar el grado');
+assert.strictEqual(csvRow[8],'120','CSV debe conservar el puntaje después de las columnas de prueba');
+assert.strictEqual(csvRow[9],'90','CSV debe conservar el porcentaje después de las columnas de prueba');
+assert.strictEqual(csvRow[10],'9','CSV debe conservar los aciertos');
+assert.strictEqual(csvRow[11],'1','CSV debe conservar los errores');
 
 console.log('OK: ranking conserva normalización, semántica complete, orden, reemplazo, filtros, importación, CSV y límite de 500.');

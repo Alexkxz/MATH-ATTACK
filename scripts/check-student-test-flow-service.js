@@ -64,7 +64,8 @@ assert.deepStrictEqual(publicQuestion(ordered[0]), {
   op: '\u00d7',
   a: 2,
   b: 3,
-  text: '2 \u00d7 3'
+  text: '2 \u00d7 3',
+  table: 2
 });
 
 console.log('OK servicio puro del flujo del alumno: rangos, repeticion, orden, respuestas y puntaje');

@@ -1,0 +1,207 @@
+/* Piel arcade inspirada en panel del maestro; conserva los controles reales de pruebas. */
+body.pruebas-embed {
+  min-width: 320px;
+  background: #06040e !important;
+  color: #e2e8f0;
+}
+
+body.pruebas-embed > header,
+body.pruebas-embed .container > .stats-row,
+body.pruebas-embed .container > .op-stats-row,
+body.pruebas-embed .container > .tab-bar {
+  display: none !important;
+}
+
+body.pruebas-embed .container {
+  width: 100%;
+  max-width: none;
+  padding: 8px;
+}
+
+body.pruebas-embed #panel-pruebas {
+  display: block !important;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0 0 24px;
+}
+
+body.pruebas-embed .pr-page-header {
+  align-items: center;
+  margin: 0 0 14px;
+  padding: 18px 20px;
+  border: 1px solid rgba(167, 139, 250, .36);
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(11, 8, 28, .98), rgba(20, 12, 46, .92));
+  box-shadow: 0 12px 34px rgba(0, 0, 0, .25), inset 0 1px rgba(255, 255, 255, .04);
+}
+
+body.pruebas-embed .pr-eyebrow,
+body.pruebas-embed .pr-section-title {
+  color: #c4b5fd;
+}
+
+body.pruebas-embed .pr-page-heading h2 {
+  margin: 9px 0 7px;
+  color: #67e8f9;
+  text-shadow: 0 0 14px rgba(0, 229, 255, .25);
+}
+
+body.pruebas-embed .pr-page-status {
+  border-color: rgba(0, 229, 255, .28);
+  background: rgba(8, 28, 48, .5);
+}
+
+body.pruebas-embed .pr-test-nav {
+  gap: 7px;
+  margin: 0 0 10px;
+  padding: 5px;
+  overflow-x: auto;
+  border: 1px solid rgba(167, 139, 250, .25);
+  border-radius: 9px;
+  background: #0b081c;
+}
+
+body.pruebas-embed .pr-test-nav-btn {
+  min-height: 38px;
+  padding: 9px 13px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  color: #94a3b8;
+  transition: color .15s ease, background .15s ease, border-color .15s ease, box-shadow .15s ease;
+}
+
+body.pruebas-embed .pr-test-nav-btn:hover,
+body.pruebas-embed .pr-test-nav-btn.active {
+  border-color: rgba(0, 229, 255, .35);
+  border-bottom-color: rgba(0, 229, 255, .6);
+  background: rgba(0, 229, 255, .1);
+  color: #67e8f9;
+  box-shadow: 0 0 14px rgba(0, 229, 255, .12);
+}
+
+body.pruebas-embed #prTestSectionStatus {
+  color: #94a3b8;
+}
+
+body.pruebas-embed .pr-results-hdr,
+body.pruebas-embed .pr-config-intro,
+body.pruebas-embed .pr-config-screen,
+body.pruebas-embed .pr-attempts,
+body.pruebas-embed .pr-test-library,
+body.pruebas-embed #prResultados {
+  border: 1px solid rgba(167, 139, 250, .25);
+  border-radius: 10px;
+  background: linear-gradient(150deg, rgba(11, 8, 28, .96), rgba(8, 6, 19, .96));
+}
+
+body.pruebas-embed .pr-results-hdr {
+  padding: 12px 14px;
+  color: #67e8f9;
+  letter-spacing: .7px;
+}
+
+body.pruebas-embed .pr-test-summary-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+  gap: 12px;
+}
+
+body.pruebas-embed .pr-summary-card,
+body.pruebas-embed .pr-test-card,
+body.pruebas-embed .pr-attempt-card {
+  min-width: 0;
+  border: 1px solid rgba(103, 232, 249, .2);
+  border-radius: 9px;
+  background: linear-gradient(145deg, rgba(20, 12, 46, .82), rgba(5, 4, 14, .9));
+  box-shadow: inset 0 1px rgba(255, 255, 255, .035), 0 8px 20px rgba(0, 0, 0, .16);
+}
+
+body.pruebas-embed .pr-summary-card:hover,
+body.pruebas-embed .pr-test-card:hover,
+body.pruebas-embed .pr-test-card.selected {
+  border-color: rgba(0, 229, 255, .55);
+  box-shadow: 0 0 0 1px rgba(0, 229, 255, .12), 0 10px 24px rgba(0, 0, 0, .22);
+}
+
+body.pruebas-embed .pr-test-library,
+body.pruebas-embed .pr-attempts,
+body.pruebas-embed .pr-config-screen,
+body.pruebas-embed #prResultados {
+  padding: 12px;
+}
+
+body.pruebas-embed .pr-test-library-list {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+  gap: 12px;
+}
+
+body.pruebas-embed .pr-test-card {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+  padding: 14px;
+}
+
+body.pruebas-embed .pr-test-card-actions {
+  justify-content: flex-start;
+  margin-top: auto;
+}
+
+body.pruebas-embed .pr-field,
+body.pruebas-embed .pr-builder-panel,
+body.pruebas-embed .pr-config-sections,
+body.pruebas-embed .pr-summary,
+body.pruebas-embed .pr-live-results-toolbar,
+body.pruebas-embed .pr-assignments-panel,
+body.pruebas-embed .pr-groups-panel {
+  border-color: rgba(167, 139, 250, .24);
+  border-radius: 8px;
+  background-color: rgba(5, 4, 14, .62);
+}
+
+body.pruebas-embed .pr-field > label,
+body.pruebas-embed .pr-config-screen .pr-field > label {
+  color: #a5f3fc;
+}
+
+body.pruebas-embed .pr-field input,
+body.pruebas-embed .pr-field select,
+body.pruebas-embed .pr-field textarea,
+body.pruebas-embed .pr-config-screen input,
+body.pruebas-embed .pr-config-screen select,
+body.pruebas-embed .pr-config-screen textarea,
+body.pruebas-embed .pr-test-library-filters input,
+body.pruebas-embed .pr-test-library-filters select {
+  max-width: 100%;
+  border-color: rgba(0, 229, 255, .35);
+  border-radius: 6px;
+  background-color: rgba(2, 6, 23, .82);
+}
+
+body.pruebas-embed .pr-builder-step.active,
+body.pruebas-embed .pr-tbl-mini-btn,
+body.pruebas-embed .pr-start-btn,
+body.pruebas-embed .pr-test-create,
+body.pruebas-embed .pr-test-select {
+  border-radius: 6px;
+}
+
+body.pruebas-embed .pr-table-wrap,
+body.pruebas-embed #prResultados > div[style*="overflow-x"] {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+@media (max-width: 680px) {
+  body.pruebas-embed .container { padding: 5px; }
+  body.pruebas-embed .pr-page-header { display: block; padding: 15px; }
+  body.pruebas-embed .pr-page-heading h2 { font-size: 16px; }
+  body.pruebas-embed .pr-page-status { margin-top: 12px; }
+  body.pruebas-embed .pr-test-nav-btn { min-height: 40px; padding: 8px 10px; font-size: 8px; }
+  body.pruebas-embed .pr-test-library,
+  body.pruebas-embed .pr-attempts,
+  body.pruebas-embed .pr-config-screen,
+  body.pruebas-embed #prResultados { padding: 9px; }
+}

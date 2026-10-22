@@ -11,6 +11,7 @@
   const finishedAttemptCache = new Map();
 
   const formatDuration = value => { const seconds = Math.max(0, Math.round(Number(value || 0) / 1000)); return `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`; };
+  const formatCompletionTime = value => { const date = new Date(value || ''); return Number.isNaN(date.getTime()) ? '' : new Intl.DateTimeFormat('es-MX', { hour: 'numeric', minute: '2-digit' }).format(date); };
   const formatSeconds = value => formatDuration(Math.max(0, Number(value || 0)) * 1000);
   const testLabel = test => `Folio ${test.folio || test.title || String(test.testId).slice(0, 8)} · ${test.title || 'Prueba'} · ${test.status === 'active' ? 'Activa' : 'Finalizada'}`;
   function setStatus(text, ok = false) { const node = get('prLiveResultsStatus'); if (node) { node.textContent = text; node.classList.toggle('ok', ok); } }
@@ -70,10 +71,10 @@
     return total;
   }
   function renderCards(attempts = latestAttempts) {
-    const target = get('prLiveResultsCards'); if (!target) return;
+    const target = get('prLiveResultsCards'), finishedTarget = get('prLiveFinishedResultsCards'); if (!target) return;
     const activeSessions = liveSessions.filter(session => session?.isExam && session.examTestId === selectedTestId);
     const attemptsByPlayer = new Map(), attemptsByName = new Map();
-    attempts.forEach(attempt => { if (attempt.accountPlayerId) attemptsByPlayer.set(String(attempt.accountPlayerId), attempt); if (attempt.name) attemptsByName.set(normalizeName(attempt.name), attempt); });
+    attempts.slice().sort((a, b) => (Date.parse(a.updatedAt || a.finishedAt || a.startedAt) || 0) - (Date.parse(b.updatedAt || b.finishedAt || b.startedAt) || 0)).forEach(attempt => { if (attempt.accountPlayerId) attemptsByPlayer.set(String(attempt.accountPlayerId), attempt); if (attempt.name) attemptsByName.set(normalizeName(attempt.name), attempt); });
     const sessionFor = student => activeSessions.find(session => (student?.accountPlayerId && String(session.accountPlayerId) === String(student.accountPlayerId)) || (student?.name && normalizeName(session.name) === normalizeName(student.name))) || null;
     const attemptFor = student => attemptsByPlayer.get(String(student?.accountPlayerId || '')) || attemptsByName.get(normalizeName(student?.name)) || null;
     const represented = new Set();
@@ -82,8 +83,8 @@
     const rows = assignedStudents.map(student => { markRepresented(student); return { student, attempt: attemptFor(student), session: sessionFor(student) }; });
     activeSessions.forEach(session => { if (!hasRepresentation(session)) { markRepresented(session); rows.push({ student: null, attempt: attemptFor(session), session }); } });
     attempts.forEach(attempt => { if (!hasRepresentation(attempt)) { markRepresented(attempt); rows.push({ student: null, attempt, session: null }); } });
-    if (!rows.length) { target.innerHTML = '<p class="pr-attempts-empty">Esperando alumnos. La tarjeta aparecerá cuando el alumno pulse “Aplicar prueba”.</p>'; return; }
-    target.innerHTML = rows.map(({ student, attempt, session }) => {
+    if (!rows.length) { target.innerHTML = '<p class="pr-attempts-empty">Esperando alumnos. La tarjeta aparecerá cuando el alumno pulse “Aplicar prueba”.</p>'; if (finishedTarget) finishedTarget.innerHTML = '<p class="pr-attempts-empty">Las tarjetas finalizadas aparecerán aquí.</p>'; const count = get('prLiveFinishedCount'); if (count) count.textContent = '0 finalizadas'; return; }
+    const cards = rows.map(({ student, attempt, session }) => {
       const profile = session || student || liveSessions.find(item => (attempt?.accountPlayerId && String(item.accountPlayerId) === String(attempt.accountPlayerId)) || (attempt?.name && normalizeName(item.name) === normalizeName(attempt.name))) || {};
       const result = attempt?.result || null;
       const completedAttempt = attempt?.status === 'finished' || !!result;
@@ -97,6 +98,7 @@
       // Si el socket conserva por unos instantes la última sesión activa, prioriza el
       // resultado persistido: la tarjeta debe pasar a finalizada inmediatamente.
       const finished = completedAttempt;
+      const completionTime = finished ? formatCompletionTime(attempt?.finishedAt || result?.completedAt || attempt?.updatedAt) : '';
       const waiting = !!student && !session && !attempt;
       const currentPrecision = (finished || !answered) ? pct : Math.min(100, Math.round(correct / answered * 100));
       const state = currentSession ? (currentSession.paused ? 'Pausado' : 'En curso') : waiting ? 'Asignado · en espera' : (statusLabels[attempt?.status] || 'En seguimiento');
@@ -111,7 +113,7 @@
       const studentGrade=session?.grade||attempt?.grade||student?.grade||'Sin grado';
       const avatar=typeof buildAvatarSVG==='function'?buildAvatarSVG(profile.avatar||{},44):`<span class="pr-live-avatar-fallback">${esc(studentName.slice(0,1).toUpperCase())}</span>`;
       const timerText=currentSession?`Pregunta <strong>${questionTime}</strong>${currentSession?.timeLimit?` <i>· Restan <strong>${formatSeconds(currentSession.timeLeft)}</strong></i>`:''}`:finished?`Tiempo <strong>${formatDuration(result?.duration)}</strong>`:waiting?'Pendiente de inicio':`Sesión <strong>${sessionTime}</strong>`;
-      return `<article class="pr-live-result-card ${finished ? 'is-finished' : ''} ${currentSession?.paused?'is-paused':''} ${waiting?'is-waiting':''}">
+      return { finished, markup: `<article class="pr-live-result-card ${finished ? 'is-finished' : ''} ${currentSession?.paused?'is-paused':''} ${waiting?'is-waiting':''}">
         <div class="pr-live-result-top">
           <div class="pr-live-result-avatar-col"><div class="pr-live-avatar-wrap"><svg class="pr-live-ring" viewBox="0 0 60 60" aria-hidden="true"><circle class="pr-live-ring-bg" cx="30" cy="30" r="${radius}"/><circle class="pr-live-ring-fill" cx="30" cy="30" r="${radius}" stroke="${ringColor}" stroke-dasharray="${dash}" transform="rotate(-90 30 30)"/></svg><div class="pr-live-avatar-inner" style="border-color:${theme}">${avatar}</div><span class="pr-live-status-dot">${finished?'✓':currentSession?.paused?'Ⅱ':'●'}</span></div><span class="pr-live-qprog">${answered}/${total||'—'}</span></div>
           <div class="pr-live-result-main"><div class="pr-live-result-head"><div><strong>${esc(studentName)}</strong><span>${esc(studentGrade)}</span></div><b class="pr-live-result-state">${finished ? '✓ Finalizó' : esc(state)}</b></div><div class="pr-live-result-subtitle">${finished?'Prueba completada':currentSession?.paused?'Prueba en pausa':waiting?'Alumno asignado':'Avance de la prueba'}</div><div class="pr-live-result-tables">${esc(tableLabel(currentSession || attempt || student || {}))}</div></div>
@@ -119,15 +121,19 @@
         <div class="pr-live-result-metrics"><span class="pr-live-stat ok"><small>ACIERTOS</small><strong>✓ ${correct}</strong></span><span class="pr-live-stat bad"><small>ERRORES</small><strong>✕ ${incorrect}</strong></span></div>
         <div class="pr-live-result-precision" aria-label="Precisión ${currentPrecision}%"><div class="pr-live-precision-label"><span>PRECISIÓN</span><strong>${currentPrecision}%</strong></div><div class="pr-live-precision-meter" role="img" aria-label="${currentPrecision}% de precisión"><span class="pr-live-precision-cells" aria-hidden="true">${Array.from({length:5},(_,index)=>{const fill=Math.max(0,Math.min(100,(currentPrecision-index*20)*5));const color=['#ff334f','#ff8a24','#ffe34a','#39ff88','#38bdf8'][index];return `<i style="color:${color}"><b style="width:${fill}%"></b></i>`;}).join('')}</span></div></div>
         <div class="pr-live-result-question"><small>${finished ? 'ESTADO' : 'PREGUNTA ACTUAL'}</small><strong>${esc(question)}</strong></div>
-        <div class="pr-live-result-foot"><span class="pr-live-timer">⏱ ${timerText}</span><span>${finished ? 'Finalizada' : esc(state)}</span></div>
-      </article>`;
-    }).join('');
+        <div class="pr-live-result-foot"><span class="pr-live-timer">⏱ ${timerText}</span><span>${finished ? `Finalizada${completionTime ? ` · ${esc(completionTime)}` : ''}` : esc(state)}</span></div>
+      </article>` };
+    });
+    const activeCards = cards.filter(card => !card.finished), finishedCards = cards.filter(card => card.finished);
+    target.innerHTML = finishedTarget ? (activeCards.length ? activeCards.map(card => card.markup).join('') : '<p class="pr-attempts-empty">No hay alumnos en juego ni esperando iniciar.</p>') : cards.map(card => card.markup).join('');
+    if (finishedTarget) finishedTarget.innerHTML = finishedCards.length ? finishedCards.map(card => card.markup).join('') : '<p class="pr-attempts-empty">Aún no hay alumnos que hayan finalizado esta prueba.</p>';
+    const count = get('prLiveFinishedCount'); if (count) count.textContent = `${finishedCards.length} finalizada(s)`;
   }
   async function loadResults(testId = selectedTestId) {
     if (!testId) return;
     const requestId = ++resultsRequestId;
     try {
-      const attemptsRequest = fetch(adminUrl(`/api/maestro/tests/${encodeURIComponent(testId)}/attempts?limit=100&sort=updatedAt&direction=desc`));
+      const attemptsRequest = fetch(adminUrl(`/api/maestro/tests/${encodeURIComponent(testId)}/attempts?limit=100&sort=updatedAt&order=desc`));
       await loadAssignedStudents(testId);
       const response = await attemptsRequest;
       const data = await response.json();
@@ -169,8 +175,8 @@
   function selectTest(testId) {
     selectedTestId = testId || ''; resultsRequestId += 1; latestAttempts = []; finishedAttemptCache.clear(); rosterRequestId += 1; rosterTestId = ''; rosterLoading = null; rosterLoaded = false; assignedStudents = []; selectedTestDetails = tests.find(test => test.testId === selectedTestId) || null;
     if (selectedTestId) sessionStorage.setItem('maestroLiveResultTestId', selectedTestId); else sessionStorage.removeItem('maestroLiveResultTestId');
-    const target = get('prLiveResultsCards');
-    if (!selectedTestId) { if (target) target.innerHTML = '<p class="pr-attempts-empty">Selecciona una prueba activa para iniciar el seguimiento.</p>'; setStatus('Selecciona una prueba activa.'); return; }
+    const target = get('prLiveResultsCards'), finishedTarget = get('prLiveFinishedResultsCards');
+    if (!selectedTestId) { if (target) target.innerHTML = '<p class="pr-attempts-empty">Selecciona una prueba activa para iniciar el seguimiento.</p>'; if (finishedTarget) finishedTarget.innerHTML = '<p class="pr-attempts-empty">Las tarjetas finalizadas aparecerán aquí.</p>'; const count = get('prLiveFinishedCount'); if (count) count.textContent = '0 finalizadas'; setStatus('Selecciona una prueba activa.'); return; }
     if (target) target.innerHTML = '<p class="pr-attempts-empty">Cargando resultados…</p>';
     renderCards(); loadResults();
   }

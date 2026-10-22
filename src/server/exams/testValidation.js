@@ -4,6 +4,7 @@ const UUID=/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]
 const MAX_METADATA=16_384, MAX_CHECKPOINT=262_144, TEST_CONFIG_VERSION=1;
 const TEST_MULTIPLIER_MIN=1, TEST_MULTIPLIER_MAX=5;
 const REWARD_AMOUNT_MAX=100000;
+const {validateMathConfiguration}=require('./studentTestFlowService');
 function isUuid(value){ return typeof value==='string'&&UUID.test(value); }
 function validateTestRewards(rewards={}, {allowIncomplete=true}={}){
   if(rewards===undefined||rewards===null)return true;
@@ -25,12 +26,16 @@ function validateTestConfiguration(configuration={}, {allowIncomplete=false}={})
   if(configuration.total!==undefined&&(!Number.isInteger(configuration.total)||configuration.total<1||configuration.total>100)) throw new Error('configuration total invalido');
   if(configuration.allowedAttempts!==undefined&&(!Number.isInteger(configuration.allowedAttempts)||configuration.allowedAttempts<1||configuration.allowedAttempts>3)) throw new Error('configuration allowedAttempts invalido');
   if(configuration.answerMode!==undefined&&!['options','write','voice'].includes(configuration.answerMode)) throw new Error('configuration answerMode invalido');
+  if(configuration.publicationPolicy!==undefined&&!['automatic','review'].includes(configuration.publicationPolicy))throw new Error('configuration publicationPolicy invalida');
   if(configuration.timeLimit!==undefined&&(!Number.isFinite(Number(configuration.timeLimit))||Number(configuration.timeLimit)<0||Number(configuration.timeLimit)>3600)) throw new Error('configuration timeLimit invalido');
   if(configuration.timePerQuestion!==undefined&&(!Number.isFinite(Number(configuration.timePerQuestion))||Number(configuration.timePerQuestion)<0||Number(configuration.timePerQuestion)>3600)) throw new Error('configuration timePerQuestion invalido');
   const multiplier=configuration.multiplier??1;
   if(!Number.isInteger(multiplier)||multiplier<TEST_MULTIPLIER_MIN||multiplier>TEST_MULTIPLIER_MAX) throw new Error('configuration multiplier invalido');
   if(configuration.order!==undefined&&!['ordered','random'].includes(configuration.order)) throw new Error('configuration order invalido');
   if(configuration.repeat!==undefined&&typeof configuration.repeat!=='boolean') throw new Error('configuration repeat invalido');
+  if(configuration.enabledOperations!==undefined&&(!Array.isArray(configuration.enabledOperations)||configuration.enabledOperations.some(op=>!['mult','add','sub','div'].includes(op))))throw new Error('configuration enabledOperations invalido');
+  if(configuration.operationOrder!==undefined&&(!Array.isArray(configuration.operationOrder)||configuration.operationOrder.some(op=>!['mult','add','sub','div'].includes(op))))throw new Error('configuration operationOrder invalido');
+  if(configuration.opsConfig&&Object.keys(configuration.opsConfig).length)validateMathConfiguration(configuration,{allowIncomplete});
   validateTestRewards(configuration.rewards,{allowIncomplete});
   assertJsonSize(configuration,MAX_METADATA,'configuration');
   return true;

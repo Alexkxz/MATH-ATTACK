@@ -1,10 +1,11 @@
 'use strict';
 
-function createPlayerIdentityMessages({ wsContext, genId, checkExamNotify, deliverPendingPotMsg, schedulePanelBroadcast, testService, resolveAccountPlayerId, buildLegacyIdentityMap }) {
+function createPlayerIdentityMessages({ wsContext, genId, checkExamNotify, deliverPendingPotMsg, schedulePanelBroadcast, testService }) {
   const gameSessions = wsContext.gameSessions;
   const { getSessionId, findActiveSession } = wsContext.identity;
   const { resolveAccountPlayer } = wsContext.identity;
-  const { loadPlayers } = wsContext.persistence;
+  const { loadPlayers = () => [] } = wsContext.persistence || {};
+  const activeStudentSockets=new Map();
 
   function reviveSession(ws, name) {
     const session = gameSessions.restoreSession(name, ws);
@@ -29,11 +30,14 @@ function createPlayerIdentityMessages({ wsContext, genId, checkExamNotify, deliv
   }
 
   function handlePlayerIdentify(ws, message) {
+    if(ws._studentAccountPlayerId){const priorEntry=activeStudentSockets.get(ws._studentAccountPlayerId),prior=priorEntry?.ws;if(prior&&prior!==ws&&Number(ws._studentAuthIssuedAt||0)<Number(priorEntry.issuedAt||0)){try{ws.close(4002,'student session superseded');}catch(_){}return;}activeStudentSockets.set(ws._studentAccountPlayerId,{ws,issuedAt:Number(ws._studentAuthIssuedAt)||0});if(prior&&prior!==ws&&prior.readyState===1){if(prior._examAttemptBinding&&testService){try{testService.disconnectStudentAttempt(prior._examAttemptBinding);prior._examAttemptBinding=null;}catch(_){activeStudentSockets.set(ws._studentAccountPlayerId,priorEntry);try{ws.close(1011,'could not freeze exam before recovery');}catch(__){}return;}}try{prior.close(4001,'student session recovered elsewhere');}catch(_){}}if(!ws._studentSocketCleanupAttached){ws._studentSocketCleanupAttached=true;ws.on('close',()=>{const active=activeStudentSockets.get(ws._studentAccountPlayerId);if(active?.ws===ws)activeStudentSockets.delete(ws._studentAccountPlayerId);});}}
     const session = getOrCreateSession(ws, message);
     session.ws = ws;
     session.id = ws.playerId;
-    session.name = message.name || session.name || '?';
-    session.grade = message.grade || session.grade || '';
+    const authenticated=ws._studentAccountPlayerId?resolveAccountPlayer(loadPlayers(),{accountPlayerId:ws._studentAccountPlayerId}):null;
+    session.accountPlayerId=ws._studentAccountPlayerId||session.accountPlayerId||null;
+    session.name = authenticated?.name || message.name || session.name || '?';
+    session.grade = authenticated?.grade || message.grade || session.grade || '';
     ws.playerName = session.name;
     ws.grade = session.grade;
     if (!session.gameMode) session.gameMode = 'idle';
@@ -42,12 +46,15 @@ function createPlayerIdentityMessages({ wsContext, genId, checkExamNotify, deliv
   }
 
   function handleSessionUpdate(ws, message) {
+    if(ws._studentAccountPlayerId&&activeStudentSockets.get(ws._studentAccountPlayerId)?.ws&&activeStudentSockets.get(ws._studentAccountPlayerId).ws!==ws)return true;
     const session = getOrCreateSession(ws, message);
-    if (message.name) ws.playerName = message.name;
+    const authenticated=ws._studentAccountPlayerId?resolveAccountPlayer(loadPlayers(),{accountPlayerId:ws._studentAccountPlayerId}):null;
+    if (authenticated) ws.playerName=authenticated.name; else if (message.name) ws.playerName = message.name;
     session.ws = ws;
     session.id = getSessionId(ws);
-    session.name = message.name || ws.playerName || '?';
-    session.grade = message.grade || '';
+    session.accountPlayerId=ws._studentAccountPlayerId||session.accountPlayerId||null;
+    session.name = authenticated?.name || message.name || ws.playerName || '?';
+    session.grade = authenticated?.grade || message.grade || '';
     ws.playerName = session.name;
     ws.grade = session.grade;
     checkExamNotify(ws, session.grade);
@@ -79,12 +86,13 @@ function createPlayerIdentityMessages({ wsContext, genId, checkExamNotify, deliv
     session.lastResult = message.lastResult || null;
     session.lastResultTs = message.lastResultTs || 0;
     session.tblResults = message.tblResults || {};
-    if (testService && session.isExam && session.examTestId && session.examStartedAt && typeof resolveAccountPlayer === 'function' && typeof resolveAccountPlayerId === 'function') {
+    if (testService && ws._studentAccountPlayerId && session.isExam && session.examTestId && session.examStartedAt) {
       try {
-        const players = loadPlayers();
-        const player = resolveAccountPlayer(players, { name: session.name });
-        if (player) testService.recordLiveExamProgress({ testId: session.examTestId, accountPlayerId: resolveAccountPlayerId(player, buildLegacyIdentityMap(players)), studentSnapshot: { name: player.name, grade: player.grade || session.grade || '' }, message });
-      } catch (_) { /* El panel en vivo no debe interrumpir la sesión del alumno. */ }
+        // The account ID comes from the authenticated HTTP session attached at
+        // the WebSocket handshake; never accept it from the student message.
+        const saved=testService.recordLiveExamProgress({ testId: session.examTestId, accountPlayerId: ws._studentAccountPlayerId, studentSnapshot: { name: session.name, grade: session.grade || '' }, message });
+        if(saved?.attempt)ws._examAttemptBinding={testId:session.examTestId,attemptId:saved.attempt.attemptId,accountPlayerId:ws._studentAccountPlayerId};
+      } catch (error) { console.error('No se pudo guardar el avance de la prueba:',error.message); }
     }
     schedulePanelBroadcast();
     deliverPendingPotMsg(session);

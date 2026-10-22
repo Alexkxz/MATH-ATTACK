@@ -558,6 +558,7 @@ button:disabled .wave-letter{animation:none;}
 .write-input{width:140px;background:rgba(255,255,255,.07);border:3px solid rgba(167,139,250,.3);
   border-radius:13px;padding:10px;font-family:'Baloo 2',cursive;font-size:30px;
   color:var(--text);text-align:center;outline:none;transition:border-color .2s;}
+.write-input.write-input-remainder{box-sizing:border-box;width:min(90vw,320px);font-size:clamp(16px,5vw,20px);padding:10px 8px;}
 .write-input:focus{border-color:var(--accent2);}
 .write-input.correct{border-color:var(--correct);background:rgba(52,211,153,.15);color:var(--correct);}
 .write-input.wrong{border-color:var(--wrong);background:rgba(248,113,113,.1);color:var(--wrong);animation:shake .3s ease;}
@@ -5771,7 +5772,7 @@ async function doLogin(){
       const data=await res.json();
       if(data.ok){
         currentPlayer={...data.player};
-        try{ await fetch('/api/student/auth',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,pin:rawPin})}); }catch(_){ /* El juego normal conserva su flujo si la sesion de prueba no esta disponible. */ }
+        try{ const studentAuth=await fetch('/api/student/auth',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,pin:rawPin})});if(studentAuth.ok)reconnectAuthenticatedStudentSocket(); }catch(_){ /* El juego normal conserva su flujo si la sesion de prueba no esta disponible. */ }
         const localAureos=getLocalAureos(name);
         if(localAureos>currentPlayer.aureos) await syncAureos(localAureos);
         localStorage.setItem(PLAYER_KEY,JSON.stringify(currentPlayer));
@@ -5998,7 +5999,34 @@ function selectWorkspaceNav(btn,target){
   const labels={home:'Sesión lista',tests:'Pruebas disponibles',missions:'Misiones preparadas'};
   if(status) status.textContent=labels[target]||'Sesión lista';
   showWorkspaceView(target);
+  if(target==='tests') loadAssignedStudentTests();
 }
+async function loadAssignedStudentTests(){
+  const host=$('workspaceTestSlot');if(!host)return;
+  let panel=$('studentAssignedTests');if(!panel){panel=document.createElement('div');panel.id='studentAssignedTests';host.insertBefore(panel,host.firstChild);}
+  panel.innerHTML='<section class="setup-card" style="margin:12px 0;padding:18px"><h2>Pruebas asignadas</h2><p>Cargando pruebas…</p></section>';
+  try{
+    const response=await fetch('/api/student/tests',{credentials:'same-origin'}),data=await response.json();
+    if(!response.ok)throw Error(data.error||'Inicia sesión con tu cuenta para consultar las pruebas.');
+    const card=document.createElement('section');card.className='setup-card';card.style.cssText='margin:12px 0;padding:18px';
+    const title=document.createElement('h2');title.textContent='Pruebas asignadas';card.appendChild(title);
+    if(!data.tests?.length){const empty=document.createElement('p');empty.textContent='No tienes pruebas disponibles por ahora.';card.appendChild(empty);}
+    for(const row of data.tests||[]){
+      const item=document.createElement('article');item.style.cssText='margin-top:12px;padding:14px;border:1px solid rgba(167,139,250,.28);border-radius:12px';
+      const h=document.createElement('h3');h.textContent=row.test.title||'Prueba';item.appendChild(h);
+      const p=document.createElement('p');p.textContent=`${({available:'Disponible',in_progress:'En curso',paused:'Pausada',exhausted:'Intentos agotados',closed:'Participación cerrada por aprobación de recompensas'})[row.availability]||row.availability} · Intentos utilizados ${row.attemptsUsed}/${row.attemptsAllowed}`;item.appendChild(p);
+      if(row.availability==='available'||row.availability==='in_progress'){
+        const button=document.createElement('button');button.className='btn-pri';button.textContent=row.availability==='in_progress'?'Continuar':'Comenzar';
+        button.onclick=async()=>{button.disabled=true;try{let attempt=row.attempt;if(!attempt){const created=await fetch(`/api/student/tests/${encodeURIComponent(row.test.testId)}/attempts`,{method:'POST',credentials:'same-origin'});const result=await created.json();if(!created.ok)throw Error(result.error||'No se pudo abrir la prueba.');attempt=result.attempt;}const started=await fetch(`/api/student/tests/${encodeURIComponent(row.test.testId)}/attempts/${encodeURIComponent(attempt.attemptId)}/start`,{method:'POST',credentials:'same-origin'});const result=await started.json();if(!started.ok)throw Error(result.error||'No se pudo continuar la prueba.');const a=result.attempt,c=a.configurationSnapshot||{},ops=Object.keys(c.opsConfig||{}),tabOp=ops.find(op=>op==='mult'||op==='div');const config={...c,testId:row.test.testId,attemptId:a.attemptId,title:row.test.title,startedAt:Date.parse(a.startedAt||a.updatedAt),grade:c.grade||currentPlayer?.grade||'',opsConfig:c.opsConfig||{},op:ops.length===1?ops[0]:'mixed',ops,tables:tabOp?c.opsConfig[tabOp].tables||[]:[],total:c.total||Object.values(c.opsConfig||{}).reduce((n,x)=>n+(x.matrix?.length||Number(x.qty||0)*(x.tables?.length||1)),0),timeLimit:Number(c.timeLimit)||0,timePerQuestion:Number(c.timePerQuestion)||0,answerMode:c.answerMode||'options',questions:a.progress?.questions||[],answers:a.progress?.answers||[],currentIndex:a.progress?.currentIndex||0,correct:a.progress?.correct||0,incorrect:a.progress?.incorrect||0,timeout:a.progress?.timeout||0,score:a.progress?.score||0,timeLeft:a.progress?.timeLeft||0,questionElapsedMs:a.progress?.questionElapsedMs||0,globalRemainingMs:a.progress?.globalRemainingMs||0};_examDone=false;handleExamStart(config);applyPrueba();}catch(error){alert(error.message||'No se pudo abrir la prueba.');button.disabled=false;await loadAssignedStudentTests();}};
+        item.appendChild(button);
+      }
+      card.appendChild(item);
+    }
+    panel.replaceChildren(card);
+  }catch(error){panel.innerHTML='';const card=document.createElement('section');card.className='setup-card';card.style.cssText='margin:12px 0;padding:18px';const message=document.createElement('p');message.textContent=error.message||'No se pudieron consultar las pruebas.';card.appendChild(message);panel.appendChild(card);}
+}
+window.addEventListener('online',()=>{if($('studentWorkspace')?.classList.contains('workspace-show-tests'))loadAssignedStudentTests();});
+setInterval(()=>{if($('studentWorkspace')?.classList.contains('workspace-show-tests'))loadAssignedStudentTests();},15000);
 function openWorkspaceRegistry(btn){ selectWorkspaceNav(btn,'ranking'); }
 
 // ── Tienda ─────────────────────────────────────────────
@@ -8019,6 +8047,13 @@ function sendPlayerIdentify(){
   if(ws?.readyState===WebSocket.OPEN&&currentPlayer?.name)
     ws.send(JSON.stringify({type:'player_identify',name:currentPlayer.name,grade:currentPlayer.grade||''}));
 }
+function reconnectAuthenticatedStudentSocket(){
+  if(_soloWSTimer){clearTimeout(_soloWSTimer);_soloWSTimer=null;}
+  if(_soloWSKeepalive){clearInterval(_soloWSKeepalive);_soloWSKeepalive=null;}
+  const prior=soloWS;soloWS=null;
+  if(prior){prior.onclose=null;prior.onerror=null;try{prior.close(1000,'student authentication refreshed');}catch(_){} }
+  initSoloWS();
+}
 
 // ── Anuncio del maestro ────────────────────────────────
 let _annTimer=null;
@@ -8124,6 +8159,15 @@ let _examResumeData=null; // checkpoint a restituir en initGame
 let _examPlaythrough=false;
 let _examPrebuiltQuestions=null; // preguntas ya generadas por applyPrueba() cuando config.opsConfig existe (config por operación)
 let _examGlobalDeadline=0;
+let _examServerPauseAt=0;
+let _examNetworkPaused=false;
+let _examRecoveredTimeLeft=null,_examRecoveredQuestionElapsed=0;
+let _examAnswers=[];
+function handleExamPause(pausedByTeacher){
+  if(!_examPlaythrough)return;
+  if(pausedByTeacher&&!_examServerPauseAt){_examServerPauseAt=Date.now();applyPauseState(true,'Maestro');}
+  else if(!pausedByTeacher&&_examServerPauseAt){const elapsed=Date.now()-_examServerPauseAt;_examServerPauseAt=0;if(_examGlobalDeadline)_examGlobalDeadline+=elapsed;if(questionStartedAt)questionStartedAt+=elapsed;applyPauseState(false);}
+}
 
 function _cpKey(){ return 'examCp_'+(pName||'_'); }
 function _saveExamCheckpoint(){
@@ -8136,6 +8180,7 @@ function _saveExamCheckpoint(){
       qIndex, totalQ:questions.length,
       gameScore, totalC, totalW, totalT, streak,
       tblResultsFull:full, tableDetailResults, stepDetailResults:cloneStepDetailResults(stepDetailResults),
+      questions:questions.map(q=>({...q})), answers:_examAnswers.map(a=>({...a})), timeLeft, globalRemainingMs:_examGlobalDeadline?Math.max(0,_examGlobalDeadline-Date.now()):0,
       // Datos extra para poder armar un save_result independiente si el alumno se sale y la
       // prueba ya fue cerrada cuando regrese — ver _checkOrphanedExamCheckpoint()
       gameId:currentGameId, grade:gradeName, gameType, difficulty,
@@ -8259,8 +8304,16 @@ function handleExamStart(config){
   // Si ya hay partida activa, terminarla (el alumno volverá a step1 con el banner)
   if($('gameScreen').classList.contains('active')){ clearInterval(timerIv); showResults(); }
 }
-function applyPrueba(){
+async function ensureStudentExamAttempt(mode){
+  const listRes=await fetch('/api/student/tests',{credentials:'same-origin'}),list=await listRes.json();if(!listRes.ok)throw Error(list.error||'Inicia sesión con tu cuenta para entrar a la prueba.');
+  const row=(list.tests||[]).find(item=>item.test.testId===mode.testId);if(!row)throw Error('La prueba ya no está disponible para esta cuenta.');if(row.availability==='paused')throw Error('La prueba está pausada por tu maestro.');if(row.availability==='exhausted')throw Error('Ya utilizaste todos los intentos permitidos.');
+  let attempt=row.attempt;if(!attempt){const created=await fetch(`/api/student/tests/${encodeURIComponent(mode.testId)}/attempts`,{method:'POST',credentials:'same-origin'}),payload=await created.json();if(!created.ok)throw Error(payload.error||'No se pudo abrir el intento.');attempt=payload.attempt;}
+  const started=await fetch(`/api/student/tests/${encodeURIComponent(mode.testId)}/attempts/${encodeURIComponent(attempt.attemptId)}/start`,{method:'POST',credentials:'same-origin'}),payload=await started.json();if(!started.ok)throw Error(payload.error||'No se pudo iniciar el intento.');attempt=payload.attempt;const c=attempt.configurationSnapshot||{};
+  return {...mode,...c,testId:mode.testId,attemptId:attempt.attemptId,startedAt:Date.parse(attempt.startedAt||attempt.updatedAt),grade:c.grade||currentPlayer?.grade||'',opsConfig:c.opsConfig||mode.opsConfig||{},questions:attempt.progress?.questions||[],answers:attempt.progress?.answers||[],currentIndex:attempt.progress?.currentIndex||0,correct:attempt.progress?.correct||0,incorrect:attempt.progress?.incorrect||0,timeout:attempt.progress?.timeout||0,score:attempt.progress?.score||0,timeLeft:attempt.progress?.timeLeft||0,questionElapsedMs:attempt.progress?.questionElapsedMs||0,globalRemainingMs:attempt.progress?.globalRemainingMs||0};
+}
+async function applyPrueba(){
   if(!_pendingExamConfig) return;
+  if(!Array.isArray(_pendingExamConfig.questions)||!_pendingExamConfig.questions.length){try{_pendingExamConfig=await ensureStudentExamAttempt(_pendingExamConfig);}catch(error){_examPlaythrough=false;showPowerToast(error.message||'No se pudo recuperar la prueba.',4500);return;}}
   _examPlaythrough=true; // a partir de aquí, la partida que se inicia ES la prueba
   const config=_pendingExamConfig;
   ansMode=['options','write','voice'].includes(config.answerMode)?config.answerMode:'options';
@@ -8268,10 +8321,14 @@ function applyPrueba(){
   gameMode='solo';
   setupMode='solo';
   _examPrebuiltQuestions=null;
+  if(Array.isArray(config.questions)&&config.questions.length){
+    _examPrebuiltQuestions=config.questions.map(q=>{const op=q.op||'×',a=Number(q.a),b=Number(q.b);if(op==='÷')return {...q,_divA:a,table:q.table||b,answer:b?Math.floor(a/b):0,_remainder:Number(q.remainder)||0};if(op==='×')return {...q,table:q.table||a,answer:a*b};return {...q,table:a,answer:op==='+'?a+b:a-b};});
+    _examAnswers=Array.isArray(config.answers)?config.answers.map(a=>({...a})):[];
+  }
   const hasOpsConfig=config.opsConfig&&typeof config.opsConfig==='object'&&Object.keys(config.opsConfig).length>0;
   // Operaciones
   if(hasOpsConfig){
-    selectedOps=Object.keys(config.opsConfig).map(o=>opMap[o]).filter(Boolean);
+    selectedOps=(Array.isArray(config.enabledOperations)?config.enabledOperations:Object.keys(config.opsConfig)).map(o=>opMap[o]).filter(Boolean);
     if(!selectedOps.length) selectedOps=['×'];
     const firstAddSubCfg=Object.values(config.opsConfig).find(cfg=>cfg&&(cfg.carryMode==='direct'||cfg.carryMode==='carry'));
     if(firstAddSubCfg?.carryMode) addSubMode=firstAddSubCfg.carryMode;
@@ -8285,9 +8342,12 @@ function applyPrueba(){
   if(config.tables?.length){ selectedTbls=[...config.tables]; tblSelMode='custom'; }
   else { selectedTbls=[...getAllModeTablePool()]; tblSelMode='all'; }
   // Tiempo por pregunta y límite global de la prueba.
-  const perQuestionTime=Number(config.timePerQuestion)||Number(config.timeLimit)||0;
-  const globalTime=Number(config.timeLimit)||0;
-  _examGlobalDeadline=globalTime>0?Date.now()+globalTime*1000:0;
+  const explicitTiming=config.enableTimePerQuestion!==undefined||config.enableTotalTime!==undefined;
+  const perQuestionTime=explicitTiming?(config.enableTimePerQuestion?Number(config.questionTimeSeconds)||Number(config.timePerQuestion)||0:0):(Number(config.timePerQuestion)||Number(config.timeLimit)||0);
+  const globalTime=explicitTiming?(config.enableTotalTime?Number(config.totalTimeSeconds)||Number(config.timeLimit)||0:0):(Number(config.timeLimit)||0);
+  const recoveredGlobalMs=Number(config.globalRemainingMs)||0;
+  const hasRecoveredGlobal=recoveredGlobalMs>0&&(Number(config.currentIndex)>0||Number(config.timeLeft)>0);
+  _examGlobalDeadline=globalTime>0?Date.now()+(hasRecoveredGlobal?Math.min(globalTime*1000,recoveredGlobalMs):globalTime*1000):0;
   if(perQuestionTime>0){
     gameType='timed'; timeLimit=perQuestionTime;
     // Elegir etiqueta de dificultad más cercana al timeLimit configurado
@@ -8307,20 +8367,26 @@ function applyPrueba(){
   // bypaseando los globals compartidos selectedTbls/qptPerTable/qpt/selectedCifras.
   // Si no existe (prueba con config simple o examen ya en curso antes del despliegue),
   // se deja _examPrebuiltQuestions=null y initGame() cae al flujo normal (buildQ()) como antes.
-  if(hasOpsConfig) _examPrebuiltQuestions=buildQFromOpsConfig(config.opsConfig);
+  if(hasOpsConfig&&!_examPrebuiltQuestions) _examPrebuiltQuestions=buildQFromOpsConfig(config.opsConfig);
   // Verificar si hay checkpoint para reanudar
   const applyBtn=document.querySelector('#examBannerStep1 .exam-apply-btn');
   if(applyBtn?.dataset?.examResume==='1'){
     const cp=_loadExamCheckpoint(config);
     if(cp&&cp.qIndex>0) _examResumeData=cp;
   }
-  runCountdown(()=>initGame(false));
+  if(!_examResumeData&&Number(config.currentIndex)>0&&Array.isArray(config.questions)){
+    const answerById=new Map((config.answers||[]).map(x=>[x.questionId,x.status]));const grouped={};
+    config.questions.forEach(q=>{const op=q.op||'×';(grouped[op]||=([])).push(answerById.get(q.questionId)||'pending');});
+    Object.keys(grouped).forEach(op=>grouped[op]=grouped[op].filter(status=>status!=='pending'));
+    _examResumeData={qIndex:Number(config.currentIndex),totalQ:config.questions.length,gameScore:Number(config.score)||0,totalC:Number(config.correct)||0,totalW:Number(config.incorrect)||0,totalT:Number(config.timeout)||0,streak:0,tblResultsFull:grouped,tableDetailResults:{},stepDetailResults:{},timeLeft:Number(config.timeLeft)||0,questionElapsedMs:Number(config.questionElapsedMs)||0,globalRemainingMs:Number(config.globalRemainingMs)||0,questions:config.questions};
+  }
+  runCountdown(()=>{initGame(false);if(config.paused)setTimeout(()=>handleExamPause(true),120);});
 }
 function _finishExamImmediately(){
   if(!_examPlaythrough||!questions.length) return;
   clearInterval(timerIv); answered=true;
   const seenByOp={};
-  questions.forEach(q=>{
+  questions.forEach((q,questionIndex)=>{
     const op=q.op||'×';
     const index=seenByOp[op]||0; seenByOp[op]=index+1;
     if(!tblResults[op]) tblResults[op]=[];
@@ -8331,7 +8397,7 @@ function _finishExamImmediately(){
       if(!tableDetailResults[op][q.table]) tableDetailResults[op][q.table]=[];
       tableDetailResults[op][q.table].push('timeout');
     }
-    setMiniDot(op,index,'timeout');
+    setMiniDot(op,questionIndex,'timeout');
     totalT++;
   });
   if($('progCorrect')) $('progCorrect').textContent=totalC;
@@ -8925,15 +8991,15 @@ function syncStep2OperationsAnswerMode(){
   if(!ansGrid||!writeBtn) return;
   if(opsMode){
     ansMode='write';
-    if(ansLabel) ansLabel.textContent='🎮 Respuesta del alumno';
-    if(ansGrid) ansGrid.style.gridTemplateColumns='1fr';
+    if(ansLabel) ansLabel.style.display='none';
+    if(ansGrid) ansGrid.style.display='none';
     if(optionsBtn) optionsBtn.style.display='none';
     if(voiceBtn) voiceBtn.style.display='none';
-    writeBtn.style.display='';
+    writeBtn.style.display='none';
     if(writeHelp) writeHelp.textContent='Solo escribir';
   } else {
-    if(ansLabel) ansLabel.textContent='🎮 Modo de respuesta';
-    if(ansGrid) ansGrid.style.gridTemplateColumns='';
+    if(ansLabel){ ansLabel.style.display=''; ansLabel.textContent='🎮 Modo de respuesta'; }
+    if(ansGrid){ ansGrid.style.display=''; ansGrid.style.gridTemplateColumns=''; }
     if(optionsBtn) optionsBtn.style.display='';
     if(voiceBtn) voiceBtn.style.display='';
     writeBtn.style.display='';
@@ -9083,6 +9149,8 @@ function sendSessionUpdate(){
     lives:currentLives, livesTotal:livesCount,
     streak, timeLeft:Math.round(timeLeft||0), timeLimit:timeLimit||0,
     questionElapsedMs:questionStartedAt?Math.max(0,Date.now()-questionStartedAt):0,
+    examQuestions:_examQuestions,
+    timeLeft:Math.max(0,Number(timeLeft)||0),globalRemainingMs:_examGlobalDeadline?Math.max(0,_examGlobalDeadline-Date.now()):0,
     lastResult, lastResultTs,
     tblResults:_tblSnap
   }));
@@ -10477,17 +10545,20 @@ function initGame(isOnline){
   // Restituir checkpoint de examen si el alumno regresó a mitad de prueba
   if(_examResumeData){
     const _cp=_examResumeData; _examResumeData=null;
+    if(Array.isArray(_cp.questions)&&_cp.questions.length===_cp.totalQ) questions=_cp.questions.map(q=>({...q}));
     const safeIdx=Math.min(_cp.qIndex, questions.length-1);
     if(safeIdx>0){
       qIndex=safeIdx;
+      if(Number.isFinite(_cp.timeLeft)&&_cp.timeLeft>0)timeLeft=_cp.timeLeft;
+      _examRecoveredTimeLeft=Number(_cp.timeLeft)>0?Number(_cp.timeLeft):null;_examRecoveredQuestionElapsed=Math.max(0,Number(_cp.questionElapsedMs)||0);
+      if(_pendingExamConfig?.timeLimit>0&&Number.isFinite(_cp.globalRemainingMs)&&_cp.globalRemainingMs>0)_examGlobalDeadline=Date.now()+_cp.globalRemainingMs;
       gameScore=_cp.gameScore||0; totalC=_cp.totalC||0; totalW=_cp.totalW||0; totalT=_cp.totalT||0; streak=_cp.streak||0;
       Object.keys(_cp.tblResultsFull||{}).forEach(op=>{ tblResults[op]=[...(_cp.tblResultsFull[op]||[])]; });
       tableDetailResults=_cp.tableDetailResults||{};
       stepDetailResults=cloneStepDetailResults(_cp.stepDetailResults||{});
-      // Restaurar mini-dots del historial previo
-      Object.keys(tblResults).forEach(op=>{
-        (tblResults[op]||[]).forEach((res,i)=>setMiniDot(op,i,res));
-      });
+      // Restaurar los colores por orden real de pregunta, incluso al mezclar operaciones.
+      const savedByQuestion=new Map((_examAnswers||[]).map(answer=>[answer.questionId,answer]));
+      questions.forEach((question,index)=>{const saved=savedByQuestion.get(question.questionId);if(saved)setMiniDot(question.op||'×',index,saved.timeout?'timeout':saved.corrected?'correct':'wrong');});
     }
   }
   loadQuestion();
@@ -11119,8 +11190,10 @@ function buildMiniTbls(){
 }
 
 function setMiniDot(t, n, r){
-  // Color the segment at the current question index
-  const seg=$('pseg-'+qIndex);
+  // Paint the segment represented by the operation-local answer index.
+  // During recovery the caller replays every saved answer, so qIndex would
+  // otherwise paint the same (current) segment repeatedly.
+  const seg=$('pseg-'+n);
   if(seg) seg.className='prog-seg '+r;
   // Update counters
   const tot=questions.length;
@@ -11186,6 +11259,9 @@ function loadQuestion(){
     _forcedQ={table:_t,op:'×',b:_b,answer:_t*_b};
   }
   const q=_forcedQ||questions[qIndex]; currentPowerQuestion=q; correctAns=q.answer;
+  const residueInput=_examPlaythrough&&q.op==='÷'&&Number(q._remainder)>0?$('writeInput'):null;
+  if(residueInput){residueInput.type='text';residueInput.inputMode='text';residueInput.classList.add('write-input-remainder');residueInput.placeholder='Cociente r residuo (ej. 5 r 2)';residueInput.setAttribute('aria-label','Escribe cociente y residuo, por ejemplo 5 r 2');}
+  else if($('writeInput')){$('writeInput').type='number';$('writeInput').inputMode='numeric';$('writeInput').classList.remove('write-input-remainder');$('writeInput').placeholder='?';$('writeInput').removeAttribute('aria-label');}
   if(vfxEnabled&&q.op&&q.op!==_lastQOp&&qIndex>0&&tblManner==='ordered'&&selectedOps.length>1) showOpBadge(q.op);
   _lastQOp=q.op||'×';
   const _OP_NAMES={'×':'Multiplicación','+':`Suma`,'−':'Resta','÷':'División'};
@@ -11233,7 +11309,7 @@ function loadQuestion(){
     ansMode='write';
     syncAnswerModeUI();
     const inp=$('writeInput');
-    inp.value='';inp.className='write-input';inp.disabled=false;
+    inp.value='';inp.className='write-input';if(residueInput)inp.classList.add('write-input-remainder');inp.disabled=false;
     $('writeSubmit').disabled=false;
     setTimeout(()=>inp.focus(),80);
   } else if(ansMode==='options'){
@@ -11252,7 +11328,7 @@ function loadQuestion(){
     }
   } else {
     const inp=$('writeInput');
-    inp.value='';inp.className='write-input';inp.disabled=false;
+    inp.value='';inp.className='write-input';if(residueInput)inp.classList.add('write-input-remainder');inp.disabled=false;
     $('writeSubmit').disabled=false;
     if($('voiceRetryBtn')) $('voiceRetryBtn').disabled=false;
     if(ansMode==='write') setTimeout(()=>inp.focus(),80);
@@ -11338,7 +11414,8 @@ function startTimer(){
   clearInterval(timerIv);
   powerState.panicActive=false;
   const timerShell=$('timerTrack')?.closest('.timer-shell');
-  if(gameType==='free'||gameType==='lives'||gameType==='countdown'||gameType==='streak'){
+  const examGlobalOnly=_examPlaythrough&&Number(_pendingExamConfig?.timePerQuestion)===0&&_examGlobalDeadline>0;
+  if((gameType==='free'||gameType==='lives'||gameType==='countdown'||gameType==='streak')&&!examGlobalOnly){
     timerShell?.classList.add('timer-hidden');
     $('timerTrack').style.visibility='hidden';
     $('timerLbl').textContent='';
@@ -11347,11 +11424,13 @@ function startTimer(){
   timerShell?.classList.remove('timer-hidden');
   $('timerTrack').style.visibility='visible';
   renderTimerBlocks();
-  timeLeft=timeLimit+(powerState.extraTimeActive?5:0); updateTimerBar();
+  if(examGlobalOnly)timeLimit=Math.max(0,(_examGlobalDeadline-Date.now())/1000);
+  timeLeft=_examPlaythrough&&_examRecoveredTimeLeft!==null?_examRecoveredTimeLeft:timeLimit+(powerState.extraTimeActive?5:0);_examRecoveredTimeLeft=null;questionStartedAt=Date.now()-(_examPlaythrough?_examRecoveredQuestionElapsed:0);_examRecoveredQuestionElapsed=0; updateTimerBar();
   timerIv=setInterval(tickTimer,100);
 }
 function tickTimer(){
-  timeLeft-=0.1;
+  const examGlobalOnly=_examPlaythrough&&_examGlobalDeadline>0&&Number(_pendingExamConfig?.timePerQuestion)===0;
+  if(examGlobalOnly)timeLeft=Math.max(0,(_examGlobalDeadline-Date.now())/1000);else timeLeft-=0.1;
   if(_examGlobalDeadline&&Date.now()>=_examGlobalDeadline){
     timeLeft=0;updateTimerBar();clearInterval(timerIv);if(!answered){answered=true;setTimeout(()=>showResults(),0);}return;
   }
@@ -11409,7 +11488,7 @@ function recordRes(type){
     if(!tableDetailResults[key][q.table]) tableDetailResults[key][q.table]=[];
     tableDetailResults[key][q.table].push(type);
   }
-  setMiniDot(key,n,type);
+  setMiniDot(key,qIndex,type);
   lastResult=type; lastResultTs=Date.now();
   if(_examActive) _saveExamCheckpoint();
   queueProgressCheckpoint();
@@ -11420,6 +11499,7 @@ function selectAnswer(val,btn){
   if(gameMode==='online'&&mpBeforeAnswer()) return;
   answered=true; clearInterval(timerIv);
   const isC=visualMode==='inversa'?(val===correctExpr):(val===correctAns);
+  if(_examPlaythrough)_examAnswers.push({questionId:questions[qIndex]?.questionId||'',answer:val,corrected:isC,status:isC?'correct':'wrong'});
   btn?.classList.add(isC?'answer-flash-correct':'answer-flash-wrong');
   setTimeout(()=>btn?.classList.remove('answer-flash-correct','answer-flash-wrong'),280);
   const me = gameMode==='online'?mpMyIdx:duelTurn;
@@ -11646,14 +11726,20 @@ function submitWriteStandard(forcedVal=null){
   if(answered||paused) return;
   if(gameMode==='online'&&mpBeforeAnswer()) return;
   const activeInput=(isOperationsGame()&&$('verticalInlineInput'))?$('verticalInlineInput'):$('writeInput');
-  const val=forcedVal==null?parseInt(activeInput?.value):forcedVal;
-  if(isNaN(val)) return;
+  const rawVal=forcedVal==null?String(activeInput?.value||'').trim():String(forcedVal);
+  const currentQuestion=questions[qIndex]||{};
+  const needsRemainder=_examPlaythrough&&currentQuestion.op==='÷'&&Number(currentQuestion._remainder)>0;
+  const residueMatch=needsRemainder?rawVal.match(/^(\d+)\s*(?:r|residuo|resto|,|\+)\s*(\d+)$/i):null;
+  const val=needsRemainder?rawVal:(forcedVal==null?parseInt(rawVal,10):forcedVal);
+  if(needsRemainder&&!residueMatch)return;
+  if(!needsRemainder&&isNaN(val)) return;
   if(ansMode==='voice') setVoiceProcessing(false);
   answered=true; clearInterval(timerIv);
   if(ansMode==='voice') voiceAcceptAt=Date.now()+1400;
   const inp=activeInput; if(inp) inp.disabled=true;
   if($('writeSubmit')) $('writeSubmit').disabled=true;
-  const isC=val===correctAns; let delay=1300;
+  const isC=needsRemainder?Number(residueMatch[1])===correctAns&&Number(residueMatch[2])===Number(currentQuestion._remainder):val===correctAns; let delay=1300;
+  if(_examPlaythrough)_examAnswers.push({questionId:questions[qIndex]?.questionId||'',answer:val,corrected:isC,status:isC?'correct':'wrong'});
   const me=gameMode==='online'?mpMyIdx:duelTurn;
   if(isC){
     inp.classList.add('correct'); recordRes('correct'); totalC++;
@@ -11788,6 +11874,7 @@ function handleTimeout(){
   }
   LOG.score(`⏰ Tiempo agotado — q:${qIndex} ans:${correctAns} score:${gameScore}`);
   if(gameType==='free'||gameType==='lives'||gameType==='countdown') return;
+  if(_examPlaythrough)_examAnswers.push({questionId:questions[qIndex]?.questionId||'',answer:null,corrected:false,timeout:true,status:'timeout'});
   const q=recordRes('timeout'); if(!q) return; totalT++;
   const me=gameMode==='online'?mpMyIdx:duelTurn;
   const _toResult=applyPowerOnWrong();
@@ -11979,7 +12066,7 @@ function applyPauseState(isPaused,pauserName=''){
     if(!answered) disableInputs(false);
     if(ansMode==='voice') startVoiceCapture();
     // Solo reanudar el timer en modos que realmente lo usan (misma condición que startTimer() para mostrar la barra)
-    if(gameType!=='free'&&gameType!=='lives'&&gameType!=='countdown'&&gameType!=='streak'){ clearInterval(timerIv); timerIv=setInterval(tickTimer,100); }
+    if((_examPlaythrough&&_examGlobalDeadline>0)||(gameType!=='free'&&gameType!=='lives'&&gameType!=='countdown'&&gameType!=='streak')){ clearInterval(timerIv); timerIv=setInterval(tickTimer,100); }
     if(gameType==='countdown') startGlobalCountdown();
     if(resumeBtn){ resumeBtn.disabled=false; resumeBtn.style.opacity='1'; }
     if(pauserEl) pauserEl.style.display='none';
@@ -13781,7 +13868,7 @@ function initSoloWS(){
     const wsUrl='ws://'+window.location.host;
     soloWS=new WebSocket(wsUrl);
     soloWS.onerror=()=>{ soloWS=null; };
-    soloWS.onclose=()=>{ soloWS=null; if(_soloWSKeepalive){ clearInterval(_soloWSKeepalive); _soloWSKeepalive=null; } _soloWSTimer=setTimeout(initSoloWS,5000); };
+    soloWS.onclose=()=>{ soloWS=null; if(_soloWSKeepalive){ clearInterval(_soloWSKeepalive); _soloWSKeepalive=null; } if(_examPlaythrough&&!_clientClosingNotified){_examNetworkPaused=true;handleExamPause(true,'Conexión');} _soloWSTimer=setTimeout(initSoloWS,5000); };
     soloWS.onmessage=e=>{
       try{
         const msg=JSON.parse(e.data);
@@ -13794,6 +13881,8 @@ function initSoloWS(){
         else if(msg.type==='announcement') handleAnnouncement(msg);
         else if(msg.type==='exam_start') handleExamStart(msg.config);
         else if(msg.type==='exam_stop') handleExamStop(msg.testId||null);
+        else if(msg.type==='exam_paused') handleExamPause(true);
+        else if(msg.type==='exam_resumed') handleExamPause(false);
         else if(msg.type==='maestro_cmd'){
           if(msg.cmd==='pause'&&!paused&&$('gameScreen').classList.contains('active')) applyPauseState(true,'Maestro');
           else if(msg.cmd==='resume'&&paused){ mpPauseOwner=-1; applyPauseState(false); }
@@ -13805,6 +13894,10 @@ function initSoloWS(){
     soloWS.onopen=()=>{
       if(!serverAvailable){ serverAvailable=true; onServerResult(true); }
       sendPlayerIdentify();
+      if(_examNetworkPaused&&_examPlaythrough&&_pendingExamConfig?.attemptId&&_pendingExamConfig?.testId){
+        const testId=encodeURIComponent(_pendingExamConfig.testId),attemptId=encodeURIComponent(_pendingExamConfig.attemptId);
+        fetch(`/api/student/tests/${testId}/attempts/${attemptId}/start`,{method:'POST',credentials:'same-origin'}).then(async response=>{const payload=await response.json();if(!response.ok)throw Error(payload.error||'No se pudo reconectar la prueba.');const progress=payload.attempt?.progress||{};handleExamPause(false);_examNetworkPaused=false;if(Number(progress.timeLeft)>0)timeLeft=Number(progress.timeLeft);if(_examGlobalDeadline&&Number(progress.globalRemainingMs)>0)_examGlobalDeadline=Date.now()+Number(progress.globalRemainingMs);if(Number.isFinite(Number(progress.questionElapsedMs)))questionStartedAt=Date.now()-Math.max(0,Number(progress.questionElapsedMs));updateTimerBar();sendSessionUpdate();}).catch(error=>{showPowerToast(error.message||'La prueba sigue pausada hasta recuperar la conexión.',4000);});
+      }
       // Enviar resultados que quedaron en cola mientras la WS estaba caída
       while(_pendingSaveResults.length){
         // peek antes de quitar de la cola: si send() falla a mitad de envío, el mensaje
@@ -15051,6 +15144,8 @@ function lanConnectServer(){
       else if(msg.type==='achievements_unlocked'){ handleAchievementsUnlocked(msg.achievements,msg.defs); }
       else if(msg.type==='exam_start'){ handleExamStart(msg.config); }
       else if(msg.type==='exam_stop'){ handleExamStop(msg.testId||null); }
+      else if(msg.type==='exam_paused'){ handleExamPause(true); }
+      else if(msg.type==='exam_resumed'){ handleExamPause(false); }
       else if(msg.type==='admin_update'){ handleAdminUpdate(msg); }
       else if(msg.type==='announcement'){ handleAnnouncement(msg); }
     };

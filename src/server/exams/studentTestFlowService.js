@@ -3,98 +3,147 @@
 const { randomUUID } = require('crypto');
 const { multipliersForTable } = require('../../client/maestro/tableRanges');
 
-const clone = value => JSON.parse(JSON.stringify(value));
-const OP_SYMBOLS = { mult: '×', add: '+', sub: '−', div: '÷' };
+const clone=value=>JSON.parse(JSON.stringify(value));
+const OP_SYMBOLS={mult:'×',add:'+',sub:'−',div:'÷'};
+const OPS=Object.keys(OP_SYMBOLS),MAX_QUESTIONS=100;
+const int=(n,fallback)=>Number.isInteger(Number(n))?Number(n):fallback;
+const rnd=(random,min,max)=>min+Math.floor(random()*(max-min+1));
+const shuffle=(items,random)=>{const out=items.slice();for(let i=out.length-1;i>0;i--){const j=Math.floor(random()*(i+1));[out[i],out[j]]=[out[j],out[i]];}return out;};
+const digitRange=digits=>[digits===1?1:10**(digits-1),10**digits-1];
+function selectedOperations(configuration){
+ const cfg=configuration.opsConfig&&typeof configuration.opsConfig==='object'?configuration.opsConfig:{};
+ if(!Object.keys(cfg).length){const fallback=Array.isArray(configuration.ops)&&configuration.ops.length?configuration.ops:[configuration.op||'mult'];return fallback.filter(op=>OPS.includes(op)).map(op=>[op,{...configuration,tables:configuration.tables||[1]}]);}
+ const enabled=Array.isArray(configuration.enabledOperations)?configuration.enabledOperations:OPS.filter(op=>Object.prototype.hasOwnProperty.call(cfg,op));
+ return enabled.filter((op,index)=>OPS.includes(op)&&enabled.indexOf(op)===index&&cfg[op]&&typeof cfg[op]==='object').map(op=>[op,cfg[op]]);
+}
+function operationQuantity(operation,cfg,legacy=false,totalFallback=1){
+ if(cfg.qty===undefined&&Array.isArray(cfg.matrix))return new Set(cfg.matrix.map(String)).size;
+ const qty=int(cfg.qty,int(cfg.total,int(cfg.questionCount,totalFallback)));
+ return Math.max(1,qty)*(legacy&&cfg.quantityMode!=='total'&&['mult','div'].includes(operation)?Math.max(1,(cfg.tables||[]).length):1);
+}
+function totalQuestionCount(configuration){return selectedOperations(configuration).reduce((sum,[op,cfg])=>sum+operationQuantity(op,cfg,!configuration.enabledOperations,configuration.total||1),0);}
 
-function integer(value, fallback) { return Number.isInteger(value) ? value : fallback; }
-function randomInt(random, min, max) { return min + Math.floor(random() * (max - min + 1)); }
-function arithmeticPair(digits, mode, operation, random) {
-  const min = digits === 1 ? 1 : 10 ** (digits - 1);
-  const max = 10 ** digits - 1;
-  const carries = mode === 'carry' || mode === 'both';
-  const wantsCarry = mode === 'carry';
-  const hasCarry = (a, b) => { let carry = false; let x = a; let y = b; while (x || y) { if ((x % 10) + (y % 10) >= 10) carry = true; x = Math.floor(x / 10); y = Math.floor(y / 10); } return carry; };
-  const hasBorrow = (a, b) => { let borrow = false; let x = a; let y = b; while (x || y) { const xd = x % 10 - (borrow ? 1 : 0); const yd = y % 10; if (xd < yd) borrow = true; else borrow = false; x = Math.floor(x / 10); y = Math.floor(y / 10); } return borrow; };
-  for (let attempt = 0; attempt < 500; attempt += 1) {
-    let a = randomInt(random, min, max); let b = randomInt(random, min, max);
-    if (operation === 'sub' && a < b) [a, b] = [b, a];
-    const feature = operation === 'add' ? hasCarry(a, b) : hasBorrow(a, b);
-    if (mode === 'both' || feature === wantsCarry || (mode === 'direct' && !feature)) return [a, b];
+function validateMathConfiguration(configuration={}, {allowIncomplete=false}={}){
+ const pairs=selectedOperations(configuration);if(!pairs.length){if(allowIncomplete)return true;throw Error('activa al menos una operación matemática');}
+ const total=pairs.reduce((sum,[op,cfg])=>sum+operationQuantity(op,cfg,!configuration.enabledOperations,configuration.total||1),0);
+ if(total<1||total>MAX_QUESTIONS)throw Error(`La cantidad activa debe estar entre 1 y ${MAX_QUESTIONS} preguntas.`);
+ for(const [op,cfg] of pairs){
+  const qty=operationQuantity(op,cfg,!configuration.enabledOperations);if(qty<1||qty>MAX_QUESTIONS)throw Error(`${OP_SYMBOLS[op]}: cantidad inválida.`);
+  if(['mult','div'].includes(op)){
+   const tables=cfg.tables??[];if(!Array.isArray(tables)||tables.some(t=>!Number.isInteger(t)||t<1||t>12))throw Error(`${OP_SYMBOLS[op]}: selecciona valores entre 1 y 12.`);
+   const extension=cfg.expansionLimit??1;if(op==='mult'&&![1,10,100,1000].includes(Number(extension)))throw Error('La ampliación de multiplicación debe ser ×1, ×10, ×100 o ×1000.');
+   if(cfg.ranges!==undefined){if(!Array.isArray(cfg.ranges)||cfg.ranges.some(r=>!r||!Number.isInteger(r.table)||r.table<1||r.table>12||!Number.isInteger(r.from)||!Number.isInteger(r.to)||r.from<1||r.to>12||r.from>r.to))throw Error(`${OP_SYMBOLS[op]}: intervalo de factores inválido (1–12).`);}
+   if(Array.isArray(cfg.matrix)&&cfg.matrix.some(value=>{const [factor,table]=String(value).split('x').map(Number);return !Number.isInteger(factor)||!Number.isInteger(table)||factor<1||factor>12||table<1||table>12||(tables.length&&!tables.includes(table));}))throw Error(`${OP_SYMBOLS[op]}: combinación avanzada fuera de la cuadrícula o de las tablas seleccionadas.`);
   }
-  if (operation === 'add') return wantsCarry ? [max, min] : [min, min];
-  if (wantsCarry && digits > 1) return [2 * 10 ** (digits - 1), 10 ** (digits - 1) + 1];
-  return [max, 10 ** (digits - 1)];
-}
-function shuffle(items, random) {
-  const result = items.slice();
-  for (let index = result.length - 1; index > 0; index -= 1) {
-    const swap = Math.floor(random() * (index + 1));
-    [result[index], result[swap]] = [result[swap], result[index]];
+  if(op==='div'){
+   const mode=cfg.divisorMode||'specific';if(!['specific','digits'].includes(mode))throw Error('División: elige divisores concretos o por cifras.');
+   const dividendDigits=int(cfg.dividendDigits,int(cfg.digits,2)),divisorDigits=int(cfg.divisorDigits,1);
+   if(dividendDigits<1||dividendDigits>4||divisorDigits<1||divisorDigits>4)throw Error('División: las cifras deben estar entre 1 y 4.');
+   if(mode==='specific'&&!(Array.isArray(cfg.divisors)&&cfg.divisors.length)&&!(Array.isArray(cfg.tables)&&cfg.tables.length))throw Error('División: selecciona al menos un divisor.');
+   if(Array.isArray(cfg.divisors)&&cfg.divisors.some(d=>!Number.isInteger(d)||d<1||d>9999))throw Error('División: los divisores concretos deben ser de 1 a 9999.');
+   if(!['exact','remainder','mixed'].includes(cfg.remainderMode||'exact'))throw Error('División: condición de residuo inválida.');
+   if(configuration.answerMode==='voice'&&(cfg.remainderMode||'exact')!=='exact')throw Error('El modo Voz no admite divisiones con residuo; selecciona respuesta escrita o división exacta.');
+   if(configuration.answerMode==='options'&&(cfg.remainderMode||'exact')!=='exact')throw Error('Las opciones actuales solo admiten divisiones exactas; selecciona respuesta escrita o división exacta.');
   }
-  return result;
-}
-
-function generateConfiguredQuestions(configuration = {}, random = Math.random) {
-  const questions = [];
-  const opsConfig = configuration.opsConfig && typeof configuration.opsConfig === 'object' ? configuration.opsConfig : null;
-  const operations = opsConfig ? Object.entries(opsConfig) : [[configuration.op || 'mult', configuration]];
-  for (const [operation, raw] of operations) {
-    const config = raw && typeof raw === 'object' ? raw : {};
-    const operationStart = questions.length;
-    const op = OP_SYMBOLS[operation] || OP_SYMBOLS.mult;
-    if (op === '×' || op === '÷') {
-      const tables = Array.isArray(config.tables) && config.tables.length ? config.tables : (Array.isArray(configuration.tables) && configuration.tables.length ? configuration.tables : [1]);
-      const qty = Math.max(1, integer(config.qty, integer(configuration.total, 1)));
-      if (Array.isArray(config.matrix)) {
-        const selected = [...new Set(config.matrix.map(value => String(value).split('x').map(Number)).filter(([factor, table]) => Number.isInteger(factor) && Number.isInteger(table) && factor >= 0 && factor <= 12 && table >= 0 && table <= 12 && (operation !== 'div' || table > 0)))];
-        for (const [factor, table] of selected) {
-          const a = operation === 'div' ? table * factor : table;
-          const b = operation === 'div' ? table : factor;
-          questions.push({ questionId: randomUUID(), op, a, b, answer: operation === 'div' ? factor : a * b });
-        }
-        if (config.manner === 'random') questions.splice(operationStart, questions.length - operationStart, ...shuffle(questions.slice(operationStart), random));
-        continue;
-      }
-      // El contrato de rangos usa el valor que acompaña a la tabla: en
-      // multiplicación es el factor permitido y en división es el cociente
-      // (factor) permitido para construir `dividendo ÷ divisor`. Estos rangos
-      // no son límites arbitrarios del dividendo ni del divisor.
-      for (const table of tables) {
-        const matrixValues = Array.isArray(config.matrix) ? config.matrix.map(value => String(value).split('x').map(Number)).filter(([row, col]) => col === table && row > 0).map(([row]) => row) : null;
-        const values = matrixValues !== null ? matrixValues : ((op === '×' || op === '÷') && Array.isArray(config.ranges) ? multipliersForTable(config, table, random) : null);
-        const factors = values || Array.from({ length: qty }, () => randomInt(random, 1, 12));
-        for (const factor of factors) {
-          const a = op === '÷' ? table * factor : table;
-          const b = op === '÷' ? table : factor;
-          questions.push({ questionId: randomUUID(), op, a, b, answer: op === '×' ? a * b : (op === '÷' ? factor : a * b) });
-        }
-      }
-      if (config.manner === 'random') {
-        questions.splice(operationStart, questions.length - operationStart, ...shuffle(questions.slice(operationStart), random));
-      }
-    } else {
-      const qty = Math.max(1, integer(config.qty, integer(configuration.total, 1)));
-      for (let index = 0; index < qty; index += 1) {
-        const digits = Math.min(4, Math.max(1, integer(config.digits, 1)));
-        const [a, b] = arithmeticPair(digits, config.carryMode || 'both', operation === 'add' ? 'add' : 'sub', random);
-        questions.push({ questionId: randomUUID(), op, a, b, answer: op === '+' ? a + b : a - b });
-      }
-      if (config.manner === 'random') {
-        questions.splice(operationStart, questions.length - operationStart, ...shuffle(questions.slice(operationStart), random));
-      }
-    }
+  if(op==='add'||op==='sub'){
+   const simple=cfg.simpleDigits!==false,digitsA=int(simple?cfg.digits:cfg.digitsA,int(cfg.digits,1)),digitsB=int(simple?cfg.digits:cfg.digitsB,int(cfg.digits,1));
+   if(digitsA<1||digitsA>4||digitsB<1||digitsB>4)throw Error(`${OP_SYMBOLS[op]}: cada operando debe tener de 1 a 4 cifras.`);
+   if(op==='add'&&!['direct','carry','both'].includes(cfg.carryMode||'both'))throw Error('Suma: modo de llevadas inválido.');
+   if(op==='sub'&&!['direct','borrow','both'].includes(cfg.borrowMode||cfg.carryMode||'both'))throw Error('Resta: modo de préstamos inválido.');
+   if(op==='sub'&&digitsA<digitsB)throw Error('Resta: el minuendo no puede tener menos cifras que el sustraendo si el resultado debe ser no negativo.');
+   if(op==='sub'&&(cfg.borrowMode||cfg.carryMode)==='borrow'&&digitsA===1&&digitsB===1)throw Error('Resta de una cifra: no hay una combinación no negativa que requiera préstamo.');
   }
-  return questions;
+ }
+ return true;
 }
 
-function publicQuestion(question) { return { questionId: question.questionId, op: question.op, a: question.a, b: question.b, text: `${question.a} ${question.op} ${question.b}` }; }
-function publicQuestions(questions) { return (questions || []).map(publicQuestion); }
-function scoreFor(correct, multiplier = 1) { return Math.max(0, correct) * Math.max(1, integer(multiplier, 1)); }
-
-function answerQuestion(question, answer) {
-  const numeric = typeof answer === 'number' ? answer : (typeof answer === 'string' && answer.trim() !== '' ? Number(answer) : NaN);
-  if (!Number.isFinite(numeric)) throw Error('respuesta invalida');
-  return numeric === question.answer;
+function addCarry(a,b){let carry=0;while(a||b){if(a%10+b%10>=10)return true;a=Math.floor(a/10);b=Math.floor(b/10);}return false;}
+function subBorrow(a,b){let borrow=0,seen=false;while(a||b){const x=a%10-borrow,y=b%10;if(x<y){borrow=1;seen=true;}else borrow=0;a=Math.floor(a/10);b=Math.floor(b/10);}return seen;}
+function randomDigits(digits,random){const out=[];for(let i=0;i<digits;i++)out.push(rnd(random,i===digits-1?1:0,9));return out;}
+function numberFromDigits(digits){return digits.reduce((n,d,index)=>n+d*10**index,0);}
+function makeArithmetic(op,cfg,random){
+ const simple=cfg.simpleDigits!==false,dA=int(simple?cfg.digits:cfg.digitsA,int(cfg.digits,1)),dB=int(simple?cfg.digits:cfg.digitsB,int(cfg.digits,1));
+  const aDigits=randomDigits(dA,random),bDigits=randomDigits(dB,random);let a=numberFromDigits(aDigits),b=numberFromDigits(bDigits);
+ if(op==='add'){
+  const mode=cfg.carryMode||'both';if(mode==='direct'){for(let i=0;i<Math.max(dA,dB);i++){const av=i<dA?Array.from({length:i===dA-1?9:10},(_,j)=>j+(i===dA-1?1:0)):[0],bv=i<dB?Array.from({length:i===dB-1?9:10},(_,j)=>j+(i===dB-1?1:0)):[0],valid=[];for(const x of av)for(const y of bv)if(x+y<=9)valid.push([x,y]);[aDigits[i],bDigits[i]]=valid[rnd(random,0,valid.length-1)];}a=numberFromDigits(aDigits);b=numberFromDigits(bDigits);}
+  if(mode==='carry'&&!addCarry(a,b)){aDigits[0]=9;bDigits[0]=1;a=numberFromDigits(aDigits);b=numberFromDigits(bDigits);}
+  return {a,b,answer:a+b};
+ }
+ const mode=cfg.borrowMode||cfg.carryMode||'both';
+ if(mode==='direct'){
+  for(let i=0;i<Math.max(dA,dB);i++){const x=aDigits[i]||0,y=bDigits[i]||0;if(x<y)aDigits[i]=y;}
+  a=numberFromDigits(aDigits);b=numberFromDigits(bDigits);
+ } else if(mode==='borrow'){
+  aDigits[0]=0;bDigits[0]=1;
+  if(dA===dB){aDigits[dA-1]=2;bDigits[dB-1]=1;}
+  else if(dA>dB)aDigits[dA-1]=Math.max(1,aDigits[dA-1]);
+  a=numberFromDigits(aDigits);b=numberFromDigits(bDigits);
+ } else if(a<b)[a,b]=[b,a];
+ return {a,b,answer:a-b};
 }
-
-module.exports = { generateConfiguredQuestions, publicQuestion, publicQuestions, answerQuestion, scoreFor, clone, shuffle };
+function keyFor(op,q){return `${op}:${q.a}:${q.b}:${q.remainder??''}`;}
+function uniqueTake(op,quantity,repeat,create,random,capacity){
+ if(!repeat&&capacity<quantity)throw Error(`${OP_SYMBOLS[op]}: solo existen ${capacity} ejercicios distintos con esta configuración; reduce la cantidad o permite repetir.`);
+ const out=[],seen=new Set(),attemptLimit=Math.max(1000,quantity*250);
+ for(let i=0;i<attemptLimit&&out.length<quantity;i++){const candidate=create();const key=keyFor(op,candidate);if(repeat||!seen.has(key)){seen.add(key);out.push(candidate);}}
+ if(out.length<quantity)throw Error(`${OP_SYMBOLS[op]}: no se pudieron elegir ${quantity} combinaciones distintas; revisa el rango.`);
+ return out.map(q=>({...q,questionId:randomUUID(),op:OP_SYMBOLS[op]}));
+}
+function generateMultiplication(cfg,quantity,repeat,random){
+ const tables=[...new Set(cfg.tables||[])];if(!tables.length)throw Error('Multiplicación: selecciona al menos una tabla.');
+ const exact=Array.isArray(cfg.matrix)?[...new Set(cfg.matrix.map(String))].map(v=>v.split('x').map(Number)):null;
+ const ranges=Array.isArray(cfg.ranges)?cfg.ranges:tables.map(table=>({table,from:1,to:12}));
+ const base=exact?exact.filter(([factor,table])=>tables.includes(table)&&factor>=1&&factor<=12):ranges.filter(r=>tables.includes(r.table)).flatMap(r=>Array.from({length:r.to-r.from+1},(_,i)=>[r.from+i,r.table]));
+ if(!base.length)throw Error('Multiplicación: el rango y las tablas no contienen combinaciones.');
+ const limit=Number(cfg.expansionLimit)||1,scales=[1,10,100,1000].filter(scale=>scale<=limit),candidates=[];
+ for(const [factor,table] of base)for(const left of scales)for(const right of scales)candidates.push({a:table*left,b:factor*right,answer:table*left*factor*right,table:table*left,baseTable:table,baseFactor:factor,scaleLeft:left,scaleRight:right});
+ const distinct=new Map(candidates.map(q=>[keyFor('mult',q),q]));const all=[...distinct.values()];if(!repeat&&all.length<quantity)throw Error(`Multiplicación: solo existen ${all.length} ejercicios distintos con estas tablas, rangos y ampliación.`);
+ const ordered=(x,y)=>x.baseTable-y.baseTable||x.baseFactor-y.baseFactor||x.scaleLeft-y.scaleLeft||x.scaleRight-y.scaleRight;
+ let chosen=repeat?(cfg.manner==='ordered'?Array.from({length:quantity},(_,i)=>all.slice().sort(ordered)[i%all.length]):Array.from({length:quantity},()=>all[rnd(random,0,all.length-1)])):shuffle(all,random).slice(0,quantity);
+ if(cfg.manner==='ordered'&&!repeat)chosen.sort(ordered);
+ return chosen.map(q=>({...q,questionId:randomUUID(),op:'×'}));
+}
+function divisionCapacity(divisors,min,max,mode){let exact=0,total=0;for(const d of divisors){if(d<1)continue;total+=max-min+1;exact+=Math.floor(max/d)-Math.floor((min-1)/d);}return mode==='exact'?exact:mode==='remainder'?total-exact:total;}
+function generateDivision(cfg,quantity,repeat,random){
+ const [minDividend,maxDividend]=digitRange(int(cfg.dividendDigits,int(cfg.digits,2)));
+ let divisors;if(cfg.divisorMode==='digits'){const [min,max]=digitRange(int(cfg.divisorDigits,1));divisors=Array.from({length:max-min+1},(_,i)=>min+i);}else divisors=[...new Set(cfg.divisors||cfg.tables||[])];
+ divisors=divisors.filter(d=>Number.isInteger(d)&&d>=1&&d<=maxDividend);const mode=cfg.remainderMode||'exact',capacity=divisionCapacity(divisors,minDividend,maxDividend,mode);
+ if(!capacity)throw Error('División: no hay divisiones que cumplan las cifras, divisores y condición de residuo.');
+ const exactCount=divisionCapacity(divisors,minDividend,maxDividend,'exact'),remainderCount=divisionCapacity(divisors,minDividend,maxDividend,'remainder');
+ const create=()=>{let d,q,r=0;const pick=mode==='mixed'?(random()*(exactCount+remainderCount)<exactCount?'exact':'remainder'):mode;
+  if(pick==='exact'){
+   const valid=divisors.filter(x=>Math.floor(maxDividend/x)>=Math.ceil(minDividend/x));d=valid[rnd(random,0,valid.length-1)];const qmin=Math.ceil(minDividend/d),qmax=Math.floor(maxDividend/d);q=rnd(random,qmin,qmax);return {a:q*d,b:d,answer:q,remainder:0,table:d,divisor:d};
+  }
+  const valid=divisors.filter(x=>x>1);d=valid[rnd(random,0,valid.length-1)];let dividend=rnd(random,minDividend,maxDividend);if(dividend%d===0)dividend=dividend+1<=maxDividend?dividend+1:dividend-1;q=Math.floor(dividend/d);r=dividend%d;return {a:dividend,b:d,answer:q,remainder:r,table:d,divisor:d};
+ };
+ const questions=uniqueTake('div',quantity,repeat,create,random,repeat?quantity:capacity).map(q=>({...q,dividend:q.a,op:'÷'}));
+ if(cfg.manner==='ordered')questions.sort((a,b)=>a.divisor-b.divisor||a.dividend-b.dividend);
+ return questions;
+}
+function generateArithmeticOperation(op,cfg,quantity,repeat,random){
+ const [amin,amax]=digitRange(int(cfg.simpleDigits===false?cfg.digitsA:cfg.digits,int(cfg.digits,1))),[bmin,bmax]=digitRange(int(cfg.simpleDigits===false?cfg.digitsB:cfg.digits,int(cfg.digits,1)));
+ let capacity=Number.POSITIVE_INFINITY;
+ if(op==='add'&&int(cfg.simpleDigits===false?cfg.digitsA:cfg.digits,int(cfg.digits,1))===1&&int(cfg.simpleDigits===false?cfg.digitsB:cfg.digits,int(cfg.digits,1))===1){const mode=cfg.carryMode||'both';capacity=mode==='direct'?36:mode==='carry'?45:81;}
+ if(op==='sub'&&amin===1&&bmin===1){const mode=cfg.borrowMode||cfg.carryMode||'both';capacity=mode==='borrow'?0:45;}
+ const mode=op==='add'?(cfg.carryMode||'both'):(cfg.borrowMode||cfg.carryMode||'both');if(capacity===0)throw Error('Resta de una cifra: no existen resultados no negativos con préstamo.');
+ return uniqueTake(op,quantity,repeat,()=>makeArithmetic(op,cfg,random),random,capacity).map(q=>({...q,table:q.a,op:OP_SYMBOLS[op]}));
+}
+function generateConfiguredQuestions(configuration={},random=Math.random){
+ validateMathConfiguration(configuration);const pairs=selectedOperations(configuration),repeat=configuration.repeat===true,byOperation=new Map();
+ for(const [op,cfg] of pairs){const quantity=operationQuantity(op,cfg,!configuration.enabledOperations,configuration.total||1),allowRepeat=repeat||cfg.repeat===true;let rows;
+  if(op==='mult')rows=generateMultiplication(cfg,quantity,allowRepeat,random);
+  else if(op==='div')rows=generateDivision(cfg,quantity,allowRepeat,random);
+  else rows=generateArithmeticOperation(op,cfg,quantity,allowRepeat,random);
+  byOperation.set(op,rows);
+ }
+ let questions=[];const order=Array.isArray(configuration.operationOrder)?configuration.operationOrder:OPS;for(const op of order)if(byOperation.has(op))questions.push(...byOperation.get(op));for(const [op,rows] of byOperation)if(!order.includes(op))questions.push(...rows);
+ if(configuration.order==='random')questions=shuffle(questions,random);return questions;
+}
+function publicQuestion(q){const view={questionId:q.questionId,op:q.op,a:q.a,b:q.b,text:`${q.a} ${q.op} ${q.b}`};if(q.table!==undefined)view.table=q.table;if(q.remainder!==undefined)view.remainder=q.remainder;return view;}
+function publicQuestions(questions){return (questions||[]).map(publicQuestion);}
+function scoreFor(correct,multiplier=1){return Math.max(0,correct)*Math.max(1,int(multiplier,1));}
+function answerQuestion(question,answer){
+ if(question.op==='÷'&&question.remainder!==undefined&&question.remainder>0){const match=String(answer??'').trim().match(/^(\d+)\s*(?:r|residuo|resto|,|\+)\s*(\d+)$/i);if(!match)return false;return Number(match[1])===question.answer&&Number(match[2])===question.remainder;}
+ const numeric=typeof answer==='number'?answer:(typeof answer==='string'&&answer.trim()!==''?Number(answer):NaN);if(!Number.isFinite(numeric))throw Error('respuesta invalida');return numeric===question.answer;
+}
+module.exports={generateConfiguredQuestions,publicQuestion,publicQuestions,answerQuestion,scoreFor,clone,shuffle,validateMathConfiguration,totalQuestionCount,selectedOperations,MAX_QUESTIONS};

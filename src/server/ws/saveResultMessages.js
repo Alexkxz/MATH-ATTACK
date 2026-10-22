@@ -17,17 +17,20 @@ function createSaveResultMessages({
   L,
   resultIdempotency,
   testService,
+  officialAttemptService,
 }) {
   const { gameSessions, maestroClients, examFinished } = wsContext;
-  const { getAccountPlayerId, resolveAccountPlayer, getSessionId } = wsContext.identity;
+  const { getAccountPlayerId, resolveAccountPlayer, getSessionId, findActiveSession } = wsContext.identity;
   const { loadRanking, saveRanking, loadPlayers, savePlayers } = wsContext.persistence;
   const { _mpEarnedByGame } = multiplayerRewards;
 
   function handleSaveResult(ws, message) {
     if (message.id && resultIdempotency.hasProcessedResult(message.id)) return false;
+    const linkedExam=!!ws._studentAccountPlayerId&&message.isExam===true&&typeof message.examTestId==='string'&&message.examTestId.length>0;
+    if(linkedExam){const current=findActiveSession?.(gameSessions,getSessionId(ws));if(current?.ws&&current.ws!==ws)return false;}
     const ranking = loadRanking();
     const players = loadPlayers();
-    const rawAccountPlayerId = getAccountPlayerId(message);
+    const rawAccountPlayerId = ws._studentAccountPlayerId||getAccountPlayerId(message);
     const player = resolveAccountPlayer(players, { accountPlayerId: rawAccountPlayerId, name: message.name || '' });
     const accountPlayerId = player
       ? resolveAccountPlayerId(player, buildLegacyIdentityMap(players))
@@ -36,18 +39,18 @@ function createSaveResultMessages({
     const resolvedDurationMs = Number(message.durationMs) || (
       message.isExam && message.examStartedAt ? Math.max(0, Date.now() - Number(message.examStartedAt)) : 0
     );
-    const finalRecord = buildCompletedResultRecord(message, {
+    const finalRecord = buildCompletedResultRecord(linkedExam?message:{...message,isExam:false,examTestId:null}, {
       canonicalName: player ? player.name : (message.name || '?'),
       grade: resolvedGrade,
     });
-    saveRanking(upsertCompletedResult(ranking, finalRecord, message.id));
+    if(!linkedExam)saveRanking(upsertCompletedResult(ranking, finalRecord, message.id));
     const gameRewards = calculateGameRewards(message, {
       hasPlayer: !!player,
       tableHistory: player?.tableHistory,
     });
     const { earnedAureos, earnedExperience, varietyMult } = gameRewards;
-    if (player && gameRewards.tableHistoryChanged) player.tableHistory = gameRewards.tableHistory;
-    if (player) {
+    if (!linkedExam&&player && gameRewards.tableHistoryChanged) player.tableHistory = gameRewards.tableHistory;
+    if (!linkedExam&&player) {
       const baseExperience = ensurePlayerExperience(player);
       player.aureos = (player.aureos || 0) + earnedAureos;
       player.experiencia = baseExperience + earnedExperience;
@@ -87,7 +90,7 @@ function createSaveResultMessages({
       maestroClients.forEach(client => {
         if (client.readyState === WebSocket.OPEN) client.send(JSON.stringify({ type: 'students_updated' }));
       });
-    } else if (earnedAureos > 0) {
+    } else if (!linkedExam&&earnedAureos > 0) {
       send(ws, {
         type: 'aureos_earned', amount: earnedAureos, total: earnedAureos,
         streakBonus: 0, newAchievements: [], magnetBonus: !!message.aureosBonus,
@@ -125,7 +128,14 @@ function createSaveResultMessages({
         finished: message.finished !== false, finishedAt: Date.now(),
       });
       if (testService && examTestId && accountPlayerId) {
-        try { testService.recordLiveExamResult({ testId: examTestId, accountPlayerId, studentSnapshot: { name: examName, grade: resolvedGrade }, message }); } catch (error) { L.err(`No se pudo vincular el intento de examen con ${examTestId}: ${error.message}`); }
+        try {
+          const saved=testService.recordLiveExamResult({ testId: examTestId, accountPlayerId, studentSnapshot: { name: examName, grade: resolvedGrade }, message });
+          const exam=testService.get(examTestId),policy=(exam.configurationSnapshot||exam.configuration||{}).publicationPolicy||'review';
+          if(saved?.attempt?.status==='finished'&&officialAttemptService){
+            const official=officialAttemptService.officialize({testId:examTestId,attemptId:saved.attempt.attemptId,actor:'admin',eventId:require('crypto').randomUUID(),reason:'Resultado de prueba revisado por configuración'});
+            if(policy==='automatic')officialAttemptService.publish({testId:examTestId,attemptId:saved.attempt.attemptId,actor:'admin',eventId:require('crypto').randomUUID(),reason:'Publicación automática configurada'});
+          }
+        } catch (error) { L.err(`No se pudo vincular el intento de examen con ${examTestId}: ${error.message}`); }
       }
     }
     gameSessions.removeSession(getSessionId(ws));

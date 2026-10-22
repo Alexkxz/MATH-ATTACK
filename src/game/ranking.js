@@ -155,7 +155,7 @@ function buildRankingCsv(records){
   const allOps=['×','+','−','÷'];
   const opNames={'×':'Multiplicacion','+':'Suma','−':'Resta','÷':'Division'};
   const opHeaders=allOps.map(op=>`${opNames[op]} % Aciertos,${opNames[op]} Correctas,${opNames[op]} Total`).join(',');
-  const header=`Nombre,Grado,Puntaje,% Aciertos,Correctas,Incorrectas,Sin Tiempo,Racha Max,Modo,Tipo,Dificultad,${opHeaders},Fecha,Hora\n`;
+  const header=`Nombre,Grado,Prueba,Folio prueba,testId,attemptId,officialAttemptId,rankingPublicationId,Puntaje,% Aciertos,Correctas,Incorrectas,Sin Tiempo,Racha Max,Modo,Tipo,Dificultad,${opHeaders},Fecha,Hora\n`;
   const rows=(Array.isArray(records)?records:[]).map(record=>{
     const opCols=allOps.map(op=>{
       const result=record.tblResults&&record.tblResults[op];
@@ -165,6 +165,12 @@ function buildRankingCsv(records){
     return [
       `"${(record.name||'').replace(/"/g,'""')}"`,
       `"${(record.grade||'').replace(/"/g,'""')}"`,
+      `"${(record.testTitle||'').replace(/"/g,'""')}"`,
+      `"${(record.testFolio||'').replace(/"/g,'""')}"`,
+      `"${(record.testId||'').replace(/"/g,'""')}"`,
+      `"${(record.attemptId||'').replace(/"/g,'""')}"`,
+      `"${(record.officialAttemptId||'').replace(/"/g,'""')}"`,
+      `"${(record.rankingPublicationId||'').replace(/"/g,'""')}"`,
       record.score||0,record.pct||0,record.correct||0,record.wrong||0,record.timeout||0,record.streak||0,
       record.gameMode||'',record.gameType||'',record.difficulty||'',opCols,record.date||'',record.time||'',
     ].join(',');

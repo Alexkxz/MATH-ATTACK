@@ -17,6 +17,7 @@ function createTestLibraryService({ loadRoot } = {}) {
 
   function list(filters = {}) {
     const status = filters.status || '';
+    const includeArchived = filters.includeArchived === true;
     const groupId = filters.groupId || '';
     const from = validDate(filters.from, 'from');
     const to = validDate(filters.to, 'to');
@@ -28,6 +29,8 @@ function createTestLibraryService({ loadRoot } = {}) {
     if (!SORTS.has(sort) || !DIRECTIONS.has(direction)) throw Error('orden invalido');
     const rawLimit = filters.limit === undefined || filters.limit === '' ? 50 : Number(filters.limit);
     if (!Number.isInteger(rawLimit) || rawLimit < 1 || rawLimit > 100) throw Error('limite invalido');
+    const rawOffset = filters.offset === undefined || filters.offset === '' ? 0 : Number(filters.offset);
+    if (!Number.isInteger(rawOffset) || rawOffset < 0) throw Error('offset invalido');
 
     const root = loadRoot() || {};
     const assignments = Array.isArray(root.assignments) ? root.assignments : [];
@@ -35,7 +38,7 @@ function createTestLibraryService({ loadRoot } = {}) {
     const officialAttempts = Array.isArray(root.officialAttempts) ? root.officialAttempts : [];
     const publications = Array.isArray(root.rankingPublications) ? root.rankingPublications : [];
     const rows = (Array.isArray(root.tests) ? root.tests : []).filter(test => {
-      if (test.archivedAt) return false;
+      if (test.archivedAt && !includeArchived) return false;
       if (status && test.status !== status) return false;
       const assignedGroups = assignments.filter(item => item.testId === test.testId && item.targetType === 'group').map(item => item.groupId).filter(Boolean);
       if (groupId && !assignedGroups.includes(groupId)) return false;
@@ -67,6 +70,7 @@ function createTestLibraryService({ loadRoot } = {}) {
         scheduledAt: test.scheduledAt || null,
         startsAt: test.startsAt || null,
         closesAt: test.closesAt || null,
+        archivedAt: test.archivedAt || null,
         groups,
         assignmentCount: testAssignments.length,
         attemptCount: testAttempts.length,
@@ -87,7 +91,7 @@ function createTestLibraryService({ loadRoot } = {}) {
       if (compared !== 0) return direction === 'asc' ? compared : -compared;
       return a.testId.localeCompare(b.testId);
     });
-    return clone(rows.slice(0, rawLimit));
+    return clone(rows.slice(rawOffset, rawOffset + rawLimit));
   }
 
   return { list };

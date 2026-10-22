@@ -192,7 +192,7 @@
   async function createGroup() { const name = get('prGroupName')?.value.trim(); const grade = get('prGroupGrade')?.value.trim(); const schoolYear = get('prGroupYear')?.value.trim(); if (!name || !grade || !schoolYear) throw Error('Datos de grupo obligatorios'); const data = await groupRequest('/api/maestro/groups', 'POST', { name, grade, schoolYear, eventId: crypto.randomUUID() }); selectedGroupId = data.group.groupId; await loadGroups(); }
   async function mutateMember(add) { const group = groups.find(item => item.groupId === selectedGroupId); const source = get(add ? 'prGroupStudentSelect' : 'prGroupMemberSelect'); const accountPlayerId = source?.value.trim(); if (!group || !accountPlayerId) throw Error(add ? 'Selecciona un alumno registrado' : 'Selecciona un integrante del grupo'); const url = `/api/maestro/groups/${group.groupId}/members${add ? '' : `/${accountPlayerId}`}`; await groupRequest(url, add ? 'POST' : 'DELETE', { accountPlayerId, revision: group.revision + 1, eventId: crypto.randomUUID() }); await loadGroups(); }
   async function assignGroup() { const group = groups.find(item => item.groupId === selectedGroupId); if (!group || !selectedTestId) throw Error('Selecciona grupo y prueba'); const currentResponse = await fetch(adminUrl(`/api/exams/${encodeURIComponent(selectedTestId)}/assignments`), { headers: { 'X-Admin-Password': _adminPass } }); const currentData = await currentResponse.json(); if (!currentResponse.ok) throw Error(currentData.error || 'No se pudieron consultar asignaciones'); const current = currentData.assignments || []; const assignments = [...current.filter(item => !(item.targetType === 'group' && item.groupId === group.groupId)).map(item => ({ targetType: item.targetType, groupId: item.groupId, accountPlayerId: item.accountPlayerId, sourceGroupId: item.sourceGroupId })), { targetType: 'group', groupId: group.groupId, expandGroup: true }]; await groupRequest(`/api/exams/${encodeURIComponent(selectedTestId)}/assignments`, 'PUT', { assignments }); await load(); await loadAssignments(); }
-  const sectionLabels = { summary: 'Resumen de la prueba seleccionada.', library: 'Biblioteca de pruebas guardadas.', programming: 'Programación y activación.', assignments: 'Alumnos y grupos asignados.', supervision: 'Supervisión de intentos.', results: 'Resultados seguros de la prueba.', ranking: 'Oficialización y publicación al Ranking.', rewards: 'Liquidación de recompensas oficiales.' };
+  const sectionLabels = { summary: 'Resumen e historial completo de pruebas.', programming: 'Programación y activación.', assignments: 'Alumnos y grupos asignados.', supervision: 'Supervisión de intentos.', results: 'Resultados seguros de la prueba.', ranking: 'Oficialización y publicación al Ranking.', rewards: 'Liquidación de recompensas oficiales.' };
   function setSection(section) {
     let target = sectionLabels[section] ? section : 'summary';
     if (target === 'programming' && ['active','paused'].includes(tests.find(test => test.testId === selectedTestId)?.status)) target = 'summary';
@@ -226,13 +226,15 @@
     renderSummary();
     renderActiveSupervision();
     renderSupervisionTestSelector();
+    const purgeButton = get('prDeleteFinishedTests');
+    if (purgeButton) { const finishedCount = tests.filter(test => test.status === 'finished').length; purgeButton.disabled = finishedCount === 0; purgeButton.textContent = `Eliminar finalizadas (${finishedCount})`; }
     const rows = visible();
     const configurationLocked = ['active','paused'].includes(tests.find(test => test.testId === selectedTestId)?.status);
     const programmingTab = document.querySelector('[data-pr-section-target="programming"]');
     if (programmingTab) { programmingTab.disabled = configurationLocked; programmingTab.setAttribute('aria-disabled', String(configurationLocked)); }
     target.innerHTML = rows.length ? rows.map(test => `<article class="pr-test-card${test.testId === selectedTestId ? ' selected' : ''}" data-test-library-card="${esc(test.testId)}"><div class="pr-test-card-main"><strong>${esc(test.title || 'Prueba sin título')}</strong><code>${esc(test.testId)}</code><span>${esc(statusLabel(test.status))} · creada ${esc(dateText(test.createdAt))} · ${test.attemptCount} intento(s)</span><span>${test.groups.length ? `Grupo(s): ${esc(test.groups.join(', '))}` : 'Sin grupo asignado'} · ${test.assignmentCount} asignación(es)</span></div><div class="pr-test-card-meta"><span>${test.hasOfficialResults ? 'Oficial ✓' : 'Sin oficializar'}</span><span>${test.hasRankingPublications ? 'Ranking ✓' : 'Sin publicación'}</span><span>${test.startsAt ? `Programada: ${esc(dateText(test.startsAt))}` : ''}</span></div><div class="pr-test-card-actions"><button type="button" class="pr-test-select" data-test-id="${esc(test.testId)}">Seleccionar prueba</button><button type="button" class="pr-test-copy" data-test-id="${esc(test.testId)}">Copiar testId</button>${test.status === 'draft' ? `<button type="button" class="pr-test-edit" data-test-id="${esc(test.testId)}">Editar borrador</button><button type="button" class="pr-test-schedule" data-test-id="${esc(test.testId)}">Programar</button><button type="button" class="pr-test-finish-legacy" data-test-id="${esc(test.testId)}">Cerrar como finalizada</button>` : ''}${test.status === 'scheduled' && (!test.startsAt || Date.parse(test.startsAt) <= Date.now()) ? `<button type="button" class="pr-test-activate" data-test-id="${esc(test.testId)}">Activar</button>` : ''}${!['cancelled','finished'].includes(test.status) ? `<button type="button" class="pr-test-assign" data-test-id="${esc(test.testId)}">Asignar</button>` : ''}</div></article>`).join('') : '<p class="pr-attempts-empty">No hay pruebas que coincidan con los filtros.</p>';
     target.classList.toggle('pr-finished-library', rows.length > 0 && rows.every(test => test.status === 'finished'));
-    target.querySelectorAll('.pr-test-card').forEach(card => { const test = tests.find(item => item.testId === card.dataset.testLibraryCard); const code = card.querySelector('code'); if (test && code) code.textContent = `Folio ${publicTestCode(test)}`; if (test?.status === 'finished') { card.classList.add('pr-test-card-finished'); if (!card.querySelector('.pr-test-archive')) card.querySelector('.pr-test-card-actions')?.insertAdjacentHTML('beforeend', `<button type="button" class="pr-test-archive" data-test-id="${esc(test.testId)}">Eliminar de biblioteca</button>`); } });
+    target.querySelectorAll('.pr-test-card').forEach(card => { const test = tests.find(item => item.testId === card.dataset.testLibraryCard); const code = card.querySelector('code'); if (test && code) code.textContent = `Folio ${publicTestCode(test)}`; if (test?.status === 'finished' && !test.archivedAt) { card.classList.add('pr-test-card-finished'); if (!card.querySelector('.pr-test-archive')) card.querySelector('.pr-test-card-actions')?.insertAdjacentHTML('beforeend', `<button type="button" class="pr-test-archive" data-test-id="${esc(test.testId)}">Marcar como archivada</button>`); } });
     renderSelected(tests.find(test => test.testId === selectedTestId));
   }
 
@@ -253,12 +255,18 @@
   }
   async function load() {
     const status = get('prTestLibraryStatus');
-    if (status) status.textContent = 'Cargando biblioteca…';
+    if (status) status.textContent = 'Cargando historial…';
     try {
-      const response = await fetch(adminUrl('/api/maestro/tests?limit=100&sort=updatedAt&order=desc'));
-      const data = await response.json();
-      if (!response.ok) throw Error(data.error || 'No se pudo cargar la biblioteca');
-      tests = Array.isArray(data.tests) ? data.tests : [];
+      const loaded = [];
+      for (let offset = 0; ; offset += 100) {
+        const response = await fetch(adminUrl(`/api/maestro/tests?limit=100&offset=${offset}&includeArchived=1&sort=updatedAt&order=desc`));
+        const data = await response.json();
+        if (!response.ok) throw Error(data.error || 'No se pudo cargar el historial');
+        const page = Array.isArray(data.tests) ? data.tests : [];
+        loaded.push(...page);
+        if (page.length < 100) break;
+      }
+      tests = loaded;
       if (!tests.some(test => test.testId === selectedTestId)) {
         const latestTest = tests.find(test => test.status === 'draft') || tests[0];
         selectedTestId = latestTest?.testId || '';
@@ -377,7 +385,23 @@
     const startsAt = new Date(startInput.value); const closesAt = closeInput?.value ? new Date(closeInput.value) : null; if (Number.isNaN(startsAt.getTime())) { if (status) status.textContent = 'La fecha de inicio no es válida.'; return; } if (closesAt && (Number.isNaN(closesAt.getTime()) || closesAt <= startsAt)) { if (status) status.textContent = 'El cierre debe ser posterior al inicio.'; return; }
     if (busy.has(`schedule:${testId}`)) return; busy.add(`schedule:${testId}`); try { const response = await fetch(`/api/exams/${encodeURIComponent(testId)}/schedule`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Admin-Password': _adminPass }, body: JSON.stringify({ revision: test.revision + 1, startsAt: startsAt.toISOString(), closesAt: closesAt ? closesAt.toISOString() : null }) }); const data = await response.json(); if (!response.ok) throw Error(data.error || 'No se pudo programar la prueba'); closeScheduleModal(); await load(); select(testId); } catch (error) { if (status) status.textContent = error.message; } finally { busy.delete(`schedule:${testId}`); }
   }
-  async function archiveTest(testId) { const test = tests.find(item => item.testId === testId); if (!test || test.status !== 'finished') return; if (!await askTestConfirmation('Eliminar de biblioteca', `La prueba Folio ${publicTestCode(test)} dejará de aparecer en la biblioteca. Sus resultados se conservarán.`)) return; try { const response = await fetch(`/api/exams/${encodeURIComponent(testId)}`, { method: 'DELETE', headers: { 'Content-Type': 'application/json', 'X-Admin-Password': _adminPass }, body: JSON.stringify({ revision: test.revision + 1 }) }); const data = await response.json(); if (!response.ok) throw Error(data.error || 'No se pudo eliminar la prueba'); await load(); } catch (error) { const status = get('prTestLibraryStatus'); if (status) status.textContent = error.message; } }
+  async function archiveTest(testId) { const test = tests.find(item => item.testId === testId); if (!test || test.status !== 'finished') return; if (!await askTestConfirmation('Ocultar prueba finalizada', `El Folio ${publicTestCode(test)} dejará de aparecer en el historial, pero sus intentos y resultados se conservarán.`)) return; try { const response = await fetch(`/api/exams/${encodeURIComponent(testId)}`, { method: 'DELETE', headers: { 'Content-Type': 'application/json', 'X-Admin-Password': _adminPass }, body: JSON.stringify({ revision: test.revision + 1 }) }); const data = await response.json(); if (!response.ok) throw Error(data.error || 'No se pudo ocultar la prueba'); await load(); } catch (error) { const status = get('prTestLibraryStatus'); if (status) status.textContent = error.message; } }
+  async function deleteFinishedTests() {
+    const finishedCount = tests.filter(test => test.status === 'finished').length;
+    const status = get('prTestLibraryStatus');
+    if (!finishedCount) { if (status) status.textContent = 'No hay pruebas finalizadas para eliminar.'; return; }
+    const confirmed = await askTestConfirmation('Eliminar datos de pruebas finalizadas', `Se eliminarán ${finishedCount} prueba(s) finalizada(s), sus intentos, resultados y registros internos. Las pruebas activas o pausadas no se tocarán. Las publicaciones existentes del Ranking y las recompensas ya entregadas se conservarán. Esta acción no se puede deshacer.`);
+    if (!confirmed) return;
+    const button = get('prDeleteFinishedTests'); if (button) button.disabled = true;
+    try {
+      const response = await fetch('/api/maestro/tests/purge-finished', { method: 'DELETE', headers: { 'Content-Type': 'application/json', 'X-Admin-Password': _adminPass }, body: JSON.stringify({ confirmation: 'DELETE_FINISHED_TESTS' }) });
+      const data = await response.json();
+      if (!response.ok) throw Error(data.error || 'No se pudieron eliminar las pruebas finalizadas');
+      await load();
+      if (status) status.textContent = `Se eliminaron ${data.deletedTests} prueba(s), ${data.deletedAttempts} intento(s) y ${data.deletedResults} resultado(s). El Ranking se conservó.`;
+    } catch (error) { if (status) status.textContent = error.message; }
+    finally { if (button) button.disabled = !tests.some(test => test.status === 'finished'); }
+  }
   async function activateTest(testId) {
     const test = tests.find(item => item.testId === testId); if (!test || busy.has(`activate:${testId}`)) return; busy.add(`activate:${testId}`);
     try { const response = await fetch(`/api/exams/${encodeURIComponent(testId)}/state`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Admin-Password': _adminPass }, body: JSON.stringify({ action: 'start', revision: test.revision + 1 }) }); const data = await response.json(); if (!response.ok) throw Error(data.error || 'No se pudo activar la prueba'); await load(); select(testId); } finally { busy.delete(`activate:${testId}`); }
@@ -397,6 +421,7 @@
   document.addEventListener('change', event => { if (event.target.id === 'prGroupStudentGrade') renderStudentPicker(); });
   document.addEventListener('change', event => { if (event.target.id === 'prGrade') renderAudience(); if (event.target.id === 'prAudienceMode') { audienceMode = event.target.value; if (audienceMode === 'custom' && !audienceStudentIds.size) audienceStudentIds = new Set(); renderAudience(); } if (event.target.id === 'prAudienceGroup') { audienceGroupId = event.target.value; renderAudience(); } });
   document.addEventListener('click', event => {
+    if (event.target.closest('#prDeleteFinishedTests')) return deleteFinishedTests();
     if (event.target.closest('#prAudienceSelectAll')) { audienceMode = 'custom'; audienceStudentIds = new Set(audienceStudents().map(student => student.id)); renderAudience(); return; }
     if (event.target.closest('#prAudienceInvert')) { audienceMode = 'custom'; const current = new Set(audienceStudentIds); audienceStudentIds = new Set(audienceStudents().filter(student => !current.has(student.id)).map(student => student.id)); renderAudience(); return; }
     const audienceStudent = event.target.closest('[data-audience-student]'); if (audienceStudent) { audienceMode = 'custom'; const id = audienceStudent.dataset.audienceStudent; if (audienceStudentIds.has(id)) audienceStudentIds.delete(id); else audienceStudentIds.add(id); renderAudience(); return; }

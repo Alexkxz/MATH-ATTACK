@@ -80,14 +80,17 @@ async function main() {
     const duplicateBody = await duplicate.json();
     assert.equal(duplicateBody.duplicate, true);
     assert.equal(duplicateBody.settlement.rewardSettlementId, settlementId);
+    // Espera el flush de archivos en cola de la primera liquidación antes de
+    // comparar la petición equivalente con efectos ya persistidos.
+    await wait(150);
     const beforeEquivalentPlayer = JSON.parse(fs.readFileSync(path.join(dir, 'players.json'), 'utf8'))[0];
     const beforeEquivalentRoot = JSON.parse(fs.readFileSync(testsFile, 'utf8'));
     assert.equal((await post({ ...valid, reason: 'motivo distinto' }, adminHeaders)).status, 409);
     const equivalent = await post({ ...valid, eventId: other(1), reason: 'otro reintento' }, adminHeaders);
-    assert.equal(equivalent.status, 201);
+    assert.equal(equivalent.status, 200);
     const equivalentBody = await equivalent.json();
     assert.equal(equivalentBody.settlement.status, 'completed');
-    assert.equal(equivalentBody.duplicate, false);
+    assert.equal(equivalentBody.duplicate, true);
     assert.equal(equivalentBody.settlement.rewardSettlementId, settlementId);
     assert.equal(equivalentBody.settlement.eventId, ids.event);
     const afterEquivalentPlayer = JSON.parse(fs.readFileSync(path.join(dir, 'players.json'), 'utf8'))[0];
@@ -108,7 +111,7 @@ async function main() {
     await wait(100);
     const players = JSON.parse(fs.readFileSync(path.join(dir, 'players.json'), 'utf8'));
     const player = players[0];
-    assert.equal(player.aureos, 65);
+    assert.equal(player.aureos, 60);
     assert.equal(player.experiencia, 15);
     assert.equal(player.officialRewardLedger.length, 4);
     assert.equal(new Set(player.officialRewardLedger.map(item => item.key)).size, 4);
@@ -127,7 +130,7 @@ async function main() {
     assert.equal(restarted.status, 200);
     assert.equal((await restarted.json()).duplicate, true);
     assert.equal(fs.readFileSync(path.join(dir, 'ranking.json'), 'utf8'), rankingBefore);
-    assert.equal(JSON.parse(fs.readFileSync(path.join(dir, 'players.json'), 'utf8'))[0].aureos, 65);
+    assert.equal(JSON.parse(fs.readFileSync(path.join(dir, 'players.json'), 'utf8'))[0].aureos, 60);
     child.kill('SIGINT');
     console.log('OK: ruta administrativa de recompensas autentica, valida publicación, conserva ledger, IDs, idempotencia y aislamiento temporal.');
   } finally {

@@ -9,17 +9,19 @@ const accountPlayerId = '22222222-2222-4222-8222-222222222222';
 let root = createRoot();
 const store = { load: () => root, save: next => { root = next; } };
 const service = createTestService({ store });
-const test = createTest({ testId, title: 'Progreso en vivo', creator: '33333333-3333-4333-8333-333333333333', status: 'active' });
+const test = createTest({ testId, title: 'Progreso en vivo', creator: '33333333-3333-4333-8333-333333333333', status: 'active', configuration:{version:1,total:10} });
 root.tests.push(test);
 root.assignments.push(createAssignment({ testId, targetType: 'student', accountPlayerId }));
+const attempt=service.startStudentAttempt(service.createStudentAttempt({testId,accountPlayerId,studentSnapshot:{name:'Adrian',grade:'4°'}}).attemptId,accountPlayerId);
 const startedAt = Date.now();
 
-const first = service.recordLiveExamProgress({ testId, accountPlayerId, studentSnapshot: { name: 'Adrian', grade: '4°' }, message: { examStartedAt: startedAt, qIndex: 3, totalQ: 10, correct: 2, wrong: 1, score: 20 } });
+const states=(count,correct)=>attempt.progress.questions.slice(0,count).map((q,index)=>({questionId:q.questionId,answer:index<correct?q.answer:q.answer+1,status:index<correct?'correct':'wrong'}));
+const first = service.recordLiveExamProgress({ testId, accountPlayerId, studentSnapshot: { name: 'Adrian', grade: '4°' }, message: { examStartedAt: startedAt, qIndex: 3, totalQ: 10, correct: 2, wrong: 1, score: 20, examQuestions:states(3,2) } });
 assert.equal(root.attempts.length, 1);
 assert.equal(first.attempt.status, 'in_progress');
 assert.equal(first.attempt.progress.currentIndex, 3);
 
-const second = service.recordLiveExamProgress({ testId, accountPlayerId, studentSnapshot: { name: 'Adrian', grade: '4°' }, message: { examStartedAt: startedAt, qIndex: 6, totalQ: 10, correct: 4, wrong: 2, score: 40 } });
+const second = service.recordLiveExamProgress({ testId, accountPlayerId, studentSnapshot: { name: 'Adrian', grade: '4°' }, message: { examStartedAt: startedAt, qIndex: 6, totalQ: 10, correct: 4, wrong: 2, score: 40, examQuestions:states(6,4) } });
 assert.equal(second.attempt.attemptId, first.attempt.attemptId);
 assert.equal(root.attempts.length, 1);
 assert.equal(second.attempt.progress.currentIndex, 6);

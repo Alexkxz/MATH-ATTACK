@@ -40,6 +40,7 @@ function createOfficialRewardService({
   checkNewAchievements,
   achievementsDef = [],
   actor = 'admin',
+  validateApproval = () => {},
   clock = () => new Date(),
 } = {}) {
   if (!root) throw Error('root obligatorio');
@@ -50,17 +51,12 @@ function createOfficialRewardService({
   if (!Array.isArray(root.events)) root.events = [];
 
   const definitionById = new Map(achievementsDef.map(item => [item.id, item]));
-  const settlementKey = ({ testId, attemptId, officialAttemptId, rankingPublicationId }) =>
-    [testId, attemptId, officialAttemptId, rankingPublicationId].join(':');
+  const settlementKey = ({ testId, accountPlayerId }) =>
+    [testId, accountPlayerId].join(':');
 
   function validateRequest(input = {}) {
-    for (const [name, value] of Object.entries({
-      testId: input.testId,
-      attemptId: input.attemptId,
-      officialAttemptId: input.officialAttemptId,
-      rankingPublicationId: input.rankingPublicationId,
-      eventId: input.eventId,
-    })) assertUuid(value, name);
+    for (const [name, value] of Object.entries({testId:input.testId,attemptId:input.attemptId,officialAttemptId:input.officialAttemptId,eventId:input.eventId})) assertUuid(value, name);
+    if(input.rankingPublicationId!=null)assertUuid(input.rankingPublicationId,'rankingPublicationId');
     if (input.actor !== actor) throw Error('actor no autorizado');
     if (typeof input.reason !== 'string' || !input.reason.trim()) throw Error('motivo obligatorio');
     if (input.operation !== undefined && input.operation !== 'official_reward_settlement') throw Error('operacion invalida');
@@ -84,13 +80,13 @@ function createOfficialRewardService({
   }
 
   function findPublication(input) {
-    const publication = root.rankingPublications.find(item =>
+    const publication = input.rankingPublicationId==null?null:root.rankingPublications.find(item =>
       item.testId === input.testId &&
       item.attemptId === input.attemptId &&
       item.officialAttemptId === input.officialAttemptId &&
       item.rankingPublicationId === input.rankingPublicationId
     );
-    if (!publication) throw Error('publicacion oficial no encontrada');
+    if (input.rankingPublicationId!=null&&!publication) throw Error('publicacion oficial no encontrada');
     const official = root.officialAttempts.find(item =>
       item.testId === input.testId && item.attemptId === input.attemptId &&
       item.officialAttemptId === input.officialAttemptId
@@ -99,12 +95,12 @@ function createOfficialRewardService({
     const attempt = root.attempts.find(item => item.testId === input.testId && item.attemptId === input.attemptId);
     if (!attempt) throw Error('intento no encontrado');
     if (attempt.status !== 'finished' || attempt.deletedAt) throw Error('intento no liquidable');
-    if (official.accountPlayerId !== publication.accountPlayerId) throw Error('publicacion inconsistente');
+    if (publication && official.accountPlayerId !== publication.accountPlayerId) throw Error('publicacion inconsistente');
     if (official.accountPlayerId !== attempt.accountPlayerId) throw Error('intento inconsistente');
     if (input.accountPlayerId !== undefined && input.accountPlayerId !== official.accountPlayerId) {
       throw Error('intento pertenece a otro alumno');
     }
-    const result = publication.record || official.resultSnapshot;
+    const result = publication?.record || official.resultSnapshot;
     if (!result || result.complete === false || !Number.isFinite(Number(result.score)) ||
       !Number.isFinite(Number(result.correct)) || !Number.isFinite(Number(result.wrong ?? result.incorrect))) {
       throw Error('resultado invalido');
@@ -187,7 +183,7 @@ function createOfficialRewardService({
   }
 
   function findExisting(input, key, requestFingerprint) {
-    const existing = root.rewardSettlements.find(item => item.settlementKey === key);
+    const existing = root.rewardSettlements.find(item => item.settlementKey === key || (item.testId===input.testId&&item.accountPlayerId===input.accountPlayerId));
     if (!existing) return null;
     if (existing.eventId === input.eventId) {
       if (existing.requestFingerprint !== requestFingerprint) {
@@ -229,17 +225,20 @@ function createOfficialRewardService({
 
   function settle(input = {}) {
     validateRequest(input);
-    const key = settlementKey(input);
-    const requestFingerprint = fingerprint(requestIdentity(input));
+    const target = findPublication(input);
+    const resolvedInput={...input,accountPlayerId:target.official.accountPlayerId};
+    const key = settlementKey(resolvedInput);
+    const requestFingerprint = fingerprint(requestIdentity(resolvedInput));
     const knownEvent = root.events.find(item => item.eventId === input.eventId);
     const knownSettlement = root.rewardSettlements.find(item => item.eventId === input.eventId);
-    if (knownEvent || knownSettlement) verifyEvent(input, key, requestFingerprint);
-    const target = findPublication(input);
-    const existing = findExisting(input, key, requestFingerprint);
+    if (knownEvent || knownSettlement) verifyEvent(resolvedInput, key, requestFingerprint);
+    const existing = findExisting(resolvedInput, key, requestFingerprint);
     if (existing) {
-      if (existing.eventId === input.eventId && existing.status === 'completed') {
+      if(existing.attemptId!==input.attemptId||existing.officialAttemptId!==input.officialAttemptId)throw Error('la participacion ya fue aprobada o esta pendiente para otro intento');
+      if (existing.status === 'completed') {
         return { settlement: safeSettlement(existing), duplicate: true };
       }
+      validateApproval({testId:input.testId,attemptId:input.attemptId,accountPlayerId:target.official.accountPlayerId});
       // Una liquidación pendiente es recuperable: nunca se crea otro settlement.
       // continueSettlement consulta el ledger persistente de cada efecto y solo
       // aplica los que aún no tienen marca durable.
@@ -250,6 +249,7 @@ function createOfficialRewardService({
     const players = loadPlayers();
     const player = players.find(item => item.id === target.official.accountPlayerId);
     if (!player) throw Error('alumno no encontrado');
+    validateApproval({testId:input.testId,attemptId:input.attemptId,accountPlayerId:target.official.accountPlayerId});
     const frozenRewards = target.attempt.configurationSnapshot?.rewards;
     const rewards = pureRewards(player, target.result, loadRanking(), frozenRewards);
     const settlement = {
@@ -300,12 +300,23 @@ function createOfficialRewardService({
   }
 
   function getSettlement(input = {}) {
-    for (const name of ['testId', 'attemptId', 'officialAttemptId', 'rankingPublicationId']) assertUuid(input[name], name);
-    const item = root.rewardSettlements.find(value => settlementKey(value) === settlementKey(input));
+    for (const name of ['testId', 'attemptId', 'officialAttemptId']) assertUuid(input[name], name);
+    if(input.rankingPublicationId!=null)assertUuid(input.rankingPublicationId,'rankingPublicationId');
+    const item = root.rewardSettlements.find(value => value.testId===input.testId&&value.attemptId===input.attemptId&&value.officialAttemptId===input.officialAttemptId&&(input.rankingPublicationId==null||value.rankingPublicationId===input.rankingPublicationId));
     return safeSettlement(item);
   }
 
-  return { calculateRewards: (player, result, ranking, configuredRewards) => pureRewards(player, result, ranking, configuredRewards), settle, getSettlement };
+  function preview(input={}){
+    const official=root.officialAttempts.find(item=>item.testId===input.testId&&item.attemptId===input.attemptId);
+    const attempt=root.attempts.find(item=>item.testId===input.testId&&item.attemptId===input.attemptId);if(!attempt||attempt.status!=='finished')throw Error('intento no terminado');
+    validateApproval({testId:input.testId,attemptId:input.attemptId,accountPlayerId:attempt.accountPlayerId});
+    const result=official?.resultSnapshot||(root.results||[]).find(item=>item.testId===input.testId&&item.attemptId===input.attemptId);if(!result||result.complete===false)throw Error('resultado no disponible');
+    const players=loadPlayers(),player=players.find(item=>item.id===attempt.accountPlayerId);if(!player)throw Error('alumno no encontrado');
+    const rewards=pureRewards(player,result,loadRanking(),attempt.configurationSnapshot?.rewards);
+    return {accountPlayerId:attempt.accountPlayerId,name:result.name||attempt.progress?.studentSnapshot?.name||'',before:{aureos:Number(player.aureos)||0,experience:Number(player.experiencia)||0},after:{aureos:Math.max(0,(Number(player.aureos)||0)+(Number(rewards.aureos)||0)+rewards.achievements.reduce((n,item)=>n+(Number(item.bonus)||0),0)),experience:(Number(player.experiencia)||0)+(Number(rewards.experience)||0)},rewards,publicationRequired:false};
+  }
+
+  return { calculateRewards: (player, result, ranking, configuredRewards) => pureRewards(player, result, ranking, configuredRewards), settle, getSettlement, preview };
 }
 
 module.exports = { createOfficialRewardService };
