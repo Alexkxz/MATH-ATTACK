@@ -17,11 +17,18 @@ function selectedOperations(configuration){
  return enabled.filter((op,index)=>OPS.includes(op)&&enabled.indexOf(op)===index&&cfg[op]&&typeof cfg[op]==='object').map(op=>[op,cfg[op]]);
 }
 function operationQuantity(operation,cfg,legacy=false,totalFallback=1){
+ if(operation==='mult'&&cfg.mode==='quick')return int(cfg.perTableQty,0)*(Array.isArray(cfg.tables)?new Set(cfg.tables).size:0);
+ if(operation==='mult'&&cfg.mode==='exact')return Array.isArray(cfg.matrix)?new Set(cfg.matrix.map(String)).size:0;
  if(cfg.qty===undefined&&Array.isArray(cfg.matrix))return new Set(cfg.matrix.map(String)).size;
  const qty=int(cfg.qty,int(cfg.total,int(cfg.questionCount,totalFallback)));
  return Math.max(1,qty)*(legacy&&cfg.quantityMode!=='total'&&['mult','div'].includes(operation)?Math.max(1,(cfg.tables||[]).length):1);
 }
 function totalQuestionCount(configuration){return selectedOperations(configuration).reduce((sum,[op,cfg])=>sum+operationQuantity(op,cfg,!configuration.enabledOperations,configuration.total||1),0);}
+function multiplicationVariants(table,from,to,limit){
+ const maximum=Number(limit)||1,scales=[1,10,100,1000].filter(scale=>scale<=maximum),out=[];
+ for(let factor=from;factor<=to;factor++)for(const scaleLeft of scales)for(const scaleRight of scales)out.push({a:table*scaleLeft,b:factor*scaleRight,answer:table*factor*scaleLeft*scaleRight,table:table*scaleLeft,baseTable:table,baseFactor:factor,scaleLeft,scaleRight});
+ return out;
+}
 
 function validateMathConfiguration(configuration={}, {allowIncomplete=false}={}){
  const pairs=selectedOperations(configuration);if(!pairs.length){if(allowIncomplete)return true;throw Error('activa al menos una operación matemática');}
@@ -30,10 +37,25 @@ function validateMathConfiguration(configuration={}, {allowIncomplete=false}={})
  for(const [op,cfg] of pairs){
   const qty=operationQuantity(op,cfg,!configuration.enabledOperations);if(qty<1||qty>MAX_QUESTIONS)throw Error(`${OP_SYMBOLS[op]}: cantidad inválida.`);
   if(['mult','div'].includes(op)){
-   const tables=cfg.tables??[];if(!Array.isArray(tables)||tables.some(t=>!Number.isInteger(t)||t<1||t>12))throw Error(`${OP_SYMBOLS[op]}: selecciona valores entre 1 y 12.`);
+   if(op==='mult'&&cfg.mode!==undefined&&!['quick','exact'].includes(cfg.mode))throw Error('Multiplicacion: modo invalido.');
+   if(op==='mult'&&cfg.mode==='quick'){
+    const quickTables=cfg.tables??[],range=cfg.range;
+    if(!Array.isArray(quickTables)||!quickTables.length||quickTables.some(t=>!Number.isInteger(t)||t<0||t>12)||new Set(quickTables).size!==quickTables.length)throw Error('Multiplicacion rapida: selecciona tablas unicas entre 0 y 12.');
+    if(!Number.isInteger(cfg.perTableQty)||cfg.perTableQty<1||cfg.perTableQty>100)throw Error('Multiplicacion rapida: indica preguntas por tabla entre 1 y 100.');
+    if(!range||!Number.isInteger(range.from)||!Number.isInteger(range.to)||range.from<0||range.to>12||range.from>range.to)throw Error('Multiplicacion rapida: el rango general debe estar entre 0 y 12 y Desde no puede superar Hasta.');
+    if(!(configuration.repeat===true||cfg.repeat===true))for(const table of quickTables){const capacity=new Set(multiplicationVariants(table,range.from,range.to,cfg.expansionLimit).map(q=>keyFor('mult',q))).size;if(capacity<cfg.perTableQty)throw Error(`Multiplicacion rapida: la tabla ${table} solo tiene ${capacity} ejercicios distintos en el rango y ampliacion actuales; reduce preguntas por tabla o permite repeticiones.`);}
+    if(cfg.quickTables!==undefined&&(!Array.isArray(cfg.quickTables)||cfg.quickTables.some(t=>!Number.isInteger(t)||t<0||t>12)||new Set(cfg.quickTables).size!==cfg.quickTables.length))throw Error('Multiplicacion rapida: seleccion guardada de tablas invalida.');
+   }
+   if(op==='mult'&&cfg.mode==='exact'){
+    if(!Array.isArray(cfg.matrix)||!cfg.matrix.length)throw Error('Multiplicacion exacta: selecciona al menos una casilla de la matriz.');
+    if(new Set(cfg.matrix.map(String)).size!==cfg.matrix.length)throw Error('Multiplicacion exacta: la matriz contiene casillas repetidas.');
+    const columns=[...new Set(cfg.matrix.map(value=>Number(String(value).split('x')[1])))].sort((a,b)=>a-b),normalized=[...new Set(cfg.tables??[])].sort((a,b)=>a-b);
+    if(columns.length!==normalized.length||columns.some((table,index)=>table!==normalized[index]))throw Error('Multiplicacion exacta: las tablas deben coincidir con las columnas seleccionadas.');
+   }
+   const tables=cfg.tables??[],minimum=op==='mult'?0:1;if(!Array.isArray(tables)||tables.some(t=>!Number.isInteger(t)||t<minimum||t>12))throw Error(`${OP_SYMBOLS[op]}: selecciona valores entre ${minimum} y 12.`);
    const extension=cfg.expansionLimit??1;if(op==='mult'&&![1,10,100,1000].includes(Number(extension)))throw Error('La ampliación de multiplicación debe ser ×1, ×10, ×100 o ×1000.');
-   if(cfg.ranges!==undefined){if(!Array.isArray(cfg.ranges)||cfg.ranges.some(r=>!r||!Number.isInteger(r.table)||r.table<1||r.table>12||!Number.isInteger(r.from)||!Number.isInteger(r.to)||r.from<1||r.to>12||r.from>r.to))throw Error(`${OP_SYMBOLS[op]}: intervalo de factores inválido (1–12).`);}
-   if(Array.isArray(cfg.matrix)&&cfg.matrix.some(value=>{const [factor,table]=String(value).split('x').map(Number);return !Number.isInteger(factor)||!Number.isInteger(table)||factor<1||factor>12||table<1||table>12||(tables.length&&!tables.includes(table));}))throw Error(`${OP_SYMBOLS[op]}: combinación avanzada fuera de la cuadrícula o de las tablas seleccionadas.`);
+   if(cfg.ranges!==undefined){if(!Array.isArray(cfg.ranges)||cfg.ranges.some(r=>!r||!Number.isInteger(r.table)||r.table<minimum||r.table>12||!Number.isInteger(r.from)||!Number.isInteger(r.to)||r.from<minimum||r.to>12||r.from>r.to))throw Error(`${OP_SYMBOLS[op]}: intervalo de factores inválido (1–12).`);}
+   if(cfg.mode!=='quick'&&Array.isArray(cfg.matrix)&&cfg.matrix.some(value=>{const [factor,table]=String(value).split('x').map(Number);return !Number.isInteger(factor)||!Number.isInteger(table)||factor<minimum||factor>12||table<minimum||table>12||(tables.length&&!tables.includes(table));}))throw Error(`${OP_SYMBOLS[op]}: combinación avanzada fuera de la cuadrícula o de las tablas seleccionadas.`);
   }
   if(op==='div'){
    const mode=cfg.divisorMode||'specific';if(!['specific','digits'].includes(mode))throw Error('División: elige divisores concretos o por cifras.');
@@ -89,11 +111,28 @@ function uniqueTake(op,quantity,repeat,create,random,capacity){
  if(out.length<quantity)throw Error(`${OP_SYMBOLS[op]}: no se pudieron elegir ${quantity} combinaciones distintas; revisa el rango.`);
  return out.map(q=>({...q,questionId:randomUUID(),op:OP_SYMBOLS[op]}));
 }
+function generateStructuredMultiplication(cfg,repeat,random){
+ const exact=cfg.mode==='exact',tables=[...new Set(cfg.tables||[])],range=cfg.range||{from:1,to:12},maximum=Number(cfg.expansionLimit)||1;
+ if(!exact&&!tables.length)throw Error('Multiplicacion rapida: selecciona al menos una tabla.');
+ const bases=exact?[...new Set(cfg.matrix.map(String))].map(value=>value.split('x').map(Number)).map(([factor,table])=>({factor,table})):tables.flatMap(table=>Array.from({length:cfg.perTableQty},(_,slot)=>({table,slot})));
+ let slots=bases.map(base=>{const variants=exact?multiplicationVariants(base.table,base.factor,base.factor,maximum):multiplicationVariants(base.table,range.from,range.to,maximum);const unique=[...new Map(variants.map(q=>[keyFor('mult',q),q])).values()];return {...base,candidates:shuffle(unique,random)};});
+ if(cfg.manner!=='ordered')slots=shuffle(slots,random);
+ let chosen;
+ if(repeat)chosen=slots.map(slot=>slot.candidates[rnd(random,0,slot.candidates.length-1)]);
+ else {
+  const owner=new Map(),assigned=Array(slots.length);const place=(index,seen)=>{for(const candidate of slots[index].candidates){const key=keyFor('mult',candidate);if(seen.has(key))continue;seen.add(key);const previous=owner.get(key);if(previous===undefined||place(previous,seen)){owner.set(key,index);assigned[index]=candidate;return true;}}return false;};
+  for(let i=0;i<slots.length;i++)if(!place(i,new Set()))throw Error(`Multiplicacion: no existe una combinacion sin repetir para las ${slots.length} preguntas seleccionadas; ajusta rango, tablas, cantidad o ampliacion.`);
+  chosen=assigned;
+ }
+ let pairs=slots.map((slot,index)=>({slot,question:chosen[index]}));if(cfg.manner==='ordered')pairs.sort((a,b)=>(a.question.baseTable??a.slot.table)-(b.question.baseTable??b.slot.table)||(a.question.baseFactor??a.slot.factor??a.slot.slot)-(b.question.baseFactor??b.slot.factor??b.slot.slot)||a.question.scaleLeft-b.question.scaleLeft||a.question.scaleRight-b.question.scaleRight);else pairs=shuffle(pairs,random);
+ return pairs.map(({question})=>({...question,questionId:randomUUID(),op:'×'}));
+}
 function generateMultiplication(cfg,quantity,repeat,random){
+ if(cfg.mode==='quick'||cfg.mode==='exact')return generateStructuredMultiplication(cfg,repeat,random);
  const tables=[...new Set(cfg.tables||[])];if(!tables.length)throw Error('Multiplicación: selecciona al menos una tabla.');
  const exact=Array.isArray(cfg.matrix)?[...new Set(cfg.matrix.map(String))].map(v=>v.split('x').map(Number)):null;
  const ranges=Array.isArray(cfg.ranges)?cfg.ranges:tables.map(table=>({table,from:1,to:12}));
- const base=exact?exact.filter(([factor,table])=>tables.includes(table)&&factor>=1&&factor<=12):ranges.filter(r=>tables.includes(r.table)).flatMap(r=>Array.from({length:r.to-r.from+1},(_,i)=>[r.from+i,r.table]));
+ const base=exact?exact.filter(([factor,table])=>tables.includes(table)&&factor>=0&&factor<=12):ranges.filter(r=>tables.includes(r.table)).flatMap(r=>Array.from({length:r.to-r.from+1},(_,i)=>[r.from+i,r.table]));
  if(!base.length)throw Error('Multiplicación: el rango y las tablas no contienen combinaciones.');
  const limit=Number(cfg.expansionLimit)||1,scales=[1,10,100,1000].filter(scale=>scale<=limit),candidates=[];
  for(const [factor,table] of base)for(const left of scales)for(const right of scales)candidates.push({a:table*left,b:factor*right,answer:table*left*factor*right,table:table*left,baseTable:table,baseFactor:factor,scaleLeft:left,scaleRight:right});

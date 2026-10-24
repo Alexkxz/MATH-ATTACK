@@ -48,7 +48,9 @@ async function launch(dir, testId) {
     cookie = login.headers.get('set-cookie').split(';')[0];
     const recovered = await call(running.base, `/api/student/tests/${testId}/attempts/${attemptId}`, { method: 'GET' }, cookie);
     const recoveredBody = await recovered.json();
-    assert.strictEqual(recoveredBody.attempt.status, 'in_progress');
+    // After restart the durable attempt remains resumable, but must not be
+    // reported as actively connected until the student reconnects.
+    assert.strictEqual(recoveredBody.attempt.status, 'disconnected');
     assert.strictEqual(recoveredBody.attempt.progress.currentIndex, 1);
     assert.strictEqual(recoveredBody.attempt.progress.answers.length, 1);
     assert.strictEqual((await call(running.base, `/api/student/tests/${testId}/attempts/${attemptId}/checkpoint`, { method: 'GET' }, cookie)).status, 200);

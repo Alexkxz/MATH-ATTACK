@@ -8,24 +8,25 @@
   const MAX_TABLE = 12;
   function fail(message) { throw new Error(message); }
   function integer(value, field) { if (!Number.isInteger(value)) fail(`${field} must be an integer`); return value; }
-  function validateRange(range) {
+  function validateRange(range, { allowZero = false } = {}) {
     if (!range || typeof range !== 'object' || Array.isArray(range)) fail('table range incomplete');
     const table = integer(range.table, 'table');
     const from = integer(range.from, 'from');
     const to = integer(range.to, 'to');
-    if (table < MIN_TABLE || table > MAX_TABLE) fail('table out of bounds');
-    if (from < 1 || from > MAX_TABLE || to < 1 || to > MAX_TABLE) fail('range out of bounds');
+    const minimum = allowZero ? 0 : 1;
+    if (table < minimum || table > MAX_TABLE) fail('table out of bounds');
+    if (from < minimum || from > MAX_TABLE || to < minimum || to > MAX_TABLE) fail('range out of bounds');
     if (from > to) fail('from must be less than or equal to to');
     return { table, from, to };
   }
-  function validateMultiplierConfig(config) {
+  function validateMultiplierConfig(config, { allowZero = false } = {}) {
     if (!config || typeof config !== 'object' || Array.isArray(config)) fail('invalid multiplication config');
     if (!Array.isArray(config.ranges) || !config.ranges.length) fail('ranges must not be empty');
-    const ranges = config.ranges.map(validateRange);
+    const ranges = config.ranges.map(range => validateRange(range, { allowZero }));
     const tables = new Set();
     for (const range of ranges) { if (tables.has(range.table)) fail('duplicate table'); tables.add(range.table); }
     if (config.tables !== undefined) {
-      if (!Array.isArray(config.tables) || config.tables.some(table => !Number.isInteger(table))) fail('invalid tables');
+      if (!Array.isArray(config.tables) || config.tables.some(table => !Number.isInteger(table) || table < (allowZero ? 0 : 1) || table > MAX_TABLE)) fail('invalid tables');
       const configured = [...new Set(config.tables)].sort((a, b) => a - b);
       const ranged = [...tables].sort((a, b) => a - b);
       if (configured.length !== ranged.length || configured.some((table, index) => table !== ranged[index])) fail('tables and ranges do not match');
@@ -57,8 +58,11 @@
     for (const operation of ['mult', 'div']) {
       const config = opsConfig[operation];
       if (!config) continue;
-      if (config.ranges !== undefined) validateMultiplierConfig(config);
-      if (config.matrix !== undefined) validateMatrix(config.matrix);
+      if (config.ranges !== undefined) validateMultiplierConfig(config, { allowZero: operation === 'mult' });
+      if (config.matrix !== undefined) {
+        validateMatrix(config.matrix);
+        if (operation === 'div' && config.matrix.some(value => value.split('x').some(part => Number(part) === 0))) fail('division matrix cannot contain zero');
+      }
       if (config.digits !== undefined) {
         integer(config.digits, `${operation}.digits`);
         if (config.digits < (operation === 'div' ? 2 : 1) || config.digits > (operation === 'div' ? 5 : 4)) fail(`invalid ${operation} digits`);
@@ -79,7 +83,7 @@
   function shuffled(items, random) { const result = items.slice(); for (let i = result.length - 1; i > 0; i -= 1) { const j = Math.floor(random() * (i + 1)); [result[i], result[j]] = [result[j], result[i]]; } return result; }
   function multipliersForTable(config, table, random = Math.random) {
     if (!config || !Array.isArray(config.ranges)) return null;
-    const range = validateMultiplierConfig(config).find(item => item.table === table);
+    const range = validateMultiplierConfig(config, { allowZero: true }).find(item => item.table === table);
     if (!range) return [];
     const pool = values(range);
     if (config.repeat === true) {
@@ -92,7 +96,7 @@
   }
   function count(config) {
     if (!config || !Array.isArray(config.ranges)) return 0;
-    const ranges = validateMultiplierConfig(config);
+    const ranges = validateMultiplierConfig(config, { allowZero: true });
     if (config.repeat === true && Number.isInteger(config.qty)) return ranges.length * config.qty;
     return ranges.reduce((sum, range) => sum + range.to - range.from + 1, 0);
   }

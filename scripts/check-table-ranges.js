@@ -1,7 +1,7 @@
 'use strict';
 
 const assert = require('assert');
-const { validateMultiplierConfig, multipliersForTable, count } = require('../src/client/maestro/tableRanges');
+const { validateMultiplierConfig, validateOpsConfig, multipliersForTable, count } = require('../src/client/maestro/tableRanges');
 
 function expectError(fn, text) {
   assert.throws(fn, error => error instanceof Error && error.message.includes(text));
@@ -23,4 +23,8 @@ expectError(() => validateMultiplierConfig({ ranges: [{ table: 8, from: 1, to: 5
 expectError(() => validateMultiplierConfig({ tables: [8], ranges: [{ table: 9, from: 1, to: 5 }] }), 'tables and ranges do not match');
 assert.deepStrictEqual(multipliersForTable({ tables: [8], qty: 4 }, 8), null);
 assert.deepStrictEqual(multipliersForTable({ ...config, repeat: true, qty: 7 }, 8), [1, 2, 3, 4, 5, 1, 2]);
+const zeroMultiplier = { tables: [0], ranges: [{ table: 0, from: 0, to: 2 }] };
+assert.deepStrictEqual(multipliersForTable(zeroMultiplier, 0), [0, 1, 2]);
+assert.doesNotThrow(() => validateOpsConfig({ mult: zeroMultiplier }));
+assert.throws(() => validateOpsConfig({ div: zeroMultiplier }), /out of bounds/);
 console.log('check-table-ranges: ok');

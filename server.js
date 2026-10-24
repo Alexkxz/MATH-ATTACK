@@ -172,14 +172,17 @@ else if(testStoreStartup.status==='migrated') L.game('Almacén de pruebas migrad
 else if(testStoreStartup.status==='invalid') L.err('Almacén de pruebas inválido; se usa memoria vacía');
 else L.game('Almacén de pruebas nuevo/no persistido');
 const testService=createTestService({store:testStore,groupResolver:groupId=>{
-  try{return groupService.members(groupId);}catch(error){if(/grupo no encontrado/.test(error.message))return undefined;throw error;}
+  try{return groupService.members(groupId);}catch(error){if(/grupo no encontrado|groupId invalido/i.test(error.message))return undefined;throw error;}
+},studentGradeResolver:accountPlayerId=>{
+  const players=loadPlayers();let player=findPlayerById(players,accountPlayerId);
+  if(!player){try{const identity=buildLegacyIdentityMap(players).byAccountId.get(accountPlayerId);if(identity)player=players.find(item=>item.id===identity.publicPlayerId)||null;}catch(_){return '';}}
+  return player?.grade||'';
 }});
-const recoveredExamConnections=testService.recoverDisconnectedAttempts();
+const recoveredExamConnections=testService.recoverAfterRestart();
 if(recoveredExamConnections)L.game(`Intentos de prueba congelados al recuperar servidor: ${recoveredExamConnections}`);
-for(const test of testService.list().filter(item=>item.status==='active'||item.status==='paused')){
-  const c=test.configurationSnapshot||test.configuration||{},assignments=testService.listAssignments(test.testId);
-  const mode={grade:c.grade||'',tables:c.tables||[],op:c.op||'mixed',ops:c.ops||Object.keys(c.opsConfig||{}),opsConfig:c.opsConfig||{},timeLimit:Number(c.timeLimit)||0,timePerQuestion:Number(c.timePerQuestion)||0,total:Number(c.total)||20,answerMode:c.answerMode||'options',testId:test.testId,audienceAccountPlayerIds:assignments.filter(item=>item.targetType==='student').map(item=>item.accountPlayerId),startedAt:Date.parse(test.updatedAt)||Date.now(),paused:test.status==='paused'};
-  examModes.set(test.testId,mode);examMode=mode;
+function buildExamModeFromTest(test){
+  const c=test.configurationSnapshot||test.configuration||{};
+  return {grade:c.grade||'',tables:c.tables||[],op:c.op||'mixed',ops:c.ops||Object.keys(c.opsConfig||{}),opsConfig:c.opsConfig||{},timeLimit:Number(c.timeLimit)||0,timePerQuestion:Number(c.timePerQuestion)||0,total:Number(c.total)||20,answerMode:c.answerMode||'options',testId:test.testId,audienceAccountPlayerIds:testService.listEligibleAccountPlayerIds(test.testId),startedAt:Date.parse(test.updatedAt)||Date.now(),paused:test.status==='paused'};
 }
 function resolveStudentTestIdentifier(identifier){
   const value=String(identifier||'').trim();
@@ -214,6 +217,10 @@ const {
   flushSync,
   logAureosTx,
 } = dataStore;
+for(const test of testService.list().filter(item=>item.status==='active'||item.status==='paused')){
+  const mode=buildExamModeFromTest(test);
+  examModes.set(test.testId,mode);examMode=mode;
+}
 const operationStatsCache=createOperationStatsCache(loadRanking);
 const saveRanking=operationStatsCache.wrapSave(saveRankingData);
 const officialAttemptService=createOfficialAttemptService({root:testStore.load(),loadRanking,saveRanking,persist:()=>testStore.save(testStore.load())});
@@ -545,8 +552,7 @@ const server=http.createServer((req,res)=>{
     const players=loadPlayers();
     const player=findPlayerById(players,auth.session.accountPlayerId)||players.find(p=>{try{return resolveAccountPlayerId(p,buildLegacyIdentityMap(players))===auth.session.accountPlayerId;}catch(_){return false;}});
     if(!player)return sendJson(res,401,{ok:false,error:'Sesion no valida'});
-    const grade=String(player.grade||'');
-    const rows=testService.list().filter(test=>(test.status==='active'||test.status==='paused')&&testService.isAssigned(test.testId,auth.session.accountPlayerId,grade)).map(test=>{
+    const rows=testService.list().filter(test=>(test.status==='active'||test.status==='paused')&&testService.isEligible(test.testId,auth.session.accountPlayerId)).map(test=>{
       const attempts=testService.listAttempts(test.testId,{accountPlayerId:auth.session.accountPlayerId}).filter(item=>!['deleted','restarted'].includes(item.status));
       const open=attempts.find(item=>!['finished','incomplete'].includes(item.status))||null;
       const participationClosed=(testStore.load().rewardSettlements||[]).some(item=>item.testId===test.testId&&item.accountPlayerId===auth.session.accountPlayerId&&['pending','completed'].includes(item.status));
@@ -565,7 +571,7 @@ const server=http.createServer((req,res)=>{
     if(!auth.ok)return sendJson(res,401,{ok:false,error:'Sesion no valida'});
     const player=findPlayerById(loadPlayers(),auth.session.accountPlayerId)||loadPlayers().find(p=>{try{return resolveAccountPlayerId(p,buildLegacyIdentityMap(loadPlayers()))===auth.session.accountPlayerId;}catch(_){return false;}});
     if(!player)return sendJson(res,401,{ok:false,error:'Sesion no valida'});
-    try{const testId=resolveStudentTestIdentifier(studentAttemptMatch[1]);if(req.method==='GET'&&studentAttemptMatch[2]){const attempt=testService.getStudentAttempt(testId,studentAttemptMatch[2],auth.session.accountPlayerId);return sendJson(res,200,{ok:true,attempt:studentAttemptView(attempt,testService.get(testId))});}if(req.method==='POST'&&!studentAttemptMatch[2]){const attempt=testService.createStudentAttempt({testId,accountPlayerId:auth.session.accountPlayerId,groupId:player.grade||'',studentSnapshot:{name:player.name,grade:player.grade||''}});return sendJson(res,201,{ok:true,attempt:studentAttemptView(attempt,testService.get(testId))});}if(req.method==='POST'&&studentAttemptMatch[2]){const attempt=testService.startStudentAttempt(studentAttemptMatch[2],auth.session.accountPlayerId,player.grade||'');return sendJson(res,200,{ok:true,attempt:studentAttemptView(attempt,testService.get(testId))});}}catch(e){const msg=e.message||'Solicitud invalida';return sendJson(res,/no encontrado/.test(msg)?404:/no asignado/.test(msg)?403:/ya existe/.test(msg)?409:422,{ok:false,error:msg});}
+    try{const testId=resolveStudentTestIdentifier(studentAttemptMatch[1]);if(req.method==='GET'&&studentAttemptMatch[2]){const attempt=testService.getStudentAttempt(testId,studentAttemptMatch[2],auth.session.accountPlayerId);return sendJson(res,200,{ok:true,attempt:studentAttemptView(attempt,testService.get(testId))});}if(req.method==='POST'&&!studentAttemptMatch[2]){const attempt=testService.createStudentAttempt({testId,accountPlayerId:auth.session.accountPlayerId,groupId:player.grade||'',studentSnapshot:{name:player.name,grade:player.grade||''}});return sendJson(res,201,{ok:true,attempt:studentAttemptView(attempt,testService.get(testId))});}if(req.method==='POST'&&studentAttemptMatch[2]){const attempt=testService.startStudentAttempt(studentAttemptMatch[2],auth.session.accountPlayerId,player.grade||'',testId);return sendJson(res,200,{ok:true,attempt:studentAttemptView(attempt,testService.get(testId))});}}catch(e){const msg=e.message||'Solicitud invalida';return sendJson(res,/no encontrado/.test(msg)?404:/no asignado|no elegible/.test(msg)?403:/ya existe/.test(msg)?409:422,{ok:false,error:msg});}
     return sendJson(res,404,{ok:false,error:'Ruta no encontrada'});
   }
   const studentFlowMatch=url.match(/^\/api\/student\/tests\/([A-Za-z0-9-]+)\/attempts\/([0-9a-f-]+)\/(answer|disconnect|reconnect|finish)$/i);
@@ -574,7 +580,7 @@ const server=http.createServer((req,res)=>{
     if(!auth.ok)return sendJson(res,401,{ok:false,error:'Sesion no valida'});
     let resolvedTestId;try{resolvedTestId=resolveStudentTestIdentifier(studentFlowMatch[1]);}catch(error){return sendJson(res,404,{ok:false,error:error.message});}const input={testId:resolvedTestId,attemptId:studentFlowMatch[2],accountPlayerId:auth.session.accountPlayerId};
     const action=studentFlowMatch[3].toLowerCase();
-    const run=data=>{try{let result;if(action==='answer')result=testService.answerStudentQuestion({...data,...input});else if(action==='disconnect')result={attempt:testService.disconnectStudentAttempt(input),duplicate:false};else if(action==='reconnect')result={attempt:testService.reconnectStudentAttempt(input),duplicate:false};else result=testService.finishStudentAttempt({...data,...input});const test=testService.get(input.testId);return sendJson(res,200,{ok:true,duplicate:result.duplicate===true,correct:result.correct,attempt:studentAttemptView(result.attempt,test),result:result.result||null});}catch(e){const msg=e.message||'Solicitud invalida';return sendJson(res,/no encontrado/.test(msg)?404:/contradictorio|ya respondida/.test(msg)?409:/no activo|no finalizable|invalida/.test(msg)?422:422,{ok:false,error:msg});}};
+    const run=data=>{try{let result;if(action==='answer')result=testService.answerStudentQuestion({...data,...input});else if(action==='disconnect')result={attempt:testService.disconnectStudentAttempt(input),duplicate:false};else if(action==='reconnect')result={attempt:testService.reconnectStudentAttempt(input),duplicate:false};else result=testService.finishStudentAttempt({...data,...input});const test=testService.get(input.testId);return sendJson(res,200,{ok:true,duplicate:result.duplicate===true,correct:result.correct,attempt:studentAttemptView(result.attempt,test),result:result.result||null});}catch(e){const msg=e.message||'Solicitud invalida';return sendJson(res,/no encontrado/.test(msg)?404:/no elegible/.test(msg)?403:/contradictorio|ya respondida/.test(msg)?409:/no activo|no finalizable|invalida/.test(msg)?422:422,{ok:false,error:msg});}};
     if(req.method!=='POST')return sendJson(res,405,{ok:false,error:'Metodo no permitido'});
     if(action==='disconnect'||action==='reconnect')return run({});
     return readBody(req,res,body=>{let data;try{data=JSON.parse(body||'{}');}catch(_){return sendJson(res,400,{ok:false,error:'Solicitud invalida'});}return run(data);});
@@ -585,9 +591,9 @@ const server=http.createServer((req,res)=>{
     if(!auth.ok)return sendJson(res,401,{ok:false,error:'Sesion no valida'});
     let resolvedTestId;try{resolvedTestId=resolveStudentTestIdentifier(checkpointMatch[1]);}catch(error){return sendJson(res,404,{ok:false,error:error.message});}const input={testId:resolvedTestId,attemptId:checkpointMatch[2],accountPlayerId:auth.session.accountPlayerId};
     try{
-      if(req.method==='POST')return readBody(req,res,body=>{let data;try{data=JSON.parse(body);}catch(_){return sendJson(res,400,{ok:false,error:'Solicitud invalida'});}try{const result=attemptCheckpointService.saveAttemptCheckpoint({...data,...input});return sendJson(res,result.duplicate?200:201,{ok:true,checkpoint:result.checkpoint,duplicate:result.duplicate});}catch(e){return sendJson(res,/antigua/.test(e.message)?409:/propietario/.test(e.message)?403:422,{ok:false,error:e.message});}});
-      if(req.method==='GET'){const checkpoint=checkpointMatch[3]?attemptCheckpointService.getAttemptCheckpointByRevision({...input,revision:Number(checkpointMatch[3])}):attemptCheckpointService.getLatestAttemptCheckpoint(input);return checkpoint?sendJson(res,200,{ok:true,checkpoint}):sendJson(res,404,{ok:false,error:'Checkpoint no encontrado'});}
-    }catch(e){return sendJson(res,/propietario/.test(e.message)?403:404,{ok:false,error:'Checkpoint no encontrado'});}
+      if(req.method==='POST')return readBody(req,res,body=>{let data;try{data=JSON.parse(body);}catch(_){return sendJson(res,400,{ok:false,error:'Solicitud invalida'});}try{testService.assertStudentEligible(input.testId,input.accountPlayerId);const result=attemptCheckpointService.saveAttemptCheckpoint({...data,...input});return sendJson(res,result.duplicate?200:201,{ok:true,checkpoint:result.checkpoint,duplicate:result.duplicate});}catch(e){return sendJson(res,/no elegible/.test(e.message)?403:/antigua/.test(e.message)?409:/propietario/.test(e.message)?403:422,{ok:false,error:e.message});}});
+      if(req.method==='GET'){testService.assertStudentEligible(input.testId,input.accountPlayerId);const checkpoint=checkpointMatch[3]?attemptCheckpointService.getAttemptCheckpointByRevision({...input,revision:Number(checkpointMatch[3])}):attemptCheckpointService.getLatestAttemptCheckpoint(input);return checkpoint?sendJson(res,200,{ok:true,checkpoint}):sendJson(res,404,{ok:false,error:'Checkpoint no encontrado'});}
+    }catch(e){return sendJson(res,/no elegible|propietario/.test(e.message)?403:404,{ok:false,error:/no elegible/.test(e.message)?e.message:'Checkpoint no encontrado'});}
     return sendJson(res,404,{ok:false,error:'Ruta no encontrada'});
   }
   const supervisionMatch=url.match(/^\/api\/maestro\/tests\/([0-9a-f-]+)\/attempts(?:\/([0-9a-f-]+))?$/i);
@@ -720,6 +726,59 @@ const server=http.createServer((req,res)=>{
     return;
   }
 
+  const verifyPendingMatch=url.match(/^\/api\/maestro\/tests\/([0-9a-f-]+)\/verify-pending$/i);
+  if(verifyPendingMatch&&req.method==='POST'){
+    return readBody(req,res,body=>{
+      let data={};try{data=JSON.parse(body||'{}');}catch(_){return sendJson(res,400,{ok:false,error:'Solicitud invalida'});}
+      if(!requireAdmin(req,res,data))return;
+      try{
+        const report=testService.verifyPending(verifyPendingMatch[1]);
+        const previous=examModes.get(verifyPendingMatch[1]);
+        const mode=buildExamModeFromTest(testService.get(verifyPendingMatch[1]));
+        const priorAudience=new Set(Array.isArray(previous?.audienceAccountPlayerIds)?previous.audienceAccountPlayerIds:[]);
+        const currentAudience=new Set(mode.audienceAccountPlayerIds);
+        examModes.set(mode.testId,mode);examMode=[...examModes.values()].at(-1)||null;
+        const liveByAccount=new Map();
+        gameSessions.listSessions().forEach(session=>{
+          const id=session.accountPlayerId||session.playerId;
+          if(id&&session.ws?.readyState===WebSocket.OPEN){
+            const list=liveByAccount.get(id)||[];list.push(session.ws);liveByAccount.set(id,list);
+          }
+        });
+        let restored=0,offline=0,alreadyAvailable=0,notified=0;
+        const players=loadPlayers(),students=report.students.map(item=>{
+          const sockets=liveByAccount.get(item.accountPlayerId)||[],wasAvailable=priorAudience.has(item.accountPlayerId),connected=sockets.length>0;
+          const restoredNow=!wasAvailable&&currentAudience.has(item.accountPlayerId);
+          const player=findPlayerById(players,item.accountPlayerId);
+          if(item.eligible===false)return {displayName:String(player?.name||'Alumno asignado'),status:'ineligible',detail:'El grado registrado no coincide con el grado de la prueba. Se conserva la asignación, pero no recibirá el aviso ni podrá acceder.'};
+          if(item.availabilityBlocked)return {displayName:String(player?.name||'Alumno asignado'),status:'unrecovered',detail:'No tiene intentos disponibles. Revisa sus intentos antes de ofrecerle acceso.'};
+          if(report.testStatus==='paused'||item.attemptStatus==='paused')return {displayName:String(player?.name||'Alumno asignado'),status:'paused',detail:'El intento se mantiene pausado por el maestro.'};
+          if(restoredNow)restored++;
+          if(!connected)offline++;
+          if(wasAvailable)alreadyAvailable++;
+          let status,detail;
+          if(!connected){status='offline';detail='Quedará disponible la próxima vez que el alumno entre.';}
+          else if(restoredNow){status='restored';detail='Disponibilidad restablecida; se intentó enviar el aviso.';}
+          else{status='already_available';detail='La prueba ya estaba disponible.';}
+          if(report.testStatus==='active')for(const ws of sockets){
+            const key=mode.testId||String(mode.startedAt);
+            if(!ws._examNotifiedTests)ws._examNotifiedTests=new Set();
+            if(!ws._examNotifiedTests.has(key)){
+              try{ws.send(JSON.stringify({type:'exam_start',config:mode}));ws._examNotifiedTests.add(key);notified++;}catch(_){ }
+            }
+          }
+          return {displayName:String(player?.name||item.attemptName||'Alumno asignado'),status,detail};
+        });
+        for(const group of report.unresolvedGroupAssignments||[]){
+          let displayName='Asignación grupal';try{displayName=String(groupService.get(group.groupId)?.name||displayName);}catch(_){ }
+          students.push({displayName,status:'unrecovered',detail:'No se pudo comprobar este grupo. Revisa su asignación.'});
+        }
+        const summary={assigned:report.assigned,finished:report.finished,pending:report.pending,ineligible:report.ineligible||0,alreadyAvailable,restored,offline,paused:students.filter(item=>item.status==='paused').length,unrecovered:report.unrecovered,open:report.open,notStarted:report.notStarted,closed:report.closed,notificationAttempts:notified};
+        return sendJson(res,200,{ok:true,summary,students});
+      }catch(e){const message=e.message||'No se pudo verificar la disponibilidad';return sendJson(res,/no encontrada/.test(message)?404:/no activa/.test(message)?409:422,{ok:false,error:message});}
+    });
+  }
+
   const testValidationMatch=url.match(/^\/api\/exams\/([0-9a-f-]+)\/validate-configuration$/i);
   if(testValidationMatch&&req.method==='POST'){
     return readBody(req,res,body=>{
@@ -750,7 +809,7 @@ const server=http.createServer((req,res)=>{
         if(kind==='state'&&(data.action==='pause'||data.action==='resume')){
           const mode=examModes.get(testId);if(mode)mode.paused=data.action==='pause';
           const payload=JSON.stringify({type:data.action==='pause'?'exam_paused':'exam_resumed',testId});
-          const audience=new Set(testService.listAssignments(testId).filter(item=>item.targetType==='student'&&item.accountPlayerId).map(item=>item.accountPlayerId));
+          const audience=new Set(testService.listEligibleAccountPlayerIds(testId));
           gameSessions.listSessions().forEach(session=>{if(audience.has(session.accountPlayerId||session.playerId)&&session.ws?.readyState===WebSocket.OPEN)session.ws.send(payload);});
         }
         return sendJson(res,200,{ok:true,test});
@@ -799,7 +858,7 @@ const server=http.createServer((req,res)=>{
           return;
         }
         _lastExamStartAt=_now;
-        const {grade,tables,timeLimit,timePerQuestion}=d;
+        let {grade,tables,timeLimit,timePerQuestion}=d;
         const answerMode=['options','write','voice'].includes(d.answerMode)?d.answerMode:'options';
         const op=d.op||d.operation||'mult';
         const ops=Array.isArray(d.ops)&&d.ops.length?d.ops:[];
@@ -830,15 +889,27 @@ const server=http.createServer((req,res)=>{
         let total=Number(d.total)||20;
         if(opsConfig&&Array.isArray(d.enabledOperations))total=d.enabledOperations.reduce((sum,key)=>sum+(opsConfig[key]?.qty||0),0)||total;
         const startedTestId=typeof d.testId==='string'?d.testId:'';
-        const configuredAudience=startedTestId
-          ? testService.listAssignments(startedTestId).filter(item=>item.targetType==='student'&&item.accountPlayerId).map(item=>item.accountPlayerId)
-          : null;
-        if(startedTestId&&(!configuredAudience||!configuredAudience.length)) throw Error('La prueba no tiene alumnos asignados');
+        let configuredAudience=null;
+        if(startedTestId){
+          const authoritativeTest=testService.get(startedTestId);
+          if(authoritativeTest.status!=='active')throw Error('La prueba no esta activa');
+          const authoritativeConfig=authoritativeTest.configurationSnapshot||authoritativeTest.configuration||{};
+          const assigned=testService.listAssignedAccountPlayerIds(startedTestId);
+          configuredAudience=testService.listEligibleAccountPlayerIds(startedTestId);
+          if(assigned.length!==configuredAudience.length)throw Error('Hay asignaciones incompatibles con el grado configurado');
+          if(!configuredAudience.length)throw Error('La prueba no tiene alumnos elegibles asignados');
+          grade=authoritativeConfig.grade||'';
+          tables=authoritativeConfig.tables||tables;
+          timeLimit=authoritativeConfig.timeLimit??timeLimit;
+          timePerQuestion=authoritativeConfig.timePerQuestion??timePerQuestion;
+          if(authoritativeConfig.opsConfig&&typeof authoritativeConfig.opsConfig==='object')opsConfig=authoritativeConfig.opsConfig;
+        }
         examMode={grade:grade||'',tables:tables||[],op,ops,enabledOperations:Array.isArray(d.enabledOperations)?d.enabledOperations:ops,operationOrder:Array.isArray(d.operationOrder)?d.operationOrder:ops,order:d.order==='ordered'?'ordered':'random',repeat:d.repeat===true,opsConfig,timeLimit:Number(timeLimit)||0,timePerQuestion:Number(timePerQuestion)||0,total,answerMode,testId:startedTestId,audienceAccountPlayerIds:configuredAudience,startedAt:Date.now()};
         examModes.set(startedTestId||String(examMode.startedAt),examMode);
         const payload=JSON.stringify({type:'exam_start',config:examMode});
         gameSessions.listSessions().forEach(s=>{
-          if(_examAudienceMatchesFor(examMode,s.name,s.grade)&&(!Array.isArray(examMode.audienceAccountPlayerIds)||(s.accountPlayerId&&examMode.audienceAccountPlayerIds.includes(s.accountPlayerId)))){
+          const audienceMatch=startedTestId?(!!s.accountPlayerId&&testService.isEligible(startedTestId,s.accountPlayerId)&&configuredAudience.includes(s.accountPlayerId)):_examAudienceMatchesFor(examMode,s.name,s.grade);
+          if(audienceMatch){
             if(s.ws?.readyState===WebSocket.OPEN){
               s.ws.send(payload);
               if(!s.ws._examNotifiedTests) s.ws._examNotifiedTests=new Set();
@@ -880,14 +951,15 @@ const server=http.createServer((req,res)=>{
       let stopAudience=stopped;
       if(stoppedTestId&&!stopAudience){
         try{
-          const audience=testService.listAssignments(stoppedTestId).filter(item=>item.targetType==='student'&&item.accountPlayerId).map(item=>item.accountPlayerId);
+          const audience=testService.listAssignedAccountPlayerIds(stoppedTestId);
           stopAudience={grade:'',audienceAccountPlayerIds:audience};
         }catch(_){ stopAudience=null; }
       }
       const sessionsBySocket=new Map(gameSessions.listSessions().filter(session=>session.ws).map(session=>[session.ws,session]));
       wss.clients.forEach(ws=>{
         const session=sessionsBySocket.get(ws);
-        const shouldNotifyStop=!stoppedTestId||(stopAudience&&_examAudienceMatchesFor(stopAudience,session?.name||ws.playerName,session?.grade||ws.grade));
+        const stopEligible=stoppedTestId&&stopAudience&&Array.isArray(stopAudience.audienceAccountPlayerIds)&&session?.accountPlayerId?stopAudience.audienceAccountPlayerIds.includes(session.accountPlayerId)&&testService.isEligible(stoppedTestId,session.accountPlayerId):!stoppedTestId||(stopAudience&&_examAudienceMatchesFor(stopAudience,session?.name||ws.playerName,session?.grade||ws.grade));
+        const shouldNotifyStop=!stoppedTestId||stopEligible;
         if(!maestroClients.has(ws)&&ws.readyState===WebSocket.OPEN&&shouldNotifyStop){ws.send(payload);}
         if(!maestroClients.has(ws)&&ws._examNotifiedTests){if(stoppedTestId)ws._examNotifiedTests.delete(stoppedTestId);else ws._examNotifiedTests.clear();}
       });
@@ -1411,8 +1483,10 @@ function _checkExamNotify(ws, grade){
   if(ws.readyState!==WebSocket.OPEN||!ws._studentAccountPlayerId) return;
   if(!ws._examNotifiedTests) ws._examNotifiedTests=new Set();
   [...examModes.values()].forEach(mode=>{
+    if(mode.paused) return;
     const key=mode.testId||String(mode.startedAt);
-    if(Array.isArray(mode.audienceAccountPlayerIds)&&mode.audienceAccountPlayerIds.includes(ws._studentAccountPlayerId)&&_examAudienceMatchesFor(mode,ws.playerName,grade)&&!ws._examNotifiedTests.has(key)){
+    const eligible=mode.testId?testService.isEligible(mode.testId,ws._studentAccountPlayerId)&&testService.studentCanAccess(mode.testId,ws._studentAccountPlayerId):_examAudienceMatchesFor(mode,ws.playerName,grade);
+    if(Array.isArray(mode.audienceAccountPlayerIds)&&mode.audienceAccountPlayerIds.includes(ws._studentAccountPlayerId)&&eligible&&!ws._examNotifiedTests.has(key)){
       ws.send(JSON.stringify({type:'exam_start',config:mode}));
       ws._examNotifiedTests.add(key);
     }
@@ -1668,6 +1742,8 @@ function shutdown(){
   console.log('\n  Deteniendo servidor...');
   panelBroadcaster.stop();
   clearInterval(heartbeatInterval);
+  try{const frozenAttempts=testService.prepareForShutdown();if(frozenAttempts)L.game(`Intentos de prueba congelados al detener servidor: ${frozenAttempts}`);}catch(error){L.err(`No se pudo congelar el avance de pruebas al detener servidor: ${error.message}`);}
+  testStore.flushSync();
   // Por si quedó algo en cola sin escribir todavía (las escrituras son asíncronas)
   dataStore.flushSync();
   wss.clients.forEach(ws=>{ try{ ws.close(); }catch(e){} });

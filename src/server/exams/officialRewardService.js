@@ -6,7 +6,7 @@ const { ensurePlayerExperience } = require('../../game/playerLevels');
 
 const clone = value => JSON.parse(JSON.stringify(value));
 const timestamp = () => new Date().toISOString();
-const REWARD_CALCULATION_VERSION = 'official-v1';
+const REWARD_CALCULATION_VERSION = 'official-v2';
 const SENSITIVE_KEYS = new Set(['password', 'currentPassword', 'pwd', 'token', 'secret', 'authorization', 'timestamp', 'createdAt', 'updatedAt']);
 
 function canonicalize(value, key = '') {
@@ -121,6 +121,20 @@ function createOfficialRewardService({
     playerLedger(player).push({ key, amount, recordedAt: timestamp() });
   }
 
+  function projectedBalances(player, rewards) {
+    const normalized = clone(player);
+    ensurePlayerExperience(normalized);
+    const before = { aureos: Number(normalized.aureos) || 0, experience: Number(normalized.experiencia) || 0 };
+    const achievementBonus = (rewards.achievements || []).reduce((sum, item) => sum + (Number(item.bonus) || 0), 0);
+    return {
+      before,
+      after: {
+        aureos: Math.max(0, before.aureos + (Number(rewards.aureos) || 0) + achievementBonus),
+        experience: before.experience + (Number(rewards.experience) || 0),
+      },
+    };
+  }
+
   function pureRewards(player, result, ranking, configuredRewards) {
     // Política oficial: reutiliza únicamente el cálculo matemático puro del juego;
     // no aplica historial de tablas, partidas jugadas ni efectos multijugador.
@@ -133,8 +147,15 @@ function createOfficialRewardService({
     const achievementProbe = clone(player);
     const detectedAchievements = legacyRewards || Object.keys(rewardsConfig.achievements || {}).length ? checkNewAchievements(achievementProbe, { ...result }, ranking) : [];
     const enabledAchievements = new Set(Object.entries(rewardsConfig.achievements || {}).filter(([, rule]) => rule.enabled === true).map(([id]) => id));
-    const percentage = (Number(result.correct) + Number(result.wrong ?? result.incorrect)) > 0 ? (Number(result.correct) / (Number(result.correct) + Number(result.wrong ?? result.incorrect))) * 100 : 0;
-    const tier = Array.isArray(rewardsConfig.aureosTiers) ? rewardsConfig.aureosTiers.find(item => percentage >= item.minPercent && percentage <= item.maxPercent) : null;
+    const correct = Math.max(0, Number(result.correct) || 0);
+    const fallbackTotal = correct + Math.max(0, Number(result.wrong ?? result.incorrect) || 0) + Math.max(0, Number(result.timeout) || 0);
+    const total = Math.max(0, Number(result.total) || fallbackTotal);
+    const percentage = total > 0 ? (correct / total) * 100 : 0;
+    const tiersVersion = Number(rewardsConfig.aureosTiersVersion) || 1;
+    const tier = Array.isArray(rewardsConfig.aureosTiers) ? rewardsConfig.aureosTiers.find(item => {
+      if (tiersVersion >= 2) return percentage >= item.minPercent && (percentage < item.maxPercent || (item.maxPercent === 100 && percentage <= 100));
+      return percentage >= item.minPercent && percentage <= item.maxPercent;
+    }) : null;
     const tierAmount = tier ? Number(tier.earned || 0) - Number(tier.lost || 0) : null;
     return {
       aureos: tierAmount === null ? (rewardsConfig.aureos === undefined ? (legacyRewards ? Math.max(0, Number(game.earnedAureos) || 0) : 0) : rewardsConfig.aureos) : tierAmount,
@@ -162,6 +183,9 @@ function createOfficialRewardService({
       actor: item.actor,
       reason: item.reason,
       rewards: item.rewards,
+      rewardCalculationVersion: item.rewardCalculationVersion,
+      rewardConfig: item.rewardConfig,
+      balances: item.balances,
       applied: item.applied,
       createdAt: item.createdAt,
       completedAt: item.completedAt,
@@ -252,6 +276,7 @@ function createOfficialRewardService({
     validateApproval({testId:input.testId,attemptId:input.attemptId,accountPlayerId:target.official.accountPlayerId});
     const frozenRewards = target.attempt.configurationSnapshot?.rewards;
     const rewards = pureRewards(player, target.result, loadRanking(), frozenRewards);
+    const balances = projectedBalances(player, rewards);
     const settlement = {
       rewardSettlementId: randomUUID(), settlementKey: key,
       testId: input.testId, attemptId: input.attemptId,
@@ -259,7 +284,7 @@ function createOfficialRewardService({
       rankingPublicationId: input.rankingPublicationId,
       accountPlayerId: target.official.accountPlayerId,
       status: 'pending', eventId: input.eventId, actor,
-      reason: input.reason.trim(), rewards, applied: {}, createdAt: timestamp(),
+      reason: input.reason.trim(), rewards, balances, applied: {}, createdAt: timestamp(),
       rewardCalculationVersion: input.rewardCalculationVersion || REWARD_CALCULATION_VERSION,
       rewardConfig: clone(frozenRewards || {}), requestFingerprint,
     };
@@ -313,7 +338,9 @@ function createOfficialRewardService({
     const result=official?.resultSnapshot||(root.results||[]).find(item=>item.testId===input.testId&&item.attemptId===input.attemptId);if(!result||result.complete===false)throw Error('resultado no disponible');
     const players=loadPlayers(),player=players.find(item=>item.id===attempt.accountPlayerId);if(!player)throw Error('alumno no encontrado');
     const rewards=pureRewards(player,result,loadRanking(),attempt.configurationSnapshot?.rewards);
-    return {accountPlayerId:attempt.accountPlayerId,name:result.name||attempt.progress?.studentSnapshot?.name||'',before:{aureos:Number(player.aureos)||0,experience:Number(player.experiencia)||0},after:{aureos:Math.max(0,(Number(player.aureos)||0)+(Number(rewards.aureos)||0)+rewards.achievements.reduce((n,item)=>n+(Number(item.bonus)||0),0)),experience:(Number(player.experiencia)||0)+(Number(rewards.experience)||0)},rewards,publicationRequired:false};
+    const total = Math.max(0, Number(result.total) || (Number(result.correct) + Number(result.wrong ?? result.incorrect) + Number(result.timeout || 0)));
+    const correct = Math.max(0, Number(result.correct) || 0);
+    return {accountPlayerId:attempt.accountPlayerId,name:result.name||attempt.progress?.studentSnapshot?.name||'',correct,total,percentage:total?correct/total*100:0,...projectedBalances(player,rewards),rewards,publicationRequired:false};
   }
 
   return { calculateRewards: (player, result, ranking, configuredRewards) => pureRewards(player, result, ranking, configuredRewards), settle, getSettlement, preview };

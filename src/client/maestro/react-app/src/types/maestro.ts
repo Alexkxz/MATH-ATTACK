@@ -91,15 +91,21 @@ export interface TestRewardsConfig {
   streak: { enabled: boolean; bonus?: number };
   achievements: { perfect?: { enabled: boolean; bonus?: number } };
   aureosTiers?: RewardTier[];
+  aureosTiersVersion?: 1 | 2;
 }
 
 export interface OperationConfig {
+  mode?: 'quick' | 'exact';
   qty?: number;
+  perTableQty?: number;
   tables?: number[];
+  quickTables?: number[];
+  range?: { from: number; to: number };
   digits?: number;
   carryMode?: 'direct' | 'carry' | 'both';
   manner?: 'ordered' | 'random';
   matrix?: string[];
+  matrixCustomized?: boolean;
   ranges?: Array<{ table: number; from: number; to: number }>;
   detailMode?: boolean;
 }
