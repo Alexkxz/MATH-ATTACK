@@ -70,6 +70,11 @@ async function stop(child) {
   try {
     running = await launch(dataDir); browser = await chromium.launch({ headless: true }); context = await browser.newContext({ viewport: { width: 390, height: 844 } });
     const page = await context.newPage();
+    const browserErrors = [], failedApiResponses = [], failedRequests = [];
+    page.on('pageerror', error => browserErrors.push(error.message));
+    page.on('console', message => { if (message.type() === 'error') browserErrors.push(message.text()); });
+    page.on('response', response => { if (response.status() >= 400 && new URL(response.url()).pathname.startsWith('/api/')) failedApiResponses.push({ status: response.status(), url: new URL(response.url()).pathname }); });
+    page.on('requestfailed', request => failedRequests.push({ url: new URL(request.url()).pathname, error: request.failure()?.errorText || 'request failed' }));
     await page.addInitScript(password => { sessionStorage.setItem('maestroAuth', '1'); sessionStorage.setItem('maestroPwd', password); }, ADMIN_PASSWORD);
     await page.goto(`${running.base}/maestro`, { waitUntil: 'domcontentloaded' });
     await page.getByRole('button', { name: 'PRUEBAS' }).click();
@@ -84,7 +89,7 @@ async function stop(child) {
     await page.getByRole('button', { name: /Confirmar modo exacto/ }).click();
     await page.locator('[data-operation-config="mult"]').getByText('3 preguntas', { exact: true }).waitFor({ state: 'visible' });
 
-    await page.getByRole('button', { name: 'Historial' }).click();
+    await page.getByRole('button', { name: 'Historial', exact: true }).click();
     await page.locator('article').filter({ hasText: 'Legacy range config' }).getByRole('button', { name: 'Abrir' }).click();
     await page.getByText(/Conversi.*necesaria para editar esta multiplicaci/).waitFor({ state: 'visible' });
     await page.getByRole('button', { name: /Confirmar modo r.pido/ }).click();
@@ -94,7 +99,18 @@ async function stop(child) {
     const operationButtons = page.locator('[data-operation]');
     await operationButtons.first().waitFor({ state: 'visible' });
     assert.strictEqual(await operationButtons.count(), 4, 'operation selector should contain four stable controls');
-    for (let index = 0; index < await operationButtons.count(); index += 1) if (await operationButtons.nth(index).getAttribute('aria-pressed') === 'true') { await operationButtons.nth(index).click(); await page.waitForFunction(selector => document.querySelector(selector)?.getAttribute('aria-pressed') === 'false', `[data-operation="${await operationButtons.nth(index).getAttribute('data-operation')}"]`); }
+    for (let index = 0; index < await operationButtons.count(); index += 1) {
+      const operationButton = operationButtons.nth(index);
+      if (await operationButton.getAttribute('aria-pressed') !== 'true') continue;
+      const operation = await operationButton.getAttribute('data-operation');
+      await operationButton.click();
+      try {
+        await page.locator(`[data-operation="${operation}"][aria-pressed="false"]`).waitFor({ state: 'attached', timeout: 5000 });
+      } catch (error) {
+        const state = await operationButtons.evaluateAll(buttons => buttons.map(button => ({ operation: button.getAttribute('data-operation'), pressed: button.getAttribute('aria-pressed'), disabled: button.disabled, text: button.textContent.trim() })));
+        throw new Error(`Could not deactivate operation ${operation}; state=${JSON.stringify(state)}; browserErrors=${JSON.stringify(browserErrors)}; failedApiResponses=${JSON.stringify(failedApiResponses)}; failedRequests=${JSON.stringify(failedRequests)}; server=${running.output()}`, { cause: error });
+      }
+    }
     assert.strictEqual(await page.locator('[data-operation-config]').count(), 0, 'no operation should show a configuration when all are disabled');
     const selector = page.locator('[aria-label="Selector de operaciones"]');
     await page.mouse.move(0, 0);
@@ -263,7 +279,7 @@ async function stop(child) {
     await page.getByText(/Configuración y asignaciones guardadas/).waitFor({ state: 'visible' });
     await page.reload({ waitUntil: 'domcontentloaded' });
     await page.getByRole('button', { name: 'PRUEBAS' }).click();
-    await page.getByRole('button', { name: 'Historial' }).click();
+    await page.getByRole('button', { name: 'Historial', exact: true }).click();
     await page.locator('article').filter({ hasText: 'Zero matrix fixture' }).getByRole('button', { name: 'Abrir' }).click();
     const reloadedMult = page.locator('[data-operation-config="mult"]');
     assert.strictEqual(await reloadedMult.getByRole('button', { name: 'En desorden', exact: true }).getAttribute('aria-pressed'), 'true', 'manner selection should survive save/reload under global mixing');
@@ -299,7 +315,8 @@ async function stop(child) {
     await classic.setViewportSize({ width: 390, height: 844 });
     const classicAddLabel = classic.locator('#prOpAdd').locator('xpath=..'); await classicAddLabel.hover(); await classic.waitForTimeout(220);
     const classicHoverStyle = await classicAddLabel.evaluate(node => { const css = getComputedStyle(node); return { filter: css.filter, y: new DOMMatrixReadOnly(css.transform).m42 }; });
-    assert(classicHoverStyle.filter.includes('grayscale(0.85)') && classicHoverStyle.y <= -1.9, `classic unselected hover should retain muted filter and lift: ${JSON.stringify(classicHoverStyle)}`);
+    const classicAddState = await classicAddLabel.evaluate(node => ({ checked: node.querySelector('input')?.checked, id: node.querySelector('input')?.id, matchesChecked: node.matches(':has(input:checked)'), matchesUnchecked: node.matches(':has(input:not(:checked))'), hover: node.matches(':hover'), filterWithoutHover: (() => { const clone = node.cloneNode(true); clone.style.pointerEvents = 'none'; document.body.appendChild(clone); const filter = getComputedStyle(clone).filter; clone.remove(); return filter; })() }));
+    assert(classicHoverStyle.filter.includes('grayscale(0.85)') && classicHoverStyle.y <= -1.9, `classic unselected hover should retain muted filter and lift: ${JSON.stringify({style:classicHoverStyle,state:classicAddState})}`);
     await classic.screenshot({ path: path.join(runDir, 'classic-operations-hover-390x844.png'), fullPage: false });
     await classic.mouse.move(0, 0);
     await setClassicOperation('mult', true);

@@ -81,6 +81,7 @@
     "check:test-attempts": "node scripts/check-test-attempts.js",
     "check:student-test-flow-service": "node scripts/check-student-test-flow-service.js",
     "check:math-test-configurations": "node scripts/check-math-test-configurations.js",
+    "check:pruebas-regression": "node scripts/check-pruebas-regression-suite.js",
     "check:test-multiplication-modes": "node scripts/check-test-multiplication-modes.js",
     "check:test-multiplication-react-ui": "node scripts/check-test-multiplication-react-ui.js",
     "check:test-multiplication-manner-e2e": "node scripts/check-test-multiplication-manner-e2e.js",

@@ -209,7 +209,7 @@ async function state(base, testId, action, headers) {
     // selected, explain the conflict and block save until explicit removal.
     const admin = await adminPage(browser, running.base, VIEWPORTS[3]); contexts.push(admin.context);
     const { page, errors } = admin;
-    await page.getByRole('button', { name: 'Historial' }).click();
+    await page.getByRole('button', { name: 'Historial', exact: true }).click();
     const editCard = page.locator('article').filter({ hasText: 'Aviso de grado al editar: fixture ficticia' }).first();
     await editCard.getByRole('button', { name: 'Abrir' }).click();
     const recipients = page.locator('details').filter({ has: page.getByText(/^Destinatarios/) });
@@ -278,7 +278,7 @@ async function state(base, testId, action, headers) {
 
     await page.reload({ waitUntil: 'domcontentloaded' });
     await page.getByRole('button', { name: 'PRUEBAS' }).click();
-    await page.getByRole('button', { name: 'Historial' }).click();
+    await page.getByRole('button', { name: 'Historial', exact: true }).click();
     await page.locator('article').filter({ hasText: 'Aviso de grado al editar: fixture ficticia' }).getByRole('button', { name: 'Abrir' }).click();
     const reopenedGrid = page.locator('[data-recipient-grid]');
     assert.equal(await reopenedGrid.locator('[data-recipient-eligible="true"]').filter({ hasText: STUDENTS.five.name }).getAttribute('aria-pressed'), 'true', 'compatible assignment survives reload');

@@ -41,12 +41,14 @@ try {
   recovered.cancel(cancelled.testId, cancelled.revision + 1);
   assert.throws(() => recovered.replaceAssignments(cancelled.testId, [{ targetType: 'group', groupId: group.groupId, expandGroup: true }]), /no asignable|cancelada|finalizada|estado/i);
   const finished = recovered.create({ title: 'Finalizada', creator: randomUUID() });
+  recovered.replaceAssignments(finished.testId, [{ targetType: 'group', groupId: group.groupId, expandGroup: true }]);
   const finishedScheduled = recovered.schedule(finished.testId, finished.revision + 1, { startsAt: '2030-01-01T10:00:00.000Z' });
   const finishedActive = recovered.start(finished.testId, finishedScheduled.revision + 1, { now: '2030-01-01T10:00:00.000Z' });
   const finishedClosed = recovered.close(finished.testId, finishedActive.revision + 1);
   recovered.finish(finished.testId, finishedClosed.revision + 1);
   assert.throws(() => recovered.replaceAssignments(finished.testId, [{ targetType: 'group', groupId: group.groupId, expandGroup: true }]), /no asignable|cancelada|finalizada|estado/i);
   const closed = recovered.create({ title: 'Cerrada', creator: randomUUID() });
+  recovered.replaceAssignments(closed.testId, [{ targetType: 'group', groupId: group.groupId, expandGroup: true }]);
   const closedScheduled = recovered.schedule(closed.testId, closed.revision + 1, { startsAt: '2030-01-01T10:00:00.000Z' });
   const closedActive = recovered.start(closed.testId, closedScheduled.revision + 1, { now: '2030-01-01T10:00:00.000Z' });
   recovered.close(closed.testId, closedActive.revision + 1);

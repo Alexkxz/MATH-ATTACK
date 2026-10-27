@@ -3,8 +3,8 @@
 const TEST_STATES = Object.freeze(['draft','scheduled','active','paused','closed','finished','cancelled']);
 const ATTEMPT_STATES = Object.freeze(['pending','started','in_progress','paused','disconnected','reconnected','finished','incomplete','restarted','reopened','deleted']);
 const TEST_TRANSITIONS = Object.freeze({
-  draft:['scheduled','active','cancelled'], scheduled:['active','cancelled'],
-  active:['paused','closed','finished'], paused:['active','closed'], closed:['finished'], finished:[], cancelled:[],
+  draft:['scheduled','active','cancelled'], scheduled:['draft','active','closed','cancelled'],
+  active:['paused','closed','finished'], paused:['active','closed','finished'], closed:['active','finished'], finished:[], cancelled:[],
 });
 const ATTEMPT_TRANSITIONS = Object.freeze({
   pending:['started','finished','deleted'], started:['in_progress','paused','finished','deleted'], in_progress:['disconnected','paused','finished','incomplete','deleted'], paused:['in_progress','finished','deleted'],

@@ -85,7 +85,7 @@ function randomDigits(digits,random){const out=[];for(let i=0;i<digits;i++)out.p
 function numberFromDigits(digits){return digits.reduce((n,d,index)=>n+d*10**index,0);}
 function makeArithmetic(op,cfg,random){
  const simple=cfg.simpleDigits!==false,dA=int(simple?cfg.digits:cfg.digitsA,int(cfg.digits,1)),dB=int(simple?cfg.digits:cfg.digitsB,int(cfg.digits,1));
-  const aDigits=randomDigits(dA,random),bDigits=randomDigits(dB,random);let a=numberFromDigits(aDigits),b=numberFromDigits(bDigits);
+  let aDigits=randomDigits(dA,random),bDigits=randomDigits(dB,random),a=numberFromDigits(aDigits),b=numberFromDigits(bDigits);
  if(op==='add'){
   const mode=cfg.carryMode||'both';if(mode==='direct'){for(let i=0;i<Math.max(dA,dB);i++){const av=i<dA?Array.from({length:i===dA-1?9:10},(_,j)=>j+(i===dA-1?1:0)):[0],bv=i<dB?Array.from({length:i===dB-1?9:10},(_,j)=>j+(i===dB-1?1:0)):[0],valid=[];for(const x of av)for(const y of bv)if(x+y<=9)valid.push([x,y]);[aDigits[i],bDigits[i]]=valid[rnd(random,0,valid.length-1)];}a=numberFromDigits(aDigits);b=numberFromDigits(bDigits);}
   if(mode==='carry'&&!addCarry(a,b)){aDigits[0]=9;bDigits[0]=1;a=numberFromDigits(aDigits);b=numberFromDigits(bDigits);}
@@ -96,10 +96,15 @@ function makeArithmetic(op,cfg,random){
   for(let i=0;i<Math.max(dA,dB);i++){const x=aDigits[i]||0,y=bDigits[i]||0;if(x<y)aDigits[i]=y;}
   a=numberFromDigits(aDigits);b=numberFromDigits(bDigits);
  } else if(mode==='borrow'){
-  aDigits[0]=0;bDigits[0]=1;
-  if(dA===dB){aDigits[dA-1]=2;bDigits[dB-1]=1;}
-  else if(dA>dB)aDigits[dA-1]=Math.max(1,aDigits[dA-1]);
-  a=numberFromDigits(aDigits);b=numberFromDigits(bDigits);
+   // Rejection sampling keeps the selected digit widths and samples from
+   // valid operand pairs instead of forcing one fixed pair (20 - 11).
+   // The bounded loop protects callers even if a custom RNG is pathological.
+   let found=false;
+   for(let attempt=0;attempt<128;attempt++){
+    aDigits=randomDigits(dA,random);bDigits=randomDigits(dB,random);a=numberFromDigits(aDigits);b=numberFromDigits(bDigits);
+    if(a>=b&&subBorrow(a,b)){found=true;break;}
+   }
+   if(!found)throw Error('Resta con préstamo: no se pudo generar una combinación válida con las cifras seleccionadas.');
  } else if(a<b)[a,b]=[b,a];
  return {a,b,answer:a-b};
 }
@@ -160,11 +165,20 @@ function generateDivision(cfg,quantity,repeat,random){
  return questions;
 }
 function generateArithmeticOperation(op,cfg,quantity,repeat,random){
- const [amin,amax]=digitRange(int(cfg.simpleDigits===false?cfg.digitsA:cfg.digits,int(cfg.digits,1))),[bmin,bmax]=digitRange(int(cfg.simpleDigits===false?cfg.digitsB:cfg.digits,int(cfg.digits,1)));
+  const digitsA=int(cfg.simpleDigits===false?cfg.digitsA:cfg.digits,int(cfg.digits,1)),digitsB=int(cfg.simpleDigits===false?cfg.digitsB:cfg.digits,int(cfg.digits,1));
+  const [amin,amax]=digitRange(digitsA),[bmin,bmax]=digitRange(digitsB);
  let capacity=Number.POSITIVE_INFINITY;
- if(op==='add'&&int(cfg.simpleDigits===false?cfg.digitsA:cfg.digits,int(cfg.digits,1))===1&&int(cfg.simpleDigits===false?cfg.digitsB:cfg.digits,int(cfg.digits,1))===1){const mode=cfg.carryMode||'both';capacity=mode==='direct'?36:mode==='carry'?45:81;}
- if(op==='sub'&&amin===1&&bmin===1){const mode=cfg.borrowMode||cfg.carryMode||'both';capacity=mode==='borrow'?0:45;}
- const mode=op==='add'?(cfg.carryMode||'both'):(cfg.borrowMode||cfg.carryMode||'both');if(capacity===0)throw Error('Resta de una cifra: no existen resultados no negativos con préstamo.');
+  if(op==='add'&&digitsA===1&&digitsB===1){const mode=cfg.carryMode||'both';capacity=mode==='direct'?36:mode==='carry'?45:81;}
+  if(op==='sub'){
+   const mode=cfg.borrowMode||cfg.carryMode||'both';
+   if(digitsA<digitsB)capacity=0;
+   else {
+    const total=digitsA===digitsB?((amax-amin+1)*(amax-amin+2))/2:(amax-amin+1)*(bmax-bmin+1);
+    const direct=45*55**(digitsB-1)*(digitsA===digitsB?1:9*10**(digitsA-digitsB-1));
+    capacity=mode==='direct'?direct:mode==='borrow'?total-direct:total;
+   }
+  }
+  if(capacity===0&&op==='sub'&&(cfg.borrowMode||cfg.carryMode)==='borrow')throw Error('Resta de una cifra: no existen resultados no negativos con préstamo.');
  return uniqueTake(op,quantity,repeat,()=>makeArithmetic(op,cfg,random),random,capacity).map(q=>({...q,table:q.a,op:OP_SYMBOLS[op]}));
 }
 function generateConfiguredQuestions(configuration={},random=Math.random){

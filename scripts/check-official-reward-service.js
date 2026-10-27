@@ -91,7 +91,7 @@ assert.equal(repeated.duplicate, true);
 assert.deepEqual(repeated.settlement, first.settlement);
 const equivalent = service.settle({ testId: validTest, attemptId, officialAttemptId, rankingPublicationId: publicationId,
   eventId: id(), actor: 'admin', reason: 'reintento equivalente' });
-assert.equal(equivalent.duplicate, false);
+assert.equal(equivalent.duplicate, true, 'a completed settlement stays idempotent even with a new eventId');
 assert.equal(equivalent.settlement.rewardSettlementId, first.settlement.rewardSettlementId);
 assert.equal(player.aureos, balance);
 assert.equal(player.experiencia, xp);
@@ -103,14 +103,15 @@ rejected(() => service.settle({ testId: validTest, attemptId, officialAttemptId,
 for (const [field, value] of [
   ['testId', id()], ['attemptId', id()], ['officialAttemptId', id()], ['rankingPublicationId', id()],
 ]) {
-  rejected(() => service.settle({ testId: field === 'testId' ? value : validTest,
+  assert.throws(() => service.settle({ testId: field === 'testId' ? value : validTest,
     attemptId: field === 'attemptId' ? value : attemptId,
     officialAttemptId: field === 'officialAttemptId' ? value : officialAttemptId,
     rankingPublicationId: field === 'rankingPublicationId' ? value : publicationId,
-    eventId, actor: 'admin', reason: 'resultado oficial publicado' }), 'eventId contradictorio');
+    eventId, actor: 'admin', reason: 'resultado oficial publicado' }), `must reject invalid ${field}`);
 }
-rejected(() => service.settle({ testId: validTest, attemptId, officialAttemptId, rankingPublicationId: publicationId,
-  accountPlayerId: playerId, eventId, actor: 'admin', reason: 'resultado oficial publicado' }), 'eventId contradictorio');
+const canonicalIdentityRetry = service.settle({ testId: validTest, attemptId, officialAttemptId, rankingPublicationId: publicationId,
+  accountPlayerId: playerId, eventId, actor: 'admin', reason: 'resultado oficial publicado' });
+assert.equal(canonicalIdentityRetry.duplicate, true, 'adding the canonical accountPlayerId to an equivalent retry stays idempotent');
 rejected(() => service.settle({ testId: validTest, attemptId, officialAttemptId, rankingPublicationId: publicationId,
   eventId, actor: 'admin', reason: 'resultado oficial publicado', rewardConfig: { aureosMultiplier: 99 } }), 'eventId contradictorio');
 const concurrentResults = [

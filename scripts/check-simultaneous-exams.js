@@ -15,8 +15,8 @@ const ready = url => new Promise((resolve, reject) => { const started = Date.now
 const eventually = async (predicate, message) => { const started = Date.now(); while (Date.now() - started < 1200) { if (predicate()) return; await wait(20); } throw Error(message); };
 
 class PlayerClient {
-  constructor(url, name, grade) {
-    this.messages = []; this.ws = new WebSocket(url);
+  constructor(url, name, grade, cookie) {
+    this.messages = []; this.ws = new WebSocket(url, { headers: { Cookie: cookie } });
     this.ready = new Promise((resolve, reject) => { this.ws.once('open', resolve); this.ws.once('error', reject); }).then(() => {
       this.ws.on('message', raw => { try { this.messages.push(JSON.parse(String(raw))); } catch (_) {} });
       this.ws.send(JSON.stringify({ type: 'player_identify', name, grade }));
@@ -43,7 +43,13 @@ class PlayerClient {
     child = spawn(process.execPath, ['server.js'], { cwd: path.resolve(__dirname, '..'), env: { ...process.env, PORT: String(port), MATH_ATTACK_DATA_PATH: tempDir, MATH_ATTACK_TESTS_PATH: path.join(tempDir, 'pruebas.json') }, stdio: 'ignore', windowsHide: true });
     const base = `http://127.0.0.1:${port}`, headers = { 'Content-Type': 'application/json', 'X-Admin-Password': 'simultaneous-secret' };
     await ready(`${base}/api/exam/status`);
-    for (const student of students) clients.push(new PlayerClient(`ws://127.0.0.1:${port}/ws`, student.name, student.grade));
+    for (const student of students) {
+      const login = await fetch(`${base}/api/student/auth`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: student.name, pin: student.pin }) });
+      assert.equal(login.status, 200, `fictional student ${student.name} should authenticate before websocket connection`);
+      const cookie = login.headers.get('set-cookie')?.split(';')[0];
+      assert(cookie, 'student auth should issue a session cookie');
+      clients.push(new PlayerClient(`ws://127.0.0.1:${port}/ws`, student.name, student.grade, cookie));
+    }
     await Promise.all(clients.map(client => client.ready));
 
     const tests = [];

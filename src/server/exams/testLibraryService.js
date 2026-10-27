@@ -35,8 +35,10 @@ function createTestLibraryService({ loadRoot } = {}) {
     const root = loadRoot() || {};
     const assignments = Array.isArray(root.assignments) ? root.assignments : [];
     const attempts = Array.isArray(root.attempts) ? root.attempts : [];
+    const results = Array.isArray(root.results) ? root.results : [];
     const officialAttempts = Array.isArray(root.officialAttempts) ? root.officialAttempts : [];
     const publications = Array.isArray(root.rankingPublications) ? root.rankingPublications : [];
+    const settlements = Array.isArray(root.rewardSettlements) ? root.rewardSettlements : [];
     const rows = (Array.isArray(root.tests) ? root.tests : []).filter(test => {
       if (test.archivedAt && !includeArchived) return false;
       if (status && test.status !== status) return false;
@@ -49,8 +51,10 @@ function createTestLibraryService({ loadRoot } = {}) {
     }).map(test => {
       const testAssignments = assignments.filter(item => item.testId === test.testId);
       const testAttempts = attempts.filter(item => item.testId === test.testId);
+      const testResults = results.filter(item => item.testId === test.testId);
       const testOfficials = officialAttempts.filter(item => item.testId === test.testId);
       const testPublications = publications.filter(item => item.testId === test.testId);
+      const testSettlements = settlements.filter(item => item.testId === test.testId);
       const groups = [...new Set(testAssignments.filter(item => item.targetType === 'group' && item.groupId).map(item => item.groupId))].sort();
       const configuration = test.configuration && typeof test.configuration === 'object' ? test.configuration : {};
       const opsConfig = configuration.opsConfig && typeof configuration.opsConfig === 'object' ? configuration.opsConfig : {};
@@ -70,10 +74,12 @@ function createTestLibraryService({ loadRoot } = {}) {
         scheduledAt: test.scheduledAt || null,
         startsAt: test.startsAt || null,
         closesAt: test.closesAt || null,
+        availabilityOverride: test.availabilityOverride || null,
         archivedAt: test.archivedAt || null,
         groups,
         assignmentCount: testAssignments.length,
         attemptCount: testAttempts.length,
+        canDeleteDraft: test.status === 'draft' && !test.archivedAt && testAttempts.length === 0 && testResults.length === 0 && testOfficials.length === 0 && testPublications.length === 0 && testSettlements.length === 0,
         officialResultCount: testOfficials.length,
         rankingPublicationCount: testPublications.length,
         hasOfficialResults: testOfficials.length > 0,

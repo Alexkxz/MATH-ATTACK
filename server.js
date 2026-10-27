@@ -172,7 +172,7 @@ else if(testStoreStartup.status==='migrated') L.game('Almacén de pruebas migrad
 else if(testStoreStartup.status==='invalid') L.err('Almacén de pruebas inválido; se usa memoria vacía');
 else L.game('Almacén de pruebas nuevo/no persistido');
 const testService=createTestService({store:testStore,groupResolver:groupId=>{
-  try{return groupService.members(groupId);}catch(error){if(/grupo no encontrado|groupId invalido/i.test(error.message))return undefined;throw error;}
+   try{return groupService.members(groupId);}catch(error){if(/grupo no encontrado|groupId invalido|groupId.*UUID/i.test(error.message))return undefined;throw error;}
 },studentGradeResolver:accountPlayerId=>{
   const players=loadPlayers();let player=findPlayerById(players,accountPlayerId);
   if(!player){try{const identity=buildLegacyIdentityMap(players).byAccountId.get(accountPlayerId);if(identity)player=players.find(item=>item.id===identity.publicPlayerId)||null;}catch(_){return '';}}
@@ -217,9 +217,44 @@ const {
   flushSync,
   logAureosTx,
 } = dataStore;
-for(const test of testService.list().filter(item=>item.status==='active'||item.status==='paused')){
+for(const test of testService.list().filter(item=>item.status==='active'||item.status==='paused'||item.status==='closed')){
+  const resumable=test.status==='closed'&&testService.listAttempts(test.testId).some(attempt=>['started','in_progress','disconnected','reconnected','paused'].includes(attempt.status));
+  if(test.status==='closed'&&!resumable)continue;
   const mode=buildExamModeFromTest(test);
+  mode.closedForNewAttempts=test.status==='closed';
+  mode.paused=test.status==='paused'||(test.status==='closed'&&testService.listAttempts(test.testId).some(attempt=>attempt.status==='paused'));
   examModes.set(test.testId,mode);examMode=mode;
+}
+function syncTestExamMode(test,{notifyStudents=false}={}){
+  const id=test.testId;
+  if(test.status==='active'||test.status==='paused'){
+    const mode=buildExamModeFromTest(test);mode.paused=test.status==='paused';mode.closedForNewAttempts=false;
+    examModes.set(id,mode);
+    if(notifyStudents&&test.status==='active'){
+      const payload=JSON.stringify({type:'exam_start',config:mode});
+      gameSessions.listSessions().forEach(session=>{
+        const accountPlayerId=session.accountPlayerId||session.playerId,ws=session.ws;
+        if(!accountPlayerId||!ws||ws.readyState!==WebSocket.OPEN||!testService.isEligible(id,accountPlayerId)||!testService.studentCanAccess(id,accountPlayerId))return;
+        if(!ws._examNotifiedTests)ws._examNotifiedTests=new Set();
+        if(!ws._examNotifiedTests.has(id)){try{ws.send(payload);ws._examNotifiedTests.add(id);}catch(_){}}
+      });
+    }
+  }else if(test.status==='closed'){
+    const attempts=testService.listAttempts(id),continuable=attempts.some(attempt=>['started','in_progress','disconnected','reconnected','paused'].includes(attempt.status));
+    if(continuable){const mode=examModes.get(id)||buildExamModeFromTest(test);mode.audienceAccountPlayerIds=testService.listEligibleAccountPlayerIds(id);mode.closedForNewAttempts=true;mode.paused=attempts.some(attempt=>attempt.status==='paused');examModes.set(id,mode);}
+    else examModes.delete(id);
+  }else examModes.delete(id);
+  examMode=[...examModes.values()].at(-1)||null;
+  const state={type:'exam_state',examMode,examModes:[...examModes.values()]};maestroClients.forEach(client=>{if(client.readyState===WebSocket.OPEN)client.send(JSON.stringify(state));});
+  panelBroadcaster.scheduleBroadcast();
+}
+function evaluateAndSyncTestAvailability(now){
+  const result=testService.evaluateAvailability(now);
+  for(const row of result.changed){
+    const test=testService.get(row.testId);
+    syncTestExamMode(test,{notifyStudents:test.status==='active'});
+  }
+  return result;
 }
 const operationStatsCache=createOperationStatsCache(loadRanking);
 const saveRanking=operationStatsCache.wrapSave(saveRankingData);
@@ -466,6 +501,12 @@ function sendMaestroFrontendAsset(res, requestPath) {
 // ── HTTP Server ──────────────────────────────────────────────
 const server=http.createServer((req,res)=>{
   const url=req.url.split('?')[0];
+  if(url.startsWith('/api/')){
+    try{evaluateAndSyncTestAvailability();}
+    catch(error){L.err(`No se pudo sincronizar la disponibilidad de pruebas: ${error.message||error}`);}
+  }
+
+
 
   // Cierre solicitado únicamente por el panel local. El token se genera al
   // arrancar el proceso y la comprobación de loopback evita exponer esta ruta
@@ -549,18 +590,19 @@ const server=http.createServer((req,res)=>{
   if(req.method==='GET'&&url.split('?')[0]==='/api/student/tests'){
     const auth=studentHttpSessions.validateStudentSession(getStudentSessionToken(req));
     if(!auth.ok)return sendJson(res,401,{ok:false,error:'Sesion no valida'});
+    testService.evaluateAvailability();
     const players=loadPlayers();
     const player=findPlayerById(players,auth.session.accountPlayerId)||players.find(p=>{try{return resolveAccountPlayerId(p,buildLegacyIdentityMap(players))===auth.session.accountPlayerId;}catch(_){return false;}});
     if(!player)return sendJson(res,401,{ok:false,error:'Sesion no valida'});
-    const rows=testService.list().filter(test=>(test.status==='active'||test.status==='paused')&&testService.isEligible(test.testId,auth.session.accountPlayerId)).map(test=>{
+    const rows=testService.list().filter(test=>(test.status==='active'||test.status==='paused'||test.status==='closed')&&testService.isEligible(test.testId,auth.session.accountPlayerId)&&(test.status!=='closed'||testService.studentCanAccess(test.testId,auth.session.accountPlayerId))).map(test=>{
       const attempts=testService.listAttempts(test.testId,{accountPlayerId:auth.session.accountPlayerId}).filter(item=>!['deleted','restarted'].includes(item.status));
-      const open=attempts.find(item=>!['finished','incomplete'].includes(item.status))||null;
+      const open=attempts.find(item=>['started','in_progress','disconnected','reconnected','paused'].includes(item.status))||null;
       const participationClosed=(testStore.load().rewardSettlements||[]).some(item=>item.testId===test.testId&&item.accountPlayerId===auth.session.accountPlayerId&&['pending','completed'].includes(item.status));
       const cfg=test.configurationSnapshot||test.configuration||{};
       const maximum=[1,2,3].includes(Number(cfg.allowedAttempts))?Number(cfg.allowedAttempts):1;
       const used=attempts.filter(item=>['finished','incomplete'].includes(item.status)).length;
       const view=open?studentAttemptView(open,test):null;
-      return {test:{testId:test.testId,title:test.title,folio:test.folio,description:test.description,status:test.status},availability:participationClosed?'closed':test.status==='paused'||open?.status==='paused'?'paused':open?'in_progress':used>=maximum?'exhausted':'available',attemptsUsed:used,attemptsAllowed:maximum,attempt:view};
+      return {test:{testId:test.testId,title:test.title,folio:test.folio,description:test.description,status:test.status,startsAt:test.startsAt||null,closesAt:test.closesAt||null},availability:participationClosed?'closed':test.status==='closed'?open?.status==='paused'?'paused':'in_progress':test.status==='paused'||open?.status==='paused'?'paused':open?'in_progress':used>=maximum?'exhausted':'available',attemptsUsed:used,attemptsAllowed:maximum,attempt:view};
     });
     return sendJson(res,200,{ok:true,tests:rows});
   }
@@ -603,6 +645,7 @@ const server=http.createServer((req,res)=>{
     const allowed=new Set(['status','groupId','from','to','sort','order','limit','offset','includeArchived','pwd','password']);
     for(const key of query.keys())if(!allowed.has(key))return sendJson(res,400,{ok:false,error:'Parametro invalido'});
     try{
+      testService.evaluateAvailability();
       const tests=testLibraryService.list({status:query.get('status')||'',groupId:query.get('groupId')||'',from:query.get('from')||'',to:query.get('to')||'',sort:query.get('sort')||'updatedAt',direction:query.get('order')||'desc',limit:query.has('limit')?query.get('limit'):50,offset:query.has('offset')?query.get('offset'):0,includeArchived:query.get('includeArchived')==='1'});
       return sendJson(res,200,{ok:true,tests});
     }catch(e){return sendJson(res,422,{ok:false,error:e.message||'Solicitud invalida'});}
@@ -805,9 +848,12 @@ const server=http.createServer((req,res)=>{
         if(!Number.isInteger(data.revision)||data.revision<1)return sendJson(res,400,{ok:false,error:'revision invalida'});
         let test;
         if(kind==='schedule') test=testService.schedule(testId,data.revision,{startsAt:data.startsAt,closesAt:data.closesAt,entryToleranceMinutes:data.entryToleranceMinutes||0});
-        else { const actions={start:'start',pause:'pause',resume:'resume',close:'close',finish:'finish',cancel:'cancel'}; const method=actions[data.action]; if(data.action==='finish_legacy') test=testService.finishLegacy(testId,data.revision,data.reason); else { if(!method)return sendJson(res,400,{ok:false,error:'accion de estado invalida'}); test=method==='start'?testService.start(testId,data.revision,{now:data.now||new Date().toISOString(),force:data.force===true}):testService[method](testId,data.revision); } }
+        else { const actions={start:'start',pause:'pause',resume:'resume',close:'close',finish:'finish',cancel:'cancel',unschedule:'unschedule'}; const method=actions[data.action]; if(data.action==='finish_legacy') test=testService.finishLegacy(testId,data.revision,data.reason); else { if(!method)return sendJson(res,400,{ok:false,error:'accion de estado invalida'}); test=method==='start'?testService.start(testId,data.revision,{now:data.now||new Date().toISOString(),force:data.force===true}):testService[method](testId,data.revision); } }
+        if(kind==='schedule'&&test.status==='active')syncTestExamMode(test,{notifyStudents:true});
+        if(kind==='state'&&['start','close','finish','cancel','unschedule'].includes(data.action))syncTestExamMode(test,{notifyStudents:data.action==='start'});
         if(kind==='state'&&(data.action==='pause'||data.action==='resume')){
           const mode=examModes.get(testId);if(mode)mode.paused=data.action==='pause';
+          if(mode?.closedForNewAttempts&&data.action==='resume')mode.paused=false;
           const payload=JSON.stringify({type:data.action==='pause'?'exam_paused':'exam_resumed',testId});
           const audience=new Set(testService.listEligibleAccountPlayerIds(testId));
           gameSessions.listSessions().forEach(session=>{if(audience.has(session.accountPlayerId||session.playerId)&&session.ws?.readyState===WebSocket.OPEN)session.ws.send(payload);});
@@ -815,6 +861,14 @@ const server=http.createServer((req,res)=>{
         return sendJson(res,200,{ok:true,test});
       }catch(e){const msg=e.message||'Solicitud invalida';return sendJson(res,/no encontrada/.test(msg)?404:/stale|no editable|Transici/.test(msg)?409:422,{ok:false,error:msg});}
     });
+  }
+  const restoreArchivedMatch=url.match(/^\/api\/exams\/([0-9a-f-]+)\/restore$/i);
+  if(restoreArchivedMatch&&req.method==='POST'){
+    return readBody(req,res,body=>{let data={};try{data=JSON.parse(body||'{}');}catch(_){return sendJson(res,400,{ok:false,error:'JSON invalido'});}if(!requireAdmin(req,res,data))return;if(!Number.isInteger(data.revision))return sendJson(res,400,{ok:false,error:'revision obligatoria'});try{return sendJson(res,200,{ok:true,test:testService.restore(restoreArchivedMatch[1],data.revision)});}catch(e){return sendJson(res,/no encontrada/.test(e.message)?404:/stale/.test(e.message)?409:422,{ok:false,error:e.message||'No se pudo restaurar la prueba'});}});
+  }
+  const deleteDraftMatch=url.match(/^\/api\/exams\/([0-9a-f-]+)\/draft$/i);
+  if(deleteDraftMatch&&req.method==='DELETE'){
+    return readBody(req,res,body=>{let data={};try{data=JSON.parse(body||'{}');}catch(_){return sendJson(res,400,{ok:false,error:'JSON invalido'});}if(!requireAdmin(req,res,data))return;if(!Number.isInteger(data.revision))return sendJson(res,400,{ok:false,error:'revision obligatoria'});try{return sendJson(res,200,{ok:true,...testService.deleteDraft(deleteDraftMatch[1],data.revision)});}catch(e){return sendJson(res,/no encontrada/.test(e.message)?404:/stale/.test(e.message)?409:422,{ok:false,error:e.message||'No se pudo eliminar el borrador'});}});
   }
   const examApiMatch=url.match(/^\/api\/exams(?:\/([0-9a-f-]+)(?:\/assignments)?)?$/i);
   if(examApiMatch){
@@ -859,7 +913,7 @@ const server=http.createServer((req,res)=>{
         }
         _lastExamStartAt=_now;
         let {grade,tables,timeLimit,timePerQuestion}=d;
-        const answerMode=['options','write','voice'].includes(d.answerMode)?d.answerMode:'options';
+        let answerMode=['options','write','voice'].includes(d.answerMode)?d.answerMode:'options';
         const op=d.op||d.operation||'mult';
         const ops=Array.isArray(d.ops)&&d.ops.length?d.ops:[];
         // opsConfig: configuración independiente por operación, ej. {mult:{tables:[1,2],qty:4},add:{qty:10,digits:2}}
@@ -903,6 +957,10 @@ const server=http.createServer((req,res)=>{
           timeLimit=authoritativeConfig.timeLimit??timeLimit;
           timePerQuestion=authoritativeConfig.timePerQuestion??timePerQuestion;
           if(authoritativeConfig.opsConfig&&typeof authoritativeConfig.opsConfig==='object')opsConfig=authoritativeConfig.opsConfig;
+          // En una prueba administrada, el snapshot guardado gobierna tambien
+          // la forma de respuesta; el body no puede contradecir la configuracion
+          // que recibieron los avisos de disponibilidad y los intentos.
+          answerMode=['options','write','voice'].includes(authoritativeConfig.answerMode)?authoritativeConfig.answerMode:'options';
         }
         examMode={grade:grade||'',tables:tables||[],op,ops,enabledOperations:Array.isArray(d.enabledOperations)?d.enabledOperations:ops,operationOrder:Array.isArray(d.operationOrder)?d.operationOrder:ops,order:d.order==='ordered'?'ordered':'random',repeat:d.repeat===true,opsConfig,timeLimit:Number(timeLimit)||0,timePerQuestion:Number(timePerQuestion)||0,total,answerMode,testId:startedTestId,audienceAccountPlayerIds:configuredAudience,startedAt:Date.now()};
         examModes.set(startedTestId||String(examMode.startedAt),examMode);
@@ -1087,6 +1145,12 @@ wss.on('connection',(ws,req)=>{
 // ── Heartbeat — detect dead connections ─────────────────────
 const HEARTBEAT_INTERVAL = 5000;
 const HEARTBEAT_TIMEOUT = 15000;
+const testScheduleInterval=setInterval(()=>{
+  try{
+    evaluateAndSyncTestAvailability();
+  }catch(error){L.err(`No se pudo evaluar la programación de pruebas: ${error.message||error}`);}
+},5000);
+testScheduleInterval.unref?.();
 const heartbeatInterval = setInterval(()=>{
   wss.clients.forEach(ws=>{
     if(Date.now()-Number(ws._lastPongAt||ws._connTime||Date.now())>=HEARTBEAT_TIMEOUT){
@@ -1741,6 +1805,7 @@ function shutdown(){
   shutdownStarted=true;
   console.log('\n  Deteniendo servidor...');
   panelBroadcaster.stop();
+  clearInterval(testScheduleInterval);
   clearInterval(heartbeatInterval);
   try{const frozenAttempts=testService.prepareForShutdown();if(frozenAttempts)L.game(`Intentos de prueba congelados al detener servidor: ${frozenAttempts}`);}catch(error){L.err(`No se pudo congelar el avance de pruebas al detener servidor: ${error.message}`);}
   testStore.flushSync();

@@ -130,7 +130,9 @@ function runScenario(effectIndex) {
     const ledger = finalPlayer.officialRewardLedger || [];
     assert.equal(new Set(ledger.map(item => item.key)).size, ledger.length);
     assert.equal(ledger.length, 4);
-    assert.equal(finalPlayer.aureos, 65);
+    // Current legacy reward contract yields 10 from game score + 50 for perfect;
+    // a daily-streak update does not add Aureos.
+    assert.equal(finalPlayer.aureos, 60);
     assert.equal(finalPlayer.experiencia, 15);
     assert.equal(finalPlayer.dailyStreak.current, 1);
     assert.deepEqual(finalPlayer.achievements, ['perfect']);
@@ -139,10 +141,10 @@ function runScenario(effectIndex) {
     const repeated = restarted.service.settle(request(fixture.ids));
     assert.equal(repeated.duplicate, true);
     assert.equal(repeated.settlement.rewardSettlementId, pendingId);
-    assert.equal(readPlayer(dir).aureos, 65);
+    assert.equal(readPlayer(dir).aureos, 60);
     assert.throws(() => restarted.service.settle(request(fixture.ids, fixture.ids.eventId, 'motivo contradictorio')), /eventId contradictorio/);
     assert.equal(restarted.root.rewardSettlements.length, 1);
-    assert.equal(readPlayer(dir).aureos, 65);
+    assert.equal(readPlayer(dir).aureos, 60);
     return { effect: effectNames[effectIndex], rewardSettlementId: pendingId, ledger: ledger.map(item => item.key), status: recovered.settlement.status };
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });

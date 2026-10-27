@@ -104,5 +104,5 @@ assert.strictEqual(sent[0].message.type, 'aureos_earned');
 assert.strictEqual(sent[1].message.type, 'achievements_unlocked');
 
 const panelState = buildPanelState({ sessions: [], players, findRoom: () => null, isOpen: socket => socket?.readyState === 1, examMode: null, examFinished: [] });
-assert.deepStrictEqual(Object.keys(panelState), ['sessions', 'connectedNames', 'ts', 'examMode', 'opStats', 'examFinished']);
+assert.deepStrictEqual(Object.keys(panelState), ['sessions', 'connectedNames', 'ts', 'examMode', 'examModes', 'opStats', 'examFinished']);
 console.log('OK: flujo integrado checkpoint -> save_result reemplaza, recompensa una vez, limpia sesion y conserva panel.');

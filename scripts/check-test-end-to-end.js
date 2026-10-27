@@ -35,9 +35,12 @@ const freePort = () => new Promise(resolve => {
 
 function startServer(dir, port) {
   const child = spawn(process.execPath, ['server.js'], {
-    cwd: process.cwd(), windowsHide: true, stdio: 'ignore',
-    env: { ...process.env, PORT: String(port), MATH_ATTACK_DATA_PATH: dir, MATH_ATTACK_TESTS_PATH: path.join(dir, 'pruebas.json'), MATH_ATTACK_LOG_PATH: path.join(dir, 'server.log') },
+    cwd: process.cwd(), windowsHide: true, stdio: ['ignore', 'pipe', 'pipe'],
+    env: { ...process.env, PORT: String(port), NODE_PATH: process.env.MATH_ATTACK_NODE_MODULES || process.env.NODE_PATH || path.join(process.cwd(), 'node_modules'), MATH_ATTACK_DATA_PATH: dir, MATH_ATTACK_TESTS_PATH: path.join(dir, 'pruebas.json'), MATH_ATTACK_LOG_PATH: path.join(dir, 'server.log') },
   });
+  let output = '';
+  child.stdout.on('data', chunk => { output += chunk.toString(); });
+  child.stderr.on('data', chunk => { output += chunk.toString(); });
   const base = `http://127.0.0.1:${port}`;
   return (async () => {
     for (let i = 0; i < 60; i += 1) {
@@ -45,7 +48,7 @@ function startServer(dir, port) {
       await wait(100);
     }
     child.kill('SIGINT');
-    throw Error('servidor integral no inicio');
+    throw Error(`servidor integral no inicio${output ? `: ${output}` : ''}`);
   })();
 }
 
@@ -72,12 +75,14 @@ async function main() {
     delete test.configuration.rewards;
     assert.equal(test.status, 'draft');
     tests.update(ids.test, 2, { title: 'Prueba integral editada', configuration: test.configuration });
-    assert.equal(tests.schedule(ids.test, 3, { startsAt: '2030-01-01T10:00:00.000Z' }).status, 'scheduled');
-    assert.equal(tests.start(ids.test, 4, { now: '2030-01-01T10:00:00.000Z' }).status, 'active');
+    // La programacion exige al menos un destinatario elegible; prepara el alumno
+    // antes de programar para que este recorrido cubra el flujo asignado real.
     tests.replaceAssignments(ids.test, [
       { targetType: 'student', accountPlayerId: ids.student },
       { targetType: 'group', groupId: '5A' },
     ]);
+    assert.equal(tests.schedule(ids.test, 3, { startsAt: '2030-01-01T10:00:00.000Z' }).status, 'scheduled');
+    assert.equal(tests.start(ids.test, 4, { now: '2030-01-01T10:00:00.000Z' }).status, 'active');
     assert.equal(tests.listAssignments(ids.test).length, 2);
 
     const attempt = tests.createStudentAttempt({ testId: ids.test, accountPlayerId: ids.student, groupId: '5A', studentSnapshot: { name: 'Alumno integral', grade: '5A' } });

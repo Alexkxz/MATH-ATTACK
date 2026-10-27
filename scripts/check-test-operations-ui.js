@@ -19,7 +19,7 @@ const freePort = () => new Promise(resolve => {
   const port = await freePort();
   const child = spawn(process.execPath, ['server.js'], {
     cwd: process.cwd(), windowsHide: true, stdio: 'ignore',
-    env: { ...process.env, PORT: String(port), MATH_ATTACK_DATA_PATH: dir, MATH_ATTACK_TESTS_PATH: path.join(dir, 'pruebas.json') },
+    env: { ...process.env, PORT: String(port), MATH_ATTACK_DATA_PATH: dir, MATH_ATTACK_TESTS_PATH: path.join(dir, 'pruebas.json'), MATH_ATTACK_GROUPS_PATH: path.join(dir, 'groups.json'), MATH_ATTACK_LOG_PATH: path.join(dir, 'server.log') },
   });
   const browser = await chromium.launch({ headless: true });
   const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
@@ -30,7 +30,7 @@ const freePort = () => new Promise(resolve => {
       try { if ((await fetch(`http://127.0.0.1:${port}/api/exam/status`)).ok) break; } catch (_) {}
       await wait(100);
     }
-    await page.goto(`http://127.0.0.1:${port}/maestro`, { waitUntil: 'domcontentloaded' });
+    await page.goto(`http://127.0.0.1:${port}/maestro-clasico?tab=pruebas`, { waitUntil: 'domcontentloaded' });
     await page.fill('#loginUser', 'admin');
     await page.fill('#loginPass', 'admin');
     await page.click('.login-btn');

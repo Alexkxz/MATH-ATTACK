@@ -2314,7 +2314,17 @@ body:has(#resultsScreen.active) #step1Screen.workspace-online-container{display:
   border:2px solid rgba(167,139,250,.55);box-shadow:0 0 16px rgba(99,102,241,.25);font-size:20px;flex:0 0 auto;}
 .game-avatar svg{display:block;width:100%;height:100%;}
 .game-profile-copy{min-width:0;display:flex;flex-direction:column;gap:2px;}
-.game-profile-copy strong{font-family:'Baloo 2',cursive;font-size:16px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:160px;}
+.game-profile-name-row{display:flex;align-items:center;gap:4px;min-width:0;margin-right:6px;}
+.game-profile-copy strong{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;max-width:clamp(110px,20vw,250px);font-family:'Baloo 2',cursive;font-size:16px;line-height:1.05;color:var(--text);white-space:normal;overflow:hidden;overflow-wrap:anywhere;}
+.game-player-name-details{flex:0 0 28px;width:28px;height:28px;padding:0;border:1px solid rgba(167,139,250,.4);border-radius:9px;background:rgba(167,139,250,.12);color:#ddd6fe;font-size:14px;font-weight:900;cursor:pointer;touch-action:manipulation;}
+.game-player-name-details:hover{background:rgba(167,139,250,.24);border-color:rgba(167,139,250,.8);}
+.game-player-name-details:focus-visible{outline:3px solid #fbbf24;outline-offset:2px;}
+.game-player-name-dialog{width:min(440px,calc(100vw - 32px));max-height:calc(100dvh - 32px);margin:auto;padding:22px;border:1px solid rgba(167,139,250,.45);border-radius:20px;background:linear-gradient(145deg,#1e1b4b,#0f172a);color:#f8fafc;box-shadow:0 24px 80px rgba(0,0,0,.55);}
+.game-player-name-dialog::backdrop{background:rgba(2,6,23,.72);backdrop-filter:blur(4px);}
+.game-player-name-dialog h2{margin:0 0 8px;font:800 20px 'Baloo 2',cursive;}
+.game-player-name-dialog p{margin:0 0 18px;color:#e2e8f0;font-size:16px;line-height:1.5;overflow-wrap:anywhere;}
+.game-player-name-dialog button{min-height:44px;padding:9px 16px;border:0;border-radius:12px;background:#7c3aed;color:white;font-weight:800;cursor:pointer;}
+.game-player-name-dialog button:focus-visible{outline:3px solid #fbbf24;outline-offset:3px;}
 .game-profile-copy small{font-size:9px;color:var(--muted);font-weight:800;letter-spacing:.8px;text-transform:uppercase;}
 .game-header-center{display:flex;align-items:center;justify-content:center;gap:12px;min-width:0;}
 .game-mode-kicker{font-size:10px;color:var(--accent);font-weight:900;letter-spacing:1.2px;text-transform:uppercase;white-space:nowrap;}
@@ -3669,7 +3679,7 @@ body:is(.duel-p1,.duel-p2) .game-shell-v2.duel-layout .question-card{
   <div class="game-header">
     <div class="game-profile">
       <div class="game-avatar" id="gameAvatar">👤</div>
-      <div class="game-profile-copy"><strong id="playerNameEl">—</strong><small id="gamePlayerStatus">Jugador</small></div>
+      <div class="game-profile-copy"><div class="game-profile-name-row"><strong id="playerNameEl">—</strong><button class="game-player-name-details" id="gamePlayerNameDetails" type="button" aria-label="Consultar nombre completo" aria-haspopup="dialog" aria-controls="gamePlayerNameDialog" onclick="openGamePlayerNameDialog()">ℹ</button></div><small id="gamePlayerStatus">Jugador</small></div>
     </div>
     <div class="game-header-center">
       <span class="game-mode-kicker" id="gameModeKicker">Misión matemática</span>
@@ -8296,10 +8306,11 @@ function handleExamStart(config){
   // Detectar checkpoint guardado para este examen (la clave depende de pName, que puede
   // todavía no estar asignado en este momento — ver _refreshExamResumeButton)
   const cp=_refreshExamResumeButton();
-  if(cp&&cp.qIndex>0){
-    showPowerToast('📝 ¡Prueba activa! Puedes continuar donde la dejaste.');
-  } else {
-    showPowerToast('📝 ¡El maestro inició una prueba!');
+  // El banner persistente es el aviso accionable. En pantallas compactas el
+  // toast flotante cubre la marca del área del alumno; se conserva en pantallas amplias.
+  if(window.innerWidth>820){
+    if(cp&&cp.qIndex>0) showPowerToast('📝 ¡Prueba activa! Puedes continuar donde la dejaste.');
+    else showPowerToast('📝 ¡El maestro inició una prueba!');
   }
   // Si ya hay partida activa, terminarla (el alumno volverá a step1 con el banner)
   if($('gameScreen').classList.contains('active')){ clearInterval(timerIv); showResults(); }
@@ -8804,6 +8815,21 @@ function getDisplayColor(hex){
   if((r*299+g*587+b*114)/1000 < 40) return '#cbd5e1';
   return hex;
 }
+let gamePlayerNameReturnFocus=null;
+function openGamePlayerNameDialog(){
+  const dialog=$('gamePlayerNameDialog');
+  const name=$('playerNameEl')?.textContent?.trim();
+  if(!dialog||!name||typeof dialog.showModal!=='function')return;
+  $('gamePlayerNameFull').textContent=name;
+  gamePlayerNameReturnFocus=document.activeElement;
+  dialog.showModal();
+  $('gamePlayerNameDialogClose')?.focus();
+}
+function closeGamePlayerNameDialog(){
+  const dialog=$('gamePlayerNameDialog');
+  if(dialog?.open)dialog.close();
+  if(gamePlayerNameReturnFocus?.isConnected)gamePlayerNameReturnFocus.focus();
+}
 function applyPlayerColors(){
   const c1=getDisplayColor(pColor);
   const c2=getDisplayColor(p2Color);
@@ -9133,6 +9159,8 @@ function sendSessionUpdate(){
   if(sessionInventory) Object.entries(sessionInventory).forEach(([k,v])=>{ if(v>0) _inv[k]=v; });
   const _tblSnap={};
   Object.entries(tblResults).forEach(([op,arr])=>{ if(arr.length) _tblSnap[op]={c:arr.filter(x=>x==='correct').length,w:arr.filter(x=>x==='wrong').length,t:arr.length}; });
+  const _examOpIndexes={};
+  const _examQuestions=_examPlaythrough?questions.map(q=>{const op=q.op||'×',index=_examOpIndexes[op]||0;_examOpIndexes[op]=index+1;const prior=_examAnswers.find(item=>item.questionId===q.questionId);return {questionId:q.questionId,op,a:q.a,b:q.b,table:q.table??null,status:(tblResults[op]||[])[index]||'pending',answer:prior?.answer??null};}):undefined;
   ws.send(JSON.stringify({type:'session_update',
     name:pName, grade:gradeName,
     gameMode, setupMode:getActiveSetupMode(), mpGameMode:gameMode==='online'?mpGameMode:'',
@@ -10508,7 +10536,6 @@ function initGame(isOnline){
   initScoreUI();
   applyPlayerColors();
   updateGameHeaderUI();
-  startSessionReporting();
   // Apply solo player theme immediately
   if(gameMode==='solo') applyTurnColor(true);
   else if(gameMode==='duel') applyTurnColor(duelTurn===0);
@@ -10562,6 +10589,9 @@ function initGame(isOnline){
     }
   }
   loadQuestion();
+  // Enviar el primer estado después de restaurar preguntas y relojes del checkpoint;
+  // antes podía persistirse un cero transitorio al iniciar el intento.
+  startSessionReporting();
 }
 
 // ── Simulación del Bot (modo vs Bot) ────────────────────
@@ -11376,6 +11406,10 @@ function loadQuestion(){
   questionStartedAt=Date.now();
   if(sessionInventory.hint) renderPowerPanel();
   startTimer();
+  // Persistir el índice ya avanzado y la respuesta recién registrada antes de
+  // depender del siguiente pulso periódico; así el servidor puede recuperar
+  // el mismo intento incluso si el proceso se reinicia durante esta pregunta.
+  if(_examPlaythrough){_saveExamCheckpoint();sendSessionUpdate();}
 }
 
 // ══════════════════════════════════════════════════════
@@ -15620,7 +15654,9 @@ function workspaceFlowPanels(){
   const panels=['type'];
   if(type==='timed'||type==='lives'||type==='countdown'||type==='bot') panels.push('difficulty');
   panels.push('answer');
-  if(type!=='bot')panels.push('operations');
+  // El Bot también debe permitir elegir las operaciones; su adaptación
+  // controla la cantidad y dificultad, pero no debe fijar el contenido.
+  panels.push('operations');
   if(type!=='bot')panels.push('specific');
   panels.push('advanced');
   const hasAddSub=selectedOps.includes('+')||selectedOps.includes('−');
@@ -16093,5 +16129,10 @@ document.addEventListener('pointerdown',workspaceMusicStartFromGesture,{passive:
 document.addEventListener('keydown',workspaceMusicStartFromGesture,{passive:true});
 workspaceMusicUpdateButton();
 </script>
+<dialog class="game-player-name-dialog" id="gamePlayerNameDialog" aria-labelledby="gamePlayerNameDialogTitle" aria-describedby="gamePlayerNameFull">
+  <h2 id="gamePlayerNameDialogTitle">Nombre completo</h2>
+  <p id="gamePlayerNameFull"></p>
+  <button id="gamePlayerNameDialogClose" type="button" onclick="closeGamePlayerNameDialog()">Cerrar</button>
+</dialog>
 </body>
 </html>
