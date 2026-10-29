@@ -855,6 +855,21 @@ button:disabled .wave-letter{animation:none;}
 .settings-title{font-family:'Baloo 2',cursive;font-size:18px;color:var(--text);}
 .settings-x{background:rgba(255,255,255,.08);border:none;border-radius:8px;padding:4px 9px;color:var(--muted);cursor:pointer;font-size:14px;}
 .settings-x:hover{color:var(--text);}
+.workspace-settings-view{display:none;width:min(1080px,100%);margin:0 auto;padding:clamp(4px,1vw,12px) 0 30px;color:var(--text)}
+.workspace-shell.workspace-show-settings .workspace-welcome-hero,.workspace-shell.workspace-show-settings .workspace-heading,.workspace-shell.workspace-show-settings .workspace-quick-grid,.workspace-shell.workspace-show-settings .workspace-module-view,.workspace-shell.workspace-show-settings .workspace-activity-card{display:none!important}
+.workspace-shell.workspace-show-settings .workspace-settings-view{display:block;animation:workspaceFadeIn .24s ease both}
+.workspace-settings-head{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;margin-bottom:22px}
+.workspace-settings-head h1{font:800 clamp(25px,3vw,34px)/1.1 'Baloo 2',cursive;color:#fff;margin:4px 0}
+.workspace-settings-head p{color:#a9acc8;font-size:13px;line-height:1.5}
+.workspace-settings-back{border:1px solid rgba(167,139,250,.28);border-radius:11px;padding:10px 14px;background:rgba(167,139,250,.1);color:#ddd6fe;font:700 12px 'Quicksand',sans-serif;cursor:pointer;white-space:nowrap}
+.workspace-settings-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.workspace-settings-group{min-width:0;padding:18px 20px;border:1px solid rgba(167,139,250,.2);border-radius:18px;background:linear-gradient(145deg,rgba(35,28,75,.84),rgba(18,23,48,.88));box-shadow:0 14px 32px rgba(0,0,0,.15)}
+.workspace-settings-group h2{margin:0 0 4px;color:#f5f3ff;font:800 16px 'Baloo 2',cursive}.workspace-settings-group>p{margin:0 0 10px;color:#9298b8;font-size:11px;line-height:1.45}
+.workspace-settings-view .settings-card{max-width:none;padding:0;border:0;border-radius:0;background:transparent;box-shadow:none}
+.workspace-settings-view .settings-hd{display:none}.workspace-settings-view .setting-row{gap:16px;padding:13px 0}.workspace-settings-view .setting-lbl{font-size:13px}.workspace-settings-view .setting-sub{font-size:11px;line-height:1.4;margin-top:2px}.workspace-settings-view .setting-row select{max-width:45%;min-height:38px}
+.workspace-settings-danger{margin-top:16px;padding:14px 16px;border:1px solid rgba(248,113,113,.25);border-radius:16px;background:rgba(127,29,29,.1)}
+@media(max-width:700px){.workspace-settings-grid{grid-template-columns:1fr}.workspace-settings-group{padding:15px}.workspace-settings-head{align-items:center}.workspace-settings-back{padding:9px 11px}}
+@media(max-width:420px){.workspace-settings-head{align-items:flex-start;flex-direction:column}.workspace-settings-view .setting-row select{max-width:52%}}
 .setting-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.07);}
 .setting-row:last-of-type{border-bottom:none;}
 .setting-lbl{font-size:13px;font-weight:700;color:var(--text);display:block;}
@@ -2972,6 +2987,10 @@ body:is(.duel-p1,.duel-p2) .game-shell-v2.duel-layout .question-card{
     </div>
   </aside>
   <main class="workspace-main">
+    <section class="workspace-settings-view" id="workspaceSettingsView" aria-labelledby="workspaceSettingsTitle">
+      <div class="workspace-settings-head"><div><span class="workspace-eyebrow">PREFERENCIAS DEL JUEGO</span><h1 id="workspaceSettingsTitle">Configuración</h1><p>Ajusta el sonido, la experiencia visual y las opciones de acceso.</p></div><button class="workspace-settings-back" type="button" onclick="closeSettings()">← Volver al centro</button></div>
+      <div id="workspaceSettingsHost"></div>
+    </section>
     <section class="workspace-welcome-hero" id="workspaceWelcomeHero">
       <div class="workspace-hero-copy"><span class="workspace-eyebrow">CENTRO DE OPERACIONES</span><h1>Bienvenido a tu arena matemática</h1><p>Tu próxima misión empieza aquí. Elige un modo cuando estés listo y convierte cada respuesta en progreso.</p><div class="workspace-hero-actions"><button class="workspace-hero-cta" type="button" onclick="selectWorkspaceMode(document.querySelector('#workspaceSidebar .workspace-nav-item:nth-child(2)'),'solo')">▶ Comenzar misión</button><span class="workspace-hero-note">Tu aventura está lista</span></div></div>
       <div class="workspace-hero-orbit"><div class="workspace-hero-orbit-ring"></div><div class="workspace-hero-bolt">⚡</div><span class="workspace-orbit-dot one"></span><span class="workspace-orbit-dot two"></span><span class="workspace-orbit-dot three"></span></div>
@@ -6048,9 +6067,13 @@ function shopSetView(view){
 
 function openShop(){
   if($('gameScreen').classList.contains('active')) return;
+  if($('studentWorkspace')?.classList.contains('workspace-show-settings'))closeSettings();
+  const enteringWorkspaceShop=!$('studentWorkspace')?.classList.contains('workspace-show-shop');
+  workspaceCloseInlinePanels();
   const shell=$('studentWorkspace'), main=shell?.querySelector('.workspace-main'), overlay=$('shopOverlay');
   if(shell?.classList.contains('workspace-online-central'))workspaceOnlineRestoreScreens();
   if(shell&&main&&overlay){
+    if(enteringWorkspaceShop)main.scrollTop=0;
     workspaceDynamicState=null;shell.classList.remove('workspace-dynamic-wizard','workspace-show-module','workspace-show-config','workspace-show-tests','workspace-mode-solo','workspace-mode-duel','workspace-mode-online','workspace-mode-operations');
     shell.classList.remove('workspace-show-profile');
     $('avatarOverlay')?.classList.remove('active');
@@ -6122,9 +6145,10 @@ document.addEventListener('keydown',event=>{
   if(event.key==='Escape'&&$('logoutConfirmOverlay')?.classList.contains('active')) closeLogoutConfirm();
 });
 function floatCerrarSesion(){
+  closeSettings();
   closeLogoutConfirm();
   $('avatarOverlay')?.classList.remove('active');
-  $('studentWorkspace')?.classList.remove('workspace-show-profile','workspace-show-shop','workspace-show-module','workspace-show-config','workspace-show-tests','workspace-online-central','workspace-dynamic-wizard','workspace-mode-solo','workspace-mode-duel','workspace-mode-online','workspace-mode-operations');
+  $('studentWorkspace')?.classList.remove('workspace-show-profile','workspace-show-shop','workspace-show-module','workspace-show-config','workspace-show-tests','workspace-show-settings','workspace-online-central','workspace-dynamic-wizard','workspace-mode-solo','workspace-mode-duel','workspace-mode-online','workspace-mode-operations');
   currentPlayer=null;
   localStorage.removeItem(PLAYER_KEY);
   pName='';
@@ -6777,7 +6801,13 @@ function applyThemeColor(hex){
 
 // ── Avatar Modal ──
 let _avCfg={};
+let _avPendingPurchase=null;
 function openAvatarModal(){
+  if($('studentWorkspace')?.classList.contains('workspace-show-settings'))closeSettings();
+  workspaceCloseInlinePanels();
+  _avPendingPurchase=null;
+  $('avatarPurchasePreview')?.setAttribute('hidden','');
+  $('avatarSaveButton')?.removeAttribute('hidden');
   _avCfg=normalizeAvatarConfig(currentPlayer?.avatar||{});
   const shell=$('studentWorkspace'),main=shell?.querySelector('.workspace-main'),overlay=$('avatarOverlay');
   if(shell&&main&&overlay){
@@ -13275,9 +13305,32 @@ function saveSettings(){
 function openSettings(){
   loadSettings();
   $('cacheMsg').textContent='';
+  const workspace=$('studentWorkspace'),card=$('settingsOverlay')?.querySelector('.settings-card'),host=$('workspaceSettingsHost');
+  if(workspace&&host&&$('step1Screen')?.classList.contains('active')){
+    workspaceCloseInlinePanels();
+    if(card&&!card.dataset.workspaceGrouped){
+      const rows=[...card.querySelectorAll(':scope > .setting-row')],cacheBlock=$('cacheMsg')?.parentElement;
+      const grid=document.createElement('div');grid.className='workspace-settings-grid';
+      const groups=[['Sonido y ambiente','Controla la música y las respuestas del juego.',rows.slice(0,4)],['Acceso y experiencia','Administra la protección del registro y los efectos.',rows.slice(4)]];
+      groups.forEach(([title,description,items])=>{const group=document.createElement('section');group.className='workspace-settings-group';const heading=document.createElement('h2');heading.textContent=title;const copy=document.createElement('p');copy.textContent=description;group.append(heading,copy,...items);grid.appendChild(group);});
+      const danger=document.createElement('section');danger.className='workspace-settings-danger';danger.appendChild(cacheBlock);card.append(grid,danger);card.dataset.workspaceGrouped='true';
+    }
+    host.appendChild(card);workspace.classList.add('workspace-show-settings');workspace.classList.remove('workspace-show-module','workspace-show-config','workspace-show-tests','workspace-show-shop','workspace-show-profile');
+    document.querySelectorAll('#workspaceSidebar .workspace-nav-item').forEach(item=>item.classList.toggle('active',item.textContent.includes('Configuración')));
+    $('settingsOverlay').classList.remove('active');
+    return;
+  }
   $('settingsOverlay').classList.add('active');
 }
-function closeSettings(){$('settingsOverlay').classList.remove('active');}
+function closeSettings(){
+  $('settingsOverlay').classList.remove('active');
+  const workspace=$('studentWorkspace'),card=$('workspaceSettingsHost')?.querySelector('.settings-card')||$('settingsOverlay')?.querySelector('.settings-card');
+  if(workspace?.classList.contains('workspace-show-settings')){
+    $('settingsOverlay').appendChild(card);workspace.classList.remove('workspace-show-settings');
+    document.querySelectorAll('#workspaceSidebar .workspace-nav-item').forEach(item=>item.classList.remove('active'));
+    document.querySelector('#workspaceSidebar [data-workspace-target="home"]')?.classList.add('active');
+  }
+}
 function setMusic(cb){
   musicMuted=!cb.checked;
   if(musicMuted)stopBgMusic();
@@ -15590,6 +15643,25 @@ function workspaceOnlineRestoreScreens(){
   const title=$('workspaceActivityCard')?.querySelector('.workspace-activity-header h2');
   if(title)title.textContent='Configura tu partida';
 }
+function workspaceCloseInlinePanels(){
+  const shell=$('studentWorkspace');
+  if(shell?.classList.contains('workspace-online-central')){
+    workspaceOnlineRestoreScreens();
+    const panel=$('step2OnlinePanel'),mpCard=panel?.querySelector('.mp-card');
+    if(mpCard){mpCard.classList.remove('embedded');$('mpOverlay')?.appendChild(mpCard);}
+    mpEmbedded=false;
+  }
+  shell?.classList.remove('workspace-home-active','workspace-show-module','workspace-show-tests','workspace-show-config','workspace-show-profile','workspace-show-shop','workspace-mode-solo','workspace-mode-duel','workspace-mode-online','workspace-mode-operations','workspace-dynamic-wizard');
+  const avatarOverlay=$('avatarOverlay'),shopOverlay=$('shopOverlay');
+  avatarOverlay?.classList.remove('active','workspace-inline-profile');
+  shopOverlay?.classList.remove('active','workspace-inline');
+  if(avatarOverlay?.parentElement!==document.body)document.body.appendChild(avatarOverlay);
+  if(shopOverlay?.parentElement!==document.body)document.body.appendChild(shopOverlay);
+  $('settingsOverlay')?.classList.remove('active');
+  $('mpOverlay')?.classList.remove('active');
+  LEGACY_SCREEN_IDS.forEach(id=>$(id)?.classList.remove('active'));
+  if(typeof workspaceDynamicState!=='undefined')workspaceDynamicState=null;
+}
 function legacyScreensForScope(scope){
   return LEGACY_SCREEN_IDS.filter(id=>LEGACY_SCREEN_MANIFEST[id].includes(scope));
 }
@@ -15989,13 +16061,14 @@ async function workspaceLoadPersonalRanking(){
 }
 function showWorkspaceView(view){
   const shell=$('studentWorkspace');if(!shell)return;
-  if(view!=='online')workspaceOnlineRestoreScreens();
+  if(shell.classList.contains('workspace-show-settings'))closeSettings();
+  workspaceCloseInlinePanels();
   if(!['solo','duel','online'].includes(view))workspaceDynamicState=null;
   if(view!=='ranking')$('workspaceModuleView')?.classList.remove('workspace-ranking-active');
   mountWorkspaceWizard();
   const shopOverlay=$('shopOverlay');
   const avatarOverlay=$('avatarOverlay');
-  shell.classList.remove('workspace-show-module','workspace-show-config','workspace-show-tests','workspace-show-shop','workspace-show-profile','workspace-mode-solo','workspace-mode-duel','workspace-mode-online','workspace-mode-operations','workspace-dynamic-wizard');
+  shell.classList.remove('workspace-show-module','workspace-show-config','workspace-show-tests','workspace-show-shop','workspace-show-profile','workspace-show-settings','workspace-mode-solo','workspace-mode-duel','workspace-mode-online','workspace-mode-operations','workspace-dynamic-wizard');
   shopOverlay?.classList.remove('active');
   avatarOverlay?.classList.remove('active');
   shell.classList.toggle('workspace-home-active',view==='home');
@@ -16009,9 +16082,10 @@ function showWorkspaceView(view){
   if(view==='ranking')workspaceLoadPersonalRanking();
 }
 function selectWorkspaceMode(btn,mode){
+  if($('studentWorkspace')?.classList.contains('workspace-show-settings'))closeSettings();
+  workspaceCloseInlinePanels();
   if(mode!=='online')workspaceOnlineRestoreScreens();
-  $('studentWorkspace')?.classList.remove('workspace-show-shop');
-  $('studentWorkspace')?.classList.remove('workspace-mode-operations');
+  $('studentWorkspace')?.classList.remove('workspace-show-module','workspace-show-tests','workspace-show-config','workspace-mode-solo','workspace-mode-duel','workspace-mode-online','workspace-mode-operations');
   $('shopOverlay')?.classList.remove('active');
   document.querySelectorAll('#workspaceSidebar .workspace-nav-item').forEach(item=>item.classList.remove('active'));
   btn?.classList.add('active');
@@ -16028,8 +16102,10 @@ function selectWorkspaceMode(btn,mode){
   workspaceDynamicStart(mode);
 }
 function selectWorkspaceOperations(btn){
+  if($('studentWorkspace')?.classList.contains('workspace-show-settings'))closeSettings();
+  workspaceCloseInlinePanels();
   workspaceOnlineRestoreScreens();
-  $('studentWorkspace')?.classList.remove('workspace-show-shop');
+  $('studentWorkspace')?.classList.remove('workspace-show-module','workspace-show-tests','workspace-show-config','workspace-mode-solo','workspace-mode-duel','workspace-mode-online','workspace-mode-operations');
   $('shopOverlay')?.classList.remove('active');
   document.querySelectorAll('#workspaceSidebar .workspace-nav-item').forEach(item=>item.classList.remove('active'));
   btn?.classList.add('active');
